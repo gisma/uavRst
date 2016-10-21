@@ -1,11 +1,11 @@
-Package: robubu
+Package: uavRst
 Type: Package
-Title: the rolling burning bus - whatever, it runs fine for now
+Title: Unmanned Aerial Vehicle Remote Sensing Tools
 Version: 0.2
 Date: 2016-09-25
 Author: Chris Reudenbach
 Maintainer: Chris Reudenbach <gisma@gis-ma.org>
-Description: The rolling burning bus is an unfocussed collection of cool R-GIS stuff. he package name is a tribute to Randall Munroe's great xkcd webcomics.
+Description: Unmanned Aerial Vehicle Remote Sensing Tools.
 License: MIT + file LICENSE
 Depends:
     R (>= 3.1.0)

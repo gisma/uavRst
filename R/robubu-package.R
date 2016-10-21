@@ -1,15 +1,14 @@
-#' the rolling burning bus - whatever, it runs fine for now 
+#' Unmanned Aerial Vehicle Remote Sensing Tools
 #'
-#' The package provides some hybrid R-GI functionality
+#' The package provides some  R-GI functionality for dealing with Unmanned Aerial Vehicle Remote Sensing 
 #'
-#' @name robubu-package
+#' @name uavRst
 #' @docType package
-#' @title the rolling burning bus - awesome gis tools fyi
+#' @title Unmanned Aerial Vehicle Remote Sensing Tools - awesome gis tools to fly
 #' @author Chris Reudenbach,
 #' \cr
 #' \emph{Maintainer:} Chris Reudenbach \email{reudenbach@@uni-marburg.de}
 #'
-#' @details The package name is a tribute to Randall Munroe's great xkcd webcomics and especially \href{http://xkcd.com/1695/}{Code Quality 2}
 #' @import stringr foreach sp raster htmlwidgets htmltools Rcpp rgdal gdalUtils tools maptools mapview 
 #' @importFrom geosphere bearing
 #' @importFrom geosphere distGeo
@@ -21,7 +20,7 @@
 #' @import caret
 #'  
 #'
-#' @useDynLib robubu
+#' @useDynLib uavRst
 #' @keywords package
 #' 
 NULL

@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // gsubC
 std::string gsubC(const std::string& pattern, const std::string& replacement, std::string x);
-RcppExport SEXP robubu_gsubC(SEXP patternSEXP, SEXP replacementSEXP, SEXP xSEXP) {
+RcppExport SEXP uavRst_gsubC(SEXP patternSEXP, SEXP replacementSEXP, SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -20,7 +20,7 @@ END_RCPP
 }
 // brewPopupRowC
 std::string brewPopupRowC(std::string colname, std::string value);
-RcppExport SEXP robubu_brewPopupRowC(SEXP colnameSEXP, SEXP valueSEXP) {
+RcppExport SEXP uavRst_brewPopupRowC(SEXP colnameSEXP, SEXP valueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -32,7 +32,7 @@ END_RCPP
 }
 // brewPopupRowAltC
 std::string brewPopupRowAltC(std::string colname, std::string value);
-RcppExport SEXP robubu_brewPopupRowAltC(SEXP colnameSEXP, SEXP valueSEXP) {
+RcppExport SEXP uavRst_brewPopupRowAltC(SEXP colnameSEXP, SEXP valueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -44,7 +44,7 @@ END_RCPP
 }
 // brewPopupCoords
 std::string brewPopupCoords(std::string colname, std::string value);
-RcppExport SEXP robubu_brewPopupCoords(SEXP colnameSEXP, SEXP valueSEXP) {
+RcppExport SEXP uavRst_brewPopupCoords(SEXP colnameSEXP, SEXP valueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -56,7 +56,7 @@ END_RCPP
 }
 // mergePopupRows
 std::string mergePopupRows(CharacterVector names, CharacterVector values);
-RcppExport SEXP robubu_mergePopupRows(SEXP namesSEXP, SEXP valuesSEXP) {
+RcppExport SEXP uavRst_mergePopupRows(SEXP namesSEXP, SEXP valuesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -68,7 +68,7 @@ END_RCPP
 }
 // createTemplate
 std::string createTemplate(std::string tmpPath);
-RcppExport SEXP robubu_createTemplate(SEXP tmpPathSEXP) {
+RcppExport SEXP uavRst_createTemplate(SEXP tmpPathSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -79,7 +79,7 @@ END_RCPP
 }
 // listPopupTemplates
 List listPopupTemplates(CharacterMatrix x, CharacterVector names, std::string tmpPath);
-RcppExport SEXP robubu_listPopupTemplates(SEXP xSEXP, SEXP namesSEXP, SEXP tmpPathSEXP) {
+RcppExport SEXP uavRst_listPopupTemplates(SEXP xSEXP, SEXP namesSEXP, SEXP tmpPathSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -92,7 +92,7 @@ END_RCPP
 }
 // df2String
 CharacterMatrix df2String(DataFrame x);
-RcppExport SEXP robubu_df2String(SEXP xSEXP) {
+RcppExport SEXP uavRst_df2String(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -103,7 +103,7 @@ END_RCPP
 }
 // one2JSON
 std::string one2JSON(CharacterVector x);
-RcppExport SEXP robubu_one2JSON(SEXP xSEXP) {
+RcppExport SEXP uavRst_one2JSON(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -114,7 +114,7 @@ END_RCPP
 }
 // all2JSONlist
 List all2JSONlist(CharacterMatrix x);
-RcppExport SEXP robubu_all2JSONlist(SEXP xSEXP) {
+RcppExport SEXP uavRst_all2JSONlist(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
