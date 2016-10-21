@@ -1,0 +1,212 @@
+---
+title: "MakeUavRemoteControlledSurvey (murcs) - autonomous flight planning in R"
+author: "Chris Reudenbach"
+date: "October 01, 2016"
+output:
+  html_document:
+    toc: yes
+    self_contained: no
+---
+
+![](http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png) (CC-BY-NC-SA)
+
+This document was produced on _`r format(Sys.time(), "%a %b %d %Y")`_ using `robubu` version **`r packageVersion("robubu")`**
+
+------
+
+# Installation
+Currently you will find makeflightplan and the rest of the uav stuff only in the robubu package. If you want to use it the probably easiest way to install `robubu` is to use `library("devtools")`. With `devtools` installed and loaded type the following:
+
+```{r, eval = FALSE, warning=FALSE, message=FALSE, fig.width=9.47}
+install_github("gisma/robubu")
+```
+
+------
+
+
+# Some remarks about UAV flying 
+
+The basic idea is to provide an easy to use workflow for controlling rtf UAVs from planning and flying autonoumous surveys to derivation and postclassification of the data. 
+
+The central script for survey planning is murcs (Make Uav Survey Controlfile).  murcs creates either intermediate flight control files for the dji phantom x UAVs or ready to upload control files for the 3DR Solo.
+
+The dji control files are designed for using with the propietary litchi flight control app exchange format, while the 3DR Solo files are using the MAVLINK common message set, that is used by the PixHawk flight controller family. Both are implemented very rudimentary.
+
+## DJI Phantom family
+The reason using DJI is their absolute straightforward usage. Everybody can fly with a DJI but the price ist a hermetically closed system. Only the  litchi app provides additionally to a cloud based mission planer an offline/standalone interface to upload a csv formated waypoint file for autonomous flights to the Phantom.
+
+## PixHawk/3DR Solo:
+The open uav community is focussed on the PixHawk autopilot unit and the Mission Planner software. It is well documented and serveral APIs are provided. Nevertheless a terrain following autonomous flight planning tool is not available. murcs creates static implementation of the MAV format that is ready to be uploaded directly on the Pixhawk controller using the upload2Solo function.
+
+# Survey Area
+
+To define a flight area you have to provide either 4 Points (or 3 lines). You may take more complex vectors like a multi point polygon, but only the first 4 coordinates x1, x2, x3 and x4 (for the launching position) are used in exactly this order. If you take a rectangle the 4th corner coordinate will be the launching point!
+
+The concept is looking like the following sketch.
+
+```
+   x2------x3           x2-------x1
+  | a                 /
+  |                  /
+  |   x4            / x4    
+  |  /             / /
+  x1/             x3/
+
+```
+This coordinates the length of the line and the angle are used to calculate extend and paralells of the flightplan according to the flight altitude, overlap etc. Note the flight direction depends on the order of the points. If the flightPlanMode is equal tracks. 
+
+The result look like this.
+
+```
+  #--#  #-->             #--#  #
+  |  |  |               /  /  /
+  |  |  |              /  /  /
+  |  |  |             /  /  / 
+  #  #--#         <--#  #--#
+```
+  
+If flightPlanMode is equal waypoints the result is an equal spatial distribution of waypoints:
+
+```
+  #--#  #-->             #--#  #
+  |  |  |               /  /  /
+  #  #  #              #  #  #
+  |  |  |             /  /  / 
+  #  #--#         <--#  #--#
+```
+  
+waypoints is optimal for autonoumous flights under calm conditions in complex terrain because the camara takes a picture at every waypoint
+track is optimal for relatively plain areas and automatically triggered picture capturing Note: Automatically picture capturing in a time interval works only within the range of the remote control. because the the uav needs a trigger signal for taking pictures.
+
+# Terrain Following flightplan
+
+The followSurface switch is used to adapt the fixed flight altitude into a terrain following flight altitude.
+
+
+NOTE: You have to be aware that the DJI uav is calibrating the altitude at the launch position in the field! So you need either a correct coordinate altitude or a high resolution DEM to get a good! estimation of the lauch position and altitude. You must choose a clearly defined and reliable launching position both in the map and the field. If you fail I made the experience that the aircraft probably will hit the terrain...
+
+How it works. Let us assume a defined flightaltitude of 50 m. According to the launching point altitude the uav will act like the following sketch shows:
+
+```
+  ............... x-(uav)-x ........... uav started at 30 m altitude results in 
+                                           a "real" flight altitude of 30m + 50m => 80m
+  
+  
+                  ___60m____
+                 |          | 
+         30m _x__|          | 
+        ____|               |___  
+    ___|                        |____ 
+ 
+  
+                 ___60m____
+      ..........|          |............ uav started at 0 m altitude results in 
+             ___|          |___          "real" flight altitude of 50m above 0m
+        ____|                  |  
+    ___|                       |__x__ 0m
+
+```  
+To avoid negative impacts from the P3 auto calibration, the launch altitude is used to correct the flight altitude according to: 
+maximumAltitude_of_surveyArea + altitude_of_launchposition
+So the adapted flight altitude is always seen as the flight altitude above the highest terrain altitude:
+
+ ```                
+ ...................................... real altitude of uav 110 m
+         
+
+                 ___60m____ 
+                |          |
+         30m _x_|          |___
+        ____|                  |  
+    ___|                       |______ 
+  
+```
+
+To get a fixed scale flight the launch altitude is used to correct the flight altitude according to maximumAltitude of surveyArea + altitude of launchposition. With the setting auf terrainfoollowing = true tis is calculated for each waypoint. . So the adapted flight altitude looks like:
+
+```                 
+                 ..........
+                |          |
+            ....|          |.... 
+       ....|     ___60m____    |    
+  ....|         |          |   |....... real altitude of uav 50m
+         30m _x_|          |___
+        ____|                  |  
+    ___|                       |___x___ 0m
+  
+```
+
+# Usecase EPSG:3031
+
+
+
+
+
+```xml
+<Layer>
+
+</Layer>
+```
+
+First the primary arguments:
+
+* ResourceURL
+* format
+
+
+## parameter format for use in preview
+
+Now we need an appropriate structure for these parameters to make it less complicated to feed the projView funktion with this information. This is a simple nested list. If we fill it with the values it looks like this:
+
+
+```{r}
+
+```
+
+
+# Some examples
+
+First we need to load some packages and get data:
+
+```{r, warning=FALSE, message=FALSE}
+
+```
+
+Please note you have to activate the layers using the layer control in the upper right corner.
+
+```{r, warning=FALSE, message=FALSE}
+ 
+
+```
+
+For the NASA EarthData you may use the visEarthPole() function.
+
+```{r, warning=FALSE, message=FALSE}
+
+                  
+```
+
+------
+
+
+# Final remarks
+
+There are still a lot of limitations that need addressing:
+
+In future releases I would like to 
+
+* get around the issue that you have to do a manual job in parameter sampling
+* integrate a defined plugin concept for own function that provides correct parameter lists
+* integrate a fully working localTile functionality
+* ...
+
+I hope that you will find projvView as useful.
+
+If you have any feedback, please don't hesitate to contact [me](http://www.uni-marburg.de/fb19/personal/mitarbeiter/reudenbachc/index.html).
+
+Bug reports should be filed at <a href="https://github.com/environmentalinformatics-marburg/mapview/issues" target="_blank">https://github.com/environmentalinformatics-marburg/mapview/issues</a>
+
+Cheers
+
+Chris
+
