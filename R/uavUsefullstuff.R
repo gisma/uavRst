@@ -17,7 +17,7 @@ demCorrection<- function(demFn ,df,p,altFilter,followSurface,followSurfaceRes,lo
     levellog(logger, 'WARN', "CAUTION!!! no DEM file provided I try to download SRTM data... SRTM DATA has a poor resolution for UAVs!!! ")
     cat("\nCAUTION! No DEM data is provided.\n trying to download SRTM data... \n Be aware that the resulution of SRTM is NOT sufficient for terrain following flights!")
     # download corresponding srtm data
-    dem<-robubu::getGeoData(name="SRTM",xtent = extent(p$lon1,p$lon3,p$lat1,p$lat3), zone = 1.0,merge = TRUE)
+    dem<-uavRst::getGeoData(name="SRTM",xtent = extent(p$lon1,p$lon3,p$lat1,p$lat3), zone = 0.1 ,merge = TRUE)
     dem<-setMinMax(dem)
     rundem<- raster::crop(dem,extent(min(p$lon1,p$lon3)-0.0083,max(p$lon1,p$lon3)+0.0083,min(p$lat1,p$lat3)-0.0083,max(p$lat1,p$lat3)+0.0083))
     raster::writeRaster(dem,"tmpdem.tif",overwrite=TRUE)
@@ -43,8 +43,10 @@ demCorrection<- function(demFn ,df,p,altFilter,followSurface,followSurfaceRes,lo
   #demll<-rasterCheckAdjustProjection(rundem)
   crsString<-compareProjCode(as.vector(as.character(rundem@crs)))
   if (!crsString) {
-    stop("the DEM/DSM is not georeferencend - please provide a correct georeferenced raster object or GeoTiff file\n")
+    #stop("the DEM/DSM is not georeferencend - please provide a correct georeferenced raster object or GeoTiff file\n")
     # if so deproject DEM/DSM because all of the vector data is latlong WGS84
+    demll<-gdalwarp(srcfile = "tmpdem.tif", dstfile = "demll.tif", overwrite=TRUE,  t_srs="+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )  
+    demll<-setMinMax(demll)
   } else {
     demll<-gdalwarp(srcfile = "tmpdem.tif", dstfile = "demll.tif", overwrite=TRUE,  t_srs="+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )  
     demll<-setMinMax(demll)
@@ -539,14 +541,14 @@ readExternalFlightBoundary<- function(fN,extend=FALSE){
       lon1<-flightBound@lines[[1]]@Lines[[1]]@coords[1,1] 
       lat1<-flightBound@lines[[1]]@Lines[[1]]@coords[1,2] 
       
-      lon2<-flightBound@lines[[1]]@Lines[[1]]@coords[2,1] 
-      lat2<-flightBound@lines[[1]]@Lines[[1]]@coords[2,2] 
+      lon2<-flightBound@lines[[1]]@Lines[[1]]@coords[3,1] 
+      lat2<-flightBound@lines[[1]]@Lines[[1]]@coords[3,2] 
       
-      lon3<-flightBound@lines[[1]]@Lines[[1]]@coords[3,1] 
-      lat3<-flightBound@lines[[1]]@Lines[[1]]@coords[3,2]
+      lon3<-flightBound@lines[[1]]@Lines[[1]]@coords[5,1] 
+      lat3<-flightBound@lines[[1]]@Lines[[1]]@coords[5,2]
       
-      launchLon<-flightBound@lines[[1]]@Lines[[1]]@coords[4,1] 
-      launchLat<-flightBound@lines[[1]]@Lines[[1]]@coords[4,2]
+      launchLon<-flightBound@lines[[1]]@Lines[[1]]@coords[7,1] 
+      launchLat<-flightBound@lines[[1]]@Lines[[1]]@coords[7,2]
       
     }
     
@@ -560,11 +562,11 @@ readExternalFlightBoundary<- function(fN,extend=FALSE){
 # openLitchi<- function(){
 #   tempDir <- tempfile()
 #   dir.create(tempDir)
-#   currentfiles<-list.files(paste0(.libPaths()[1],"/robubu/htmlwidgets/lib/litchi"))
+#   currentfiles<-list.files(paste0(.libPaths()[1],"/uavRst/htmlwidgets/lib/litchi"))
 #   dir.create(file.path(tempDir, currentfiles[1]))
-#   currentfiles<-list.files(paste0(.libPaths()[1],"/robubu/htmlwidgets/lib/litchi/"))
+#   currentfiles<-list.files(paste0(.libPaths()[1],"/uavRst/htmlwidgets/lib/litchi/"))
 #   
-#   file.copy(from=paste0(.libPaths()[1],"/robubu/htmlwidgets/lib/litchi"), to=file.path(tempDir), 
+#   file.copy(from=paste0(.libPaths()[1],"/uavRst/htmlwidgets/lib/litchi"), to=file.path(tempDir), 
 #             overwrite = TRUE, recursive = TRUE, 
 #             copy.mode = TRUE)
 #   
@@ -987,7 +989,7 @@ getAltitudes<- function(demFn ,df,p,followSurfaceRes,logger){
     levellog(logger, 'WARN', "CAUTION!!! no DEM file provided I try to download SRTM data... SRTM DATA has a poor resolution for UAVs!!! ")
     cat("\nCAUTION! No DEM data is provided.\n trying to download SRTM data... \n Be aware that the resulution of SRTM is NOT sufficient for terrain following flights!")
     # download corresponding srtm data
-    dem<-robubu::getGeoData(name="SRTM",xtent = extent(p$lon1,p$lon3,p$lat1,p$lat3), zone = 1.0,merge = TRUE)
+    dem<-uavRst::getGeoData(name="SRTM",xtent = extent(p$lon1,p$lon3,p$lat1,p$lat3), zone = 1.0,merge = TRUE)
     dem<-setMinMax(dem)
     rundem<- raster::crop(dem,extent(min(p$lon1,p$lon3)-0.0083,max(p$lon1,p$lon3)+0.0083,min(p$lat1,p$lat3)-0.0083,max(p$lat1,p$lat3)+0.0083))
     raster::writeRaster(dem,"tmpdem.tif",overwrite=TRUE)

@@ -625,8 +625,8 @@ ccodes <- function() {
   }
 
   x<-extent(xtent)
-  lon<- floor(x@xmin)
-  lat<-floor(x@ymin)
+  lon<- ceiling(x@xmin)
+  lat<-ceiling(x@ymin)
   lonFac<-ceiling(((ceiling(x@xmax+zone))-lon)/5)
   if (lonFac == 0){lonFac<-1}
   latFac<-ceiling(((ceiling(x@ymax+zone))-lat)/5)
