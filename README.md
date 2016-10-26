@@ -13,11 +13,11 @@ It will be a long run passing the cran check, nevertheless it runs fine for now 
 For installation use devtools::install_github().
 
 ```S
-devtools::install_github("gisma/robubu", ref = "master")
+devtools::install_github("gisma/uavRst", ref = "master")
 ```
 
 If you want to install all dependencies use:
 
 ```S
-devtools::install_github("gisma/robubu", ref = "master", dependencies = TRUE, force = TRUE)
+devtools::install_github("gisma/uavRst", ref = "master", dependencies = TRUE, force = TRUE)
 ```
