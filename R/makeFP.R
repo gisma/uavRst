@@ -353,6 +353,9 @@ makeFP <- function(projectDir = "~",
   if (!file.exists(file.path(projectDir, workingDir, "control"))) {
     dir.create(file.path(projectDir, workingDir, "control"), recursive = TRUE)
   }
+  if (!file.exists(file.path(projectDir, workingDir, "soloLog"))) {
+    dir.create(file.path(projectDir, workingDir, "soloLog"), recursive = TRUE)
+  }
   if (!file.exists(file.path(projectDir, "data"))) {
     dir.create(file.path(projectDir, "data"), recursive = TRUE)
   }

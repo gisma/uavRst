@@ -17,7 +17,11 @@ upload2Solo(missionFile = NULL, connection = "udp:10.1.1.166:14550",
 \description{
 upload2Solo provides a crude interface to upload the Solo mission file to the 3dr SOLO
 }
+\note{
+#' @note for using the solo stuff you need to install: sudo pip install pymavlink; sudo pip install dronekit-sitl; sudo pip install dronekit; sudo apt-get install sshpass
+}
 \examples{
+
 
 
 

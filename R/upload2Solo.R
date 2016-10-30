@@ -13,7 +13,11 @@ if (!isGeneric('upload2Solo')) {
 #' @author
 #' Chris Reudenbach
 #'
+#'
+#'@note #' @note for using the solo stuff you need to install: sudo pip install pymavlink; sudo pip install dronekit-sitl; sudo pip install dronekit; sudo apt-get install sshpass
+#'
 #' @examples
+#' 
 #' 
 #' 
 #' 

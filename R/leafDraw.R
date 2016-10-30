@@ -115,7 +115,7 @@ leafDraw <- function(mapCenter=c(50.80801,8.72993),
   lns[3,]<-paste0('"crs": { "type": "name", "properties": { "name": "EPSG:4326" } },')
   lns[length(lns[,1]),]<- '};'
   write.table(lns, paste(tmpPath, "jsondata", sep=.Platform$file.sep), sep="\n", row.names=FALSE, col.names=FALSE, quote = FALSE)
-  
+  features<-names(overlay)
   # correct if only Lines or Polygons (obsolete here?)
   if (class(overlay)[1] == 'SpatialPolygonsDataFrame'){
     noFeature <- length(overlay@polygons)
@@ -123,13 +123,16 @@ leafDraw <- function(mapCenter=c(50.80801,8.72993),
     noFeature <- length(overlay@lines)
   }
   jsondata<-1
+  
 } else {jsondata<-0}
   
   
   # create parameter list for the widget
   x <- list(data  = 'undefined',
+            features=features,
             layer=maplayer,
             zoom = zoom,
+            html = mapview:::getPopupStyle(),
             #refpoint=refpoint,
             line=line,
             rectangle=rectangle,
@@ -201,14 +204,14 @@ leafDrawInternal <- function(tmpPath, x = NULL) {
     x,
     dependencies = deps,
     sizingPolicy = sizing,
-    package = 'robubu'
+    package = 'uavRst'
   )
 }
 
 ### Widget output function for use in Shiny =================================================
 #
 leafDrawOutput <- function(outputId, width = '100%', height = '800px') {
-  htmlwidgets::shinyWidgetOutput(outputId, 'leafDraw', width, height, package = 'robubu')
+  htmlwidgets::shinyWidgetOutput(outputId, 'leafDraw', width, height, package = 'uavRst')
 }
 
 ### Widget render function for use in Shiny =================================================

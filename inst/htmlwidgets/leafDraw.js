@@ -77,8 +77,56 @@ HTMLWidgets.widget({
    };
    // define a dummy layer for the geojson data
     //var myLayer = L.geoJson(undefined,{style:style,onEachFeature:onEachFeature}).addTo(map);
+  
+   var feature = {
+    "type": "Feature",
+    "properties": {
+        "name": "waypoint",
+        "type": "1",
+        "popupContent": "no definition"
+    }
+};
+    
 	  function onEachFeature(feature, layer) {
-      var i = 1;
+	   
+	       // Create an input
+    var input = L.DomUtil.create('input', 'my-input');
+    // Set a feature property as value
+    input.value = feature.properties.name;
+    // Add a listener to watch for change on input
+    L.DomEvent.addListener(input, 'change', function () {
+        // Input changed, change property value
+        feature.properties.name = input.value;
+    });
+	   
+	       var features = {};
+	       var input = {};
+	       var times = x.features.length;
+    for (var i = 0; i < times;  i++) {
+      var name  = x.features[i]
+      name = L.DomUtil.create(name, 'new-input');
+      name.value = feature.properties[name];
+
+      } 
+	        // Create an input
+    
+    // Set a feature property as value
+
+
+    
+    // Add a listener to watch for change on input
+    L.DomEvent.addListener(name,'change', function () {
+        // Input changed, change property value
+        feature.properties = name;
+        //feature.properties = x.features.value ;
+    });
+    // Bind popup to layer with input
+    layer.bindPopup(feature.properties);
+	
+
+	    
+	    
+/*      var i = 1;
       var content = '';
     // does this feature have a property named popupContent?
     if (feature.properties) {
@@ -93,8 +141,9 @@ HTMLWidgets.widget({
         var popupContent = x.html + content + "</table></body></html>";
         //console.log(popupContent);
         layer.bindPopup(popupContent);
-    }
+    }*/
   }
+  
 	// The styles of the layer
 	function style(feature) {
 	        if (feature.properties.ELEV != "" && feature.properties.ELEV != "<Null>" && feature.properties.ELEV != null) {
@@ -141,7 +190,7 @@ HTMLWidgets.widget({
     },style:style,onEachFeature:onEachFeature})
     
        var overlayLayers = {};
-      overlayLayers['data'] = polyLayer;
+      overlayLayers['userOverlay'] = polyLayer;
 
 	 //map.addLayer(polyLayer);
 
@@ -178,9 +227,20 @@ HTMLWidgets.widget({
     // Each time a feaute is created, it's added to the over arching feature group
      map.on('draw:created', function(e) {
             drawnItems.addLayer(e.layer);
+            var tmp = drawnItems.toGeoJSON();
+            //drawnItems.removeLayer(e.layer);
+            //drawnItems.removeLayer(e.layer);
+   //  var convertedData = JSON.stringify(data);
+   //  var newLayer = L.Proj.geoJson(tmp,{ pointToLayer: function (feature, latlng) {
+  //      return L.circleMarker(latlng, geojsonMarkerOptions);
+  //  },style:style,onEachFeature:onEachFeature})
+  //    overlayLayers['new'] = newLayer;
+  //    drawnItems.addLayer(newLayer);
+  //    layerControl.addOverlay(newLayer, "newLayer");
+      
+       
+          
         });
-        
-
 /*
     // create "save" link
         var b = document.createElement('a');
@@ -233,7 +293,7 @@ HTMLWidgets.widget({
      // document.getElementById('grabber').onclick = function(e) {
         L.easyButton(  '<span style="font-size: 10px " class="glyphicon glyphicon-download"> KML</span>',
          function(){
-              var data = drawnItems.toGeoJSON();
+             var data = drawnItems.toGeoJSON();
         // Stringify the GeoJson
         var convertedData = JSON.stringify(data);
         var kml = tokml(data);
