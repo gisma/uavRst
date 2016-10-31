@@ -16,7 +16,15 @@ if (!isGeneric('solo2gpx')) {
 #' Chris Reudenbach
 #' @note for using the solo stuff you need to install: sudo pip install pymavlink; sudo pip install dronekit-sitl; sudo pip install dronekit; sudo apt-get install sshpass
 #' @examples
+#' 
+#' ## download current telemetry log file from controller and convert it to gpx
+#' solo2gpx(logDir="~/tmp/solo",logFiles = "solo.tlog")
+#' 
+#' ## download all available telemetry logfiles from the controller
 #' solo2gpx(logDir="~/tmp/solo")
+#' 
+#' ## download ALL logfiles from the controller
+#' solo2gpx(logDir="~/tmp/solo", logFiles = "*")
 #' 
 #' @export solo2gpx
 #'               
