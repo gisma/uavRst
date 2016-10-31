@@ -42,11 +42,12 @@ solo2gpx <- function(logFiles="solo.t*",logDir="soloLog", download=TRUE,netWarn=
     cat("downloading and converting will take a while without prompting anything...\n be patient in the end you will know.\n")
     log<-system( paste0("sshpass -p 'TjSDBkAu'  scp 'root@10.1.1.1:/log/",logFiles,"' ",logDir,"/. " ),wait=TRUE)
     if (log == 0) {
-      f <- list.files(logDir, pattern=logFiles)
-      cat("Download from solo controllor seems to be ok")
+      f <- list.files(logDir, pattern=extension(logFiles))
+      cat(f," downloaded...\n")
+      cat("Download from solo controllor seems to be ok\n")
     } else {
       cat('FATAL', "### can not find/read input file")        
-      stop("### could not read any log data")
+      stop("### could not read any log data\n")
     }  
     
   }
@@ -54,16 +55,22 @@ solo2gpx <- function(logFiles="solo.t*",logDir="soloLog", download=TRUE,netWarn=
   test<-system2("mavtogpx.py","-h",stdout = TRUE)
   if (grep("usage: mavtogpx.py",test)){
     cat("pymavlink seems to be installed\n")
+    cat("converting log files to to gpx...\n")
     test<-system2(command, option1,stdout = TRUE)
     cat(test)
     } else {
     stop("No pymavlink lib. Try: sudo pip install pymavlink\n")
   }
-  
-  
-  #flight.gpx <- rgdal::readOGR(dsn = "/home/creu/tmp/solo/solo.tlog.gpx", layer="tracks")
-  
-
-  
- 
+  if (import) {
+    cat("read gpx to a nested list of sp objects\n")
+    f <- list.files(logDir, pattern="gpx")
+    i=1
+    flights <- list()
+    for (flight in f) {
+    f <- readGPX(path.expand(paste0(logDir,"/",flight)))
+    flights[i]<-f
+    i=i+1
+    }
+    return(flights)
+  }
 }
