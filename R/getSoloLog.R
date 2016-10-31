@@ -68,7 +68,7 @@ solo2gpx <- function(logFiles="solo.t*",logDir="soloLog", download=TRUE,netWarn=
     flights <- list()
     for (flight in f) {
     f <- readGPX(path.expand(paste0(logDir,"/",flight)))
-    flights[i]<-f
+    flights[[i]]<-f
     i=i+1
     }
     return(flights)
