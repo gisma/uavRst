@@ -132,6 +132,11 @@ demCorrection<- function(demFn ,df,p,altFilter,altFilter2,horizonFilter,followSu
     df$altitude<-altitude
     
     # if terraintrack = true try to reduce the number of waypoints by filtering
+    # this is done by: 
+    # (1) applying the horizonFilter size via the rollmax function of the zoo package
+    #     to the raw waypoints altitudes the missing (moving window) values (in the end) are duplicated
+    # (2) the resulting values are sampled by the same horizonFilter size distance
+    # (3) finally the altFilter is applied
     if ( as.character(p$flightPlanMode) == "terrainTrack") {
       sDF<-as.data.frame(df@data)
       sDF$sortID<- seq(1,nrow(sDF))
@@ -166,12 +171,25 @@ demCorrection<- function(demFn ,df,p,altFilter,altFilter2,horizonFilter,followSu
       df<-fDF
     }
   }
+
+  # dump flightDEM as it was used for agl prediction
+  writeRaster(demll,"tmpFlightDEM.tif",overwrite=TRUE)
+  tmpdem<-gdalwarp(srcfile = "tmpFlightDEM.tif", dstfile = "tmpdem.tif",  overwrite=TRUE,  t_srs=paste0("+proj=utm +zone=",long2UTMzone(p$lon1)," +datum=WGS84"),output_Raster = TRUE ,tr=c(as.numeric(p$followSurfaceRes),as.numeric(p$followSurfaceRes)))
+  # deproject it again to latlon
+  tmpdemll<-gdalwarp(srcfile = "tmpdem.tif", dstfile = "flightDEM.tif", overwrite=TRUE,  t_srs="+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )
+  
+  
+    
   # create a sp polygon object of the DEM area that is useable for a flight task planning
   if (dA){
-    demArea <- rasterToPolygons(clump(demll>0),dissolve = TRUE)}
+    cat("start demArea analysis - will take a while...\n")
+    demArea <- rasterToPolygons(clump(tmpdemll>0),dissolve = TRUE)
+  } else {
+    demArea <- "NULL"
+  }
   
-  else{demArea="NULL"}
-  writeRaster(demll,"flightDEM.tif",overwrite=TRUE)
+  
+  
   # return results
   return(c(pos,df,rundem,demll,demArea,rthFlightAlt,launchAlt,maxAlt,p))
 }
