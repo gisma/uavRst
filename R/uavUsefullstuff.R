@@ -174,7 +174,9 @@ demCorrection<- function(demFn ,df,p,altFilter,altFilter2,horizonFilter,followSu
 
   # dump flightDEM as it was used for agl prediction
   writeRaster(demll,"tmpFlightDEM.tif",overwrite=TRUE)
+  tmpdem<-gdalwarp(srcfile = "tmpFlightDEM.tif", dstfile = "tmpdem.tif",  overwrite=TRUE,  t_srs=paste0("+proj=utm +zone=",long2UTMzone(p$lon1)," +datum=WGS84"),output_Raster = TRUE ,tr=c(5,5))
   tmpdem<-gdalwarp(srcfile = "tmpFlightDEM.tif", dstfile = "tmpdem.tif",  overwrite=TRUE,  t_srs=paste0("+proj=utm +zone=",long2UTMzone(p$lon1)," +datum=WGS84"),output_Raster = TRUE ,tr=c(as.numeric(p$followSurfaceRes),as.numeric(p$followSurfaceRes)))
+  
   # deproject it again to latlon
   tmpdemll<-gdalwarp(srcfile = "tmpdem.tif", dstfile = "flightDEM.tif", overwrite=TRUE,  t_srs="+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )
   
@@ -183,7 +185,9 @@ demCorrection<- function(demFn ,df,p,altFilter,altFilter2,horizonFilter,followSu
   # create a sp polygon object of the DEM area that is useable for a flight task planning
   if (dA){
     cat("start demArea analysis - will take a while...\n")
-    demArea <- rasterToPolygons(clump(tmpdemll>0),dissolve = TRUE)
+    c<-clump(tmpdemll>0)
+    demArea <- rasterToPolygons(c)
+    demArea<-rgeos::gUnaryUnion(demArea)
   } else {
     demArea <- "NULL"
   }
