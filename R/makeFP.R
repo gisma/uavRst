@@ -256,7 +256,7 @@ if (!isGeneric('makeFP')) {
 #' ## view results
 #' mapview(fp$lp,color="red",cex=5)+
 #' mapview(fp$wp,zcol = "altitude",lwd=1,cex=4)+
-#' mapview(fp$oDEM)+
+#' mapview(fp$oDEM,col=terrain.colors(256))+
 #' mapview(fp$fA,color="red", alpha.regions = 0.1,lwd=1.0)+
 #' mapview(fp$hm)+
 #' fp$demA
@@ -302,10 +302,11 @@ if (!isGeneric('makeFP')) {
 #'
 #' ## view results
 #'
-#'  mapview(fp$fA,color="red", alpha.regions = 0.1,lwd=0.5)+
-#'  mapview(fp$lp,zcol = "altitude",lwd=1,cex=4)+
-#'  mapview(fp$oDEM,color="red",cex=5)+
-#' }
+#'mapview::mapview(fp$wp,zcol = "altitude",cex=4, lwd=0.5)+  
+#'mapview(fp$lp,color = "red", lwd=1,cex=4)+
+#'mapview::mapview(fp$fA,color="blue", alpha.regions = 0.1,lwd=0.5)+
+#'mapview(fp$oDEM,col=terrain.colors(256))
+#'}
 
 
 #' @export makeFP
