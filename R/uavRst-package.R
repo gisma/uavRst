@@ -9,7 +9,7 @@
 #' \cr
 #' \emph{Maintainer:} Chris Reudenbach \email{reudenbach@@uni-marburg.de}
 #'
-#' @import stringr zoo foreach sp raster htmlwidgets htmltools Rcpp rgdal gdalUtils tools maptools mapview 
+#' @import stringr zoo foreach sp raster htmlwidgets htmltools Rcpp rgeos rgdal gdalUtils tools maptools mapview 
 #' @importFrom geosphere bearing
 #' @importFrom geosphere distGeo
 #' @importFrom geosphere destPoint

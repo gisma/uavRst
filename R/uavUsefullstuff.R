@@ -8,7 +8,7 @@
 # (6)  preprocessing of an highest resolution DSM dealing with clearings and other artefacts
 # (7)  generates a sp object of the outer boundary of reliable DEM values
 
-demCorrection<- function(demFn ,df,p,altFilter,altFilter2,horizonFilter,followSurface,followSurfaceRes,terrainSmooth,logger,projectDir,dA,workingDir){
+demCorrection<- function(demFn ,df,p,altFilter,horizonFilter,followSurface,followSurfaceRes,terrainSmooth,logger,projectDir,dA,workingDir){
   
   cat("load DEM/DSM data...\n")
   ## load DEM data either from a local GDAL File or from a raster object or if nothing is provided tray to download SRTM data
@@ -174,14 +174,10 @@ demCorrection<- function(demFn ,df,p,altFilter,altFilter2,horizonFilter,followSu
 
   # dump flightDEM as it was used for agl prediction
   writeRaster(demll,"tmpFlightDEM.tif",overwrite=TRUE)
-  tmpdem<-gdalwarp(srcfile = "tmpFlightDEM.tif", dstfile = "tmpdem.tif",  overwrite=TRUE,  t_srs=paste0("+proj=utm +zone=",long2UTMzone(p$lon1)," +datum=WGS84"),output_Raster = TRUE ,tr=c(5,5))
   tmpdem<-gdalwarp(srcfile = "tmpFlightDEM.tif", dstfile = "tmpdem.tif",  overwrite=TRUE,  t_srs=paste0("+proj=utm +zone=",long2UTMzone(p$lon1)," +datum=WGS84"),output_Raster = TRUE ,tr=c(as.numeric(p$followSurfaceRes),as.numeric(p$followSurfaceRes)))
-  
   # deproject it again to latlon
   tmpdemll<-gdalwarp(srcfile = "tmpdem.tif", dstfile = "flightDEM.tif", overwrite=TRUE,  t_srs="+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )
   
-  
-    
   # create a sp polygon object of the DEM area that is useable for a flight task planning
   if (dA){
     cat("start demArea analysis - will take a while...\n")
@@ -191,9 +187,7 @@ demCorrection<- function(demFn ,df,p,altFilter,altFilter2,horizonFilter,followSu
   } else {
     demArea <- "NULL"
   }
-  
-  
-  
+
   # return results
   return(c(pos,df,rundem,demll,demArea,rthFlightAlt,launchAlt,maxAlt,p))
 }

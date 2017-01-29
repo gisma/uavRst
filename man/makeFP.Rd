@@ -8,8 +8,8 @@ calculation.}
 \usage{
 makeFP(projectDir = "~", missionName = "autoflightcontrol",
   surveyArea = NULL, flightAltitude = 100, launchAltitude = NULL,
-  followSurface = FALSE, followSurfaceRes = NULL, terrainSmooth = FALSE,
-  demFn = NULL, altFilter = 1, altFilter2 = 2, horizonFilter = 30,
+  followSurface = FALSE, followSurfaceRes = NULL, demFn = NULL,
+  altFilter = 1, horizonFilter = 30, terrainSmooth = FALSE,
   flightPlanMode = "track", presetFlightTask = "remote", overlap = 0.7,
   maxSpeed = 20, maxFlightTime = 10, picRate = 2, windCondition = 1,
   uavType = "solo", cameraType = "MAPIR2", uavViewDir = 0,
@@ -41,28 +41,25 @@ If no DEM data is provided and \code{followSurface} is TRUE,
 SRTM data will be downloaded and used
 Further explanation at \link{seealso}}
 
-\item{followSurfaceRes}{horizontal step distance for analysing the DEM altitudes}
+\item{followSurfaceRes}{horizontal step distance for analyzing the DEM altitudes}
 
-\item{demFn}{filname of the corresponding DEM data file}
+\item{demFn}{filename of the corresponding DEM data file}
 
 \item{altFilter}{if \code{followingTerrain} is equal \code{TRUE} then
-\code{altFilter} is the treshold value of accepted altitude difference bewteen two waypoints in meter.
- If this value is not exceeded the waypoint is omitted due to the fact that only 99 waypoints per mission are allowed.}
+\code{altFilter} is the threshold value of accepted altitude difference (m) between two way points.
+ If this value is not exceeded the way point is omitted due to the fact that only 99 way points per mission are allowed.
+ If this value is not exceeded the way point is omitted due to the fact that only 99 way points per mission are allowed.}
 
-\item{altFilter2}{if \code{followingTerrain} is equal \code{TRUE} then
-\code{altFilter2} is the treshold value of accepted altitude changes on a scale of \code{horizonFilter} in meter.
- If this value is not exceeded the waypoint is omitted due to the fact that only 99 waypoints per mission are allowed.}
+\item{horizonFilter}{integer filter size of the rolling filter kernel for the flight track. Must be multiplied by the \code{followSurfaceRes} to get the spatial extent}
 
-\item{horizonFilter}{integer filter size of the rolling filter kernerl for the flight track. Must be multiplied by the \code{followSurfaceRes} to get the spatial etent}
-
-\item{flightPlanMode}{type of flightplan. Available are: \code{"waypoints"},
+\item{flightPlanMode}{type of flight plan. Available are: \code{"waypoints"},
 \code{"track"}, \code{"manual"}.}
 
 \item{presetFlightTask}{(DJI only) strongly recommended to use "remote"
        \cr
  Options are:
-\code{"simple_ortho"} takes one picture/waypoint,
-\code{"multi_ortho"} takes 4 picture at a waypoint, two vertically down and two in forward and backward viewing direction and an angele of -60deg,
+\code{"simple_ortho"} takes one picture/way point,
+\code{"multi_ortho"} takes 4 picture at a waypoint, two vertically down and two in forward and backward viewing direction and an Angele of -60deg,
 \code{"simple_pano"} takes a 360 deg panorama picture and
 \code{"remote"} which assumes that the camera is controlled by the remote control (RC)}
 
@@ -81,23 +78,23 @@ Further explanation at \link{seealso}}
 \item{cameraType}{depending on uav system for dji the dji4k is default for solo you can choose GP3+8MP GP3+11MP and MAPIR2}
 
 \item{djiBasic}{c(0,0,0,-90)
-\cr curvesize (DJI only) controls the curve angle of the uav passing waypoints.
+\cr curvesize (DJI only) controls the curve angle of the uav passing way points.
 By default it is set to (\code{= 0.0}).
 \cr rotationdir (DJI only) camera control parameter set the UAV basic turn direction to right (0) or left (1)
 \cr gimbalmode (DJI only) camera control parameter
 \code{0} deactivates the gimbal control
-\code{1} activates the gimbale for focussing POIs
-\code{2} activates the gimbale for focus and interpolate a field of view in an angel of \code{gimbalpitchangle}
+\code{1} activates the gimbal for focusing POIs
+\code{2} activates the gimbal for focus and interpolate a field of view in an angel of \code{gimbalpitchangle}
 \cr gimbalpitchangle (DJI only) vertical angle of camera  \code{+30 deg..-90 deg}
 \cr actiontype (DJI only) individual actionype settings of the camera c(1,1,...)
 \cr actionparam (DJI only) corresponding parameter for the above individual actiontype c(0,0,...)
-\code{uavViewDir} viewing directon of camera default is \code{0}}
+\code{uavViewDir} viewing direction of camera default is \code{0}}
 
-\item{dA}{if TRUE the real extent of the used DEM is returned helful for low altitudes flightplanning}
+\item{dA}{if TRUE the real extent of the used DEM is returned helpful for low altitudes flight planning}
 
 \item{heatMap}{switch for calculating the overlapping factor on a raster map}
 
-\item{picFootprint}{switch for calculating the footprint at all waypoints}
+\item{picFootprint}{switch for calculating the footprint at all way points}
 
 \item{rcRange}{range of estimated range of remote control}
 
@@ -105,21 +102,21 @@ By default it is set to (\code{= 0.0}).
 }
 \description{
 The basic idea is to provide an easy to use workflow for
-  controlling rtf UAVs from planning and flying autonoumous surveys to
-  derivation and postclassification of the data. makeFP (Make Uav Remote
+  controlling rtf UAVs from planning and flying autonomous surveys to
+  derivation and post classification of the data. makeFP (Make UAV Remote
   Controlled Survey) creates either intermediate flight control files for the
-  dji phantom x UAVs or ready to upload control files for the 3DR Solo. The
-  dji control files are designed for using with the propietary litchi flight
+  DJI phantom x UAVs or ready to upload control files for the 3DR Solo. The
+  dji control files are designed for using with the proprietary litchi flight
   control app exchange format, while the 3DR Solo files are using the MAVLINK
   common message set, that is used by the PixHawk flight controller family.
   Both are implemented very rudimentary.\cr\cr DJI:\cr The reason using DJI
   is their absolute straightforward usage. Everybody can fly with a DJI but
-  the price ist a hermetically closed system. Only the  litchi app provides
+  the price is a hermetically closed system. Only the  litchi app provides
   additionally to a cloud based mission planer an offline/standalone
-  interface to upload a csv formated waypoint file for autonomous flights to
-  the Phantom.\cr\cr PixHawk/3DR Solo:\cr The open uav community is focussed
+  interface to upload a CSV formated way point file for autonomous flights to
+  the Phantom.\cr\cr PixHawk/3DR Solo:\cr The open uav community is focused
   on the PixHawk autopilot unit and the Mission Planner software. It is well
-  documented and serveral APIs are provided. Nevertheless a terrain following
+  documented and several APIs are provided. Nevertheless a terrain following
   autonomous flight planning tool is not available. makeFP creates static
   implementation of the MAV format that is ready to be uploaded directly on
   the Pixhawk controller using the upload2Solo function.\cr\cr
@@ -156,8 +153,8 @@ To use the script you need to install quite a lot of R-packages and at least the
   |  /             / /
   x1/             x3/
   }
-  This coordinates the length of the line and the angle are used to calculate extend and paralells
-  of the flightplan according to the flight altitude, overlap etc. Note the flight direction depends on
+  This coordinates the length of the line and the angle are used to calculate extend and parallels
+  of the flight plan according to the flight altitude, overlap etc. Note the flight direction depends on
   the order of the points. If the \code{flightPlanMode} is equal \code{tracks}.
   \cr\cr
   The result look like this.
@@ -170,7 +167,7 @@ To use the script you need to install quite a lot of R-packages and at least the
   |  |  |             /  /  /
   #  #--#         <--#  #--#
   }
- If \code{flightPlanMode} is equal \code{waypoints} the result is an equal spatial distribution of waypoints:
+ If \code{flightPlanMode} is equal \code{waypoints} the result is an equal spatial distribution of way points:
  \preformatted{
 
   #--#  #-->             #--#  #
@@ -182,23 +179,23 @@ To use the script you need to install quite a lot of R-packages and at least the
   }
 
 
-  \code{waypoints} is optimal for autonoumous flights under calm conditions in complex terrain
-  because the camara takes a picture at every waypoint\cr
+  \code{waypoints} is optimal for autonomous flights under calm conditions in complex terrain
+  because the camera takes a picture at every way point\cr
   \code{track} is optimal for relatively plain areas and automatically triggered picture capturing
   Note: Automatically picture capturing in a time interval works only within the range of the remote control.
   because the the uav needs a trigger signal for taking pictures.
   }
-  \subsection{Terrain Following flightplan}{
+  \subsection{Terrain Following flight plan}{
 
   The \code{followSurface} switch is used to adapt the fixed flight altitude into a terrain following flight altitude.\cr
   ----------------------------------------------------------------------------------------------------------\cr
   NOTE: You have to be aware that the DJI uav is calibrating the altitude at the launch position in the field!
-  So you need either a correct coordinate altitude or a high resolution DEM to get a good! estimation of the lauch position and altitude.
+  So you need either a correct coordinate altitude or a high resolution DEM to get a good! estimation of the launch position and altitude.
   You must choose a clearly defined and reliable launching position both in the map and the field. If you fail I made the experience that the aircraft
   probably will hit the terrain...\cr
   ----------------------------------------------------------------------------------------------------------\cr\cr
 
- How it works. Let us assume a defined flightaltitude of 50 m.
+ How it works. Let us assume a defined flight altitude of 50 m.
  According to the launching point altitude the uav will act like the following sketch shows:
 
 \preformatted{
@@ -235,7 +232,7 @@ To use the script you need to install quite a lot of R-packages and at least the
         ____|                  |
     ___|                       |______
   }
- To get a fixed scale flight the launch altitude is used to correct the flight altitude according to   maximumAltitude of surveyArea + altitude of launchposition. With the setting auf terrainfoollowing = true tis is calculated for each waypoint.  . So the adapted flight altitude looks like:
+ To get a fixed scale flight the launch altitude is used to correct the flight altitude according to   maximumAltitude of surveyArea + altitude of launch position. With the setting of terrainfollowing = true tis is calculated for each way point.  . So the adapted flight altitude looks like:
   \preformatted{
 
                  ..........
@@ -257,8 +254,8 @@ To use the script you need to install quite a lot of R-packages and at least the
 # The following spatial data sets are returned
 
 # lp      the planned launching position of the uav.
-# wp      waypoints inclusive all informations
-# oDEM    the original (input) digitial surface model (DSM)
+# wp      waypoints inclusive all information
+# oDEM    the original (input) digital surface model (DSM)
 # rDEM    the resampled (used) DSM
 # fp      optimized footprints of the camera
 # fA      flight area with at least 2 overlaps
@@ -321,19 +318,22 @@ fp<-makeFP(projectDir="~/uav/uav/test",
                    missionName = "50m",
                    surveyArea="~/uav.json",
                    followSurface = TRUE,
+                   followSurfaceRes = 1,
                    flightAltitude = 50,
-                   overlap = 0.7,
+                   overlap = 0.8,
                    demFn = "~/mrbiko.tif",
                    altFilter = 3.5,
-                   maxSpeed = 50,
+                   maxSpeed = 20,
+                   uavType = "djip3",
+                   dA = TRUE,
                    windCondition = 3)
 
 ## view results
-
-mapview::mapview(fp$wp,zcol = "altitude",cex=4, lwd=0.5)+  
-mapview(fp$lp,color = "red", lwd=1,cex=4)+
-mapview::mapview(fp$fA,color="blue", alpha.regions = 0.1,lwd=0.5)+
-mapview(fp$oDEM,col=terrain.colors(256))
+mapview::mapview(fp2$wp,zcol = "altitude",cex=4, lwd=0.5)+
+mapview(fp2$lp,color = "red", lwd=1,cex=4)+
+mapview::mapview(fp2$fA,color="blue", alpha.regions = 0.1,lwd=0.5)+
+mapview(fp2$oDEM,col=terrain.colors(256))+
+mapview::mapview(fp2$demA,color="black", alpha.regions = 0.1,lwd=0.5)
 }
 }
 \author{

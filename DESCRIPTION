@@ -18,6 +18,7 @@ Imports:
     htmltools,
     Rcpp,
     rgdal,
+    rgeos,
     gdalUtils,
     geosphere,
     tools,
