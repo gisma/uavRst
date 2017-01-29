@@ -8,13 +8,13 @@ calculation.}
 \usage{
 makeFP(projectDir = "~", missionName = "autoflightcontrol",
   surveyArea = NULL, flightAltitude = 100, launchAltitude = NULL,
-  followSurface = FALSE, followSurfaceRes = NULL, demFn = NULL,
-  altFilter = 1, flightPlanMode = "track", presetFlightTask = "remote",
-  overlap = 0.7, maxSpeed = 20, maxFlightTime = 10, picRate = 2,
-  windCondition = 1, uavType = "solo", cameraType = "MAPIR2",
-  uavViewDir = 0, djiBasic = c(0, 0, 0, -90, 0), dA = FALSE,
-  heatMap = FALSE, picFootprint = FALSE, rcRange = NULL,
-  startLitchi = FALSE)
+  followSurface = FALSE, followSurfaceRes = NULL, terrainSmooth = FALSE,
+  demFn = NULL, altFilter = 1, altFilter2 = 2, horizonFilter = 30,
+  flightPlanMode = "track", presetFlightTask = "remote", overlap = 0.7,
+  maxSpeed = 20, maxFlightTime = 10, picRate = 2, windCondition = 1,
+  uavType = "solo", cameraType = "MAPIR2", uavViewDir = 0,
+  djiBasic = c(0, 0, 0, -90, 0), dA = FALSE, heatMap = FALSE,
+  picFootprint = FALSE, rcRange = NULL, startLitchi = FALSE)
 }
 \arguments{
 \item{projectDir}{path to the main folder where several projects can be hosted}
@@ -48,6 +48,12 @@ Further explanation at \link{seealso}}
 \item{altFilter}{if \code{followingTerrain} is equal \code{TRUE} then
 \code{altFilter} is the treshold value of accepted altitude difference bewteen two waypoints in meter.
  If this value is not exceeded the waypoint is omitted due to the fact that only 99 waypoints per mission are allowed.}
+
+\item{altFilter2}{if \code{followingTerrain} is equal \code{TRUE} then
+\code{altFilter2} is the treshold value of accepted altitude changes on a scale of \code{horizonFilter} in meter.
+ If this value is not exceeded the waypoint is omitted due to the fact that only 99 waypoints per mission are allowed.}
+
+\item{horizonFilter}{integer filter size of the rolling filter kernerl for the flight track. Must be multiplied by the \code{followSurfaceRes} to get the spatial etent}
 
 \item{flightPlanMode}{type of flightplan. Available are: \code{"waypoints"},
 \code{"track"}, \code{"manual"}.}

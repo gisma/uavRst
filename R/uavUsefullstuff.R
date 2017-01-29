@@ -8,9 +8,9 @@
 # (6)  preprocessing of an highest resolution DSM dealing with clearings and other artefacts
 # (7)  generates a sp object of the outer boundary of reliable DEM values
 
-demCorrection<- function(demFn ,df,p,altFilter,followSurface,followSurfaceRes,logger,projectDir,dA,workingDir){
+demCorrection<- function(demFn ,df,p,altFilter,altFilter2,horizonFilter,followSurface,followSurfaceRes,terrainSmooth,logger,projectDir,dA,workingDir){
   
-  cat("\n load DEM/DSM data...\n")
+  cat("load DEM/DSM data...\n")
   ## load DEM data either from a local GDAL File or from a raster object or if nothing is provided tray to download SRTM data
   #if no DEM is provided try to get SRTM data
   if (is.null(demFn)){
@@ -54,9 +54,29 @@ demCorrection<- function(demFn ,df,p,altFilter,followSurface,followSurfaceRes,lo
   }
   
   # if a low altitude flight is planned we have to perform some manipulations
-  if (as.numeric(p$flightAltitude)<as.numeric(50)){
-    demll<-DEM2FlSurface(p,dem,logger)
-  }  # end of <50 meter
+  #if (as.numeric(p$flightAltitude)<as.numeric(50)){
+  #  demll<-DEM2FlSurface(p,dem,logger)
+  #}  # end of <50 meter
+  
+  
+  if (terrainSmooth){
+    cat("starting terrain smoothing...\n")
+    # export it to SAGA
+    gdalUtils::gdalwarp("demll.tif","demll.sdat", overwrite=TRUE,  of='SAGA')
+    
+    # fill sinks (clearings) that are 0-30 meters deep
+    ret<-system2("saga_cmd", c("ta_preprocessor 2", "-DEM=demll.sgrd", "-SINKROUTE=NULL", "-DEM_PREPROC='flightdem.sdat'", "-METHOD=1", "-THRESHOLD=1", "-THRSHEIGHT=30.000000"),stdout=TRUE, stderr=TRUE)
+    if (grep("%okay",ret)){
+      cat("filling clearings performs okay\n")}
+    else {
+      stop("Crucial Error in filling flight surface")
+    }
+   
+    demll <- raster::raster(rgdal::readGDAL("flightsurface.sdat",OVERRIDE_PROJ_DATUM_WITH_TOWGS84 = TRUE))
+    demll<-setMinMax(demll)
+    dem<-setMinMax(dem)
+  }  # end of fill dem
+  
   
   # fill gaps a+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defsnd extrapolate 
   #system(paste0("gdal_fillnodata.py   -md 500 -of GTiff ",demFn," filldem.tif"))
@@ -104,6 +124,7 @@ demCorrection<- function(demFn ,df,p,altFilter,followSurface,followSurfaceRes,lo
   
   # if terrainfollowing filter the waypoints by using the altFilter Value
   if (followSurface) {
+    cat("start followSurface data...\n")
     # calculate the agl flight altitude
     altitude<-altitude+as.numeric(p$flightAltitude)-maxAlt
     
@@ -113,17 +134,35 @@ demCorrection<- function(demFn ,df,p,altFilter,followSurface,followSurfaceRes,lo
     # if terraintrack = true try to reduce the number of waypoints by filtering
     if ( as.character(p$flightPlanMode) == "terrainTrack") {
       sDF<-as.data.frame(df@data)
-      dif<-abs(as.data.frame(diff(as.matrix(sDF$altitude))))
-      sDF<- sDF[-c(1), ]
-      sDF$dif<-dif[,1]
-      sDF[is.na(sDF)] <- 0
-      fDF<-sDF[sDF$id=="99" | sDF$dif > altFilter , ]
-      sDF<- sDF[-c(ncol(sDF),ncol(sDF)-1) ]
-      fDF$lon<-fDF$longitude
-      fDF$lat<-fDF$latitude
-      fDF[complete.cases(fDF),]
+      sDF$sortID<- seq(1,nrow(sDF))
+      # smooth to maxvalues
+      filtAlt<-data.frame(zoo::rollmax(na.fill(sDF$altitude,"extend"), horizonFilter,fill = "extend"))
+      sDF$altitude<-filtAlt[,1]
+      colNames<-colnames(sDF)
+      colnames(sDF)<-colNames
+      turnPoints<- sDF[sDF$id=="99",]
+      samplePoints<-sDF[seq(1,to=nrow(sDF),by=horizonFilter),]
+      
+      duplicates <- which(!is.na(match(rownames(samplePoints),rownames(turnPoints))))
+      fDF<-rbind(turnPoints,samplePoints[-duplicates,])
+      fDF<-fDF[order(fDF$sortID),]
+      
+      dif <- abs(as.data.frame(diff(as.matrix(fDF$altitude))))
+      colnames(dif)<-c("dif")
+      fDF<- fDF[-c(1), ] # drop first line
+      fDF$dif<-dif[,1]
+      #fDF[is.na(fDF)] <- 0
+      
+      fDF<-fDF[fDF$id=="99" | fDF$dif > altFilter , ]
+      
+      fDF$lon<-as.numeric(fDF$longitude)
+      fDF$lat<-as.numeric(fDF$latitude)
+      #fDF[complete.cases(fDF),]
       sp::coordinates(fDF) <- ~lon+lat
       sp::proj4string(fDF) <-CRS("+proj=longlat +datum=WGS84 +no_defs")
+      fDF@data$sortID<-NULL
+      fDF@data$dif<-NULL
+      
       df<-fDF
     }
   }
@@ -150,9 +189,9 @@ generateDjiCSV <-function(df,mission,nofiles,maxPoints,p,logger,rth,trackSwitch=
   launchLat<-df@data[1,1]
   launchLon<-df@data[1,2]
   dem<-raster(dem)
-  cat(paste0("create ",nofiles, " control files...\n"))
+  
   for (i in 1:nofiles) {
-    
+    cat(paste0("create ",i, " of ",nofiles, " control files...\n"))  
     # take current start position of the partial task
     startLat<-df@data[minPoints+1,1] # minPoints+1 because auf adding the endpoint of the task
     startLon<-df@data[minPoints+1,2]
@@ -1269,7 +1308,7 @@ DEM2FlSurface<- function(p,dem,logger){
   else {
     stop("Crucial Error in filtering flight surface")}
   # make a raster object
-  demll<-raster("flightsurface.sdat")
+  demll <- raster::raster(rgdal::readGDAL("flightsurface.sdat",OVERRIDE_PROJ_DATUM_WITH_TOWGS84 = TRUE))
   demll<-setMinMax(demll)
   dem<-setMinMax(dem)
   

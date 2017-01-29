@@ -172,6 +172,10 @@ if (!isGeneric('makeFP')) {
 #' @param altFilter if \code{followingTerrain} is equal \code{TRUE} then
 #' \code{altFilter} is the treshold value of accepted altitude difference bewteen two waypoints in meter.
 #'  If this value is not exceeded the waypoint is omitted due to the fact that only 99 waypoints per mission are allowed.
+#' @param altFilter2 if \code{followingTerrain} is equal \code{TRUE} then
+#' \code{altFilter2} is the treshold value of accepted altitude changes on a scale of \code{horizonFilter} in meter.
+#'  If this value is not exceeded the waypoint is omitted due to the fact that only 99 waypoints per mission are allowed.
+#' @param horizonFilter integer filter size of the rolling filter kernerl for the flight track. Must be multiplied by the \code{followSurfaceRes} to get the spatial etent
 #' @param flightPlanMode type of flightplan. Available are: \code{"waypoints"},
 #'   \code{"track"}, \code{"manual"}.
 #' @param presetFlightTask (DJI only) strongly recommended to use "remote"
@@ -317,8 +321,11 @@ makeFP <- function(projectDir = "~",
                    launchAltitude = NULL,
                    followSurface = FALSE,
                    followSurfaceRes = NULL,
+                   terrainSmooth= FALSE,
                    demFn = NULL,
                    altFilter = 1.0,
+                   altFilter2 = 2.0,
+                   horizonFilter =30,
                    flightPlanMode = "track",
                    presetFlightTask = "remote",
                    overlap = 0.7,
@@ -607,7 +614,11 @@ makeFP <- function(projectDir = "~",
   # set counter and params for mode = "track" mode
   if (mode == "track") {
     if (uavType == "djip3") {
-      lns[length(lns) + 1] <- makeUavPoint(pos, uavViewDir, group = 99, p)
+      lns[length(lns) + 1] <- 
+        makeUavPoint(pos, 
+                     uavViewDir, 
+                     group = 99, 
+                     p)
     }
     if (uavType == "solo") {
       lns[length(lns) + 1] <-
@@ -815,8 +826,11 @@ makeFP <- function(projectDir = "~",
         djiDF,
         p,
         altFilter,
+        altFilter2,
+        horizonFilter,
         followSurface,
         followSurfaceRes,
+        terrainSmooth,
         logger,
         projectDir,
         dA,
@@ -839,7 +853,7 @@ makeFP <- function(projectDir = "~",
       minPoints <- 1
     }
     # start the creation of the control file(s)
-    cat('generate control files...')
+    cat('generate control files...\n')
     generateDjiCSV(
       result[[2]],
       mission,
@@ -847,7 +861,7 @@ makeFP <- function(projectDir = "~",
       maxPoints,
       p,
       logger,
-      round(result[[6]], digit = 0),
+      round(result[[6]], digits = 0),
       trackSwitch,
       "flightDEM.tif",
       result[[8]],
@@ -887,6 +901,7 @@ makeFP <- function(projectDir = "~",
           mavDF,
           p,
           altFilter,
+          altFilter2,
           followSurface,
           followSurfaceRes,
           logger,
@@ -968,6 +983,7 @@ makeFP <- function(projectDir = "~",
   levellog(logger, 'INFO', paste("launchAltitude  : ", launchAltitude))
   levellog(logger, 'INFO', paste("followSurface   : ", followSurface))
   levellog(logger, 'INFO', paste("altfilter       : ", altFilter))
+  levellog(logger, 'INFO', paste("altfilter2      : ", altFilter2))
   levellog(logger, 'INFO', paste("flightPlanMode  : ", flightPlanMode))
   levellog(logger, 'INFO', paste("flightAltitude  : ", flightAltitude))
   levellog(logger,
