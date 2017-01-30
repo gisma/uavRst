@@ -37,4 +37,5 @@ cat("this will probably take a while...\n")
 r <- raster::rasterFromXYZ(xyz,crs=sp::CRS(paste0("+init=epsg:",epsgCode)))
 # write it to geotiff
 raster::writeRaster(r, paste0(dirname(xyzFN),"/",tools::file_path_sans_ext(basename(xyzFN)),".tif"),overwrite=TRUE)
+cat("...finished\n")
  }
