@@ -31,12 +31,15 @@ demCorrection<- function(demFn ,df,p,altFilter,horizonFilter,followSurface,follo
       dem<-rundem
       # if GEOTIFF or other gdal type of data
     } else{
-      rundem<-raster::raster(demFn,xmn=min(p$lon1,p$lon3)-0.0083,xmx=max(p$lon1,p$lon3)+0.0083,ymn=min(p$lat1,p$lat3)-0.0083,ymx=max(p$lat1,p$lat3)+0.0083)
+      rundem<-raster::raster(demFn,xmn=min(p$lon1,p$lon3)-0.0083,xmx=max(p$lon1,p$lon3)+0.0083,ymn=min(p$lat1,p$lat3)-0.0083,ymx=max(p$lat1,p$lat3)+0.0083,band = 1)
       file.copy(demFn, paste0(file.path(projectDir,workingDir,"run"),"/tmpdem.tif"))    
       dem<-rundem
     }
   }  # end of loading DEM data
   
+  
+#  if (nbands(dem) > 1)  
+#  dem <- raster(dem,band=1)
   
   # check if at least a projection string exist 
   #res<-compareProjCode(as.vector(as.character(rundem@crs)))
@@ -88,7 +91,7 @@ demCorrection<- function(demFn ,df,p,altFilter,horizonFilter,followSurface,follo
   
   
   # extract all waypoint altitudes
-  altitude<-raster::extract(demll,df)
+  altitude<-raster::extract(demll,df,layer = 1, nl = 1)
   # get maximum altitude of the task area
   maxAlt<-max(altitude,na.rm = TRUE)
   
@@ -101,7 +104,7 @@ demCorrection<- function(demFn ,df,p,altFilter,horizonFilter,followSurface,follo
   
   # extract launch altitude from DEM
   if (is.na(p$launchAltitude)){
-    tmpalt<-raster::extract(demll,pos)  
+    tmpalt<-raster::extract(demll,pos,layer = 1, nl = 1)  
     p$launchAltitude<-as.numeric(tmpalt)
     # otherwise take it from the parameter set
   } else 
@@ -227,8 +230,8 @@ generateDjiCSV <-function(df,mission,nofiles,maxPoints,p,logger,rth,trackSwitch=
     # calculate minimum rth altitude for each line by identifing max altitude
     #homeRth<-max(unlist(raster::extract(dem,home)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
     #startRth<-max(unlist(raster::extract(dem,start)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
-    homeRth<-raster::extract(dem,home,fun=max,na.rm=TRUE)+ as.numeric(p$flightAltitude)-as.numeric(maxAlt)
-    startRth<-raster::extract(dem,start,fun=max,na.rm=TRUE)+ as.numeric(p$flightAltitude)-as.numeric(maxAlt)
+    homeRth<-raster::extract(dem,home,fun=max,na.rm=TRUE,layer = 1, nl = 1)+ as.numeric(p$flightAltitude)-as.numeric(maxAlt)
+    startRth<-raster::extract(dem,start,fun=max,na.rm=TRUE,layer = 1, nl = 1)+ as.numeric(p$flightAltitude)-as.numeric(maxAlt)
     
     # generate an empty raster 
     mask<- dem
@@ -398,8 +401,8 @@ generateMavCSV <-function(df,mission,nofiles,rawTime,flightPlanMode,trackDistanc
       start<-makeLine(c(launchLon,startLon),c(launchLat,startLat),"Start")
       
       # calculate minimum rth altitude for each line by identifing max altitude
-      homeRth<-raster::extract(dem,home,fun=max,na.rm=TRUE)+ as.numeric(p$flightAltitude)-as.numeric(maxAlt)
-      startRth<-raster::extract(dem,start,fun=max,na.rm=TRUE)+ as.numeric(p$flightAltitude)-as.numeric(maxAlt)
+      homeRth<-raster::extract(dem,home,fun=max,na.rm=TRUE,layer = 1, nl = 1)+ as.numeric(p$flightAltitude)-as.numeric(maxAlt)
+      startRth<-raster::extract(dem,start,fun=max,na.rm=TRUE,layer = 1, nl = 1)+ as.numeric(p$flightAltitude)-as.numeric(maxAlt)
       
       # add 1/3 third altitude as safety buffer
       homeRth<-homeRth+0.33*homeRth
@@ -911,7 +914,7 @@ MAVTreeCSV <-function(flightPlanMode,trackDistance,logger,p,param,maxSpeed=maxSp
     #sp::proj4string(start) <-sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
     
     # calculate minimum rth altitude for each line by identifing max altitude
-    homeRTH<-max(unlist(raster::extract(dem,home)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
+    homeRTH<-max(unlist(raster::extract(dem,home,layer = 1, nl = 1)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
     
     # write and re-read waypoints
     sep<-"\t"
@@ -1079,7 +1082,7 @@ getAltitudes<- function(demFn ,df,p,followSurfaceRes,logger){
   }
   
   # extract all waypoint altitudes
-  altitude<-raster::extract(demll,df)
+  altitude<-raster::extract(demll,df,layer = 1, nl = 1)
   # get maximum altitude of the task area
   maxAlt<-max(altitude,na.rm = TRUE)
   log4r::levellog(logger, 'INFO', paste("maximum DEM Altitude : ", maxAlt," m"))
@@ -1089,7 +1092,7 @@ getAltitudes<- function(demFn ,df,p,followSurfaceRes,logger){
   sp::proj4string(pos) <-CRS("+proj=longlat +datum=WGS84 +no_defs")
   
   if (p$launchAltitude==-9999){
-    tmpalt<-raster::extract(demll,pos)  
+    tmpalt<-raster::extract(demll,pos,layer = 1, nl = 1)  
     p$launchAltitude<-as.numeric(tmpalt)
     # otherwise take it from the parameter set
   } else 
@@ -1187,8 +1190,8 @@ writeDjiTreeCSV <-function(df,mission,nofiles,maxPoints,p,logger,rth,trackSwitch
     sp::proj4string(start) <-CRS("+proj=longlat +datum=WGS84 +no_defs")
     
     # calculate minimum rth altitude for each line by identifing max altitude
-    homeRth<-max(unlist(raster::extract(dem,home)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
-    startRth<-max(unlist(raster::extract(dem,start)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
+    homeRth<-max(unlist(raster::extract(dem,home,layer = 1, nl = 1)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
+    startRth<-max(unlist(raster::extract(dem,start,layer = 1, nl = 1)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
     
     # calculate rth heading 
     homeheading<-geosphere::bearing(c(endLon,endLat),c(launchLon,launchLat), a=6378137, f=1/298.257223563)

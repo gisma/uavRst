@@ -28,7 +28,7 @@ Imports:
     caret,
     igraph,
     zoo,
-    nlme,
+    data.table,
 LinkingTo: Rcpp
 RoxygenNote: 5.0.1
 SystemRequirements: GNU make
