@@ -21,38 +21,69 @@ demCorrection<- function(demFn ,df,p,altFilter,horizonFilter,followSurface,follo
     dem<-setMinMax(dem)
     rundem<- raster::crop(dem,extent(min(p$lon1,p$lon3)-0.0083,max(p$lon1,p$lon3)+0.0083,min(p$lat1,p$lat3)-0.0083,max(p$lat1,p$lat3)+0.0083))
     raster::writeRaster(dem,"tmpdem.tif",overwrite=TRUE)
-    # read local dem file
+    # if demFN is NOT NULL
   } else {
-    # if already of type raster
+    
     if (class(demFn)[1] %in% c("RasterLayer", "RasterStack", "RasterBrick")){
+      # get information of the raw file
+      # project the  extent to the current input ref system 
+      proj<-projection(rundem)
+      xmn=min(p$lon1,p$lon3)-0.0083
+      xmx=max(p$lon1,p$lon3)+0.0083
+      ymn=min(p$lat1,p$lat3)-0.0083
+      ymx=max(p$lat1,p$lat3)+0.0083
+      cut<-data.frame(y=c(ymn,ymx),x=c(xmn,xmx))
+      coordinates(cut) <- ~x+y
+      sp::proj4string(cut) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
+      cut<-spTransform(cut,CRS(proj))
       rundem<-demFn
-      rundem<- raster::crop(rundem,extent(min(p$lon1,p$lon3)-0.0083,max(p$lon1,p$lon3)+0.0083,min(p$lat1,p$lat3)-0.0083,max(p$lat1,p$lat3)+0.0083))
+      rundem<- raster::crop(rundem,extent(cut@bbox[1],cut@bbox[3],cut@bbox[2],cut@bbox[4]))
       raster::writeRaster(rundem,"tmpdem.tif",overwrite=TRUE)
-      dem<-rundem
+      demll<-gdalwarp(srcfile = "tmpdem.tif", dstfile = "demll.tif", overwrite=TRUE,  t_srs="+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )  
+      file.copy(demFn, paste0(file.path(projectDir,workingDir,"run"),"/tmpdem.tif")) 
+      dem<-demll
       # if GEOTIFF or other gdal type of data
     } else{
-      rundem<-raster::raster(demFn,xmn=min(p$lon1,p$lon3)-0.0083,xmx=max(p$lon1,p$lon3)+0.0083,ymn=min(p$lat1,p$lat3)-0.0083,ymx=max(p$lat1,p$lat3)+0.0083,band = 1)
-      file.copy(demFn, paste0(file.path(projectDir,workingDir,"run"),"/tmpdem.tif"))    
-      dem<-rundem
+      # get information of the raw file
+      # project the  extent to the current input ref system 
+      tmpproj<-grep(gdalinfo(path.expand(demFn),proj4 = TRUE),pattern = "+proj=",value = TRUE)
+      proj<-substring(tmpproj,2,nchar(tmpproj)-2)
+      xmn=min(p$lon1,p$lon3)-0.0083
+      xmx=max(p$lon1,p$lon3)+0.0083
+      ymn=min(p$lat1,p$lat3)-0.0083
+      ymx=max(p$lat1,p$lat3)+0.0083
+      cut<-data.frame(y=c(ymn,ymx),x=c(xmn,xmx))
+      coordinates(cut) <- ~x+y
+      sp::proj4string(cut) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
+      cut<-spTransform(cut,CRS(proj))
+      
+      rundem<-raster::raster(demFn,band = 1)
+      rundem<- raster::crop(rundem,extent(cut@bbox[1],cut@bbox[3],cut@bbox[2],cut@bbox[4]))
+      raster::writeRaster(rundem,"tmpdem.tif",overwrite=TRUE)
+      demll<-gdalwarp(srcfile = "tmpdem.tif", dstfile = "demll.tif", overwrite=TRUE,  t_srs="+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )  
+      file.copy(demFn, paste0(file.path(projectDir,workingDir,"run"),"/tmpdem.tif")) 
+      demll<-setMinMax(demll)
+      
+      dem<-demll
     }
   }  # end of loading DEM data
   
   
-#  if (nbands(dem) > 1)  
-#  dem <- raster(dem,band=1)
+  #  if (nbands(dem) > 1)  
+  #  dem <- raster(dem,band=1)
   
   # check if at least a projection string exist 
   #res<-compareProjCode(as.vector(as.character(rundem@crs)))
   #demll<-rasterCheckAdjustProjection(rundem)
-  crsString<-compareProjCode(as.vector(as.character(rundem@crs)))
+  crsString<-compareProjCode(as.vector(as.character(dem@crs)))
   if (!crsString) {
     #stop("the DEM/DSM is not georeferencend - please provide a correct georeferenced raster object or GeoTiff file\n")
     # if so deproject DEM/DSM because all of the vector data is latlong WGS84
     demll<-gdalwarp(srcfile = "tmpdem.tif", dstfile = "demll.tif", overwrite=TRUE,  t_srs="+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )  
     demll<-setMinMax(demll)
   } else {
-    demll<-gdalwarp(srcfile = "tmpdem.tif", dstfile = "demll.tif", overwrite=TRUE,  t_srs="+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )  
-    demll<-setMinMax(demll)
+    #   demll<-gdalwarp(srcfile = "tmpdem.tif", dstfile = "demll.tif", overwrite=TRUE,  t_srs="+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )  
+    #    demll<-setMinMax(demll)
     
   }
   
@@ -74,7 +105,7 @@ demCorrection<- function(demFn ,df,p,altFilter,horizonFilter,followSurface,follo
     else {
       stop("Crucial Error in filling flight surface")
     }
-   
+    
     demll <- raster::raster(rgdal::readGDAL("flightsurface.sdat",OVERRIDE_PROJ_DATUM_WITH_TOWGS84 = TRUE))
     demll<-setMinMax(demll)
     dem<-setMinMax(dem)
@@ -174,7 +205,7 @@ demCorrection<- function(demFn ,df,p,altFilter,horizonFilter,followSurface,follo
       df<-fDF
     }
   }
-
+  
   # dump flightDEM as it was used for agl prediction
   writeRaster(demll,"tmpFlightDEM.tif",overwrite=TRUE)
   tmpdem<-gdalwarp(srcfile = "tmpFlightDEM.tif", dstfile = "tmpdem.tif",  overwrite=TRUE,  t_srs=paste0("+proj=utm +zone=",long2UTMzone(p$lon1)," +datum=WGS84"),output_Raster = TRUE ,tr=c(as.numeric(p$followSurfaceRes),as.numeric(p$followSurfaceRes)))
@@ -190,7 +221,7 @@ demCorrection<- function(demFn ,df,p,altFilter,horizonFilter,followSurface,follo
   } else {
     demArea <- "NULL"
   }
-
+  
   # return results
   return(c(pos,df,rundem,demll,demArea,rthFlightAlt,launchAlt,maxAlt,p))
 }
@@ -962,7 +993,7 @@ readTreeTrack<- function(treeTrack){
   tTkDF<-read.csv(treeTrack,sep="\t",header = TRUE)
   sp::coordinates(tTkDF) <- ~x+y
   sp::proj4string(tTkDF) <- sp::CRS("+proj=utm +zone=33 +datum=WGS84 +no_defs")
-  tTkDF<-spTransform(tTkDF, sp::CRS("+proj=longlat +datum=WGS84 +no_defs"))
+  tTkDF<-sp::spTransform(tTkDF, sp::CRS("+proj=longlat +datum=WGS84 +no_defs"))
   return(tTkDF)
 }
 
