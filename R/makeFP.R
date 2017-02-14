@@ -902,12 +902,14 @@ makeFP <- function(projectDir = "~",
           mavDF,
           p,
           altFilter,
+          horizonFilter ,
           followSurface,
           followSurfaceRes,
+          terrainSmooth,
           logger,
-          projectDir,
+          projectDir =projectDir,
           dA,
-          workingDir
+          workingDir = workingDir
         )
       
       # assign adapted dem to demFn

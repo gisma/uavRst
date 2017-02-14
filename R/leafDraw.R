@@ -101,6 +101,7 @@ leafDraw <- function(mapCenter=c(50.80801,8.72993),
   write(CRSinitialZoom,tmpCRS,append = TRUE)
   write(CRSvarMapCenter,tmpCRS,append = TRUE)
   if (!is.null(overlay)){
+  overlay <- sp::SpatialPolygonsDataFrame(overlay, data.frame(ID="overlay"))
   rgdal::writeOGR(overlay, paste(tmpPath, "jsondata", sep=.Platform$file.sep), "OGRGeoJSON", driver="GeoJSON")
   
   # for fastet json read in a html document we wrap it with var data = {};
@@ -117,11 +118,11 @@ leafDraw <- function(mapCenter=c(50.80801,8.72993),
   write.table(lns, paste(tmpPath, "jsondata", sep=.Platform$file.sep), sep="\n", row.names=FALSE, col.names=FALSE, quote = FALSE)
   features<-names(overlay)
   # correct if only Lines or Polygons (obsolete here?)
-  if (class(overlay)[1] == 'SpatialPolygonsDataFrame'){
+  if (class(overlay)[1] == 'SpatialPolygonsDataFrame' | class(overlay)[1] == 'SpatialPolygons'){
     noFeature <- length(overlay@polygons)
-  } else if (class(overlay)[1] == 'SpatialLinesDataFrame'){
+  } else if (class(overlay)[1] == 'SpatialLinesDataFrame' | class(overlay)[1] == 'SpatialLines'){
     noFeature <- length(overlay@lines)
-  }
+  } 
   jsondata<-1
   
 } else {jsondata<-0}

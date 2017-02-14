@@ -146,8 +146,8 @@ demCorrection<- function(demFn ,df,p,altFilter,horizonFilter,followSurface,follo
   levellog(logger, 'INFO', paste("launching Altitude : ", p$launchAltitude," m"))
   
   # write it back to the p list
-  launchAlt<-p$launchAltitude
-  
+  launchAlt <- p$launchAltitude
+  flightAltitude <- as.numeric(p$flightAltitude)
   # calculate the agl flight altitude shift due to launching and max altitude
   p$flightAltitude=as.numeric(p$flightAltitude)+(maxAlt-as.numeric(launchAlt))
   # make a rough estimation of the overall rth altitude
@@ -159,11 +159,20 @@ demCorrection<- function(demFn ,df,p,altFilter,horizonFilter,followSurface,follo
   # if terrainfollowing filter the waypoints by using the altFilter Value
   if (followSurface) {
     cat("start followSurface data...\n")
+    
+    # extract all waypoint altitudes
+    altitude2<-raster::extract(demll,df,layer = 1, nl = 1)
+    # get maximum altitude of the task area
+    
+    # extract launch altitude from DEM
+    launchAlt<-raster::extract(demll,pos,layer = 1, nl = 1)  
+  
+    altitude2 <- altitude2 - launchAlt[1] + flightAltitude
     # calculate the agl flight altitude
-    altitude<-altitude+as.numeric(p$flightAltitude)-maxAlt
+    #altitude<-altitude+as.numeric(p$flightAltitude)-maxAlt
     
     #write it to the sp object dataframe
-    df$altitude<-altitude
+    df$altitude<-altitude2
     
     # if terraintrack = true try to reduce the number of waypoints by filtering
     # this is done by: 
@@ -240,10 +249,15 @@ generateDjiCSV <-function(df,mission,nofiles,maxPoints,p,logger,rth,trackSwitch=
   launchLon<-df@data[1,2]
   dem<-raster(dem)
   
+  launch_pos<-as.data.frame(cbind(launchLat,launchLon))
+  sp::coordinates(launch_pos) <- ~launchLon+launchLat
+  sp::proj4string(launch_pos) <-CRS("+proj=longlat +datum=WGS84 +no_defs")
+  launchAlt<-raster::extract(dem,launch_pos,layer = 1, nl = 1)  
+
   for (i in 1:nofiles) {
     cat(paste0("create ",i, " of ",nofiles, " control files...\n"))  
     # take current start position of the partial task
-    startLat<-df@data[minPoints+1,1] # minPoints+1 because auf adding the endpoint of the task
+    startLat<-df@data[minPoints+1,1] # minPoints+1 because of adding the endpoint of the task
     startLon<-df@data[minPoints+1,2]
     # take current end position of split task
     endLat<-df@data[maxPoints,1]
@@ -261,8 +275,8 @@ generateDjiCSV <-function(df,mission,nofiles,maxPoints,p,logger,rth,trackSwitch=
     # calculate minimum rth altitude for each line by identifing max altitude
     #homeRth<-max(unlist(raster::extract(dem,home)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
     #startRth<-max(unlist(raster::extract(dem,start)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
-    homeRth<-raster::extract(dem,home,fun=max,na.rm=TRUE,layer = 1, nl = 1)+ as.numeric(p$flightAltitude)-as.numeric(maxAlt)
-    startRth<-raster::extract(dem,start,fun=max,na.rm=TRUE,layer = 1, nl = 1)+ as.numeric(p$flightAltitude)-as.numeric(maxAlt)
+    maxAltHomeFlight<-raster::extract(dem,home,fun=max,na.rm=TRUE,layer = 1, nl = 1) - launchAlt + as.numeric(p$flightAltitude)
+    maxAltStartFlight<-raster::extract(dem,start,fun=max,na.rm=TRUE,layer = 1, nl = 1)- launchAlt + as.numeric(p$flightAltitude)
     
     # generate an empty raster 
     mask<- dem
@@ -290,26 +304,26 @@ generateDjiCSV <-function(df,mission,nofiles,maxPoints,p,logger,rth,trackSwitch=
     
     # generate home max alt waypoint
     heading<-homeheading
-    altitude<-homeRth+0.33*homeRth
-    latitude<-homemaxpos[2]
-    longitude<-homemaxpos[1]
+    altitude<-maxAltHomeFlight+0.33*maxAltHomeFlight
+    latitude<-homemaxpos[1,2]
+    longitude<-homemaxpos[1,1]
     
     # generate ascent waypoint to realize save fly home altitude
     homemaxrow<-cbind(latitude,longitude,altitude,heading,row1[5:length(row1)])
     
     # maximum altitude wp on the way to the mission start
     heading<-startheading
-    altitude<-startRth+0.33*startRth
-    latitude<-startmaxpos[2]
-    longitude<-startmaxpos[1]
+    altitude<-maxAltStartFlight+0.33*maxAltStartFlight
+    latitude<-startmaxpos[1,2]
+    longitude<-startmaxpos[1,1]
     startmaxrow<-cbind(latitude,longitude,altitude,heading,row1[5:length(row1)])
     
     # calculate rth ascent from last task position
-    pos<-calcNextPos(endLon,endLat,homeheading,7.5)
+    pos<-calcNextPos(endLon,endLat,homeheading,10)
     
     # generate rth waypoints
     heading<-homeheading
-    altitude<-homeRth
+    altitude<-maxAltHomeFlight
     latitude<-pos[2]
     longitude<-pos[1]
     # generate ascent waypoint to realize save fly home altitude
@@ -317,11 +331,16 @@ generateDjiCSV <-function(df,mission,nofiles,maxPoints,p,logger,rth,trackSwitch=
     # generate home position with heading and altitude
     homerow<-cbind(row1[1:2],altitude,heading,row1[5:length(row1)])
     # genrate launch to start waypoint to realize save fly home altitude
-    # calculate rth ascent from last task position
-    pos<-calcNextPos(launchLon,launchLat,startheading,7.5)
+    pos<-calcNextPos(launchLon,launchLat,startheading,10)
     heading<-startheading
-    altitude<-startRth
-    startrow<-cbind(row1[1:2],altitude,heading,row1[5:length(row1)])
+    altitude<-as.numeric(p$flightAltitude)
+    latitude<-pos[2]
+    longitude<-pos[1]
+    startrow<-cbind(latitude,longitude,altitude,heading,row1[5:length(row1)])
+    # calculate rth ascent from last task position
+    pos<-calcNextPos(longitude,latitude,startheading,10)
+    heading<-startheading
+    altitude<-maxAltStartFlight
     latitude<-pos[2]
     longitude<-pos[1]
     startascentrow<-cbind(latitude,longitude,altitude,heading,row1[5:length(row1)])
@@ -340,7 +359,7 @@ generateDjiCSV <-function(df,mission,nofiles,maxPoints,p,logger,rth,trackSwitch=
     write.csv(DF[,1:(ncol(DF)-2)],file = paste0(projectDir,"/", workingDir,"/control/",mission,i,".csv"),quote = FALSE,row.names = FALSE)
     
     levellog(logger, 'INFO', paste("created : ", paste0(strsplit(getwd(),"/tmp")[[1]][1],"/control/",mission,"-",i,".csv")))
-    minPoints<-maxPoints
+    minPoints<-maxPoints -2
     maxPoints<-maxPoints+addmax
     
     if (maxPoints>nrow(df@data)){
@@ -408,15 +427,20 @@ generateMavCSV <-function(df,mission,nofiles,rawTime,flightPlanMode,trackDistanc
   cat(paste0("create ",nofiles, " control files...\n"))
   
   # store launchposition and coordinates we need them for the rth calculations
-  row1<-df@data[1,1:(ncol(df@data))]
-  launchLat<-df@data[1,8]
-  launchLon<-df@data[1,9]
+  row1 <- df@data[1,1:(ncol(df@data))]
+  launchLat <- df@data[1,8]
+  launchLon <- df@data[1,9]
   
   # read dem
   dem<-raster(dem)
   
+  launch_pos<-as.data.frame(cbind(launchLat,launchLon))
+  sp::coordinates(launch_pos) <- ~launchLon+launchLat
+  sp::proj4string(launch_pos) <-CRS("+proj=longlat +datum=WGS84 +no_defs")
+  launchAlt<-raster::extract(dem,launch_pos,layer = 1, nl = 1)  
   # we need to calculate and insert climb and sink waypoints for each task file  
   for (i in 1:nofiles) {
+    cat(paste0("create ",i, " of ",nofiles, " control files...\n"))  
     # take current start position of the split task
     startLat<-df@data[minPoints+1,8]
     startLon<-df@data[minPoints+1,9]
@@ -432,8 +456,8 @@ generateMavCSV <-function(df,mission,nofiles,rawTime,flightPlanMode,trackDistanc
       start<-makeLine(c(launchLon,startLon),c(launchLat,startLat),"Start")
       
       # calculate minimum rth altitude for each line by identifing max altitude
-      homeRth<-raster::extract(dem,home,fun=max,na.rm=TRUE,layer = 1, nl = 1)+ as.numeric(p$flightAltitude)-as.numeric(maxAlt)
-      startRth<-raster::extract(dem,start,fun=max,na.rm=TRUE,layer = 1, nl = 1)+ as.numeric(p$flightAltitude)-as.numeric(maxAlt)
+      homeRth<-raster::extract(dem,home,fun=max,na.rm=TRUE,layer = 1, nl = 1) - launchAlt + as.numeric(p$flightAltitude)
+      startRth<-raster::extract(dem,start,fun=max,na.rm=TRUE,layer = 1, nl = 1) - launchAlt + as.numeric(p$flightAltitude)
       
       # add 1/3 third altitude as safety buffer
       homeRth<-homeRth+0.33*homeRth
@@ -533,7 +557,7 @@ generateMavCSV <-function(df,mission,nofiles,rawTime,flightPlanMode,trackDistanc
         minPoints<- oldmax
         addmax<-maxPoints-minPoints
       } else {
-        minPoints<-maxPoints
+        minPoints<-maxPoints-2
         maxPoints<-maxPoints+addmax
       }
     }
