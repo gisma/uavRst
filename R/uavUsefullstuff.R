@@ -426,7 +426,7 @@ generateMavCSV <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistan
   cat(paste0("create ",nofiles, " control files...\n"))
   
   # store launchposition and coordinates necessary for the rth calculations
-  row1 <- df@data[1,1:(ncol(df@data))]
+  #row1 <- df@data[1,1:(ncol(df@data))]
   launchLat <- df@data[1,8]
   launchLon <- df@data[1,9]
   
@@ -573,7 +573,6 @@ generateMavCSV <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistan
       
       # counter handling for the last file
       if (maxPoints > nrow(df@data)) {
-        oldmin    <- minPoints
         oldmax    <- maxPoints
         maxPoints <- nrow(df@data)
         minPoints <- oldmax
@@ -938,44 +937,42 @@ launch2flightalt <- function(p, lns, uavViewDir, launch2startHeading, uavType) {
   return(lns)
 }
 
-MAVTreeCSV <-function(flightPlanMode,trackDistance,logger,p,param,maxSpeed=maxSpeed/3.6){
-  mission<-p$missionName
+MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed = maxSpeed/3.6){
+  mission <- p$missionName
   
-  df<-param[[2]]
-  dem<-param[[3]]
-  maxAlt<-param[[6]]
+  df     <- param[[2]]
+  dem    <- param[[3]]
+  maxAlt <- param[[6]]
   
-  minPoints<-1
+  minPoints <- 1
   #nofiles<- ceiling(rawTime/batteryTime)
-  nofiles<-1
-  maxPoints<-nrow(df@data)
-  mp<-maxPoints
-  a<-0
-  b<-0
-  c<-3
-  d<-0
-  e<-0
-  f<-0
-  g<-0
-  id<-99
-  j<-1
-  
+  nofiles <- 1
+  maxPoints <- nrow(df@data)
+  mp <- maxPoints
+  a  <- 0
+  b  <- 0
+  c  <- 3
+  d  <- 0
+  e  <- 0
+  f  <- 0
+  g  <- 0
+  id <- 99
+  j  <- 1
   
   #if (maxPoints > nrow(df@data)) {maxPoints<-nrow(df@data)}
   # store launchposition and coordinates we need them for the rth calculations
-  
   for (i in 1:nofiles) {
     # take current start position of the split task
-    actualLat<-df@data[minPoints,8]
-    actualLon<-df@data[minPoints,9]
+    actualLat <- df@data[minPoints,8]
+    actualLon <- df@data[minPoints,9]
     # take current end position of split task
-    nextLat<-df@data[maxPoints,8]
-    nextLon<-df@data[maxPoints,9]
+    nextLat <- df@data[maxPoints,8]
+    nextLon <- df@data[maxPoints,9]
     # generate flight lines from lanch to start and launch to end point of splitted task
     yhome <- c(actualLat,nextLat)
     xhome <- c(actualLon,nextLon)
-    home<-SpatialLines(list(Lines(Line(cbind(xhome,yhome)), ID="home")))
-    sp::proj4string(home) <-sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
+    home <- SpatialLines(list(Lines(Line(cbind(xhome,yhome)), ID="home")))
+    sp::proj4string(home) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
     #sp::proj4string(start) <-sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
     
     # calculate minimum rth altitude for each line by identifing max altitude
@@ -1031,104 +1028,99 @@ readTreeTrack<- function(treeTrack){
   return(tTkDF)
 }
 
-makeFlightPath<- function(treeList,p,uavType,task,demFn,logger){
-  
-  # calc next coordinate
-  lns<-list()
-  
-  # assign launching point 
-  
-  #lns[length(lns)+1]<-makeUavPoint(launchPos,uavViewDir,group=99,p)
-  fileConn<-file("treepoints.csv")
-  for(i in 2:nrow(treeList)-1){
-    
-    #if (mode =="track"){group<-99}
-    #if (uavType=="djip3"){lns[length(lns)+1]<-makeUavPoint(pos,uavViewDir,group,p)}
-    #if (uavType=="solo"){lnsMAV[length(lnsMAV)+1]<-makeUavPointMAV(pos,uavViewDir,group,p)}
-    
-    #print(treeListDf[i,4])
-    
-    
-    if (uavType=="djip3"){
-      forward<-geosphere::bearing(treeList@coords[i,],treeList@coords[i+1,], a=6378137, f=1/298.257223563)
-      backward<-geosphere::bearing(treeList@coords[i+1,],treeList@coords[i,], a=6378137, f=1/298.257223563)
-      p$task<- getPresetTask("treetop")
-      lns[length(lns)+1]<- makeUavPoint(treeList@coords[i,],forward,p,group=99)
-      p$task<- getPresetTask("nothing")
-      posUp<- calcNextPos(treeList@coords[i,][1],treeList@coords[i,][2],heading=forward,distance=p$climbDist)
-      lns[length(lns)+1]<- makeUavPoint  (posUp,forward,p,group=1)
-      posDown<- calcNextPos(treeList@coords[i+1,][1],treeList@coords[i+1,][2],backward,distance=p$climbDist)
-      lns[length(lns)+1]<- makeUavPoint(posDown,forward,p,group=1)
+makeFlightPath <- function(treeList,p,uavType,task,demFn,logger){
+
+  lns <- list()
+  fileConn <- file("treepoints.csv")
+  for (i in 2:nrow(treeList) - 1) {
+    if (uavType == "djip3") {
+      forward <- geosphere::bearing(treeList@coords[i,], treeList@coords[i + 1,], a = 6378137, f = 1/298.257223563)
+      backward <- geosphere::bearing(treeList@coords[i + 1,], treeList@coords[i,], a = 6378137, f = 1/298.257223563)
+      p$task <- getPresetTask("treetop")
+      lns[length(lns) + 1] <- makeUavPoint(treeList@coords[i,], forward, p, group = 99)
+      p$task <- getPresetTask("nothing")
+      posUp  <- calcNextPos(treeList@coords[i,][1], treeList@coords[i,][2], heading = forward, distance = p$climbDist)
+      lns[length(lns) + 1] <- makeUavPoint(posUp, forward, p, group = 1)
+      posDown <- calcNextPos(treeList@coords[i + 1,][1], treeList@coords[i + 1,][2], backward, distance = p$climbDist)
+      lns[length(lns) + 1] <- makeUavPoint(posDown, forward, p, group = 1)
       writeLines(unlist(lns), fileConn)
     }
-    else if (uavType=="solo"){
-      forward<-geosphere::bearing(treeList@coords[i,],treeList@coords[i+1,], a=6378137, f=1/298.257223563)
-      backward<-geosphere::bearing(treeList@coords[i+1,],treeList@coords[i,], a=6378137, f=1/298.257223563)
-      p$task<- getPresetTask("treetop")
-      lns[length(lns)+1]<- makeUavPointMAV(lat=treeList@coords[i,][2],lon=treeList@coords[i,][1],head=forward,group=99)
-      p$task<- getPresetTask("nothing")
-      posUp<- calcNextPos(treeList@coords[i,][1],treeList@coords[i,][2],heading=forward,distance=p$climbDist)
-      lns[length(lns)+1]<- makeUavPointMAV(lat=posUp[2],lon=posUp[1],forward,group=99) 
-      posDown<- calcNextPos(treeList@coords[i+1,][1],treeList@coords[i+1,][2],backward,distance=p$climbDist)
-      lns[length(lns)+1]<- makeUavPointMAV(lat=posDown[2],lon=posDown[1],forward,group=99) 
+    else if (uavType == "solo") {
+      forward <- geosphere::bearing(treeList@coords[i,],treeList@coords[i + 1,], a = 6378137, f = 1/298.257223563)
+      backward <- geosphere::bearing(treeList@coords[i + 1,],treeList@coords[i,], a = 6378137, f = 1/298.257223563)
+      p$task <- getPresetTask("treetop")
+      lns[length(lns) + 1] <- makeUavPointMAV(lat = treeList@coords[i,][2],lon = treeList@coords[i,][1],head = forward,group = 99)
+      p$task <- getPresetTask("nothing")
+      posUp <- calcNextPos(treeList@coords[i,][1],treeList@coords[i,][2],heading = forward,distance = p$climbDist)
+      lns[length(lns) + 1] <- makeUavPointMAV(lat = posUp[2],lon = posUp[1],forward,group = 99) 
+      posDown <- calcNextPos(treeList@coords[i + 1,][1],treeList@coords[i + 1,][2],backward,distance = p$climbDist)
+      lns[length(lns) + 1] <- makeUavPointMAV(lat = posDown[2],lon = posDown[1],forward,group = 99) 
       writeLines(unlist(lns), fileConn)
-      
     }
-    
   }
   close(fileConn)
-  if (uavType=="djip3"){
+  if (uavType == "djip3") {
     cat("calculating DEM related stuff\n")
-    djiDF<-read.csv("treepoints.csv",sep=",",header = FALSE)
-    names(djiDF) <-unlist(strsplit( makeUavPoint(pos,uavViewDir,group=99,p,header = TRUE,sep=' '),split = " "))
+    djiDF <- read.csv("treepoints.csv",sep = ",",header = FALSE)
+    names(djiDF) <- unlist(strsplit( makeUavPoint(pos,uavViewDir,group = 99,p,header = TRUE,sep = ' '),split = " "))
     sp::coordinates(djiDF) <- ~lon+lat
-    sp::proj4string(djiDF) <-CRS("+proj=longlat +datum=WGS84 +no_defs")
-    result<-getAltitudes(demFn ,djiDF,p,followSurfaceRes=5,logger)
+    sp::proj4string(djiDF) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
+    result <- getAltitudes(demFn ,djiDF,p,followSurfaceRes = 5,logger)
     #result<-demCorrection(demFn, djiDF,p,p$altFilter,p$followSurface,p$followSurfaceRes,logger,projectDir)
     #result<-demCorrection(demFn ,djiDF,p,followSurface=followSurface,followSurfaceResfollowSurfaceRes,logger=logger,projectDir=projectDir)
     #    write.csv(djiDF@data,file = paste0(strsplit(getwd(),"/tmp")[[1]][1],"/control/","mission",".csv"),quote = FALSE,row.names = FALSE)
     #writeDjiTreeCsv(result[[2]],p$missionName)
-    writeDjiTreeCSV(result[[2]],p$missionName,1,94,p,logger,round(result[[4]],digit=0),trackSwitch,result[[3]],result[[6]])
-    
+    writeDjiTreeCSV(result[[2]],p$missionName,1,94,p,logger,round(result[[4]],digits = 0),trackSwitch,result[[3]],result[[6]])
     return(result)
     
-  } else if (uavType=="solo"){
+  } else if (uavType == "solo") {
     cat("calculating DEM related stuff\n")
-    df<-read.csv("treepoints.csv",sep="\t",header = FALSE)
+    df <- read.csv("treepoints.csv",sep = "\t",header = FALSE)
     #names(df) <-unlist(strsplit( makeUavPointMAV(pos,uavViewDir,group=99,p,header = TRUE,sep=' '),split = " "))
-    names(df) <-c("a","b","c","d","e","f","g","lat","lon","latitude","longitude","altitude","id","j")
+    names(df) <- c("a","b","c","d","e","f","g","lat","lon","latitude","longitude","altitude","id","j")
     sp::coordinates(df) <- ~lon+lat
-    sp::proj4string(df) <-CRS("+proj=longlat +datum=WGS84 +no_defs")
-    result<-getAltitudes(demFn ,df,p,followSurfaceRes=5,logger)
-    MAVTreeCSV(flightPlanMode="track",trackDistance=10000,logger=logger,p=p,param=result,maxSpeed=p$maxSpeed)
-    
+    sp::proj4string(df) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
+    result <- getAltitudes(demFn ,df,p,followSurfaceRes = 5,logger)
+    MAVTreeCSV(flightPlanMode = "track",trackDistance = 10000,logger = logger,p = p,param = result,maxSpeed = p$maxSpeed)
     return(result)
-    
   }
 }
 
-getAltitudes<- function(demFn ,df,p,followSurfaceRes,logger){
-  if (is.null(demFn)){
+getAltitudes <- function(demFn ,df,p,followSurfaceRes,logger) {
+  if (is.null(demFn)) {
     levellog(logger, 'WARN', "CAUTION!!! no DEM file provided I try to download SRTM data... SRTM DATA has a poor resolution for UAVs!!! ")
     cat("\nCAUTION! No DEM data is provided.\n trying to download SRTM data... \n Be aware that the resulution of SRTM is NOT sufficient for terrain following flights!")
     # download corresponding srtm data
-    dem<-uavRst::getGeoData(name="SRTM",xtent = extent(p$lon1,p$lon3,p$lat1,p$lat3), zone = 1.0,merge = TRUE)
-    dem<-setMinMax(dem)
-    rundem<- raster::crop(dem,extent(min(p$lon1,p$lon3)-0.0083,max(p$lon1,p$lon3)+0.0083,min(p$lat1,p$lat3)-0.0083,max(p$lat1,p$lat3)+0.0083))
-    raster::writeRaster(dem,"tmpdem.tif",overwrite=TRUE)
+    dem <- uavRst::getGeoData(name = "SRTM",xtent = extent(p$lon1,p$lon3,p$lat1,p$lat3), zone = 1.0,merge = TRUE)
+    dem <- setMinMax(dem)
+    rundem <- raster::crop(dem,
+                           extent(min(p$lon1,p$lon3) - 0.0083,
+                                  max(p$lon1,p$lon3) + 0.0083,
+                                  min(p$lat1,p$lat3) - 0.0083,
+                                  max(p$lat1,p$lat3) + 0.0083)
+                           )
+    raster::writeRaster(dem,"tmpdem.tif",overwrite = TRUE)
   } else {
     # read local dem file
-    if (class(demFn)[1] %in% c("RasterLayer", "RasterStack", "RasterBrick")){
-      rundem<-demFn
-      rundem<- raster::crop(rundem,extent(min(p$lon1,p$lon3)-0.0083,max(p$lon1,p$lon3)+0.0083,min(p$lat1,p$lat3)-0.0083,max(p$lat1,p$lat3)+0.0083))
-      raster::writeRaster(rundem,"tmpdem.tif",overwrite=TRUE)
-      dem<-rundem
-    } else{
-      rundem<-raster::raster(demFn,xmn=min(p$lon1,p$lon3)-0.0083,xmx=max(p$lon1,p$lon3)+0.0083,ymn=min(p$lat1,p$lat3)-0.0083,ymx=max(p$lat1,p$lat3)+0.0083)
-      #rundem<- raster::crop(rundem,extent(min(p$lon1,p$lon3)-0.0083,max(p$lon1,p$lon3)+0.0083,min(p$lat1,p$lat3)-0.0083,max(p$lat1,p$lat3)+0.0083))
+    if (class(demFn)[1] %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
+      rundem <- demFn
+      rundem <- raster::crop(rundem,
+                             extent(min(p$lon1,p$lon3) - 0.0083,
+                                    max(p$lon1,p$lon3) + 0.0083,
+                                    min(p$lat1,p$lat3) - 0.0083,
+                                    max(p$lat1,p$lat3) + 0.0083)
+                             )
+      raster::writeRaster(rundem,"tmpdem.tif",overwrite = TRUE)
+      dem <- rundem
+    } else {
+      rundem <- raster::raster(demFn,
+                               xmn = min(p$lon1,p$lon3) - 0.0083,
+                               xmx = max(p$lon1,p$lon3) + 0.0083,
+                               ymn = min(p$lat1,p$lat3) - 0.0083,
+                               ymx = max(p$lat1,p$lat3) + 0.0083)
+      
       file.copy(demFn, paste0(file.path(projectDir,workingDir,"run"),"/tmpdem.tif"))
-      #raster::writeRaster(rundem,"tmpdem.tif",overwrite=TRUE)
-      dem<-rundem
+      dem <- rundem
     }
   }  # end of loading DEM data
   
