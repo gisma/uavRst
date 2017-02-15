@@ -249,51 +249,39 @@ generateDjiCSV <-function(df,mission,nofiles,maxPoints,p,logger,rth,trackSwitch=
   launchLon<-df@data[1,2]
   dem<-raster(dem)
   
+  # due to reprojection recalculate teh launchposition and altitude
   launch_pos<-as.data.frame(cbind(launchLat,launchLon))
   sp::coordinates(launch_pos) <- ~launchLon+launchLat
   sp::proj4string(launch_pos) <-CRS("+proj=longlat +datum=WGS84 +no_defs")
   launchAlt<-raster::extract(dem,launch_pos,layer = 1, nl = 1)  
-
+  
+  # for each of the splitted task files
   for (i in 1:nofiles) {
     cat(paste0("create ",i, " of ",nofiles, " control files...\n"))  
+    
+    # for safety issues we need to generate synthetic climb and sink waypoints 
     # take current start position of the partial task
     startLat<-df@data[minPoints+1,1] # minPoints+1 because of adding the endpoint of the task
     startLon<-df@data[minPoints+1,2]
+    
     # take current end position of split task
     endLat<-df@data[maxPoints,1]
     endLon<-df@data[maxPoints,2]
+
     # generate flight lines from lanch to start and launch to end point of splitted task
-    yhome <- c(launchLat,endLat)
-    xhome <- c(launchLon,endLon)
-    ystart <- c(launchLat,startLat)
-    xstart <- c(launchLon,startLon)
-    start<-SpatialLines(list(Lines(Line(cbind(xstart,ystart)), ID="start")))
-    home<-SpatialLines(list(Lines(Line(cbind(xhome,yhome)), ID="home")))
-    sp::proj4string(home) <-CRS("+proj=longlat +datum=WGS84 +no_defs")
-    sp::proj4string(start) <-CRS("+proj=longlat +datum=WGS84 +no_defs")
+    home<-makeLine(c(launchLon,endLon),c(launchLat,endLat),"home")
+    start<-makeLine(c(launchLon,startLon),c(launchLat,startLat),"start")
     
     # calculate minimum rth altitude for each line by identifing max altitude
     #homeRth<-max(unlist(raster::extract(dem,home)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
     #startRth<-max(unlist(raster::extract(dem,start)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
-    maxAltHomeFlight<-raster::extract(dem,home,fun=max,na.rm=TRUE,layer = 1, nl = 1) - launchAlt + as.numeric(p$flightAltitude)
-    maxAltStartFlight<-raster::extract(dem,start,fun=max,na.rm=TRUE,layer = 1, nl = 1)- launchAlt + as.numeric(p$flightAltitude)
+    maxAltHomeFlight  <- raster::extract(dem,home,fun=max,na.rm=TRUE,layer = 1, nl = 1) - launchAlt + as.numeric(p$flightAltitude)
+    maxAltStartFlight <- raster::extract(dem,start,fun=max,na.rm=TRUE,layer = 1, nl = 1)- launchAlt + as.numeric(p$flightAltitude)
     
-    # generate an empty raster 
-    mask<- dem
-    values(mask)=NA
-    #...update it with the altitude information of the flightline
-    mask<-rasterize(home,mask)
-    mask2<-mask*dem
-    # and find the position of the max altitude
-    idx = which.max(mask2)
-    homemaxpos = xyFromCell(mask2,idx)
-    # do it again for the second line
-    mask<- dem
-    values(mask)=NA
-    mask<-rasterize(start,mask)
-    mask2<-mask*dem
-    idx = which.max(mask2)
-    startmaxpos = xyFromCell(mask2,idx)
+    # get the max position of the flightlines
+    homemaxpos <-  getmaxposFromLine(dem,home)
+    startmaxpos <- getmaxposFromLine(dem,start)
+    
     # log the positions
     levellog(logger, 'INFO', paste("maxaltPos    rth : ", paste0("mission file: ",i," ",homemaxpos[2]," ",homemaxpos[1])))
     levellog(logger, 'INFO', paste("maxaltPos 2start : ", paste0("mission file: ",i," ",startmaxpos[2]," ",startmaxpos[1])))
@@ -304,7 +292,7 @@ generateDjiCSV <-function(df,mission,nofiles,maxPoints,p,logger,rth,trackSwitch=
     
     # generate home max alt waypoint
     heading<-homeheading
-    altitude<-maxAltHomeFlight+0.33*maxAltHomeFlight
+    altitude<-maxAltHomeFlight+0.1*maxAltHomeFlight
     latitude<-homemaxpos[1,2]
     longitude<-homemaxpos[1,1]
     
@@ -313,7 +301,7 @@ generateDjiCSV <-function(df,mission,nofiles,maxPoints,p,logger,rth,trackSwitch=
     
     # maximum altitude wp on the way to the mission start
     heading<-startheading
-    altitude<-maxAltStartFlight+0.33*maxAltStartFlight
+    altitude<-maxAltStartFlight+0.1*maxAltStartFlight
     latitude<-startmaxpos[1,2]
     longitude<-startmaxpos[1,1]
     startmaxrow<-cbind(latitude,longitude,altitude,heading,row1[5:length(row1)])
@@ -438,30 +426,32 @@ generateMavCSV <-function(df,mission,nofiles,rawTime,flightPlanMode,trackDistanc
   sp::coordinates(launch_pos) <- ~launchLon+launchLat
   sp::proj4string(launch_pos) <-CRS("+proj=longlat +datum=WGS84 +no_defs")
   launchAlt<-raster::extract(dem,launch_pos,layer = 1, nl = 1)  
-  # we need to calculate and insert climb and sink waypoints for each task file  
+  # for each splitted task file
   for (i in 1:nofiles) {
     cat(paste0("create ",i, " of ",nofiles, " control files...\n"))  
+    
+    # for safety issues we need to generate synthetic climb and sink waypoints 
     # take current start position of the split task
-    startLat<-df@data[minPoints+1,8]
-    startLon<-df@data[minPoints+1,9]
+    startLat <- df@data[minPoints+1,8]
+    startLon <- df@data[minPoints+1,9]
     
     # take current end position of split task
-    endLat<-df@data[maxPoints,8]
-    endLon<-df@data[maxPoints,9]
+    endLat <- df@data[maxPoints,8]
+    endLon <- df@data[maxPoints,9]
     
     # depending on DEM/DSM sometimes there are no data Values
     if (!is.na(endLat) & !is.na(endLon)) {
       # generate flight lines from lanch to start and launch to end point of splitted task
-      home<-makeLine(c(launchLon,endLon),c(launchLat,endLat),"Home")
-      start<-makeLine(c(launchLon,startLon),c(launchLat,startLat),"Start")
+      home  <- makeLine(c(launchLon,endLon),c(launchLat,endLat),"Home")
+      start <- makeLine(c(launchLon,startLon),c(launchLat,startLat),"Start")
       
       # calculate minimum rth altitude for each line by identifing max altitude
-      homeRth<-raster::extract(dem,home,fun=max,na.rm=TRUE,layer = 1, nl = 1) - launchAlt + as.numeric(p$flightAltitude)
-      startRth<-raster::extract(dem,start,fun=max,na.rm=TRUE,layer = 1, nl = 1) - launchAlt + as.numeric(p$flightAltitude)
+      homeRth  <- raster::extract(dem,home,fun=max,na.rm=TRUE,layer = 1, nl = 1) - launchAlt + as.numeric(p$flightAltitude)
+      startRth <- raster::extract(dem,start,fun=max,na.rm=TRUE,layer = 1, nl = 1) - launchAlt + as.numeric(p$flightAltitude)
       
       # add 1/3 third altitude as safety buffer
-      homeRth<-homeRth+0.33*homeRth
-      startRth<-startRth+0.33*startRth
+      homeRth  <- homeRth  + 0.1 * homeRth
+      startRth <- startRth + 0.1 * startRth
       
       # non "raster" implementytion slightly faster but needs full gdal installation
       ## copy raster from template
