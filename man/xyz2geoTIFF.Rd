@@ -30,4 +30,3 @@ plot(raster(paste0(getwd(),"/",tools::file_path_sans_ext(basename(file.path(getw
 \author{
 Chris Reudenbach
 }
-

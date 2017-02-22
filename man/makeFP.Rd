@@ -246,6 +246,7 @@ To use the script you need to install quite a lot of R-packages and at least the
   }
   }
 }
+
 \examples{
 
 \dontrun{
@@ -339,4 +340,3 @@ mapview::mapview(fp2$demA,color="black", alpha.regions = 0.1,lwd=0.5)
 \author{
 Chris Reudenbach
 }
-

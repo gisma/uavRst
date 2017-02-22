@@ -39,9 +39,6 @@ rgbI <- rgbi(img)
 plot(rgbI, col = gray(255:0/255))
 
 }
-\author{
-Chris Reudenbach, (VVI) Florian Detsch, (VVI) Tim Appelhans
-}
 \references{
 Planetary Habitability Laboratory (2015): Visible Vegetation Index (VVI). Available online via \url{http://phl.upr.edu/projects/visible-vegetation-index-vvi}.
 
@@ -61,4 +58,6 @@ Tucker, C.J., 1979. Red and photographic infrared linear combinations for monito
 Wavelength ranges for overlapping digital camera bands are: red 580-670 nm, green 480-610 nm, and blue 400-520 nm (Hunt et al., 2005)
 http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=2161&context=usdaarsfacpub
 }
-
+\author{
+Chris Reudenbach, (VVI) Florian Detsch, (VVI) Tim Appelhans
+}

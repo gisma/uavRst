@@ -21,4 +21,3 @@ Read a GPX file. By default, it reads all possible GPX layers, and only returns 
 \note{
 cloned from tmap
 }
-

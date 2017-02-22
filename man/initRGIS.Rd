@@ -44,4 +44,3 @@ envGIS<- initRGIS("~/proj/tester",'cost',"~/proj/runbeetle/srtm_43_01.tif")
 Chris Reudenbach
 \email{reudenbach@gis-ma.org}
 }
-

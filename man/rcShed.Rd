@@ -30,4 +30,3 @@ rcRange<-rcShed(envGIS,launchP = c(8.692, 50.842316), flightAlt = 100, rcRange =
 \author{
 Chris Reudenbach
 }
-

@@ -1,3 +1,31 @@
+traddelkopf60 <- uavRst::makeFP(projectDir="~/proj/uav/gentree/Traddelkopf/",
+                                missionName = "65msolo",
+                                surveyArea="~/proj/uav/gentree/Traddelkopf/Traddelkopf_2017_02_paralell.json",
+                                followSurface = TRUE,
+                                followSurfaceRes = 1,
+                                flightAltitude = 65,
+                                overlap = 0.75,
+                                demFn = "~/proj/uav/gentree/Traddelkopf/data/DGM1_kellerwald.tif",
+                                altFilter = 1.,
+                                horizonFilter = 25,
+                                maxSpeed = 10,
+                                uavType = "solo",
+                                cameraType = "MAPIR2",
+                                windCondition = 2) 
+
+
+
+
+
+library(mapedit)
+library(leaflet)
+library(mapview)
+library(uavRst)
+leafDraw(overlay = traddelkopf60$demA)
+fA <- edit_map(mapview(traddelkopf60$demA)@map)
+
+
+
 fp<-makeFP(projectDir="~/uav/hasenkopf",
            missionName = "hase50",
            surveyArea = "hase50.json", 

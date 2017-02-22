@@ -15,4 +15,3 @@ world boundary data set
 This dataset is from the mapdata package
 \code{\link{mapdata}}.
 }
-

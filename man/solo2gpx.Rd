@@ -39,4 +39,3 @@ solo2gpx(logDir="~/tmp/solo", logFiles = "*")
 \author{
 Chris Reudenbach
 }
-

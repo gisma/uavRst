@@ -31,4 +31,3 @@ upload2Solo("export_1001_solo.waypoints")
 \author{
 Chris Reudenbach
 }
-

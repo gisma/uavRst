@@ -33,10 +33,9 @@ winUniMrBuild()
 }
 
 }
-\author{
-Florian Detsch, Chris Reudenbach
-}
 \seealso{
 \code{\link{roxygenize}}, \code{\link[devtools]{build}},\code{\link{install.packages}}.
 }
-
+\author{
+Florian Detsch, Chris Reudenbach
+}
