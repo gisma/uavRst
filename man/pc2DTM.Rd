@@ -2,24 +2,55 @@
 % Please edit documentation in R/makeDTM.R
 \name{pc2DTM}
 \alias{pc2DTM}
-\title{calcualte and post-classifies the morphological structure of raw tree crowns}
+\title{Create a Digital Terrain Model from a UAV generated point cloud}
 \usage{
-pc2DTM(runDir,currentP,allP)
+pc2DTM(lasDir = NULL, projRootDir = NULL, thin_with_grid = "0.5",
+  keep_class = "2", bulge = "1.5", level_max = "9", step_size = "city",
+  sub_size = "ultra_fine", grid_size = "0.5",
+  proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
+  path_lastools = NULL, cores = "3")
 }
 \arguments{
+\item{lasDir}{default is \code{NULL} path  to the laz/las file(s)}
+
+\item{projRootDir}{default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
+
+\item{thin_with_grid}{default 0.5 meter. Grid stepsize for data thinning}
+
+\item{keep_class}{default is 2. Default ground class of las/laz conform data}
+
+\item{bulge}{default is 1.5. 'A parameter to filter spikes it is set to a step_size/10 and then clamped into the range from 1.0 to 2.0}
+
 \item{level_max}{number ob spline iterations}
 
-\item{gridsize}{resolution of the DTM raster}
+\item{step_size}{default is 25 meter. LAStools key words if \code{city},\code{town},\code{metro},\code{nature},\code{wilderness} or experiment with free values}
+
+\item{sub_size}{= "8", default is 8 meter. LAStools key words if \code{extra_coarse},\code{coarse},\code{fine},\code{extra_fine},\code{ultra_fine},\code{hyper_fine} or experiment with free values}
+
+\item{grid_size}{resolution of the DTM raster}
+
+\item{proj4}{default is EPSG 32632 any valid proj4 string that is assumingly the correct one}
 
 \item{path_lastools}{directory for the windows lastools}
 
 \item{cores}{number of cores that will be used}
+
+\item{level_max}{default is 3, Maximum number of spline iterations highly suggested to take odd numbers. As higher as more detailed (spurious).}
 }
 \value{
 pc2DTM basically returns a DEM and DSM
 }
 \description{
-calcualte and post-classifies the morphological structure of raw tree crowns
+Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.
+}
+\examples{
+\dontrun{
+pc2DTM(lasDir =  "~/path/to/lasdata",
+       projRootDir = "~/temp5",
+       thin_with_grid = "0.5",
+       level_max = "5" ,
+       grid_size = "0.5")
+}
 }
 \author{
 Chris Reudenbach
