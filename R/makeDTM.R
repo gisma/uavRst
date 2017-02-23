@@ -54,6 +54,8 @@ pc2DTM <- function(lasDir = NULL,
                    proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                    path_lastools = NULL,
                    cores = "3") {
+  
+  # some basic checks 
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
   lasDir <- path.expand(lasDir)
   
@@ -65,15 +67,15 @@ pc2DTM <- function(lasDir = NULL,
       cmd <- paste("wine ",path_lastools <- paste(system.file(package = "uavRst"), "LAStools", sep = "/"))
     }
   }
+ 
+  # create cmd strings
+  las2las       <- paste(cmd,"las2las-cli.exe",sep = "/")
+  lasmerge      <- paste(cmd,"lasmerge-cli.exe",sep = "/")
+  lasground_new <- paste(cmd,"lasground_new-cli.exe",sep = "/")
+  las2dem       <- paste(cmd,"las2dem-cli.exe",sep = "/")
+  las2txt       <- paste(cmd,"las2txt-cli.exe",sep = "/")
   
-  
-  las2las<-paste(cmd,"las2las-cli.exe",sep = "/")
-  lasmerge<-paste(cmd,"lasmerge-cli.exe",sep = "/")
-  lasground_new<-paste(cmd,"lasground_new-cli.exe",sep = "/")
-  las2dem<-paste(cmd,"las2dem-cli.exe",sep = "/")
-  las2txt<-paste(cmd,"las2txt.exe",sep = "/")
-  
-  
+  # check las / laz files laz will be preferred
   lasFileNames <- list.files(pattern = "[.]las$", path = lasDir, full.names = TRUE)
   lazFileNames <- list.files(pattern = "[.]laz$", path = lasDir, full.names = TRUE)
   if (length(lazFileNames) > 0 ) extFN <- substr(extension(basename(lazFileNames[1])),2,4)
@@ -82,13 +84,12 @@ pc2DTM <- function(lasDir = NULL,
   
   #sp_param <- uavRst:::getSpatialLASInfo(lasDir)
   
-  
+  # map the code words
   if (step_size == "city") step <- "25"
   else if (step_size == "town") step <- "10"
   else if (step_size == "metro") step <- "50"
   else if (step_size == "nature") step <- "5"
   else if (step_size == "wilderness") step <- "3"
-  
   if (sub_size == "extra_coarse") sub <- "3"
   else if (sub_size == "coarse") sub <- "4"
   else if (sub_size == "fine") sub <- "6"
@@ -96,19 +97,15 @@ pc2DTM <- function(lasDir = NULL,
   else if (sub_size == "ultra_fine") sub <- "8"
   else if (sub_size == "hyper_fine") sub <- "9"
   
+  # create project structure and export global pathes
   link2GI::initProj(projRootDir = projRootDir, 
                     projFolders =  c("output/","run/"))
   
   # set lastool folder
   path_lastools <- path.expand(path_lastools)
   
-  unlink(path_run, recursive = FALSE, force = TRUE)
+  unlink(paste0(path_run,"*"), force = TRUE)
   
-  # specify temporary directory for tiles
-  # path_run <- paste0(path_lastools,"/tmp")
-  # path_lasdata <- paste0(path_lastools,"/input")
-  # dir.create(path_run)
-  # dir.create(path_lasdata)
   setwd(path_run)
   
   
