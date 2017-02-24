@@ -13,7 +13,7 @@ if (!isGeneric('pc2DTM')) {
 #'@author Chris Reudenbach
 #'
 #'@param lasDir  default is \code{NULL} path  to the laz/las file(s)
-#'@param projRootDir default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
+#'@param gisdbase_path default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
 #'@param grid_size  resolution of the DTM raster
 #'@param path_lastools directory for the windows lastools
 #'@param level_max number ob spline iterations
@@ -36,14 +36,14 @@ if (!isGeneric('pc2DTM')) {
 #'@examples 
 #'\dontrun{
 #' pc2DTM(lasDir =  "~/path/to/lasdata",
-#'        projRootDir = "~/temp5",
+#'        gisdbase_path = "~/temp5",
 #'        thin_with_grid = "0.5",
 #'        level_max = "5" ,
 #'        grid_size = "0.5")
 #'}
 
 pc2DTM <- function(lasDir = NULL,
-                   projRootDir = NULL,
+                   gisdbase_path = NULL,
                    thin_with_grid = "0.5",
                    keep_class = "2",
                    bulge = "1.5",
@@ -98,7 +98,7 @@ pc2DTM <- function(lasDir = NULL,
   else if (sub_size == "hyper_fine") sub <- "9"
   
   # create project structure and export global pathes
-  link2GI::initProj(projRootDir = projRootDir, 
+  link2GI::initProj(projRootDir = gisdbase_path, 
                     projFolders =  c("output/","run/"))
   
   # set lastool folder

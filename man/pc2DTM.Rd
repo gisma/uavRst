@@ -4,7 +4,7 @@
 \alias{pc2DTM}
 \title{Create a Digital Terrain Model from a UAV generated point cloud}
 \usage{
-pc2DTM(lasDir = NULL, projRootDir = NULL, thin_with_grid = "0.5",
+pc2DTM(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
   keep_class = "2", bulge = "1.5", level_max = "9", step_size = "city",
   sub_size = "ultra_fine", grid_size = "0.5",
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
@@ -13,7 +13,7 @@ pc2DTM(lasDir = NULL, projRootDir = NULL, thin_with_grid = "0.5",
 \arguments{
 \item{lasDir}{default is \code{NULL} path  to the laz/las file(s)}
 
-\item{projRootDir}{default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
+\item{gisdbase_path}{default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
 
 \item{thin_with_grid}{default 0.5 meter. Grid stepsize for data thinning}
 
@@ -46,7 +46,7 @@ Create a Digital Terrain Model from a high density point cloud as typically deri
 \examples{
 \dontrun{
 pc2DTM(lasDir =  "~/path/to/lasdata",
-       projRootDir = "~/temp5",
+       gisdbase_path = "~/temp5",
        thin_with_grid = "0.5",
        level_max = "5" ,
        grid_size = "0.5")
