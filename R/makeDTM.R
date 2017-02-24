@@ -51,6 +51,7 @@ pc2DTM <- function(lasDir = NULL,
                    step_size = "city",
                    sub_size = "ultra_fine",
                    grid_size = "0.5", 
+                   projFolder = c("data/","output/","run/","las/"),
                    proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                    path_lastools = NULL,
                    cores = "3") {
@@ -99,7 +100,7 @@ pc2DTM <- function(lasDir = NULL,
   
   # create project structure and export global pathes
   link2GI::initProj(projRootDir = gisdbase_path, 
-                    projFolders =  c("output/","run/"))
+                    projFolders =  projFolder)
   
   # set lastool folder
   path_lastools <- path.expand(path_lastools)

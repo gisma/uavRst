@@ -33,17 +33,16 @@ if (!isGeneric('pc2DSM')) {
 #'# create a DSM based on a uav point cloud 
 #'pc2DSM(lasDir =  lasDir,
 #'       gisdbase_path = "~/temp6/GRASS7",
-#'       GRASSlocation = "tmp",
+#'       GRASSlocation = "tmp/",
 #'       projFolder = c("data/","output/","run/","las/"),
 #'       grid_size = "0.05",
-#'       gisdbase_exist = FALSE,
-#'       returnRaster = FALSE)
+#'       gisdbase_exist = FALSE)
 #'}
 #'
 
 pc2DSM <- function(lasDir = NULL,
                    gisdbase_path = NULL,
-                   GRASSlocation = "tmp",
+                   GRASSlocation = "tmp/",
                    projFolder = c("data/","output/","run/","las/"),
                    grid_size = "0.5", 
                    saga_spline_level_max = "9" ,
@@ -51,8 +50,7 @@ pc2DSM <- function(lasDir = NULL,
                    type_smooth = "otb_gauss",
                    proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                    gisdbase_exist = FALSE,
-                   path_lastools = NULL,
-                   returnRaster = FALSE) {
+                   path_lastools = NULL) {
   
   # some basic checks 
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
