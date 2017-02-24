@@ -4,12 +4,10 @@ if (!isGeneric('pc2DSM')) {
 }
 
 #'@name pc2DSM
-#'@title calcualte and post-classifies the morphological structure of raw tree crowns
+#'@title Create a Digital Surface Model from a UAV generated point cloud 
 #'
 #'@description
-#' calcualte and post-classifies the morphological structure of raw tree crowns
-#'
-#'@usage pc2DSM(runDir,currentP,allP)
+#' Create a Digital Surface Model from a UAV generated point cloud 
 #'
 #'@author Chris Reudenbach
 #'
@@ -25,18 +23,19 @@ if (!isGeneric('pc2DSM')) {
 #'@param gisdbase_exist switch if gisdbase is created or  linked only
 
 
-#'@return pc2DSMbasically returns a  DSM
+#'@return pc2DSM basically returns a  DSM
 #'
 #'
 #'@export pc2DSM
+#'@examples
 #'\dontrun{
-#'# create a DSM based on a uav point cloud 
-#'pc2DSM(lasDir =  lasDir,
-#'       gisdbase_path = "~/temp6/GRASS7",
-#'       GRASSlocation = "tmp/",
-#'       projFolder = c("data/","output/","run/","las/"),
-#'       grid_size = "0.05",
-#'       gisdbase_exist = FALSE)
+#' # create a DSM based on a uav point cloud 
+#'  pc2DSM(lasDir =  lasDir,
+#'         gisdbase_path = "~/temp6/GRASS7",
+#'         GRASSlocation = "tmp/",
+#'         projFolder = c("data/","output/","run/","las/"),
+#'         grid_size = "0.05",
+#'         gisdbase_exist = FALSE)
 #'}
 #'
 
