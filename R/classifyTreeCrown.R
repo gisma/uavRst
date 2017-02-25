@@ -57,7 +57,7 @@ classifyTreeCrown <- function(crownFn,segType="2",
   crownarea <- crownarea[crownarea@data$area > crownMinArea & 
                            crownarea@data$area < crownMaxArea,]
   # calculate more metrics
-  crownarea <- caMetrics(crownarea,funNames = funNames)
+  crownarea <- uavRst::caMetrics(crownarea,funNames = funNames)
   #  filter for solidity and WL ratio
   crowns <- crownarea[as.numeric(crownarea@data$solidity) != solidity &
                         as.numeric(crownarea@data$eccentricityboundingbox) > WLRatio ,]
@@ -73,12 +73,12 @@ classifyTreeCrown <- function(crownFn,segType="2",
   rgdal::writeOGR(obj = centerTrees,
                   layer = paste0("cTr_",segType), 
                   driver = "ESRI Shapefile", 
-                  dsn = pd_gi_run, 
+                  dsn = path_run, 
                   overwrite_layer = TRUE)
   rgdal::writeOGR(obj = crowns,
                   layer = paste0("cro_",segType), 
                   driver = "ESRI Shapefile", 
-                  dsn = pd_gi_run, 
+                  dsn = path_run, 
                   overwrite_layer = TRUE)
   return(list(centerTrees,crowns))
 }

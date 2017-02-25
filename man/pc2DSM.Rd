@@ -6,8 +6,9 @@
 \usage{
 pc2DSM(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
   projFolder = c("data/", "output/", "run/", "las/"), grid_size = "0.5",
-  saga_spline_level_max = "9", otb_gauss_radius = "2",
-  type_smooth = "otb_gauss",
+  saga_spline_level_max = "9", otb_gauss_radius = "0.5",
+  type_smooth = "otb_gauss", dsm_minalt = 0, dsm_maxalt = 4000,
+  dsm_area = FALSE,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
   gisdbase_exist = FALSE, path_lastools = NULL)
 }
@@ -24,13 +25,19 @@ pc2DSM(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
 
 \item{saga_spline_level_max}{default is 9 number ob spline iterations}
 
-\item{otb_gauss_radius}{radius of otb smoothing filter}
+\item{otb_gauss_radius}{default is \code{0.5} radius of otb smoothing filter in meter}
 
 \item{type_smooth}{default is \code{otb_gauss} alternatives is \code{saga_spline}}
 
-\item{proj4}{default is EPSG 32632 any valid proj4 string that is assumingly the correct one}
+\item{dsm_minalt}{default is \code{0}, minimum DTM altitude accepted}
 
-\item{gisdbase_exist}{switch if gisdbase is created or  linked only}
+\item{dsm_area}{default \code{FALSE} generate polygon of valid DSM data}
+
+\item{proj4}{default is EPSG \code{32632} any valid proj4 string that is assumingly the correct one}
+
+\item{gisdbase_exist}{default is  \code{FALSE} switch if gisdbase is created or  linked only}
+
+\item{dsm_minalt}{default is \code{4000}, maximum DTM altitude accepted}
 }
 \value{
 pc2DSM basically returns a  DSM

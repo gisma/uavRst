@@ -18,9 +18,12 @@ if (!isGeneric('pc2DSM')) {
 #'@param grid_size resolution for raster operations 
 #'@param type_smooth  default is \code{otb_gauss} alternatives is \code{saga_spline}
 #'@param saga_spline_level_max default is 9 number ob spline iterations
-#'@param otb_gauss_radius radius of otb smoothing filter
-#'@param proj4  default is EPSG 32632 any valid proj4 string that is assumingly the correct one
-#'@param gisdbase_exist switch if gisdbase is created or  linked only
+#'@param otb_gauss_radius default is \code{0.5} radius of otb smoothing filter in meter
+#'@param dsm_minalt default is \code{0}, minimum DTM altitude accepted
+#'@param dsm_minalt default is \code{4000}, maximum DTM altitude accepted
+#'@param dsm_area default \code{FALSE} generate polygon of valid DSM data 
+#'@param proj4  default is EPSG \code{32632} any valid proj4 string that is assumingly the correct one
+#'@param gisdbase_exist default is  \code{FALSE} switch if gisdbase is created or  linked only
 
 
 #'@return pc2DSM basically returns a  DSM
@@ -45,12 +48,17 @@ pc2DSM <- function(lasDir = NULL,
                    projFolder = c("data/","output/","run/","las/"),
                    grid_size = "0.5", 
                    saga_spline_level_max = "9" ,
-                   otb_gauss_radius = "2",
+                   otb_gauss_radius = "0.5",
                    type_smooth = "otb_gauss",
+                   dsm_minalt = 0,
+                   dsm_maxalt = 4000,
+                   dsm_area = FALSE,
                    proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                    gisdbase_exist = FALSE,
                    path_lastools = NULL) {
   
+  gdal <- link2GI::linkgdalUtils()
+  saga <- link2GI::linkSAGA()
   # some basic checks 
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
   lasDir <- path.expand(lasDir)
@@ -93,7 +101,7 @@ pc2DSM <- function(lasDir = NULL,
   setwd(path_run)
   
   # merge all files
-  cat("NOTE: You are dealing with a huge UAV generated point cloud data set.\n      so take time and keep relaxed... :-)\n")
+  cat("\nNOTE: You are dealing with a huge UAV generated point cloud data set.\n      so take time and keep relaxed... :-)\n")
   cat(":: merge and decompress ",noF," point cloud files...\n")
   ret <- system(paste0(lasmerge,
                        " -i ",lasDir,"/*.",extFN,
@@ -132,11 +140,10 @@ pc2DSM <- function(lasDir = NULL,
   
   
   
-  cat(":: convert raw DSM  geotiff \n")
+  cat(":: convert raw DSM to GeoTiff \n")
   uavRst:::G2Tiff(runDir = path_output, layer = "point_cloud_dsm")
-  
-  gdal <- link2GI::linkgdalUtils()
-  cat("\n:: preliminary fill of gaps... \n")
+
+  cat(":: preliminary fill of gaps... \n")
   ret <- system(paste0("gdal_fillnodata.py ",
                        path_output,"point_cloud_dsm.tif ",
                        path_output,"filled_point_cloud_dsm.tif"),intern = TRUE)
@@ -146,9 +153,10 @@ pc2DSM <- function(lasDir = NULL,
                       overwrite = TRUE,  
                       of = 'SAGA',
                       verbose = FALSE) 
-  
+  cat(":: smoothing the gap filled DSM... \n")
   # otb gaussian smooth
   if (type_smooth == "otb_gauss") {
+    otb_gauss_radius <- as.character(as.numeric(otb_gauss_radius)/as.numeric(grid_size))
     link2GI::linkOTB()
     module  <- "otbcli_Smoothing"
     command <- paste0(path_OTB, module)
@@ -156,7 +164,7 @@ pc2DSM <- function(lasDir = NULL,
     command <- paste0(command, " -out ", path_output, "/dsm.tif")
     command <- paste0(command, " -ram 4096")
     command <- paste0(command, " -type gaussian")
-    command <- paste0(command, " -type.gaussian.radius ",otb_gauss_radius)
+    command <- paste0(command, " -type.gaussian.radius ",otb_gauss_radius) #(in pixel)
     ret <- system(command, intern = TRUE)  
     dsm <- raster::raster(paste0(path_output, "/dsm.tif"))
   }
@@ -173,7 +181,6 @@ pc2DSM <- function(lasDir = NULL,
                          ' -LEVEL_MAX ',saga_spline_level_max),
                   intern = TRUE, 
                   ignore.stderr = TRUE)
-    
     dsm <- gdalUtils::gdalwarp(paste0(path_run,"spline_filled_point_cloud_dsm.sdat"), 
                                paste0(path_output,"dsm.tif"), 
                                t_srs = proj4,
@@ -181,5 +188,21 @@ pc2DSM <- function(lasDir = NULL,
                                overwrite = TRUE,  
                                verbose = FALSE) 
   }
-  return(dsm)  
+    cat(":: calculate metadata ... \n")
+    dsm[dsm <= dsm_minalt] <- NA
+    dsm[dsm > dsm_maxalt] <- NA
+    raster::writeRaster(dsm, paste0(path_output, "/dsm.tif"), overwrite = TRUE)
+    e <- extent(dsm)
+    dsmA <- as(e, 'SpatialPolygons')  
+    if (dsm_area) {
+      dsm2 <- dsm > -Inf
+      tmp <- raster::aggregate(dsm2,fact = 1 / gridsize)
+      dsmdA  <- rasterToPolygons(tmp)
+      dsmdA  <- rgeos::gUnaryUnion(dsmdA)
+      #dsmdA <- rasterToPolygons(dsm2, dissolve=TRUE)
+      }
+    else dsmdA <- NULL
+    
+   
+  return(list(dsm,dsmA,dsmdA))
 }

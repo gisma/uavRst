@@ -23,12 +23,15 @@ if (!isGeneric('pc2DTM')) {
 #'@param level_max default is 3, Maximum number of spline iterations highly suggested to take odd numbers. As higher as more detailed (spurious).
 #'@param step_size  default is 25 meter. LAStools key words if \code{city},\code{town},\code{metro},\code{nature},\code{wilderness} or experiment with free values
 #'@param sub_size = "8", default is 8 meter. LAStools key words if \code{extra_coarse},\code{coarse},\code{fine},\code{extra_fine},\code{ultra_fine},\code{hyper_fine} or experiment with free values
+#'@param dtm_minalt default is \code{0}, minimum DTM altitude accepted
+#'@param dtm_minalt default is \code{4000}, maximum DTM altitude accepted
+#'@param dtm_area default \code{FALSE} generate polygon of valid DTM data
 #'@param cores number of cores that will be used
 #'@param proj4  default is EPSG 32632 any valid proj4 string that is assumingly the correct one
 
 
 
-#'@return pc2DTM basically returns a DEM and DSM
+#'@return pc2DTM basically returns a DTM
 #'
 #'
 #'@export pc2DTM
@@ -51,10 +54,16 @@ pc2DTM <- function(lasDir = NULL,
                    step_size = "city",
                    sub_size = "ultra_fine",
                    grid_size = "0.5", 
+                   dtm_minalt = 0,
+                   dtm_maxalt = 4000,
+                   dtm_area = FALSE,
                    projFolder = c("data/","output/","run/","las/"),
                    proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                    path_lastools = NULL,
                    cores = "3") {
+  
+  gdal <- link2GI::linkgdalUtils()
+  saga <- link2GI::linkSAGA()  
   
   # some basic checks 
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
@@ -111,9 +120,9 @@ pc2DTM <- function(lasDir = NULL,
   
   
   ### reduce data amount
-  cat("reducing the point density...\n")
+  cat("\nreducing the point density...\n")
   ret <- system(paste0(las2las,
-                       " -i ",path_lasdata,"/*.",extFN,
+                       " -i ",lasDir,"/*.",extFN,
                        " -odix _red2 ",
                        " -odir ",path_run,
                        " -o",extFN,
@@ -219,5 +228,19 @@ pc2DTM <- function(lasDir = NULL,
                              output_Raster = TRUE,
                              overwrite = TRUE,  
                              verbose = FALSE) 
-  return(dtm)
+  cat(":: calculate metadata ... \n")
+  dtm[dtm <= dtm_minalt] <- NA
+  dtm[dtm > dtm_maxalt] <- NA
+  raster::writeRaster(dtm, paste0(path_output, "/dtm.tif"),overwrite = TRUE)
+  e <- extent(dtm)
+  dtmA <- as(e, 'SpatialPolygons')  
+  if (dtm_area) {
+    dtm2 <- dtm > -Inf
+    tmp <- raster::aggregate(dtm2,fact = 1 / gridsize)
+    dtmdA  <- rasterToPolygons(tmp)
+    dtmdA  <- rgeos::gUnaryUnion(dtmdA)
+    #dtmdA <- rasterToPolygons(dtm2, dissolve=TRUE)
+  }
+  else dtmdA <- NULL
+  return(list(dtm,dtmA,dtmdA))
 }

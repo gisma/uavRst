@@ -6,8 +6,9 @@
 \usage{
 pc2DTM(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
   keep_class = "2", bulge = "1.5", level_max = "9", step_size = "city",
-  sub_size = "ultra_fine", grid_size = "0.5", projFolder = c("data/",
-  "output/", "run/", "las/"),
+  sub_size = "ultra_fine", grid_size = "0.5", dtm_minalt = 0,
+  dtm_maxalt = 4000, dtm_area = FALSE, projFolder = c("data/", "output/",
+  "run/", "las/"),
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
   path_lastools = NULL, cores = "3")
 }
@@ -30,6 +31,10 @@ pc2DTM(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
 
 \item{grid_size}{resolution of the DTM raster}
 
+\item{dtm_minalt}{default is \code{0}, minimum DTM altitude accepted}
+
+\item{dtm_area}{default \code{FALSE} generate polygon of valid DTM data}
+
 \item{proj4}{default is EPSG 32632 any valid proj4 string that is assumingly the correct one}
 
 \item{path_lastools}{directory for the windows lastools}
@@ -37,9 +42,11 @@ pc2DTM(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
 \item{cores}{number of cores that will be used}
 
 \item{level_max}{default is 3, Maximum number of spline iterations highly suggested to take odd numbers. As higher as more detailed (spurious).}
+
+\item{dtm_minalt}{default is \code{4000}, maximum DTM altitude accepted}
 }
 \value{
-pc2DTM basically returns a DEM and DSM
+pc2DTM basically returns a DTM
 }
 \description{
 Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.
