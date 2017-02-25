@@ -11,7 +11,7 @@ if (!isGeneric('caMetrics')) {
 }
 
 #'@name caMetrics
-
+#'@title calculate morphometric features of polygons
 #'
 #'@export caMetrics
 caMetrics<- function(crownarea, funNames = c("area","length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")){

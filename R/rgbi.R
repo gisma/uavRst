@@ -94,9 +94,9 @@ rgbi<- function(rgb,rgbi=c("red","green","blue","VVI","VARI","NDTI","RI","CI","B
     } else if (item=="RI"){
       # redness index
       RI<-red**2/(blue*green**3)
-    } else if (item=="ci"){
+    } else if (item=="CI"){
       # CI Soil Colour Index
-      CI<-(red-green)/(red+green)
+      CI <- (red-green)/(red+green)
     } else if (item=="BI"){
       #  Brightness Index
       BI<-sqrt((red**2+green**2+blue*2)/3)
@@ -108,7 +108,7 @@ rgbi<- function(rgb,rgbi=c("red","green","blue","VVI","VARI","NDTI","RI","CI","B
       HI<-(2*red-green-blue)/(green-blue)
     } else if (item=="TGI"){
       # Triangular greenness index
-      TGI <- -0.5*(190*(red - green)- 120(red - blue))
+      TGI <- -0.5*(190*(red - green)- 120*(red - blue))
     } else if (item=="GLI"){
       # Green leaf index
       GLI<-(2*green-red-blue)/(2*green+red+blue)
@@ -121,7 +121,7 @@ rgbi<- function(rgb,rgbi=c("red","green","blue","VVI","VARI","NDTI","RI","CI","B
   ## return rgbi
   
   result <- stack(red,green,blue,VVI,VARI,NDTI,RI,CI,BI,SI,HI,TGI,GLI,NGRDI)
-  result<-  stack(eval(rgbi))
+  result<-  stack(eval(result))
   names(result) <- c("red","green","blue","VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI")
   return(result)
 }
