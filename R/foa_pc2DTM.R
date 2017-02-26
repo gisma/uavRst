@@ -120,7 +120,7 @@ pc2DTM <- function(lasDir = NULL,
   
   
   ### reduce data amount
-  cat("\nreducing the point density...\n")
+  cat("\n:: reducing the point density...\n")
   ret <- system(paste0(las2las,
                        " -i ",lasDir,"/*.",extFN,
                        " -odix _red2 ",
@@ -133,7 +133,7 @@ pc2DTM <- function(lasDir = NULL,
   )
   
   # merge all files
-  cat("merge point cloud files ...\n")
+  cat(":: merge point cloud files ...\n")
   ret <- system(paste0(lasmerge,
                        " -i ",path_run,"/export*_red2.",extFN,
                        " -o ",path_run,"out.",extFN),
@@ -143,7 +143,7 @@ pc2DTM <- function(lasDir = NULL,
   
   #### starting lastools classification 
   # run lasground 
-  cat("classify ground points (LAStools) ...\n")
+  cat(":: classify ground points (LAStools) ...\n")
   ret <- system(paste0(lasground_new,
                        " -i ",path_run,"out.",extFN,
                        " -all_returns ",
@@ -184,7 +184,7 @@ pc2DTM <- function(lasDir = NULL,
   
   #### starting SAGA classification
   # create output mask file for interpolation
-  cat("classify ground points (SAGA) ...\n")
+  cat(":: classify ground points (aDTM) ...\n")
   r <- raster::raster(paste0(path_output,"o_dtm.tif"))
   r[r > 0] <- 0
   raster::writeRaster(r,filename = paste0(path_run,"rawdtm.tif"),overwrite = TRUE)
