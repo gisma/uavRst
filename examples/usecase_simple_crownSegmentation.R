@@ -1,4 +1,4 @@
-# use case for the estimation of basic tree/forest indices 
+# use case for the estimation of basic crown segmentation
 # from an uav derived point cloud data set
 # NOTE the ortho image is obligatory
 
