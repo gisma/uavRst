@@ -2,7 +2,6 @@
 
 export(caMetrics)
 export(classifyTreeCrown)
-export(costMergePeaks)
 export(foa_tree_segementation)
 export(getGeoData)
 export(getPresetTask)

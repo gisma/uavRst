@@ -11,4 +11,3 @@ Antarctic facilities. Type of facility attribute is ""feature_ty"
 \details{
 The data show the Antarctic facilities (2012) as provided by \href{https://www.comnap.aq}{comnap} via the \href{www.quantarctica.org}{Quantarctica2} data compilation that is compiled by the \href{http://www.npolar.no/en}{Norwegian Polar Institute}
 }
-
