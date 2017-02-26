@@ -1,10 +1,10 @@
 
-if (!isGeneric('pc2DTM')) {
-  setGeneric('pc2DTM', function(x, ...)
-    standardGeneric('pc2DTM'))
+if (!isGeneric('fa_pc2DTM')) {
+  setGeneric('fa_pc2DTM', function(x, ...)
+    standardGeneric('fa_pc2DTM'))
 }
 
-#'@name pc2DTM
+#'@name fa_pc2DTM
 #'@title Create a Digital Terrain Model from a UAV generated point cloud 
 #'
 #'@description
@@ -31,21 +31,21 @@ if (!isGeneric('pc2DTM')) {
 
 
 
-#'@return pc2DTM basically returns a DTM
+#'@return fa_pc2DTM basically returns a DTM
 #'
 #'
-#'@export pc2DTM
+#'@export fa_pc2DTM
 #'
 #'@examples 
 #'\dontrun{
-#' pc2DTM(lasDir =  "~/path/to/lasdata",
+#' fa_pc2DTM(lasDir =  "~/path/to/lasdata",
 #'        gisdbase_path = "~/temp5",
 #'        thin_with_grid = "0.5",
 #'        level_max = "5" ,
 #'        grid_size = "0.5")
 #'}
 
-pc2DTM <- function(lasDir = NULL,
+fa_pc2DTM <- function(lasDir = NULL,
                    gisdbase_path = NULL,
                    thin_with_grid = "0.5",
                    keep_class = "2",

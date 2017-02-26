@@ -19,7 +19,7 @@ link2GI::initProj(projRootDir = "~/temp6/GRASS7",
 setwd(path_run)
 
 # clean run dir
-unlink(paste0(path_run,"*"), force = TRUE)
+# unlink(paste0(path_run,"*"), force = TRUE)
 
 # link SAGA
 saga <- link2GI::linkSAGA()
@@ -35,15 +35,9 @@ saga <- link2GI::linkSAGA()
                         thin_with_grid = "0.5",
                         level_max = "5" ,
                         grid_size = "0.1")
-  dsmR <- dsm[[1]]
-  dtmR <- dtm[[1]]
-  
-  # crop to clip
-  dtmR <- raster::crop(dtmR,ext)
-  dsmR <- raster::crop(dsmR,ext)
   
   # adjust dsm to dtm
-  dsmR <- raster::resample(dsmR, dtmR, method = 'bilinear')
+  dsmR <- raster::resample(dsm[[1]], dtmR <- dtm[[1]], method = 'bilinear')
   
   # calculate CHM
   chmR <- dsmR - dtmR
