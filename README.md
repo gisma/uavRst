@@ -3,14 +3,15 @@ Unmanned Aerial Vehicle Remote Sensing Tools
 
 ====
 
-uavRst is a collection of tools for uav autonomous flight planning and analysis. Up to now it is dedicated to rtf low budget UAVs as the DJI Phantom series and the 3DR Solo.
+```uavRst``` is a collection of tools for uav autonomous flight planning and analysis. Up to now it is dedicated to low budget rtf-UAVs as the DJI Phantom series and the 3DR Solo.
 
-The packgage is far from beeing well organized. Nevertheless it can roughly diveded in 4  categories:
+The packgage is far from beeing well organized. Nevertheless it can roughly diveded in 5 categories as marked by more or less meaningful prefixes:
 
-  * flight planning 
-  * forest analysis
-  * remote sensing 
-  * archeology
+  * flight planning (fp)
+  * forest analysis (fa)
+  * remote sensing  (rs)
+  * archeology      (ao)
+  * useful tools    (tool)
 
 
 Please note that uavRst is making strong use of  GRASS7, SAGA GIS, JS, Python OTB and some othe CLI tools. The setup  of the correct linkage to these APIs can be cumbersome. For using the ```uavRST``` package you need to install the  ```link2GI``` package. Because the CRAN version is a bit outdated you should get the actual github hosted version of the [link2GI](https://github.com/gisma/link2GI/blob/master/README.md) package. 

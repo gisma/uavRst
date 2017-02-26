@@ -1,15 +1,15 @@
-if (!isGeneric('classifyTreeCrown')) {
-  setGeneric('classifyTreeCrown', function(x, ...)
-    standardGeneric('classifyTreeCrown'))
+if (!isGeneric('fa_classifyTreeCrown')) {
+  setGeneric('fa_classifyTreeCrown', function(x, ...)
+    standardGeneric('fa_classifyTreeCrown'))
 }
 
-#'@name classifyTreeCrown
+#'@name fa_classifyTreeCrown
 #'@title calcualte and post-classifies the morphological structure of raw tree crowns
 #'
 #'@description
 #' calcualte and post-classifies the morphological structure of raw tree crowns
 #'
-#'@usage classifyTreeCrown(runDir,currentP,allP)
+#'@usage fa_classifyTreeCrown(runDir,currentP,allP)
 #'
 #'@author Chris Reudenbach
 #'
@@ -23,16 +23,16 @@ if (!isGeneric('classifyTreeCrown')) {
 #'@param WLRatio minimum WLRatio of crowns that is accepted
 
 
-#'@return classifyTreeCrown basically returns SPDF  with the crown polygons and all calculated parameters
+#'@return fa_classifyTreeCrown basically returns SPDF  with the crown polygons and all calculated parameters
 #'
 #'
-#'@export classifyTreeCrown
+#'@export fa_classifyTreeCrown
 #'@examples
-#'#### Example to use classifyTreeCrown for a common analysis of the
+#'#### Example to use fa_classifyTreeCrown for a common analysis of the
 #'     estimated spreading distances of an specifified area
 #'
 #' #
-#'   trees_crowns <- classifyTreeCrown(crownFn = paste0(pd_gi_run,"crownsHeight.shp"),segType = 1, 
+#'   trees_crowns <- fa_classifyTreeCrown(crownFn = paste0(pd_gi_run,"crownsHeight.shp"),segType = 1, 
 #'                                       funNames = c("eccentricityboundingbox","solidity"),
 #'                                       minTreeAlt = 5, 
 #'                                       crownMinArea = 3, 
@@ -40,7 +40,7 @@ if (!isGeneric('classifyTreeCrown')) {
 #'                                       solidity = 1, 
 #'                                       WLRatio = 0.5)
 #'
-classifyTreeCrown <- function(crownFn,segType="2", 
+fa_classifyTreeCrown <- function(crownFn,segType="2", 
                               funNames = c("eccentricityboundingbox","solidity"),
                               minTreeAlt = 5, 
                               crownMinArea = 3, 
@@ -57,7 +57,7 @@ classifyTreeCrown <- function(crownFn,segType="2",
   crownarea <- crownarea[crownarea@data$area > crownMinArea & 
                            crownarea@data$area < crownMaxArea,]
   # calculate more metrics
-  crownarea <- uavRst::caMetrics(crownarea,funNames = funNames)
+  crownarea <- uavRst::fa_caMetrics(crownarea,funNames = funNames)
   #  filter for solidity and WL ratio
   crowns <- crownarea[as.numeric(crownarea@data$solidity) != solidity &
                         as.numeric(crownarea@data$eccentricityboundingbox) > WLRatio ,]

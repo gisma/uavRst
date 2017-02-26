@@ -1,9 +1,9 @@
-if (!isGeneric('pc2Hillshade')) {
-  setGeneric('pc2Hillshade', function(x, ...)
-    standardGeneric('pc2Hillshade'))
+if (!isGeneric('ao_pc2Hillshade')) {
+  setGeneric('ao_pc2Hillshade', function(x, ...)
+    standardGeneric('ao_pc2Hillshade'))
 }
 
-#'@name pc2Hillshade
+#'@name ao_pc2Hillshade
 #'@title Create a hillshading model l from a UAV generated point cloud 
 #'
 #'@description
@@ -28,20 +28,20 @@ if (!isGeneric('pc2Hillshade')) {
 #'                   f Do not perform histogram equalization on the color table
 
 
-#'@return pc2Hillshade basically returns a  DSM
+#'@return ao_pc2Hillshade basically returns a  DSM
 #'
 #'
-#'@export pc2Hillshade
+#'@export ao_pc2Hillshade
 #'@examples
 #'\dontrun{
 #' # create a hillshade based on a las/laz point clouds 
-#'   hs <- uavRst::pc2Hillshade(lasDir =  "~/proj/Monte_Bernorio/las/",
+#'   hs <- uavRst::ao_pc2Hillshade(lasDir =  "~/proj/Monte_Bernorio/las/",
 #'                              gisdbase_path = "~/temp55/GRASS7",
 #'                              grid_size = "1.0")
 #'}
 #'
 
-pc2Hillshade <- function(lasDir = NULL,
+ao_pc2Hillshade <- function(lasDir = NULL,
                    gisdbase_path = NULL,
                    GRASSlocation = "tmp/",
                    projFolder = c("data/","output/","run/","las/"),

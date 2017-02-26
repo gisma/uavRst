@@ -5,16 +5,16 @@
 # return the metrics as a spatialpointdataframe/spatialpolygondataframe
 # see also: https://github.com/logmoc/msc-phygeo-class-of-2016-creuden
 
-if (!isGeneric('caMetrics')) {
-  setGeneric('caMetrics', function(x, ...)
-    standardGeneric('caMetrics'))
+if (!isGeneric('fa_caMetrics')) {
+  setGeneric('fa_caMetrics', function(x, ...)
+    standardGeneric('fa_caMetrics'))
 }
 
-#'@name caMetrics
+#'@name fa_caMetrics
 #'@title calculate morphometric features of polygons
 #'
-#'@export caMetrics
-caMetrics<- function(crownarea, funNames = c("area","length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")){
+#'@export fa_caMetrics
+fa_caMetrics<- function(crownarea, funNames = c("area","length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")){
   cat("calculate metrics for ",nrow(crownarea)," polygons... \n")
   polys <- crownarea@polygons
   

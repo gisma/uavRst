@@ -1,9 +1,9 @@
-if (!isGeneric('foa_tree_segementation')) {
-  setGeneric('foa_tree_segementation', function(x, ...)
-    standardGeneric('foa_tree_segementation'))
+if (!isGeneric('fa_tree_segementation')) {
+  setGeneric('fa_tree_segementation', function(x, ...)
+    standardGeneric('fa_tree_segementation'))
 }
 
-#'@name foa_tree_segementation
+#'@name fa_tree_segementation
 #'@title Tree segementation based on a CHM
 #'
 #'@description
@@ -34,14 +34,14 @@ if (!isGeneric('foa_tree_segementation')) {
 #'@return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 #'
 #'
-#'@export foa_tree_segementation
+#'@export fa_tree_segementation
 #'@examples
 #'\dontrun{
 #' # Tree segementation based on a CHM
-#'  foa_tree_segementation(x = rasterobj,  "nameofSAGAFile")
+#'  fa_tree_segementation(x = rasterobj,  "nameofSAGAFile")
 #'}
 #'
-foa_tree_segementation <- function(x = NULL,
+fa_tree_segementation <- function(x = NULL,
                                    minTreeAlt      = 3,    # -thresholdfor minimum tree altitude in meter
                                    thtreeNodes     = 6,    # minimum number of ldd connections
                                    crownMinArea    = 7,    #(approx 1.25 m diameter)
@@ -175,7 +175,7 @@ foa_tree_segementation <- function(x = NULL,
                   dsn = path_run, 
                   overwrite_layer = TRUE)
   cat(":: run post-classification...\n")
-  trees_crowns <- classifyTreeCrown(crownFn = paste0(path_run,"treecrowns.shp"),  
+  trees_crowns <- fa_classifyTreeCrown(crownFn = paste0(path_run,"treecrowns.shp"),  
                                       funNames = c("eccentricityboundingbox","solidity"),
                                       minTreeAlt = minTreeAlt, 
                                       crownMinArea = crownMinArea, 

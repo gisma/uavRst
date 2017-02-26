@@ -1,9 +1,9 @@
-if (!isGeneric('basicClassification')) {
-  setGeneric('basicClassification', function(x, ...)
-    standardGeneric('basicClassification'))
+if (!isGeneric('rs_basicClassify')) {
+  setGeneric('rs_basicClassify', function(x, ...)
+    standardGeneric('rs_basicClassify'))
 }
 
-basicClassification<-function(rasterLayer=c("b1","b2","b3","RI","CI","BI"),trainingfN){
+rs_basicClassify<-function(rasterLayer=c("b1","b2","b3","RI","CI","BI"),trainingfN){
   
   # put all raster in a brick
   img<-NULL

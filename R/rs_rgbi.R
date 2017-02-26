@@ -1,6 +1,6 @@
-if (!isGeneric('rgbi')) {
-  setGeneric('rgbi', function(x, ...)
-    standardGeneric('rgbi'))
+if (!isGeneric('rs_rgbi')) {
+  setGeneric('rs_rgbi', function(x, ...)
+    standardGeneric('rs_rgbi'))
 }
 #' RGB indices 
 #' 
@@ -57,13 +57,13 @@ if (!isGeneric('rgbi')) {
 #' dFile <- download.file(url, "Image.jpg")
 #' img <- stack("Image.jpg") 
 #' plotRGB(img)
-#' rgbI <- rgbi(img)
-#' plot(rgbI, col = gray(255:0/255))
+#' rs_rgbi <- rs_rgbi(img)
+#' plot(rs_rgbi, col = gray(255:0/255))
 #' 
-#' @export rgbi
+#' @export rs_rgbi
 #' 
 
-rgbi<- function(rgb,rgbi=c("red","green","blue","VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI")) {
+rs_rgbi<- function(rgb,rgbi=c("red","green","blue","VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI")) {
   
   ### prerequisites
   

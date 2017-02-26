@@ -41,11 +41,11 @@ saga <- link2GI::linkSAGA()
 
 if (!only_postprocessing) {
   # create DSM
-  dsm <- uavRst::pc2DSM(lasDir = las_data_dir,
+  dsm <- uavRst::fa_pc2DSM(lasDir = las_data_dir,
                         gisdbase_path = filepath_base,
                         grid_size = "0.1")
   # create DTM
-  dtm <- uavRst::pc2DTM(lasDir = las_data_dir,
+  dtm <- uavRst::fa_pc2DTM(lasDir = las_data_dir,
                         gisdbase_path = filepath_base,
                         thin_with_grid = "0.5",
                         level_max = "5" ,
@@ -77,7 +77,7 @@ if (crop) {
   rgb <- raster::resample(rgb, chmR, method = 'bilinear')
   cat(":: calculate RGBI \n")
   indices <- c("VVI","VARI") #names(rgbI)
-  rgbI <- uavRst::rgbi(rgb)
+  rgbI <- uavRst::rs_rgbi(rgb)
   
   #converting them to SAGA
   i <- 1
@@ -91,7 +91,7 @@ if (crop) {
   rgb <- raster::stack(paste0(path_data,orthImg))
   rgb <- raster::resample(rgb, chmR, method = 'bilinear')
   cat(":: calculate RGBI \n")
-  rgbI <- uavRst::rgbi(rgb)
+  rgbI <- uavRst::rs_rgbi(rgb)
   #converting them to SAGA
   indices <- c("VVI","VARI")
   i <- 1
@@ -105,4 +105,4 @@ if (crop) {
 chmR[chmR < -minTreeHeight] <- minTreeHeight
 
 # call tree crown segmentation 
-crowns <- foa_tree_segementation(chmR,minTreeAlt = minTreeheight)
+crowns <- fa_tree_segementation(chmR,minTreeAlt = minTreeheight)

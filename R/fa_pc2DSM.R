@@ -1,9 +1,9 @@
-if (!isGeneric('pc2DSM')) {
-  setGeneric('pc2DSM', function(x, ...)
-    standardGeneric('pc2DSM'))
+if (!isGeneric('fa_pc2DSM')) {
+  setGeneric('fa_pc2DSM', function(x, ...)
+    standardGeneric('fa_pc2DSM'))
 }
 
-#'@name pc2DSM
+#'@name fa_pc2DSM
 #'@title Create a Digital Surface Model from a UAV generated point cloud 
 #'
 #'@description
@@ -26,14 +26,14 @@ if (!isGeneric('pc2DSM')) {
 #'@param gisdbase_exist default is  \code{FALSE} switch if gisdbase is created or  linked only
 
 
-#'@return pc2DSM basically returns a  DSM
+#'@return fa_pc2DSM basically returns a  DSM
 #'
 #'
-#'@export pc2DSM
+#'@export fa_pc2DSM
 #'@examples
 #'\dontrun{
 #' # create a DSM based on a uav point cloud 
-#'  pc2DSM(lasDir =  lasDir,
+#'  fa_pc2DSM(lasDir =  lasDir,
 #'         gisdbase_path = "~/temp6/GRASS7",
 #'         GRASSlocation = "tmp/",
 #'         projFolder = c("data/","output/","run/","las/"),
@@ -42,7 +42,7 @@ if (!isGeneric('pc2DSM')) {
 #'}
 #'
 
-pc2DSM <- function(lasDir = NULL,
+fa_pc2DSM <- function(lasDir = NULL,
                    gisdbase_path = NULL,
                    GRASSlocation = "tmp/",
                    projFolder = c("data/","output/","run/","las/"),
