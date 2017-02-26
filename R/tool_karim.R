@@ -173,6 +173,7 @@ getmaxposFromLine <- function(dem,line){
 }
 
 
+
 G2Tiff <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
   
   rgrass7::execGRASS("r.out.gdal",
@@ -273,4 +274,16 @@ winUniMrBuild <- function(dsn = getwd(), pkgDir="H:/Dokumente",document = TRUE, 
   install.packages(pkg, repos = NULL)
   
   return(invisible(NULL))
+}
+
+
+R2SAGA <- function(x,fn) {
+  
+  raster::writeRaster(x,paste0(path_run,fn,".tif"),overwrite = TRUE)
+  # convert to SAGA
+  gdalUtils::gdalwarp(paste0(path_run,fn,".tif"), 
+                      paste0(path_run,fn,".sdat"), 
+                      overwrite = TRUE,  
+                      of = 'SAGA',
+                      verbose = FALSE)
 }

@@ -4,7 +4,7 @@
 \alias{foa_tree_segementation}
 \title{Tree segementation based on a CHM}
 \usage{
-foa_tree_segementation(chmFn = NULL, minTreeAlt = 3, thtreeNodes = 6,
+foa_tree_segementation(x = NULL, minTreeAlt = 3, thtreeNodes = 6,
   crownMinArea = 7, crownMaxArea = 200, WLRatio = 0.53, thLongit = 0.5,
   solidity = 1, is0_output = 0, is0_join = 2, is0_thresh = 0.05,
   is3_leafsize = 8, is3_normalize = 1, is3_neighbour = 1,
@@ -12,7 +12,7 @@ foa_tree_segementation(chmFn = NULL, minTreeAlt = 3, thtreeNodes = 6,
   is3_threshold = 0.001, majority_radius = 5)
 }
 \arguments{
-\item{chmFn}{filname auf SAGA grid}
+\item{x}{spatial raster object}
 
 \item{minTreeAlt}{= 3,    # -thresholdfor minimum tree altitude in meter}
 
@@ -59,7 +59,7 @@ Tree segementation based on a CHM
 \examples{
 \dontrun{
 # Tree segementation based on a CHM
- foa_tree_segementation(chmFn =  "nameofSAGA.grd")
+ foa_tree_segementation(x = rasterobj,  "nameofSAGAFile")
 }
 
 }

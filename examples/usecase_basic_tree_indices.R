@@ -1,12 +1,23 @@
 # use case for the estimation of basic tree/forest indices 
 # from an uav derived point cloud data set
+# NOTE the ortho image is obligatory
 
 # load package for linking  GI tools
 require(link2GI)
 require(uavRst)
 
-# only post
+# set minimum tree height
+minTreeHeight <- 5
+
+# name of orthoimage
+ orthImg <- "rgb_75.tif"
+   
+# only post processing to avoid the point cloud to DSM/DEM operation
 only_postprocessing <- TRUE
+
+# just process a clipped area for testing
+crop <- TRUE
+ext  <- raster::extent(498372, 498472,  5664417 ,5664513)
 
 # define project folder
 filepath_base <- "~/temp6/GRASS7"
@@ -21,10 +32,10 @@ link2GI::initProj(projRootDir = "~/temp6/GRASS7",
 # set working directory
 setwd(path_run)
 
-# just process a cut
-crop <- TRUE
-ext  <- raster::extent(498372, 498472,  5664417 ,5664513)
+# clean run dir
+unlink(paste0(path_run,"*"), force = TRUE)
 
+# link GDAL and SAGA
 gdal <- link2GI::linkgdalUtils()
 saga <- link2GI::linkSAGA()
 
@@ -45,74 +56,53 @@ if (!only_postprocessing) {
   # crop to clip
   dtmR <- raster::crop(dtmR,ext)
   dsmR <- raster::crop(dsmR,ext)
+  
   # adjust dsm to dtm
   dsmR <- resample(dsmR, dtmR, method = 'bilinear')
+  
   # calculate CHM
   chmR <- dsmR - dtmR
-  raster::writeRaster(chmR,paste0(path_output,"chm_crop.tif"),
+  raster::writeRaster(chmR,paste0(path_output,"chm.tif"),
                       overwrite = TRUE)
-  
 }
+
 
 
 if (crop) {
-  cat(":: cropping input data\n")
-  chmR <- raster::raster(paste0(path_output,"chm_crop.tif"))
+  cat("\n:: crop & adjust input data\n")
+  if (only_postprocessing) chmR <- raster::raster(paste0(path_output,"chm.tif"))
   chmR <- raster::crop(chmR,ext)
-  rgb <- raster::stack(paste0(path_data,"rgb_75.tif"))
+  rgb <- raster::stack(paste0(path_data,orthImg))
   rgb <- raster::crop(rgb,ext)
   rgb <- raster::resample(rgb, chmR, method = 'bilinear')
-  rgbI <- uavRst::rgbi(rgb)
-  cat(":: calculationg indices\n")
+  cat(":: calculate RGBI \n")
   indices <- c("VVI","VARI") #names(rgbI)
+  rgbI <- uavRst::rgbi(rgb)
+  
+  #converting them to SAGA
   i <- 1
   for (index in indices) {
-    raster::writeRaster(rgbI[[i]],paste0(path_run,index,".tif"),overwrite = TRUE)  
-    gdalUtils::gdalwarp(paste0(path_run,index,".tif"), 
-                        paste0(path_run,index,".sdat"), 
-                        overwrite = TRUE,  
-                        of = 'SAGA',
-                        verbose = FALSE) #  calculate and convert inverse canopy height model (iChm)
+    uavRst:::R2SAGA(rgbI[[i]],index)
+    i <- i + 1
+  }  
+} else {
+  cat("\n:: crop & adjust input data\n")
+  if (only_postprocessing) chmR <- raster::raster(paste0(path_output,"chm.tif"))
+  rgb <- raster::stack(paste0(path_data,orthImg))
+  rgb <- raster::resample(rgb, chmR, method = 'bilinear')
+  cat(":: calculate RGBI \n")
+  rgbI <- uavRst::rgbi(rgb)
+  #converting them to SAGA
+  indices <- c("VVI","VARI")
+  i <- 1
+  for (index in indices) {
+    R2SAGA(rgbI[[i]],index)
     i <- i + 1
   }
-  
-  #raster::writeRaster(chmR,paste0(path_output,"rgb75.tif"),
-  #                    overwrite = TRUE)
-} else {
-  # adjust dsm to dtm
-  dsmR <- resample(dsmR, dtmR, method = 'bilinear')
-  # calculate CHM
-  chmR <- dsmR - dtmR
-  raster::writeRaster(chmR,paste0(path_output,"chm_orig.tif"),
-                      overwrite = TRUE)
-  rgb <- raster::raster(paste0(path_data,"rgb_75.tif"))
-  rgb <- resample(rgb, chmR, method = 'bilinear')
 }
 
+#apply minum tree height to canopy height model (chm) -----------------------
+chmR[chmR < -minTreeHeight] <- minTreeHeight
 
-
-# the ratio of the above ground points to the total points is from 0 to 1 where 
-# 0.0 represents no canopy and 1.0 very dense canopy
-#pTot <- pcagR + pcgrR
-#hFdensity <- pcagR / pTot
-# raster::writeRaster(hFdensity,paste0(path_run,"hFdensity.tif"),overwrite = TRUE)
-# gdalUtils::gdalwarp(paste0(path_run,"hFdensity.tif"), 
-#                     paste0(path_run,"hFdensity.sdat"), 
-#                     overwrite = TRUE,  
-#                     of = 'SAGA',
-#                     verbose = FALSE) 
-
-# ----- calculate canopy height model (chm) -----------------------
-
-chmR[chmR < -minTreeAlt] <- minTreeAlt
-raster::writeRaster(chmR,paste0(path_run,"chm.tif"),
-                    overwrite = TRUE)
-# convert to SAGA
-gdalUtils::gdalwarp(paste0(path_run,"chm.tif"), 
-                    paste0(path_run,"chm.sdat"), 
-                    overwrite = TRUE,  
-                    of = 'SAGA',
-                    verbose = FALSE) #  calculate and convert inverse canopy height model (iChm)
-
-
-crowns <- foa_tree_segementation(chmFn =  paste0(path_run,"chm.tif"))
+# call tree crown segmentation 
+crowns <- foa_tree_segementation(chmR,minTreeAlt = minTreeheight)

@@ -15,7 +15,7 @@ if (!isGeneric('caMetrics')) {
 #'
 #'@export caMetrics
 caMetrics<- function(crownarea, funNames = c("area","length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")){
-  cat("calculating metrics for ",nrow(crownarea)," polygons... \n")
+  cat("calculate metrics for ",nrow(crownarea)," polygons... \n")
   polys <- crownarea@polygons
   
   for(subfun in funNames) { 

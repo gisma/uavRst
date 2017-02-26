@@ -11,7 +11,7 @@ if (!isGeneric('foa_tree_segementation')) {
 #'
 #'@author Chris Reudenbach
 #'
-#'@param chmFn filname auf SAGA grid 
+#'@param x  spatial raster object
 #'@param minTreeAlt      = 3,    # -thresholdfor minimum tree altitude in meter
 #'@param thtreeNodes     = 6,    # minimum number of ldd connections
 #'@param crownMinArea    = 7,    #(approx 1.25 m diameter)
@@ -38,10 +38,10 @@ if (!isGeneric('foa_tree_segementation')) {
 #'@examples
 #'\dontrun{
 #' # Tree segementation based on a CHM
-#'  foa_tree_segementation(chmFn =  "nameofSAGA.grd")
+#'  foa_tree_segementation(x = rasterobj,  "nameofSAGAFile")
 #'}
 #'
-foa_tree_segementation <- function(chmFn = NULL,
+foa_tree_segementation <- function(x = NULL,
                                    minTreeAlt      = 3,    # -thresholdfor minimum tree altitude in meter
                                    thtreeNodes     = 6,    # minimum number of ldd connections
                                    crownMinArea    = 7,    #(approx 1.25 m diameter)
@@ -62,10 +62,13 @@ foa_tree_segementation <- function(chmFn = NULL,
                                    majority_radius = 5.000
                                    
 )  {
-  cat(":: run segementation...\n")
-  chmFn <- path.expand(chmFn)
+  cat(":: start crown identification...\n")
+  options(warn=-1)
+  if (!exists(sagaCmd)) link2GI::linkSAGA()
+  R2SAGA(x,"chm")
+  cat(":: run seed finding...\n")
   ret <- system(paste0(sagaCmd, " imagery_segmentation 0 ",
-                       " -GRID "     ,chmFn,
+                       " -GRID "     ,"chm.sgrd",
                        " -SEGMENTS " ,path_run,"dummyCrownSegments.sgrd",
                        " -SEEDS "    ,path_run,"treeSeeds.shp",
                        " -OUTPUT "   ,is0_output, 
@@ -75,7 +78,7 @@ foa_tree_segementation <- function(chmFn = NULL,
                        " -EDGE 1")
                 ,intern = TRUE)
   # read from the analysis (imagery_segmentation 0)
-  trees <- rgdal::readOGR(path_run,"treeSeeds")
+  trees <- rgdal::readOGR(path_run,"treeSeeds",verbose = FALSE)
   # apply tree min height filter 
   trees <- trees[trees$VALUE > minTreeAlt ,] 
   trees@proj4string <- sp::CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
@@ -90,13 +93,9 @@ foa_tree_segementation <- function(chmFn = NULL,
                 intern = TRUE)
   rawTrees  <- raster::raster(paste0(path_run,"treeSeeds.tif"))
   rawTrees[rawTrees <= 0] <- NA
-  raster::writeRaster(rawTrees,paste0(path_run,"treeSeeds.tif"),overwrite = TRUE)
-  # convert to SAGA
-  gdalUtils::gdalwarp(paste0(path_run,"treeSeeds.tif"), 
-                      paste0(path_run,"treeSeeds.sdat"), 
-                      overwrite = TRUE,  
-                      of = 'SAGA',
-                      verbose = FALSE)
+
+  R2SAGA(rawTrees,"treeSeeds")
+
   ret <- system(paste0(sagaCmd," grid_tools 15 ",
                        " -INPUT ",path_run,"treeSeeds.sgrd",
                        " -RESULT ",path_run,"seeds.sgrd",
@@ -109,7 +108,7 @@ foa_tree_segementation <- function(chmFn = NULL,
                        "  -RESULT_NODATA_CHOICE 1",
                        " -RESULT_NODATA_VALUE 0.000000"),
                 intern = TRUE)
-  
+  cat(":: run main segementation...\n")
   # SAGA Seeded Region Growing segmentation (imagery_segmentation 3)
   ret <- system(paste0(sagaCmd, " imagery_segmentation 3 ",
                        " -SEEDS "   ,path_run,"seeds.sgrd",
@@ -148,7 +147,7 @@ foa_tree_segementation <- function(chmFn = NULL,
                        " -CLASS_ID 1.000000",
                        " -SPLIT 1"),
                 intern = TRUE)
-  
+  cat(":: run statitiscs...\n")
   # calculate statistics for each crown 
   ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
                         " -GRIDS ",path_run,"chm.sgrd ",
@@ -162,11 +161,11 @@ foa_tree_segementation <- function(chmFn = NULL,
                  intern = TRUE)
   
   # dirty combining of data tables
-  ch <- rgdal::readOGR(path_run,"tree_crowns")
+  ch <- rgdal::readOGR(path_run,"tree_crowns",verbose = FALSE)
   names(ch) <- gsub(names(ch),pattern = "\\NAME",replacement = "NAMEgeom")
   names(ch) <- gsub(names(ch),pattern = "\\ID",replacement = "IDgeom")
   names(ch) <- gsub(names(ch),pattern = "\\VALUE",replacement = "VALUEgeom")
-  stats     <- rgdal::readOGR(path_run,"crownsStat")
+  stats     <- rgdal::readOGR(path_run,"crownsStat",verbose = FALSE)
   ch@data   <- cbind(ch@data,stats@data)
   names(ch) <- gsub(names(ch),pattern = "\\.",replacement = "")
   #ch_s <- gSimplify(ch, 0.1, topologyPreserve=TRUE)
@@ -175,6 +174,7 @@ foa_tree_segementation <- function(chmFn = NULL,
                   driver = "ESRI Shapefile", 
                   dsn = path_run, 
                   overwrite_layer = TRUE)
+  cat(":: run post-classification...\n")
   trees_crowns <- classifyTreeCrown(crownFn = paste0(path_run,"treecrowns.shp"),  
                                       funNames = c("eccentricityboundingbox","solidity"),
                                       minTreeAlt = minTreeAlt, 
@@ -183,13 +183,14 @@ foa_tree_segementation <- function(chmFn = NULL,
                                       solidity = solidity, 
                                       WLRatio = WLRatio)
   
-  rgdal::writeOGR(obj = trees_crowns_3[[2]], 
+  rgdal::writeOGR(obj = trees_crowns[[2]], 
                   layer = "finalcrowns", 
                   driver = "ESRI Shapefile", 
                   dsn = path_run, 
                   overwrite_layer = TRUE)
   
   # pixvalues <- basicExtraction(x = chmR,fN = trees_crowns_2[[2]],responseCat = "ID")
-  
+  options(warn=0)
+  cat("segementation finsihed...")
   return(trees_crowns)
 } 
