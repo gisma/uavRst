@@ -177,6 +177,7 @@ For use in ArcGIS the data is correctly georeferenced. However for R you MUST us
 \code{getGeoData('tiroldem', item = 'KU_DGM10')} \cr
 }
 }
+
 \examples{
 #### Examples getGeoData
 
@@ -216,9 +217,6 @@ v<- getGeoData('GADM', country='FRA', level=1)
 t<- ccodes()
 }
 }
-\author{
-Robert J. Hijmans, Chris Reudenbach \email{giswerk@gis-ma.org}
-}
 \references{
 \url{http://www.worldclim.org}\cr
 \url{http://www.gadm.org}\cr
@@ -229,4 +227,6 @@ Robert J. Hijmans, Chris Reudenbach \email{giswerk@gis-ma.org}
 \url{http://www.openstreetmap.org}\cr
 \url{http://doi.pangaea.de/10.1594/PANGAEA.845883}\cr
 }
-
+\author{
+Robert J. Hijmans, Chris Reudenbach \email{giswerk@gis-ma.org}
+}

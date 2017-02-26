@@ -958,18 +958,14 @@ makeFP <- function(projectDir = "~",
   
   # call rcShed
   if (!is.null(rcRange)) {
-    envGIS <-
-      initRGIS(root.dir = projectDir,
-               working.dir = workingDir,
-               fndem = demFn)
+
     cat("calculating RC-range\n")
     rcCover <-
       rcShed(
-        envGIS,
         launchP = c(as.numeric(p$launchLon), as.numeric(p$launchLat)),
         flightAlt =  as.numeric(p$flightAltitude),
         rcRange = rcRange,
-        dem = envGIS$fn
+        dem = demFn
       )
   } else {
     rcCover = "NULL"

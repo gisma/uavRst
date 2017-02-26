@@ -30,27 +30,9 @@ if (!isGeneric('rcShed')) {
 #' rcRange<-rcShed(envGIS,launchP = c(8.692, 50.842316), flightAlt = 100, rcRange = 1000,dem="mrbiko.tif")
 #'
 
-rcShed <- function (envGIS,launchP=NULL,launchAlt=NULL,flightAlt=100,rcRange=1000,dem=NULL){
+rcShed <- function (launchP=NULL,launchAlt=NULL,flightAlt=100,rcRange=1000,dem=NULL){
   
-  
-  # grass 70 viewshed is buggy
-  
-  #Tiff2G(runDir=envGIS$runDir,layer=dem)
-  #rgrass7::execGRASS('g.region',
-  #                   flags=c("p"),
-  #                   raster=dem
-  #)
-  #rgrass7::execGRASS("r.viewshed",
-  #                    flags=c("b","overwrite"),
-  #                    input=dem,
-  #                    output="rcrange",
-  #                   coordinates=c(8.7693,50.82050),
-  #                    #coordinate=as.numeric(launchP[2]),as.numeric(launchP[2]),
-  #                   observer_elevation=1.75,
-  #                   memory=50000)
-  #r.viewshed -b --overwrite input=mrbiko@creu output=sdf coordinates=8.76934735382,50.8205089159
-  # G2Tiff(runDir=envGIS$runDir,layer="rcrange")
-  
+  link2GI::linkSAGA()
   # create launching pos
   coord <- data.frame(as.numeric(launchP[1]),as.numeric(launchP[2]),100)
   names(coord)<-c("lon","lat","alt")
@@ -58,8 +40,8 @@ rcShed <- function (envGIS,launchP=NULL,launchAlt=NULL,flightAlt=100,rcRange=100
   sp::proj4string(coord) <- CRS("+proj=longlat +datum=WGS84 +no_defs")
   rgdal::writeOGR(coord, ".", "view", driver = "ESRI Shapefile",overwrite_layer = TRUE)
   # convert dem
-  gdalwarp(path.expand(dem), "dem.sdat", overwrite=TRUE, s_srs='EPSG:4326', of='SAGA')  
-  viewshed<-system(paste("saga_cmd ta_lighting 6 -ELEVATION 'dem.sdat' -VISIBILITY 'vis.sgrd' -POINTS 'view.shp' -FIELD_HEIGHT 'alt' -METHOD 0"),intern = TRUE)
+  gdalwarp("demll.tif", "dem.sdat", overwrite=TRUE, s_srs='EPSG:4326', of='SAGA')  
+  viewshed<-system(paste(sagaCmd," ta_lighting 6 -ELEVATION 'dem.sdat' -VISIBILITY 'vis.sgrd' -POINTS 'view.shp' -FIELD_HEIGHT 'alt' -METHOD 0"),intern = TRUE)
   if (grep("100%okay",x = viewshed)){ cat("rc-range analysis okay")}
   gdalwarp("vis.sdat", "viewmask.tif", overwrite=TRUE, s_srs='EPSG:4326', of='GTiff')  
   rcInsight<-raster::raster("viewmask.tif")

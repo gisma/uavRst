@@ -4,12 +4,13 @@ leafDraw()
 # typical flight plan
 traddelkopf60 <- uavRst::makeFP(projectDir="~/proj/uav/gentree/Traddelkopf/",
                                 missionName = "65msolo",
-                                surveyArea="~/proj/uav/gentree/Traddelkopf/Traddelkopf_2017_02_paralell.json",
+                                surveyArea="~/proj/uav/gentree/Traddelkopf/data/task_areas/Traddelkopf_2017_02_paralell.json",
                                 followSurface = TRUE,
                                 followSurfaceRes = 1,
                                 flightAltitude = 65,
                                 overlap = 0.75,
-                                demFn = "~/proj/uav/gentree/Traddelkopf/data/DGM1_kellerwald.tif",
+                                demFn = "~/proj/uav/gentree/Traddelkopf/data/DGM1_kellerwald.tif",rcRange = TRUE,
+                                  
                                 altFilter = 1.,
                                 horizonFilter = 25,
                                 maxSpeed = 10,

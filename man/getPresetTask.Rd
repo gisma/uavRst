@@ -9,4 +9,3 @@ getPresetTask(param = "remote")
 \description{
 NOTE: only for flightPlanMode = "waypoint")
 }
-
