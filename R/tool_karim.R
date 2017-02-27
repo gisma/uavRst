@@ -275,7 +275,16 @@ winUniMrBuild <- function(dsn = getwd(), pkgDir="H:/Dokumente",document = TRUE, 
   
   return(invisible(NULL))
 }
-
+SAGA2R <- function(fn,ext) {
+  gdalUtils::gdalwarp(paste0(path_run,fn,".sdat"), 
+                      paste0(path_run,fn,".tif"), 
+                      overwrite = TRUE,  
+                      verbose = FALSE)
+  x<-raster::raster(paste0(path_run,fn,".tif"),overwrite = TRUE)
+  x@extent <- ext
+  # convert to SAGA
+  return(x)
+}
 
 R2SAGA <- function(x,fn) {
   

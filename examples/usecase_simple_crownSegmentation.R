@@ -13,10 +13,10 @@ minTreeHeight <- 5
  orthImg <- "rgb_75.tif"
    
 # only post processing to avoid the point cloud to DSM/DEM operation
-only_postprocessing <- TRUE
+only_postprocessing <- FALSE
 
 # just process a clipped area for testing
-crop <- TRUE
+crop <- FALSE
 ext  <- raster::extent(498372, 498472,  5664417 ,5664513)
 
 # define project folder
@@ -54,11 +54,13 @@ if (!only_postprocessing) {
   dtmR <- dtm[[1]]
   
   # crop to clip
-  dtmR <- raster::crop(dtmR,ext)
-  dsmR <- raster::crop(dsmR,ext)
+  if (crop){
+    dtmR <- raster::crop(dtmR,ext)
+    dsmR <- raster::crop(dsmR,ext)
+  }
   
   # adjust dsm to dtm
-  dsmR <- resample(dsmR, dtmR, method = 'bilinear')
+  dsmR <- raster::resample(dsmR, dtmR, method = 'bilinear')
   
   # calculate CHM
   chmR <- dsmR - dtmR
@@ -86,7 +88,7 @@ if (crop) {
     i <- i + 1
   }  
 } else {
-  cat("\n:: crop & adjust input data\n")
+  cat("\n:: prepare and adjust ortho image\n")
   if (only_postprocessing) chmR <- raster::raster(paste0(path_output,"chm.tif"))
   rgb <- raster::stack(paste0(path_data,orthImg))
   rgb <- raster::resample(rgb, chmR, method = 'bilinear')
@@ -96,13 +98,17 @@ if (crop) {
   indices <- c("VVI","VARI")
   i <- 1
   for (index in indices) {
-    R2SAGA(rgbI[[i]],index)
+    uavRst:::R2SAGA(rgbI[[i]],index)
     i <- i + 1
   }
 }
 
-#apply minum tree height to canopy height model (chm) -----------------------
+#apply minium tree height to canopy height model (chm) -----------------------
 chmR[chmR < -minTreeHeight] <- minTreeHeight
 
+if (only_postprocessing) {
+  chmR <- raster::raster(paste0(path_output,"chmR.tif"))
+}
+
 # call tree crown segmentation 
-crowns <- fa_tree_segementation(chmR,minTreeAlt = minTreeheight)
+microbenchmark::microbenchmark(crowns <- fa_tree_segementation(chmR),times=1,minTreeAlt=minTreeHeight)

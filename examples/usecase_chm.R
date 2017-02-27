@@ -35,12 +35,14 @@ saga <- link2GI::linkSAGA()
                         thin_with_grid = "0.5",
                         level_max = "5" ,
                         grid_size = "0.1")
+  dsmR <- dsm[[1]]
+  dtmR <- dtm[[1]]
   
   # adjust dsm to dtm
   dsmR <- raster::resample(dsm[[1]], dtmR <- dtm[[1]], method = 'bilinear')
   
   # calculate CHM
-  chmR <- dsmR - dtmR
+  chmR <- dsmR - dtm[[1]]
 
   raster::plot(chmR)
   

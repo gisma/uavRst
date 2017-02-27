@@ -4,19 +4,16 @@
 \alias{fa_tree_segementation}
 \title{Tree segementation based on a CHM}
 \usage{
-fa_tree_segementation(x = NULL, minTreeAlt = 3, thtreeNodes = 6,
-  crownMinArea = 7, crownMaxArea = 200, WLRatio = 0.53, thLongit = 0.5,
-  solidity = 1, is0_output = 0, is0_join = 2, is0_thresh = 0.05,
-  is3_leafsize = 8, is3_normalize = 1, is3_neighbour = 1,
-  is3_method = 0, is3_sig1 = 0.1, is3_sig2 = 3.01,
-  is3_threshold = 0.001, majority_radius = 5)
+fa_tree_segementation(x = NULL, minTreeAlt = 3, crownMinArea = 7,
+  crownMaxArea = 200, WLRatio = 0.53, thLongit = 0.5, solidity = 1,
+  is0_output = 1, is0_join = 1, is0_thresh = 0.09, is3_leafsize = 8,
+  is3_normalize = 1, is3_neighbour = 1, is3_method = 0, is3_sig1 = 0.1,
+  is3_sig2 = 3.01, is3_threshold = 0.001, majority_radius = 5)
 }
 \arguments{
 \item{x}{spatial raster object}
 
 \item{minTreeAlt}{= 3,    # -thresholdfor minimum tree altitude in meter}
-
-\item{thtreeNodes}{= 6,    # minimum number of ldd connections}
 
 \item{crownMinArea}{= 7,    #(approx 1.25 m diameter)}
 

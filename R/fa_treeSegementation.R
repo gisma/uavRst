@@ -13,7 +13,6 @@ if (!isGeneric('fa_tree_segementation')) {
 #'
 #'@param x  spatial raster object
 #'@param minTreeAlt      = 3,    # -thresholdfor minimum tree altitude in meter
-#'@param thtreeNodes     = 6,    # minimum number of ldd connections
 #'@param crownMinArea    = 7,    #(approx 1.25 m diameter)
 #'@param crownMaxArea    = 200,  #(approx 17.8 m diameter)
 #'@param WLRatio         = 0.53, # crown width length ratio
@@ -43,15 +42,14 @@ if (!isGeneric('fa_tree_segementation')) {
 #'
 fa_tree_segementation <- function(x = NULL,
                                    minTreeAlt      = 3,    # -thresholdfor minimum tree altitude in meter
-                                   thtreeNodes     = 6,    # minimum number of ldd connections
                                    crownMinArea    = 7,    #(approx 1.25 m diameter)
                                    crownMaxArea    = 200,  #(approx 17.8 m diameter)
                                    WLRatio         = 0.53, # crown width length ratio
                                    thLongit        = 0.5,  # crown longitudiness 
                                    solidity        = 1.0, # solidity 
-                                   is0_output      = 0,     # 0= seed value 1=segment id
-                                   is0_join        = 2,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
-                                   is0_thresh      = 0.05,  # threshold for join difference in m
+                                   is0_output      = 1,     # 0= seed value 1=segment id
+                                   is0_join        = 1,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
+                                   is0_thresh      = 0.09,  # threshold for join difference in m
                                    is3_leafsize    = 8,
                                    is3_normalize   = 1,
                                    is3_neighbour   = 1,
@@ -65,11 +63,24 @@ fa_tree_segementation <- function(x = NULL,
   cat(":: start crown identification...\n")
   options(warn=-1)
   if (!exists(sagaCmd)) link2GI::linkSAGA()
-  R2SAGA(x,"chm")
+  uavRst:::R2SAGA(x,"chm")
   cat(":: run seed finding...\n")
+  ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
+                       " -INPUT "     ,path_run,"chm.sgrd",
+                       " -RESULT "     ,path_run,"chm.sgrd",
+                       " -METHOD 0 ",
+                       " -OLD 0.000000",
+                       " -NEW 0.100000",
+                       " -SOPERATOR 1",
+                       " -NODATAOPT 0",
+                       " -OTHEROPT 0",
+                       " -RESULT_NODATA_CHOICE 1 ",
+                       " -RESULT_NODATA_VALUE 0.000000")
+                ,intern = TRUE)
+  # 1st segementation
   ret <- system(paste0(sagaCmd, " imagery_segmentation 0 ",
-                       " -GRID "     ,"chm.sgrd",
-                       " -SEGMENTS " ,path_run,"dummyCrownSegments.sgrd",
+                       " -GRID "     ,path_run,"chm.sgrd",
+                       #" -SEGMENTS " ,path_run,"dummyCrownSegments.sgrd",
                        " -SEEDS "    ,path_run,"treeSeeds.shp",
                        " -OUTPUT "   ,is0_output, 
                        " -DOWN 1"    , 
@@ -77,44 +88,62 @@ fa_tree_segementation <- function(x = NULL,
                        " -THRESHOLD ", is0_thresh, 
                        " -EDGE 1")
                 ,intern = TRUE)
-  # read from the analysis (imagery_segmentation 0)
-  trees <- rgdal::readOGR(path_run,"treeSeeds",verbose = FALSE)
-  # apply tree min height filter 
-  trees <- trees[trees$VALUE > minTreeAlt ,] 
-  trees@proj4string <- sp::CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
-  # converting to raster 
-  rawTrees  <-  chmR * 0.0
-  raster::writeRaster(rawTrees,paste0(path_run,"treeSeeds.tif"),overwrite = TRUE)
-  ret <- system(paste0("gdal_rasterize ",
-                       path_run,"treeSeeds.shp ", 
-                       path_run,"treeSeeds.tif",
-                       " -l treeSeeds",
-                       " -a VALUE"),
-                intern = TRUE)
-  rawTrees  <- raster::raster(paste0(path_run,"treeSeeds.tif"))
-  rawTrees[rawTrees <= 0] <- NA
+  cat(":: run seed conversion...\n")
+  
+  # import to saga
+  ret <- system(paste0(sagaCmd, "  io_gdal 3 ",
+                       " -FILES "     ,path_run,"treeSeeds.shp",
+                       " -GEOM_TYPE 0")
+                ,intern = TRUE)
+  
 
-  R2SAGA(rawTrees,"treeSeeds")
-
-  ret <- system(paste0(sagaCmd," grid_tools 15 ",
-                       " -INPUT ",path_run,"treeSeeds.sgrd",
-                       " -RESULT ",path_run,"seeds.sgrd",
-                       " -METHOD 0",
-                       " -OLD 0.00",
-                       " -NEW 0.00",
-                       " -SOPERATOR 0",
+  # tool: Shapes to Grid
+  ret <- system(paste0(sagaCmd, " grid_gridding 0 ",
+                       " -INPUT "     ,path_run,"treeSeeds.shp",
+                       #" -GRID "     ,path_run,"treeSeeds.sgrd",
+                       " -OUTPUT 0",
+                       " -MULTIPLE 1",
+                       " -GRID_TYPE 2",
+                       " -TARGET_DEFINITION 0",
+                       " -GRID ",path_run,"treeSeeds.sgrd",
+                        " -TARGET_USER_SIZE ", raster::res(x)[1],
+                        " -TARGET_USER_XMIN ",x@extent[1],
+                        " -TARGET_USER_XMAX ",x@extent[2],
+                        " -TARGET_USER_YMIN ",x@extent[3],
+                        " -TARGET_USER_YMAX ",x@extent[4],
+                        " -TARGET_USER_FITS 1",
+                         " -COUNT NULL")
+                ,intern = TRUE)
+  
+  
+  ts <- uavRst:::SAGA2R("treeSeeds", ext = extent(x))
+  ts <- raster::resample(ts, x, method = 'bilinear')
+  treeseeds <- ts * x
+  uavRst:::R2SAGA(treeseeds,"treeSeeds")
+  
+  # reclass to minTreeAlt
+  ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
+                       " -INPUT "     ,path_run,"treeSeeds.sgrd",
+                       " -RESULT "     ,path_run,"seeds.sgrd",
+                       " -METHOD 0 ",
+                       " -OLD ",minTreeAlt ,
+                       " -NEW 0.00000",
+                       " -SOPERATOR 1",
                        " -NODATAOPT 0",
-                       " -NODATA 0.0",
-                       "  -RESULT_NODATA_CHOICE 1",
-                       " -RESULT_NODATA_VALUE 0.000000"),
-                intern = TRUE)
+                       " -OTHEROPT 0",
+                       " -RESULT_NODATA_CHOICE 1 ",
+                       " -RESULT_NODATA_VALUE 0.000000")
+                ,intern = TRUE)
+  # read from the analysis (imagery_segmentation 0)
+  # trees <- sf::st_read(paste0(path_run,"treeSeeds.shp"))
+
   cat(":: run main segementation...\n")
   # SAGA Seeded Region Growing segmentation (imagery_segmentation 3)
   ret <- system(paste0(sagaCmd, " imagery_segmentation 3 ",
                        " -SEEDS "   ,path_run,"seeds.sgrd",
                        " -FEATURES '"   ,
-                       path_run,"VVI.sgrd;", 
-                       path_run,"VARI.sgrd;",
+                       path_run,"VVI.sgrd", 
+                       #path_run,"VARI.sgrd;",
                        path_run,"chm.sgrd'",
                        " -SEGMENTS "   ,path_run,"pre_tree_crowns.sgrd",
                        " -LEAFSIZE "   ,is3_leafsize,
@@ -125,13 +154,14 @@ fa_tree_segementation <- function(x = NULL,
                        " -SIG_2 ",is3_sig2,
                        " -THRESHOLD ",is3_threshold),
                 intern = TRUE)
-  
+  # fill holes
   ret <- system(paste0("gdal_sieve.py -8 ",
                        path_run,"pre_tree_crowns.sdat ",
                        path_run,"fpre_tree_crowns.sdat",
                        " -of SAGA"),
                 intern = TRUE)
   
+  # apply majority filter
   ret <- system(paste0(sagaCmd, " grid_filter 6 ",
                        " -INPUT ",path_run,"fpre_tree_crowns.sgrd",
                        " -RESULT ",path_run,"tree_crowns.sgrd",
@@ -140,6 +170,7 @@ fa_tree_segementation <- function(x = NULL,
                        " -THRESHOLD 0.000000 "),
                 intern = TRUE)
   
+  # export to shape
   ret <- system(paste0(sagaCmd, " shapes_grid 6 ",
                        " -GRID ",path_run,"tree_crowns.sgrd",
                        " -POLYGONS ",path_run,"tree_crowns.shp",
@@ -147,6 +178,7 @@ fa_tree_segementation <- function(x = NULL,
                        " -CLASS_ID 1.000000",
                        " -SPLIT 1"),
                 intern = TRUE)
+  
   cat(":: run statitiscs...\n")
   # calculate statistics for each crown 
   ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
