@@ -6,19 +6,16 @@
 require(link2GI)
 require(uavRst)
 
-# set minimum tree height
-minTreeHeight <- 5
-
 # name of orthoimage
  orthImg <- "rgb_75.tif"
    
 # only post processing to avoid the point cloud to DSM/DEM operation
-only_postprocessing <- FALSE
+only_postprocessing <- TRUE
 
 # just process a clipped area for testing
-crop <- FALSE
+crop <- TRUE
 ext  <- raster::extent(498372, 498472,  5664417 ,5664513)
-
+ext  <- raster::extent(498272, 498472,  5664417 ,5664613)
 # define project folder
 filepath_base <- "~/temp6/GRASS7"
 
@@ -75,8 +72,11 @@ if (crop) {
   if (only_postprocessing) {
     chmR <- raster::raster(paste0(path_output,"chm.tif"))
     rgb <- raster::raster(paste0(path_output,"ortho.tif"))
-  } else {
+    dsm <- raster::raster(paste0(path_output,"dsm.tif"))
+  } 
     chmR <- raster::crop(chmR,ext)
+    dsmR <- raster::crop(dsm,ext)
+    uavRst:::R2SAGA(dsmR,"dsm")
     rgb <- raster::stack(paste0(path_data,orthImg))
     rgb <- raster::crop(rgb,ext)
     rgb <- raster::resample(rgb, chmR, method = 'bilinear')
@@ -92,14 +92,14 @@ if (crop) {
       uavRst:::R2SAGA(rgbI[[i]],index)
       i <- i + 1
     }
-  }  
+   
 } else {
   cat("\n:: prepare and adjust ortho image\n")
   if (only_postprocessing) {
     chmR <- raster::raster(paste0(path_output,"chm.tif"))
     rgb <- raster::raster(paste0(path_output,"ortho.tif"))
     }
-  else {
+  
     rgb <- raster::stack(paste0(path_data,orthImg))
     rgb <- raster::resample(rgb, chmR, method = 'bilinear')
     raster::writeRaster(rgb,paste0(path_output,"ortho.tif"),
@@ -114,11 +114,11 @@ if (crop) {
       i <- i + 1
     }
   }
-}
+
   
 #apply minium tree height to canopy height model (chm) -----------------------
-chmR[chmR < -minTreeHeight] <- minTreeHeight
+#chmR[chmR < -minTreeHeight] <- minTreeHeight
 
 
 # call tree crown segmentation 
-microbenchmark::microbenchmark(crowns <- fa_tree_segementation(chmR),times=1,minTreeAlt=minTreeHeight)
+crowns <- fa_tree_segementation(chmR,is0_join = 1, is0_thresh = 0.05, minTreeAlt=4,majority_radius = 7.0, crownMinArea = 3,is3_threshold = 0.004)

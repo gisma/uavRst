@@ -49,8 +49,11 @@ fa_classifyTreeCrown <- function(crownFn,segType="2",
                               WLRatio = 0.5) {
   # read crown vector data set
   crownarea <- rgdal::readOGR(dirname(crownFn),tools::file_path_sans_ext(basename(crownFn)), verbose = FALSE)
+  
   crownarea@proj4string <- sp::CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
   # calculate area
+  crownarea[is.na(crownarea$chmQ10)]<- 0
+  
   crownarea@data$area <- rgeos::gArea(crownarea,byid = TRUE)
   # filter for min, tree height and min max crown area
   crownarea <-  crownarea[crownarea@data$chmQ10 >= minTreeAlt ,]

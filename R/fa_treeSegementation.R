@@ -60,24 +60,27 @@ fa_tree_segementation <- function(x = NULL,
                                    majority_radius = 5.000
                                    
 )  {
-  cat(":: start crown identification...\n")
+  cat("\n:: start crown identification...\n")
   options(warn=-1)
   if (!exists(sagaCmd)) link2GI::linkSAGA()
   uavRst:::R2SAGA(x,"chm")
   cat(":: run seed finding...\n")
-  ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
-                       " -INPUT "     ,path_run,"chm.sgrd",
-                       " -RESULT "     ,path_run,"chm.sgrd",
-                       " -METHOD 0 ",
-                       " -OLD 0.000000",
-                       " -NEW 0.100000",
-                       " -SOPERATOR 1",
-                       " -NODATAOPT 0",
-                       " -OTHEROPT 0",
-                       " -RESULT_NODATA_CHOICE 1 ",
-                       " -RESULT_NODATA_VALUE 0.000000")
-                ,intern = TRUE)
-  # 1st segementation
+  # technical reclassification of negative values to 0.1
+  # TODO check why negativ and check reclassification
+  # ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
+  #                      " -INPUT "     ,path_run,"chm.sgrd",
+  #                      " -RESULT "     ,path_run,"chm.sgrd",
+  #                      " -METHOD 0 ",
+  #                      " -OLD 0.000000",
+  #                      " -NEW 0.100000",
+  #                      " -SOPERATOR 1",
+  #                      " -NODATAOPT 0",
+  #                      " -OTHEROPT 0",
+  #                      " -RESULT_NODATA_CHOICE 1 ",
+  #                      " -RESULT_NODATA_VALUE 0.000000")
+  #               ,intern = TRUE)
+  # first segment run is a simple watershed segementation just for deriving more reliable seeds 
+  # TODO improve seed finding
   ret <- system(paste0(sagaCmd, " imagery_segmentation 0 ",
                        " -GRID "     ,path_run,"chm.sgrd",
                        #" -SEGMENTS " ,path_run,"dummyCrownSegments.sgrd",
@@ -86,18 +89,18 @@ fa_tree_segementation <- function(x = NULL,
                        " -DOWN 1"    , 
                        " -JOIN "     ,is0_join,
                        " -THRESHOLD ", is0_thresh, 
-                       " -EDGE 1")
+                       " -EDGE 0")
                 ,intern = TRUE)
   cat(":: run seed conversion...\n")
   
-  # import to saga
+  # import segments into SAGA
   ret <- system(paste0(sagaCmd, "  io_gdal 3 ",
                        " -FILES "     ,path_run,"treeSeeds.shp",
                        " -GEOM_TYPE 0")
                 ,intern = TRUE)
   
 
-  # tool: Shapes to Grid
+  # rasterize vector segments 
   ret <- system(paste0(sagaCmd, " grid_gridding 0 ",
                        " -INPUT "     ,path_run,"treeSeeds.shp",
                        #" -GRID "     ,path_run,"treeSeeds.sgrd",
@@ -115,13 +118,15 @@ fa_tree_segementation <- function(x = NULL,
                          " -COUNT NULL")
                 ,intern = TRUE)
   
-  
+  # do some crude stuff so adapt the resolution wich is lost during transformation
   ts <- uavRst:::SAGA2R("treeSeeds", ext = extent(x))
   ts <- raster::resample(ts, x, method = 'bilinear')
+  
+  # create raw zero mask
   treeseeds <- ts * x
   uavRst:::R2SAGA(treeseeds,"treeSeeds")
   
-  # reclass to minTreeAlt
+  # reclass extracted seeds to minTreeAlt
   ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
                        " -INPUT "     ,path_run,"treeSeeds.sgrd",
                        " -RESULT "     ,path_run,"seeds.sgrd",
@@ -134,18 +139,20 @@ fa_tree_segementation <- function(x = NULL,
                        " -RESULT_NODATA_CHOICE 1 ",
                        " -RESULT_NODATA_VALUE 0.000000")
                 ,intern = TRUE)
-  # read from the analysis (imagery_segmentation 0)
+  
+  # TODO SF
   # trees <- sf::st_read(paste0(path_run,"treeSeeds.shp"))
 
   cat(":: run main segementation...\n")
-  # SAGA Seeded Region Growing segmentation (imagery_segmentation 3)
+  # Start final segmentation algorithm as provided by SAGA's seeded Region Growing segmentation (imagery_segmentation 3)
+  # TODO sensitivity analysis of the parameters
   ret <- system(paste0(sagaCmd, " imagery_segmentation 3 ",
                        " -SEEDS "   ,path_run,"seeds.sgrd",
                        " -FEATURES '"   ,
-                       path_run,"VVI.sgrd", 
-                       #path_run,"VARI.sgrd;",
+                       path_run,"VVI.sgrd;", 
+                       path_run,"dsm.sgrd;",
                        path_run,"chm.sgrd'",
-                       " -SEGMENTS "   ,path_run,"pre_tree_crowns.sgrd",
+                       " -SEGMENTS "   ,path_run,"pre_tree_crowns.shp",
                        " -LEAFSIZE "   ,is3_leafsize,
                        " -NORMALIZE ",is3_normalize,
                        " -NEIGHBOUR ",is3_neighbour, 
@@ -154,14 +161,15 @@ fa_tree_segementation <- function(x = NULL,
                        " -SIG_2 ",is3_sig2,
                        " -THRESHOLD ",is3_threshold),
                 intern = TRUE)
-  # fill holes
+  # fill holes inside the crowns (simple approach)
+  # TODO better segmentation
   ret <- system(paste0("gdal_sieve.py -8 ",
                        path_run,"pre_tree_crowns.sdat ",
                        path_run,"fpre_tree_crowns.sdat",
                        " -of SAGA"),
                 intern = TRUE)
   
-  # apply majority filter
+  # apply majority filter for smoothing the extremly irregular crown boundaries 
   ret <- system(paste0(sagaCmd, " grid_filter 6 ",
                        " -INPUT ",path_run,"fpre_tree_crowns.sgrd",
                        " -RESULT ",path_run,"tree_crowns.sgrd",
@@ -170,7 +178,7 @@ fa_tree_segementation <- function(x = NULL,
                        " -THRESHOLD 0.000000 "),
                 intern = TRUE)
   
-  # export to shape
+  # convert filtered crown clumps to shape format for descriptive running statitics 
   ret <- system(paste0(sagaCmd, " shapes_grid 6 ",
                        " -GRID ",path_run,"tree_crowns.sgrd",
                        " -POLYGONS ",path_run,"tree_crowns.shp",
@@ -180,7 +188,7 @@ fa_tree_segementation <- function(x = NULL,
                 intern = TRUE)
   
   cat(":: run statitiscs...\n")
-  # calculate statistics for each crown 
+  # calculate chm statistics for each crown 
   ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
                         " -GRIDS ",path_run,"chm.sgrd ",
                         " -POLYGONS ",path_run,"tree_crowns.shp",
@@ -193,6 +201,7 @@ fa_tree_segementation <- function(x = NULL,
                  intern = TRUE)
   
   # dirty combining of data tables
+  # TODO sf
   ch <- rgdal::readOGR(path_run,"tree_crowns",verbose = FALSE)
   names(ch) <- gsub(names(ch),pattern = "\\NAME",replacement = "NAMEgeom")
   names(ch) <- gsub(names(ch),pattern = "\\ID",replacement = "IDgeom")
@@ -207,6 +216,8 @@ fa_tree_segementation <- function(x = NULL,
                   dsn = path_run, 
                   overwrite_layer = TRUE)
   cat(":: run post-classification...\n")
+  # very simple postclassifcation based on crownarea and morphometric indizies 
+  # TODO improve calssification by training 
   trees_crowns <- fa_classifyTreeCrown(crownFn = paste0(path_run,"treecrowns.shp"),  
                                       funNames = c("eccentricityboundingbox","solidity"),
                                       minTreeAlt = minTreeAlt, 
@@ -214,14 +225,15 @@ fa_tree_segementation <- function(x = NULL,
                                       crownMaxArea = crownMaxArea, 
                                       solidity = solidity, 
                                       WLRatio = WLRatio)
-  
-  rgdal::writeOGR(obj = trees_crowns[[2]], 
+  # write to disk 
+  rgdal::writeOGR(obj = ch, 
                   layer = "finalcrowns", 
                   driver = "ESRI Shapefile", 
                   dsn = path_run, 
                   overwrite_layer = TRUE)
   
   # pixvalues <- basicExtraction(x = chmR,fN = trees_crowns_2[[2]],responseCat = "ID")
+  
   options(warn=0)
   cat("segementation finsihed...")
   return(trees_crowns)
