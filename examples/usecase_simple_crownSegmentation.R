@@ -8,8 +8,11 @@ require(uavRst)
 
 # name of orthoimage
  orthImg <- "ortho_05.tif"
-   
-# only post processing to avoid the point cloud to DSM/DEM operation
+ 
+ # rgb indices 
+ indices <- c("GLI","HI")   
+
+ # only post processing to avoid the point cloud to DSM/DEM operation
 only_postprocessing <- TRUE
 
 # just process a clipped area for testing
@@ -83,7 +86,6 @@ if (crop) {
     raster::writeRaster(rgb,paste0(path_output,"ortho.tif"),
                         overwrite = TRUE)
     cat(":: calculate RGBI \n")
-    indices <- c("VVI","VARI") #names(rgbI)
     rgbI <- uavRst::rs_rgbIndices(rgb[[1]],rgb[[2]],rgb[[3]],indices)
     
     #converting them to SAGA
@@ -107,7 +109,6 @@ if (crop) {
                         overwrite = TRUE)
     cat(":: calculate RGBI \n")
     #converting them to SAGA
-    indices <- c("VVI","VARI")
     rgbI <- uavRst::rs_rgbIndices(rgb[[1]],rgb[[2]],rgb[[3]],indices)
     i <- 1
     for (index in indices) {
@@ -121,7 +122,7 @@ if (crop) {
 
 
 # call tree crown segmentation 
-crowns <- fa_tree_segementation(chmR,is0_join = 1, is0_thresh = 0.1, minTreeAlt=4,majority_radius = 5.0, crownMinArea = 3,is3_threshold = 0.003)
+crowns <- fa_tree_segementation(chmR,is0_join = 1, is0_thresh = 2.5, minTreeAlt=4,majority_radius = 1.0, crownMinArea = 3,is3_normalize = 0,is3_sig2 = 1.0,is3_threshold = 0.0001)
 
 rgdal::writeOGR(obj = crowns[[2]], 
                 layer = "crowns2", 

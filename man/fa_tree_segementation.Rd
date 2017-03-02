@@ -8,7 +8,8 @@ fa_tree_segementation(x = NULL, minTreeAlt = 3, crownMinArea = 7,
   crownMaxArea = 200, WLRatio = 0.53, thLongit = 0.5, solidity = 1,
   is0_output = 1, is0_join = 1, is0_thresh = 0.09, is3_leafsize = 8,
   is3_normalize = 1, is3_neighbour = 1, is3_method = 0, is3_sig1 = 0.1,
-  is3_sig2 = 3.01, is3_threshold = 0.001, majority_radius = 5)
+  is3_sig2 = 3.01, is3_threshold = 0.001, is3_param2 = "GLI",
+  is3_param1 = "HI", majority_radius = 5)
 }
 \arguments{
 \item{x}{spatial raster object}
@@ -44,6 +45,10 @@ fa_tree_segementation(x = NULL, minTreeAlt = 3, crownMinArea = 7,
 \item{is3_sig2}{= 3.01,}
 
 \item{is3_threshold}{= 0.001,}
+
+\item{is3_param2}{default is HI  GLI next rgb image derived index}
+
+\item{is3_param1}{default is HI first rgb image derived index}
 
 \item{majority_radius}{= 5.000}
 }

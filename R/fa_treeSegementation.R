@@ -28,6 +28,8 @@ if (!isGeneric('fa_tree_segementation')) {
 #'@param is3_sig1        =  0.1,
 #'@param is3_sig2        = 3.01,
 #'@param is3_threshold   = 0.001,
+#'@param is3_param1      default is HI first rgb image derived index
+#'@param is3_param2      default is HI  GLI next rgb image derived index
 #'@param majority_radius = 5.000
 
 #'@return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
@@ -57,6 +59,8 @@ fa_tree_segementation <- function(x = NULL,
                                    is3_sig1        =  0.1,
                                    is3_sig2        = 3.01,
                                    is3_threshold   = 0.001,
+                                  is3_param2 = "GLI",
+                                  is3_param1 = "HI",
                                    majority_radius = 5.000
                                    
 )  {
@@ -149,8 +153,8 @@ fa_tree_segementation <- function(x = NULL,
   ret <- system(paste0(sagaCmd, " imagery_segmentation 3 ",
                        " -SEEDS "   ,path_run,"seeds.sgrd",
                        " -FEATURES '"   ,
-                       path_run,"VVI.sgrd;", 
-                       path_run,"dsm.sgrd;",
+                       path_run,is3_param1,".sgrd;", 
+                       path_run,is3_param2,".sgrd;",
                        path_run,"chm.sgrd'",
                        " -SEGMENTS "   ,path_run,"pre_tree_crowns.shp",
                        " -LEAFSIZE "   ,is3_leafsize,
@@ -210,31 +214,37 @@ fa_tree_segementation <- function(x = NULL,
   ch@data   <- cbind(ch@data,stats@data)
   names(ch) <- gsub(names(ch),pattern = "\\.",replacement = "")
   
-  ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
-                        " -GRIDS ",path_run,"dah.sgrd ",
-                        " -POLYGONS ",path_run,"tree_crowns.shp",
-                        " -NAMING 1",
-                        " -METHOD 2",
-                        " -COUNT 1 -MIN  1 -MAX 1 -RANGE 1 -SUM 1 -MEAN 1 -VAR 1 -STDDEV 1",
-                        " -QUANTILE 5",
-                        " -PARALLELIZED 1",
-                        " -RESULT ",path_run,"crownsStat.shp"),
-                 intern = TRUE)
-  
-  ch2 <- rgdal::readOGR(path_run,"tree_crowns",verbose = FALSE)
-  names(ch2) <- gsub(names(ch),pattern = "\\NAME",replacement = "NAMEgeom")
-  names(ch2) <- gsub(names(ch),pattern = "\\ID",replacement = "IDgeom")
-  names(ch2) <- gsub(names(ch),pattern = "\\VALUE",replacement = "VALUEgeom")
-  stats     <- rgdal::readOGR(path_run,"crownsStat",verbose = FALSE)
-  ch2@data   <- cbind(ch2@data,stats@data)
-  names(ch2) <- gsub(names(ch2),pattern = "\\.",replacement = "")
-  
-  #ch_s <- gSimplify(ch, 0.1, topologyPreserve=TRUE)
-  rgdal::writeOGR(obj = ch2, 
-                  layer = "treecrowns2", 
-                  driver = "ESRI Shapefile", 
-                  dsn = path_run, 
+  rgdal::writeOGR(obj = ch,
+                  layer = "treecrowns",
+                  driver = "ESRI Shapefile",
+                  dsn = path_run,
                   overwrite_layer = TRUE)
+  
+  # ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
+  #                       " -GRIDS ",path_run,"dah.sgrd ",
+  #                       " -POLYGONS ",path_run,"tree_crowns.shp",
+  #                       " -NAMING 1",
+  #                       " -METHOD 2",
+  #                       " -COUNT 1 -MIN  1 -MAX 1 -RANGE 1 -SUM 1 -MEAN 1 -VAR 1 -STDDEV 1",
+  #                       " -QUANTILE 5",
+  #                       " -PARALLELIZED 1",
+  #                       " -RESULT ",path_run,"crownsStat.shp"),
+  #                intern = TRUE)
+  # 
+  # ch2 <- rgdal::readOGR(path_run,"tree_crowns",verbose = FALSE)
+  # names(ch2) <- gsub(names(ch),pattern = "\\NAME",replacement = "NAMEgeom")
+  # names(ch2) <- gsub(names(ch),pattern = "\\ID",replacement = "IDgeom")
+  # names(ch2) <- gsub(names(ch),pattern = "\\VALUE",replacement = "VALUEgeom")
+  # stats     <- rgdal::readOGR(path_run,"crownsStat",verbose = FALSE)
+  # ch2@data   <- cbind(ch2@data,stats@data)
+  # names(ch2) <- gsub(names(ch2),pattern = "\\.",replacement = "")
+  # 
+  # #ch_s <- gSimplify(ch, 0.1, topologyPreserve=TRUE)
+  # rgdal::writeOGR(obj = ch2, 
+  #                 layer = "treecrowns2", 
+  #                 driver = "ESRI Shapefile", 
+  #                 dsn = path_run, 
+  #                 overwrite_layer = TRUE)
   cat(":: run post-classification...\n")
   # very simple postclassifcation based on crownarea and morphometric indizies 
   # TODO improve calssification by training 
