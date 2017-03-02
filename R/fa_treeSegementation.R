@@ -194,8 +194,8 @@ fa_tree_segementation <- function(x = NULL,
                         " -POLYGONS ",path_run,"tree_crowns.shp",
                         " -NAMING 1",
                         " -METHOD 2",
-                        " -COUNT 1 -MIN  1 -MAX 1 -RANGE 1 -SUM 1 -MEAN 1 -VAR 1 -STDDEV 1",
-                        " -QUANTILE 10",
+                        " -COUNT 1 -MIN  1 -MAX 1 -RANGE 1 -MEAN 1 -VAR 1 -STDDEV 1",
+                        " -QUANTILE 5",
                         " -PARALLELIZED 1",
                         " -RESULT ",path_run,"crownsStat.shp"),
                  intern = TRUE)
@@ -203,15 +203,35 @@ fa_tree_segementation <- function(x = NULL,
   # dirty combining of data tables
   # TODO sf
   ch <- rgdal::readOGR(path_run,"tree_crowns",verbose = FALSE)
-  names(ch) <- gsub(names(ch),pattern = "\\NAME",replacement = "NAMEgeom")
-  names(ch) <- gsub(names(ch),pattern = "\\ID",replacement = "IDgeom")
-  names(ch) <- gsub(names(ch),pattern = "\\VALUE",replacement = "VALUEgeom")
+  names(ch) <- gsub(names(ch),pattern = "\\NAME",replacement = "NAMEgeom2")
+  names(ch) <- gsub(names(ch),pattern = "\\ID",replacement = "IDgeom2")
+  names(ch) <- gsub(names(ch),pattern = "\\VALUE",replacement = "VALUEgeom2")
   stats     <- rgdal::readOGR(path_run,"crownsStat",verbose = FALSE)
   ch@data   <- cbind(ch@data,stats@data)
   names(ch) <- gsub(names(ch),pattern = "\\.",replacement = "")
+  
+  ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
+                        " -GRIDS ",path_run,"dah.sgrd ",
+                        " -POLYGONS ",path_run,"tree_crowns.shp",
+                        " -NAMING 1",
+                        " -METHOD 2",
+                        " -COUNT 1 -MIN  1 -MAX 1 -RANGE 1 -SUM 1 -MEAN 1 -VAR 1 -STDDEV 1",
+                        " -QUANTILE 5",
+                        " -PARALLELIZED 1",
+                        " -RESULT ",path_run,"crownsStat.shp"),
+                 intern = TRUE)
+  
+  ch2 <- rgdal::readOGR(path_run,"tree_crowns",verbose = FALSE)
+  names(ch2) <- gsub(names(ch),pattern = "\\NAME",replacement = "NAMEgeom")
+  names(ch2) <- gsub(names(ch),pattern = "\\ID",replacement = "IDgeom")
+  names(ch2) <- gsub(names(ch),pattern = "\\VALUE",replacement = "VALUEgeom")
+  stats     <- rgdal::readOGR(path_run,"crownsStat",verbose = FALSE)
+  ch2@data   <- cbind(ch2@data,stats@data)
+  names(ch2) <- gsub(names(ch2),pattern = "\\.",replacement = "")
+  
   #ch_s <- gSimplify(ch, 0.1, topologyPreserve=TRUE)
-  rgdal::writeOGR(obj = ch, 
-                  layer = "treecrowns", 
+  rgdal::writeOGR(obj = ch2, 
+                  layer = "treecrowns2", 
                   driver = "ESRI Shapefile", 
                   dsn = path_run, 
                   overwrite_layer = TRUE)

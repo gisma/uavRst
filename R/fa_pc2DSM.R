@@ -133,7 +133,7 @@ fa_pc2DSM <- function(lasDir = NULL,
                             flags  = c("overwrite","quiet","o"),
                             input  = paste0(path_run,"full_point_cloud.las"),
                             output = "point_cloud_dsm",
-                            method = "max",
+                            method = "mean",
                             intern = TRUE,
                             ignore.stderr = TRUE
   )
