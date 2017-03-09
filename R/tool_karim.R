@@ -172,7 +172,38 @@ getmaxposFromLine <- function(dem,line){
   return(maxPos)
 }
 
-
+getmaxposFromPoly <- function(dem,lN){
+  dcs<- rgdal::readOGR(path_run,lN,verbose = FALSE)
+  ids<-unique(dcs@data$VALUE)
+ 
+  max_xy<-  lapply(ids, function(x){
+    cat("calculate id: ",x,"\n")
+    mask <- dem
+    values(mask) <- NA
+    writeRaster(mask,"poly.tif",overwrite=TRUE)
+      system(paste0('gdal_rasterize -where VALUE=',x,' -l ',lN,' -burn 1 ',lN,'.shp poly.tif'), intern = TRUE, ignore.stdout = TRUE)
+    maskR<-raster::raster("poly.tif")
+    exR<- maskR * dem
+    idx = which.max(exR)
+    maxPos = xyFromCell(exR,idx)
+    df <- data.frame(x = maxPos[1], y= maxPos[2], id = x)
+    })
+  maxPos <- do.call("rbind", max_xy)
+  maxPos <- maxPos[maxPos$id >= 0,]
+  sp::coordinates(maxPos) <- ~x+y
+  sp::proj4string(maxPos) <- dem@crs
+  mask <- dem
+  values(mask) <- NA
+  seeds <- raster::rasterize(maxPos,mask)
+  # writeRaster(mask,"seeds.tif",overwrite=TRUE)
+  # gdalUtils::gdalwarp(paste0(path_run,"seeds.tif"), 
+  #                     paste0(path_run,"seeds.sdat"), 
+  #                     overwrite = TRUE,  
+  #                     of = 'SAGA',
+  #                     verbose = FALSE)
+  seeds[seeds >= 0] <- 1
+  return(seeds)
+}
 
 G2Tiff <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
   
@@ -280,7 +311,7 @@ SAGA2R <- function(fn,ext) {
                       paste0(path_run,fn,".tif"), 
                       overwrite = TRUE,  
                       verbose = FALSE)
-  x<-raster::raster(paste0(path_run,fn,".tif"),overwrite = TRUE)
+  x<-raster::raster(paste0(path_run,fn,".tif"))
   x@extent <- ext
   # convert to SAGA
   return(x)

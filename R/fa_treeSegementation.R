@@ -12,25 +12,21 @@ if (!isGeneric('fa_tree_segementation')) {
 #'@author Chris Reudenbach
 #'
 #'@param x  spatial raster object
-#'@param minTreeAlt      = 3,    # -thresholdfor minimum tree altitude in meter
-#'@param crownMinArea    = 7,    #(approx 1.25 m diameter)
-#'@param crownMaxArea    = 200,  #(approx 17.8 m diameter)
-#'@param WLRatio         = 0.53, # crown width length ratio
-#'@param thLongit        = 0.5,  # crown longitudiness 
-#'@param solidity        = 1.0, # solidity 
-#'@param is0_output      = 0,     # 0= seed value 1=segment id
-#'@param is0_join        = 2,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
-#'@param is0_thresh      = 0.05,  # threshold for join difference in m
-#'@param is3_leafsize    = 8,
-#'@param is3_normalize   = 1,
-#'@param is3_neighbour   = 1,
-#'@param is3_method      = 0,
-#'@param is3_sig1        =  0.1,
-#'@param is3_sig2        = 3.01,
-#'@param is3_threshold   = 0.001,
+#'@param minTreealt default is 5 
+#'@param is0_output      default is 0,     # 0=s seed value 1=segment id
+#'@param is0_join        default is 2,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
+#'@param is0_thresh      default is 0.05,  # threshold for join difference in m
+#'@param is3_leafsize    default is 8,
+#'@param is3_normalize   default is 1,
+#'@param is3_neighbour   default is 1,
+#'@param is3_method      default is 0,
+#'@param is3_sig1        default is  0.1,
+#'@param is3_sig2        default is 3.01,
+#'@param is3_threshold   default is 0.001,
 #'@param is3_param1      default is HI first rgb image derived index
 #'@param is3_param2      default is HI  GLI next rgb image derived index
-#'@param majority_radius = 5.000
+#'@param majority_radius default is 5.000
+#'@param seeding default  is TRUE switch if seeding is called
 
 #'@return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 #'
@@ -43,12 +39,7 @@ if (!isGeneric('fa_tree_segementation')) {
 #'}
 #'
 fa_tree_segementation <- function(x = NULL,
-                                   minTreeAlt      = 3,    # -thresholdfor minimum tree altitude in meter
-                                   crownMinArea    = 7,    #(approx 1.25 m diameter)
-                                   crownMaxArea    = 200,  #(approx 17.8 m diameter)
-                                   WLRatio         = 0.53, # crown width length ratio
-                                   thLongit        = 0.5,  # crown longitudiness 
-                                   solidity        = 1.0, # solidity 
+                                  minTreeAlt = 5,
                                    is0_output      = 1,     # 0= seed value 1=segment id
                                    is0_join        = 1,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
                                    is0_thresh      = 0.09,  # threshold for join difference in m
@@ -61,33 +52,21 @@ fa_tree_segementation <- function(x = NULL,
                                    is3_threshold   = 0.001,
                                   is3_param2 = "GLI",
                                   is3_param1 = "HI",
-                                   majority_radius = 5.000
+                                   majority_radius = 5.000,
+                                  seeding = TRUE
                                    
 )  {
   cat("\n:: start crown identification...\n")
   options(warn=-1)
   if (!exists(sagaCmd)) link2GI::linkSAGA()
   uavRst:::R2SAGA(x,"chm")
+  if (seeding){
   cat(":: run seed finding...\n")
-  # technical reclassification of negative values to 0.1
-  # TODO check why negativ and check reclassification
-  # ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
-  #                      " -INPUT "     ,path_run,"chm.sgrd",
-  #                      " -RESULT "     ,path_run,"chm.sgrd",
-  #                      " -METHOD 0 ",
-  #                      " -OLD 0.000000",
-  #                      " -NEW 0.100000",
-  #                      " -SOPERATOR 1",
-  #                      " -NODATAOPT 0",
-  #                      " -OTHEROPT 0",
-  #                      " -RESULT_NODATA_CHOICE 1 ",
-  #                      " -RESULT_NODATA_VALUE 0.000000")
-  #               ,intern = TRUE)
   # first segment run is a simple watershed segementation just for deriving more reliable seeds 
-  # TODO improve seed finding
+  # TODO improve different advanceds seed finding algorithms
   ret <- system(paste0(sagaCmd, " imagery_segmentation 0 ",
                        " -GRID "     ,path_run,"chm.sgrd",
-                       #" -SEGMENTS " ,path_run,"dummyCrownSegments.sgrd",
+                       " -SEGMENTS " ,path_run,"dummyCrownSegments.sgrd",
                        " -SEEDS "    ,path_run,"treeSeeds.shp",
                        " -OUTPUT "   ,is0_output, 
                        " -DOWN 1"    , 
@@ -95,40 +74,21 @@ fa_tree_segementation <- function(x = NULL,
                        " -THRESHOLD ", is0_thresh, 
                        " -EDGE 0")
                 ,intern = TRUE)
-  cat(":: run seed conversion...\n")
   
-  # import segments into SAGA
-  ret <- system(paste0(sagaCmd, "  io_gdal 3 ",
-                       " -FILES "     ,path_run,"treeSeeds.shp",
-                       " -GEOM_TYPE 0")
-                ,intern = TRUE)
-  
-
-  # rasterize vector segments 
-  ret <- system(paste0(sagaCmd, " grid_gridding 0 ",
-                       " -INPUT "     ,path_run,"treeSeeds.shp",
-                       #" -GRID "     ,path_run,"treeSeeds.sgrd",
-                       " -OUTPUT 0",
-                       " -MULTIPLE 1",
-                       " -GRID_TYPE 2",
-                       " -TARGET_DEFINITION 0",
-                       " -GRID ",path_run,"treeSeeds.sgrd",
-                        " -TARGET_USER_SIZE ", raster::res(x)[1],
-                        " -TARGET_USER_XMIN ",x@extent[1],
-                        " -TARGET_USER_XMAX ",x@extent[2],
-                        " -TARGET_USER_YMIN ",x@extent[3],
-                        " -TARGET_USER_YMAX ",x@extent[4],
-                        " -TARGET_USER_FITS 1",
-                         " -COUNT NULL")
-                ,intern = TRUE)
-  
-  # do some crude stuff so adapt the resolution wich is lost during transformation
-  ts <- uavRst:::SAGA2R("treeSeeds", ext = extent(x))
-  ts <- raster::resample(ts, x, method = 'bilinear')
+  # convert filtered crown clumps to shape format for descriptive running statitics 
+  ret <- system(paste0(sagaCmd, " shapes_grid 6 ",
+                       " -GRID ",path_run,"dummyCrownSegments.sgrd",
+                       " -POLYGONS ",path_run,"dummyCrownSegment.shp",
+                       " -CLASS_ALL 1",
+                       " -CLASS_ID 1.000000",
+                       " -SPLIT 1"),
+                intern = TRUE)
+  # TODO sf
+  ts <-  uavRst:::getmaxposFromPoly(x,"dummyCrownSegment")
   
   # create raw zero mask
-  treeseeds <- ts * x
-  uavRst:::R2SAGA(treeseeds,"treeSeeds")
+  seeds <- ts[[1]] * x
+  uavRst:::R2SAGA(seeds,"treeSeeds")
   
   # reclass extracted seeds to minTreeAlt
   ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
@@ -146,7 +106,8 @@ fa_tree_segementation <- function(x = NULL,
   
   # TODO SF
   # trees <- sf::st_read(paste0(path_run,"treeSeeds.shp"))
-
+  }
+  
   cat(":: run main segementation...\n")
   # Start final segmentation algorithm as provided by SAGA's seeded Region Growing segmentation (imagery_segmentation 3)
   # TODO sensitivity analysis of the parameters
@@ -154,9 +115,9 @@ fa_tree_segementation <- function(x = NULL,
                        " -SEEDS "   ,path_run,"seeds.sgrd",
                        " -FEATURES '"   ,
                        path_run,is3_param1,".sgrd;", 
-                       path_run,is3_param2,".sgrd;",
-                       path_run,"chm.sgrd'",
-                       " -SEGMENTS "   ,path_run,"pre_tree_crowns.shp",
+                       path_run,is3_param2,".sgrd",
+                       #path_run,"chm.sgrd",
+                       "' -SEGMENTS "   ,path_run,"pre_tree_crowns.shp",
                        " -LEAFSIZE "   ,is3_leafsize,
                        " -NORMALIZE ",is3_normalize,
                        " -NEIGHBOUR ",is3_neighbour, 
@@ -201,70 +162,43 @@ fa_tree_segementation <- function(x = NULL,
                         " -COUNT 1 -MIN  1 -MAX 1 -RANGE 1 -MEAN 1 -VAR 1 -STDDEV 1",
                         " -QUANTILE 5",
                         " -PARALLELIZED 1",
-                        " -RESULT ",path_run,"crownsStat.shp"),
+                        " -RESULT ",path_run,"chmCrownsStat.shp"),
                  intern = TRUE)
   
-  # dirty combining of data tables
-  # TODO sf
-  ch <- rgdal::readOGR(path_run,"tree_crowns",verbose = FALSE)
-  names(ch) <- gsub(names(ch),pattern = "\\NAME",replacement = "NAMEgeom2")
-  names(ch) <- gsub(names(ch),pattern = "\\ID",replacement = "IDgeom2")
-  names(ch) <- gsub(names(ch),pattern = "\\VALUE",replacement = "VALUEgeom2")
-  stats     <- rgdal::readOGR(path_run,"crownsStat",verbose = FALSE)
-  ch@data   <- cbind(ch@data,stats@data)
-  names(ch) <- gsub(names(ch),pattern = "\\.",replacement = "")
   
-  rgdal::writeOGR(obj = ch,
+  ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
+                        " -GRIDS ",path_run,"dah.sgrd ",
+                        " -POLYGONS ",path_run,"tree_crowns.shp",
+                        " -NAMING 1",
+                        " -METHOD 2",
+                        " -COUNT 1 -MIN  1 -MAX 1 -RANGE 1 -SUM 1 -MEAN 1 -VAR 1 -STDDEV 1",
+                        " -QUANTILE 5",
+                        " -PARALLELIZED 1",
+                        " -RESULT ",path_run,"dahCrownsStat.shp"),
+                 intern = TRUE)
+   
+  # rgdal::writeOGR(obj = ch,
+  #                 layer = "treecrowns",
+  #                 driver = "ESRI Shapefile",
+  #                 dsn = path_run,
+  #                 overwrite_layer = TRUE)
+  # 
+  # #ch_s <- gSimplify(ch, 0.1, topologyPreserve=TRUE)
+  dahCrownStat <- rgdal::readOGR(path_run,"dahCrownsStat", verbose = FALSE)
+  chmCrownStat <- rgdal::readOGR(path_run,"chmCrownsStat", verbose = FALSE)
+  names(dahCrownStat) <- gsub(names(dahCrownStat),pattern = "\\.",replacement = "")
+  names(chmCrownStat) <- gsub(names(chmCrownStat),pattern = "\\.",replacement = "")
+  
+  chmCrownStat@data <- cbind(chmCrownStat@data,dahCrownStat@data[4:length(names(chmCrownStat))])
+  rgdal::writeOGR(obj = chmCrownStat,
                   layer = "treecrowns",
                   driver = "ESRI Shapefile",
                   dsn = path_run,
                   overwrite_layer = TRUE)
-  
-  # ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
-  #                       " -GRIDS ",path_run,"dah.sgrd ",
-  #                       " -POLYGONS ",path_run,"tree_crowns.shp",
-  #                       " -NAMING 1",
-  #                       " -METHOD 2",
-  #                       " -COUNT 1 -MIN  1 -MAX 1 -RANGE 1 -SUM 1 -MEAN 1 -VAR 1 -STDDEV 1",
-  #                       " -QUANTILE 5",
-  #                       " -PARALLELIZED 1",
-  #                       " -RESULT ",path_run,"crownsStat.shp"),
-  #                intern = TRUE)
   # 
-  # ch2 <- rgdal::readOGR(path_run,"tree_crowns",verbose = FALSE)
-  # names(ch2) <- gsub(names(ch),pattern = "\\NAME",replacement = "NAMEgeom")
-  # names(ch2) <- gsub(names(ch),pattern = "\\ID",replacement = "IDgeom")
-  # names(ch2) <- gsub(names(ch),pattern = "\\VALUE",replacement = "VALUEgeom")
-  # stats     <- rgdal::readOGR(path_run,"crownsStat",verbose = FALSE)
-  # ch2@data   <- cbind(ch2@data,stats@data)
-  # names(ch2) <- gsub(names(ch2),pattern = "\\.",replacement = "")
-  # 
-  # #ch_s <- gSimplify(ch, 0.1, topologyPreserve=TRUE)
-  # rgdal::writeOGR(obj = ch2, 
-  #                 layer = "treecrowns2", 
-  #                 driver = "ESRI Shapefile", 
-  #                 dsn = path_run, 
-  #                 overwrite_layer = TRUE)
-  cat(":: run post-classification...\n")
-  # very simple postclassifcation based on crownarea and morphometric indizies 
-  # TODO improve calssification by training 
-  trees_crowns <- fa_classifyTreeCrown(crownFn = paste0(path_run,"treecrowns.shp"),  
-                                      funNames = c("eccentricityboundingbox","solidity"),
-                                      minTreeAlt = minTreeAlt, 
-                                      crownMinArea = crownMinArea, 
-                                      crownMaxArea = crownMaxArea, 
-                                      solidity = solidity, 
-                                      WLRatio = WLRatio)
-  # write to disk 
-  rgdal::writeOGR(obj = ch, 
-                  layer = "finalcrowns", 
-                  driver = "ESRI Shapefile", 
-                  dsn = path_run, 
-                  overwrite_layer = TRUE)
-  
-  # pixvalues <- basicExtraction(x = chmR,fN = trees_crowns_2[[2]],responseCat = "ID")
-  
+
+
   options(warn=0)
   cat("segementation finsihed...")
-  return(trees_crowns)
+  return( chmCrownStat)
 } 

@@ -8,8 +8,7 @@
 #' bands are mandatory (for RGB indices they should be: "red", "green" and "blue").
 #' @param rgbi the implemented RGB indices currently \link{seealso}
 
-#' @return 
-#' @seealso 
+
 #' A \code{RasterLayer} with the index calculates as:\cr
 #' BI  sqrt((R**2+G**2+B*2)/3 Brightness Index\cr
 #' CI (R-G)/(R+G) Soil Colour Index\cr

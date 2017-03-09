@@ -1,15 +1,15 @@
-if (!isGeneric('fa_classifyTreeCrown')) {
-  setGeneric('fa_classifyTreeCrown', function(x, ...)
-    standardGeneric('fa_classifyTreeCrown'))
+if (!isGeneric('fa_basicTreeCrownFilter')) {
+  setGeneric('fa_basicTreeCrownFilter', function(x, ...)
+    standardGeneric('fa_basicTreeCrownFilter'))
 }
 
-#'@name fa_classifyTreeCrown
+#'@name fa_basicTreeCrownFilter
 #'@title calcualte and post-classifies the morphological structure of raw tree crowns
 #'
 #'@description
 #' calcualte and post-classifies the morphological structure of raw tree crowns
 #'
-#'@usage fa_classifyTreeCrown(runDir,currentP,allP)
+#'@usage fa_basicTreeCrownFilter(runDir,currentP,allP)
 #'
 #'@author Chris Reudenbach
 #'
@@ -19,34 +19,27 @@ if (!isGeneric('fa_classifyTreeCrown')) {
 #'@param minTreeAlt minimum height in meter that will be regarded as tree
 #'@param crownMinArea minimum area of crowns that is accepted
 #'@param crownMaxArea maximum area of crowns that is accepted
-#'@param solidity minimum solidity of crowns that is accepted
-#'@param WLRatio minimum WLRatio of crowns that is accepted
 
 
-#'@return fa_classifyTreeCrown basically returns SPDF  with the crown polygons and all calculated parameters
+
+#'@return fa_basicTreeCrownFilterbasically returns SPDF  with the crown polygons and all calculated parameters
 #'
 #'
-#'@export fa_classifyTreeCrown
+#'@export fa_basicTreeCrownFilter
 #'@examples
-#'#### Example to use fa_classifyTreeCrown for a common analysis of the
+#'#### Example to use fa_basicTreeCrownFilterfor a common analysis of the
 #'     estimated spreading distances of an specifified area
 #'
 #' #
-#'   trees_crowns <- fa_classifyTreeCrown(crownFn = paste0(pd_gi_run,"crownsHeight.shp"),segType = 1, 
-#'                                       funNames = c("eccentricityboundingbox","solidity"),
+#'   trees_crowns <- fa_basicTreeCrownFilter(crownFn = paste0(pd_gi_run,"crownsHeight.shp"),segType = 1,
 #'                                       minTreeAlt = 5, 
 #'                                       crownMinArea = 3, 
-#'                                       crownMaxArea = 300, 
-#'                                       solidity = 1, 
-#'                                       WLRatio = 0.5)
+#'                                       crownMaxArea = 300)
 #'
-fa_classifyTreeCrown <- function(crownFn,segType="2", 
-                              funNames = c("eccentricityboundingbox","solidity"),
+fa_basicTreeCrownFilter<- function(crownFn,
                               minTreeAlt = 5, 
                               crownMinArea = 3, 
-                              crownMaxArea =150, 
-                              solidity = 1, 
-                              WLRatio = 0.5) {
+                              crownMaxArea =150) {
   # read crown vector data set
   crownarea <- rgdal::readOGR(dirname(crownFn),tools::file_path_sans_ext(basename(crownFn)), verbose = FALSE)
   
@@ -57,14 +50,12 @@ fa_classifyTreeCrown <- function(crownFn,segType="2",
   crownarea@data$area <- rgeos::gArea(crownarea,byid = TRUE)
   # filter for min, tree height and min max crown area
   crownarea <-  crownarea[crownarea@data$chmQ10 >= minTreeAlt ,]
-  crownarea <- crownarea[crownarea@data$area > crownMinArea & 
-                           crownarea@data$area < crownMaxArea,]
-  # calculate more metrics
-  crownarea <- uavRst::fa_caMetrics(crownarea,funNames = funNames)
+  crownarea <- crownarea[crownarea@data$area > crownMinArea,]
+  crownarea <- crownarea[crownarea@data$area < crownMaxArea,]
+  crownarea <- crownarea[crownarea$VALUE >= 0,]
   #  filter for solidity and WL ratio
-  crowns <- crownarea[as.numeric(crownarea@data$solidity) != solidity &
-                        as.numeric(crownarea@data$eccentricityboundingbox) > WLRatio ,]
-  # calculate centroids as synthetic trees and ass all knoledge from the crowns
+   crowns <- crownarea
+  # calculate centroids as synthetic tree stems of the crowns
   sT <- rgeos::gCentroid(crowns,byid = TRUE)
   crowns@data$xcoord <- sT@coords[,1]
   crowns@data$ycoord <- sT@coords[,2]
@@ -72,14 +63,15 @@ fa_classifyTreeCrown <- function(crownFn,segType="2",
   sp::coordinates(centerTrees) <- ~xcoord+ycoord
   sp::proj4string(centerTrees) <- sp::CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
   
+  
   # save centerTrees and crowns as shapefile
   rgdal::writeOGR(obj = centerTrees,
-                  layer = paste0("cTr_",segType), 
+                  layer = "cTr", 
                   driver = "ESRI Shapefile", 
                   dsn = path_run, 
                   overwrite_layer = TRUE)
   rgdal::writeOGR(obj = crowns,
-                  layer = paste0("cro_",segType), 
+                  layer = "cro", 
                   driver = "ESRI Shapefile", 
                   dsn = path_run, 
                   overwrite_layer = TRUE)

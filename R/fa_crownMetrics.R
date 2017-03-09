@@ -14,8 +14,8 @@ if (!isGeneric('fa_caMetrics')) {
 #'@title calculate morphometric features of polygons
 #'
 #'@export fa_caMetrics
-fa_caMetrics<- function(crownarea, funNames = c("area","length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")){
-  cat("calculate metrics for ",nrow(crownarea)," polygons... \n")
+fa_caMetrics<- function(crownarea, funNames = c("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")){
+  cat("calculate crown-metrics for ",nrow(crownarea)," polygons... \n")
   polys <- crownarea@polygons
   
   for(subfun in funNames) { 

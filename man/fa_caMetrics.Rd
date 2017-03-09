@@ -4,7 +4,7 @@
 \alias{fa_caMetrics}
 \title{calculate morphometric features of polygons}
 \usage{
-fa_caMetrics(crownarea, funNames = c("area", "length", "elongation",
+fa_caMetrics(crownarea, funNames = c("length", "elongation",
   "eccentricityboundingbox", "solidity", "eccentricityeigen", "calliper",
   "rectangularity", "circularityharalick", "convexity"))
 }
