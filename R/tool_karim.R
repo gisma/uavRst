@@ -162,32 +162,41 @@ makeLine <- function(Lon,Lat,ID,export=FALSE){
 
 getmaxposFromLine <- function(dem,line){
   mask <- dem
-  values(mask) <- NA
+  raster::values(mask) <- NA
   #...update it with the altitude information of the flightline
-  mask  <- rasterize(line,mask)
+  mask  <- raster::rasterize(line,mask)
   mask2 <- mask*dem
   # and find the position of the max altitude
-  idx = which.max(mask2)
-  maxPos = xyFromCell(mask2,idx)
+  idx = raster::which.max(mask2)
+  maxPos = raster::xyFromCell(mask2,idx)
   return(maxPos)
 }
 
 getmaxposFromPoly <- function(dem,lN){
-  dcs<- rgdal::readOGR(path_run,lN,verbose = FALSE)
-  ids<-unique(dcs@data$VALUE)
+  dcs <- rgdal::readOGR(path_run,lN,verbose = FALSE)
+  ids <- unique(dcs@data$VALUE)
  
-  max_xy<-  lapply(ids, function(x){
+  max_xy <-  mclapply(ids,function(x){
     cat("calculate id: ",x,"\n")
     mask <- dem
-    values(mask) <- NA
-    writeRaster(mask,"poly.tif",overwrite=TRUE)
-      system(paste0('gdal_rasterize -where VALUE=',x,' -l ',lN,' -burn 1 ',lN,'.shp poly.tif'), intern = TRUE, ignore.stdout = TRUE)
-    maskR<-raster::raster("poly.tif")
-    exR<- maskR * dem
+    raster::values(mask) <- NA
+    rn <- as.character(x)
+    raster::writeRaster(mask,paste0(rn,"poly.tif"),overwrite = TRUE)
+    gdalUtils::gdal_rasterize(src_datasource = paste0(path_run,lN,'.shp'),
+                              dst_filename =   paste0(path_run,rn,'poly.tif'),
+                              where = paste0('VALUE=',x),
+                              burn = 1,
+                              l = lN)
+    
+      #system(paste0('gdal_rasterize -where VALUE=',x,' -l ',lN,' -burn 1 ',lN,'.shp ',rn,'poly.tif'), intern = TRUE, ignore.stdout = TRUE)
+    maskR <- raster::raster(paste0(path_run,rn,"poly.tif"))
+    exR <- maskR * dem
     idx = which.max(exR)
     maxPos = xyFromCell(exR,idx)
-    df <- data.frame(x = maxPos[1], y= maxPos[2], id = x)
-    })
+    df <- data.frame(x = maxPos[1], y = maxPos[2], id = x)
+    return(df)
+    system(paste0("rm ",path_run, rn,"poly.tif"))
+    },mc.cores = detectCores())#,mc.cores = detectCores()
   maxPos <- do.call("rbind", max_xy)
   maxPos <- maxPos[maxPos$id >= 0,]
   sp::coordinates(maxPos) <- ~x+y

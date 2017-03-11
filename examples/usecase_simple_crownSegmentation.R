@@ -12,11 +12,11 @@ require(uavRst)
 orthImg <- "ortho_05.tif"
 
 # rgb indices 
-indices <- c("GLI","HI","GLAI","NGRDI")   
+indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI")   
 
 
 # only post processing to avoid the point cloud to DSM/DEM operation
-only_postprocessing <- TRUE
+create_chm <- TRUE
 
 # just process a clipped area for testing
 crop <- TRUE
@@ -49,7 +49,7 @@ saga <- link2GI::linkSAGA()
 # ----- start preprocessing ---------------------------------------------------
 
 # CREATE dtm & dsm
-if (!only_postprocessing) {
+if (!create_chm) {
   # create DSM
   dsm <- uavRst::fa_pc2DSM(lasDir = las_data_dir,
                            gisdbase_path = projRootDir,
@@ -73,12 +73,12 @@ if (!only_postprocessing) {
   
   # calculate DAH
   
-} # !only_postprocessing
+} # !create_chm
 
 # now post processing and/or crop 
 if (crop) {
   cat("\n:: crop & adjust input data\n")
-  if (only_postprocessing) {
+  if (create_chm) {
     chmR <- raster::raster(paste0(path_output,"chm.tif"))
     rgb <- raster::raster(paste0(path_output,"ortho.tif"))
     dsm <- raster::raster(paste0(path_output,"dsm.tif"))
@@ -106,7 +106,7 @@ if (crop) {
   
 } else {
   cat("\n:: prepare and adjust ortho image\n")
-  if (only_postprocessing) {
+  if (create_chm) {
     chmR <- raster::raster(paste0(path_output,"chm.tif"))
     rgb <- raster::raster(paste0(path_data,"ortho.tif"))
     dah <- rgb <- raster::raster(paste0(path_output,"dah.tif"))
@@ -132,18 +132,20 @@ if (crop) {
 crowns <- fa_crown_segmentation(chmR,
                                 minTreeAlt = 5,
                                 is0_join = 1, 
-                                is0_thresh = 0.5, 
-                                majority_radius = 5.0, 
+                                is0_thresh = 0.2, 
+                                majority_radius = 3.0, 
                                 is3_sig1 = 0.01,
-                                is3_leafsize = 8, 
+                                is3_leafsize = 256, 
                                 is3_neighbour = 0,
                                 is3_sig2 = 1.,
-                                is3_threshold = 0.000025,
+                                is3_threshold = 0.00001,
+                                is3_seed_params = indices,
                                 seeding = TRUE
 )
 
+
 polyStat <- xpolystat(c("chm","dah"),
-               spdf = "tree_crowns.shp")
+                      spdf = "tree_crowns.shp")
 
 cat(":: run post-classification...\n")
 

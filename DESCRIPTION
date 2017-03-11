@@ -3,10 +3,13 @@ Type: Package
 Title: Unmanned Aerial Vehicle Remote Sensing Tools
 Version: 0.2
 Date: 2016-09-25
-Author: Chris Reudenbach
-Maintainer: Chris Reudenbach <gisma@gis-ma.org>
+Authors@R: c(person("Lars", "Opgenoorth", email = "opgenoorth@uni-marburg.de", role = c("aut", "aut")),
+             person("Christoph", "Reudenbach", email = "reudenbach@geo.uni-marburg.de", role = c("cre"))
+             )
+Encoding: UTF-8
+Maintainer: Chris Reudenbach <reudenbach@uni-marburg.de>
 Description: Unmanned Aerial Vehicle Remote Sensing Tools.
-License: MIT + file LICENSE
+License: GPL (>= 3) | file LICENSE
 Depends:
     R (>= 3.1.0)
 Imports:
@@ -29,6 +32,7 @@ Imports:
     igraph,
     zoo,
     data.table,
+    parallel
 LinkingTo: Rcpp
 RoxygenNote: 6.0.1
 SystemRequirements: GNU make

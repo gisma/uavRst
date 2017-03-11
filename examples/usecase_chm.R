@@ -28,13 +28,13 @@ saga <- link2GI::linkSAGA()
   # create DSM
   dsm <- uavRst::fa_pc2DSM(lasDir = las_data_dir,
                         gisdbase_path = filepath_base,
-                        grid_size = "0.1")
+                        grid_size = "0.05")
   # create DTM
   dtm <- uavRst::fa_pc2DTM(lasDir = las_data_dir,
                         gisdbase_path = filepath_base,
                         thin_with_grid = "0.5",
                         level_max = "5" ,
-                        grid_size = "0.1")
+                        grid_size = "0.05")
   dsmR <- dsm[[1]]
   dtmR <- dtm[[1]]
   

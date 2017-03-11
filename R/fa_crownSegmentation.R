@@ -23,8 +23,7 @@ if (!isGeneric('fa_crown_segmentation')) {
 #'@param is3_sig1        default is  0.1,
 #'@param is3_sig2        default is 3.01,
 #'@param is3_threshold   default is 0.001,
-#'@param is3_param1      default is HI first rgb image derived index
-#'@param is3_param2      default is HI  GLI next rgb image derived index
+#'@param is3_seed_params default is c("GLI","HI") rgb image derived indices
 #'@param majority_radius default is 5.000
 #'@param seeding default  is TRUE switch if seeding is called
 
@@ -50,8 +49,7 @@ fa_crown_segmentation <- function(x = NULL,
                                    is3_sig1        =  0.1,
                                    is3_sig2        = 3.01,
                                    is3_threshold   = 0.001,
-                                  is3_param2 = "GLI",
-                                  is3_param1 = "HI",
+                                   is3_seed_params = c("GLI","HI"),
                                    majority_radius = 5.000,
                                   seeding = TRUE
                                    
@@ -109,14 +107,14 @@ fa_crown_segmentation <- function(x = NULL,
   }
   
   cat(":: run main segementation...\n")
+  # create correct param list s
+  param_list <- paste0(path_run,is3_seed_params,".sgrd;")
+
   # Start final segmentation algorithm as provided by SAGA's seeded Region Growing segmentation (imagery_segmentation 3)
   # TODO sensitivity analysis of the parameters
   ret <- system(paste0(sagaCmd, " imagery_segmentation 3 ",
                        " -SEEDS "   ,path_run,"seeds.sgrd",
-                       " -FEATURES '"   ,
-                       path_run,is3_param1,".sgrd;", 
-                       path_run,is3_param2,".sgrd",
-                       #path_run,"chm.sgrd",
+                       " -FEATURES '"   , param_list,
                        "' -SEGMENTS "   ,path_run,"pre_tree_crowns.shp",
                        " -LEAFSIZE "   ,is3_leafsize,
                        " -NORMALIZE ",is3_normalize,

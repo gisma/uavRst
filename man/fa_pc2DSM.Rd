@@ -6,6 +6,7 @@
 \usage{
 fa_pc2DSM(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
   projFolder = c("data/", "output/", "run/", "las/"), grid_size = "0.5",
+  grass_lidar_method = "mean", grass_lidar_pth = 90,
   saga_spline_level_max = "9", otb_gauss_radius = "0.5",
   type_smooth = "otb_gauss", dsm_minalt = 0, dsm_maxalt = 4000,
   dsm_area = FALSE,

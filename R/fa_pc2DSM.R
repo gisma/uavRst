@@ -47,6 +47,8 @@ fa_pc2DSM <- function(lasDir = NULL,
                    GRASSlocation = "tmp/",
                    projFolder = c("data/","output/","run/","las/"),
                    grid_size = "0.5", 
+                   grass_lidar_method = "mean",
+                   grass_lidar_pth = 90,
                    saga_spline_level_max = "9" ,
                    otb_gauss_radius = "0.5",
                    type_smooth = "otb_gauss",
@@ -129,11 +131,13 @@ fa_pc2DSM <- function(lasDir = NULL,
   
   # late raw DSM using r.in.lidar
   cat(":: calculate DSM...\n")
+  
   ret <- rgrass7::execGRASS("r.in.lidar",
                             flags  = c("overwrite","quiet","o"),
                             input  = paste0(path_run,"full_point_cloud.las"),
                             output = "point_cloud_dsm",
-                            method = "mean",
+                            method = grass_lidar_method,
+                            pth = grass_lidar_pth,
                             intern = TRUE,
                             ignore.stderr = TRUE
   )

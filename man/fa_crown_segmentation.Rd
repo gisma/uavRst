@@ -7,7 +7,7 @@
 fa_crown_segmentation(x = NULL, minTreeAlt = 5, is0_output = 1,
   is0_join = 1, is0_thresh = 0.09, is3_leafsize = 8, is3_normalize = 1,
   is3_neighbour = 1, is3_method = 0, is3_sig1 = 0.1, is3_sig2 = 3.01,
-  is3_threshold = 0.001, is3_param2 = "GLI", is3_param1 = "HI",
+  is3_threshold = 0.001, is3_seed_params = c("GLI", "HI"),
   majority_radius = 5, seeding = TRUE)
 }
 \arguments{
@@ -33,9 +33,7 @@ fa_crown_segmentation(x = NULL, minTreeAlt = 5, is0_output = 1,
 
 \item{is3_threshold}{default is 0.001,}
 
-\item{is3_param2}{default is HI  GLI next rgb image derived index}
-
-\item{is3_param1}{default is HI first rgb image derived index}
+\item{is3_seed_params}{default is c("GLI","HI") rgb image derived indices}
 
 \item{majority_radius}{default is 5.000}
 
