@@ -2,15 +2,18 @@
 # from an uav derived point cloud data set
 # NOTE the ortho image is obligatory
 
+# ---- define global parameters -----------------------------------------------
+# 
 # load package for linking  GI tools
 require(link2GI)
 require(uavRst)
 
-# name of orthoimage
+# orthoimage filename
 orthImg <- "ortho_05.tif"
 
 # rgb indices 
-indices <- c("GLI","HI")   
+indices <- c("GLI","HI","GLAI","NGRDI")   
+
 
 # only post processing to avoid the point cloud to DSM/DEM operation
 only_postprocessing <- TRUE
@@ -43,6 +46,8 @@ unlink(paste0(path_run,"*"), force = TRUE)
 gdal <- link2GI::linkgdalUtils()
 saga <- link2GI::linkSAGA()
 
+# ----- start preprocessing ---------------------------------------------------
+
 # CREATE dtm & dsm
 if (!only_postprocessing) {
   # create DSM
@@ -65,6 +70,9 @@ if (!only_postprocessing) {
   chmR <- dsmR - dtmR
   raster::writeRaster(chmR,paste0(path_output,"chm.tif"),
                       overwrite = TRUE)
+  
+  # calculate DAH
+  
 } # !only_postprocessing
 
 # now post processing and/or crop 
@@ -118,12 +126,10 @@ if (crop) {
   }
 }
 
-
-#apply minium tree height to canopy height model (chm) -----------------------
-
+# ----  start analysis --------------------------------------------------------
 
 # call tree crown segmentation 
-crowns <- fa_tree_segementation(chmR,
+crowns <- fa_crown_segmentation(chmR,
                                 minTreeAlt = 5,
                                 is0_join = 1, 
                                 is0_thresh = 0.5, 
@@ -135,17 +141,25 @@ crowns <- fa_tree_segementation(chmR,
                                 is3_threshold = 0.000025,
                                 seeding = TRUE
 )
+
+polyStat <- xpolystat(c("chm","dah"),
+               spdf = "tree_crowns.shp")
+
 cat(":: run post-classification...\n")
-# very simple postclassifcation based on crownarea 
+
+# very simple postclassifcation based on crownarea tree height and crowns cut by the picture cutout/border
 # TODO improve classification by training 
-trees_crowns <- fa_basicTreeCrownFilter(crownFn = paste0(path_run,"treecrowns.shp"),
+trees_crowns <- fa_basicTreeCrownFilter(crownFn = paste0(path_run,"polyStat.shp"),
                                         minTreeAlt = 5,
                                         crownMinArea = 3,
                                         crownMaxArea = 225)
 
 # pixvalues <- basicExtraction(x = chmR,fN = trees_crowns_2[[2]],responseCat = "ID")
-
+# 
+# calculate metrics of the crown geometries
 crowns <- uavRst::fa_caMetrics(trees_crowns[[2]])
+
+# save results to shape
 rgdal::writeOGR(obj = crowns, 
                 layer = "crowns", 
                 driver = "ESRI Shapefile", 

@@ -4,10 +4,10 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 }
 
 #'@name fa_basicTreeCrownFilter
-#'@title calcualte and post-classifies the morphological structure of raw tree crowns
+#'@title applies minnimum height and min/max area thresholds on the raw tree crown geometries
 #'
 #'@description
-#' calcualte and post-classifies the morphological structure of raw tree crowns
+#' applies minnimum height and min/max area thresholds on the raw tree crown geometries crowns
 #'
 #'@usage fa_basicTreeCrownFilter(runDir,currentP,allP)
 #'

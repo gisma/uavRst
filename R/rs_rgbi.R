@@ -155,8 +155,17 @@ rs_rgbIndices<- function(red,green,blue,
       NGRDI<-(green-red)/(green+red) 
       names(NGRDI) <- "NGRDI"
       return(NGRDI)
+            
+    }  else if (item=="GLAI"){
+      # NGRDI Normalized green red difference index 
+      cat("\ncalculate greenish Leaf Area Index  (GLAI) (highly experimental)")
+      vevi<-(green - red) / (green +  red -  blue )
+      GLAI = (25 * vevi + 1.25 )
+      names(GLAI) <- "GLAI"
+      return(GLAI)
       
     }  
+    
   })
   return(raster::stack(indices))
 }
