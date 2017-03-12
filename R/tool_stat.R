@@ -65,10 +65,10 @@ cat(":: run statistics...\n")
     
     if (i == 1) {
       stat <- stat1
-      stat
+      
     } else  {
       stat@data <- cbind(stat@data,stat1@data[4:length(names(stat1))])
-      stat <- stat1
+      #stat <- stat1
     }
   }
   rgdal::writeOGR(obj = stat,

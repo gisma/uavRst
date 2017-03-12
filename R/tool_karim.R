@@ -194,8 +194,8 @@ getmaxposFromPoly <- function(dem,lN){
     idx = which.max(exR)
     maxPos = xyFromCell(exR,idx)
     df <- data.frame(x = maxPos[1], y = maxPos[2], id = x)
-    return(df)
     system(paste0("rm ",path_run, rn,"poly.tif"))
+    return(df)
     },mc.cores = detectCores())#,mc.cores = detectCores()
   maxPos <- do.call("rbind", max_xy)
   maxPos <- maxPos[maxPos$id >= 0,]

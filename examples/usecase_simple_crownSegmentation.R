@@ -16,7 +16,7 @@ indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI")
 
 
 # only post processing to avoid the point cloud to DSM/DEM operation
-create_chm <- TRUE
+calculate_chm <- FALSE
 
 # just process a clipped area for testing
 crop <- TRUE
@@ -49,10 +49,11 @@ saga <- link2GI::linkSAGA()
 # ----- start preprocessing ---------------------------------------------------
 
 # CREATE dtm & dsm
-if (!create_chm) {
+if (calculate_chm) {
   # create DSM
   dsm <- uavRst::fa_pc2DSM(lasDir = las_data_dir,
                            gisdbase_path = projRootDir,
+                           otb_gauss_radius ="0.5",
                            grid_size = "0.05")
   # create DTM
   dtm <- uavRst::fa_pc2DTM(lasDir = las_data_dir,
@@ -65,7 +66,8 @@ if (!create_chm) {
   
   # adjust dsm to dtm
   dsmR <- raster::resample(dsmR, dtmR, method = 'bilinear')
-  
+  raster::writeRaster(dsmR,paste0(path_output,"dsm.tif"),
+                      overwrite = TRUE)
   # calculate CHM
   chmR <- dsmR - dtmR
   raster::writeRaster(chmR,paste0(path_output,"chm.tif"),
@@ -73,23 +75,28 @@ if (!create_chm) {
   
   # calculate DAH
   
-} # !create_chm
+} # 
 
 # now post processing and/or crop 
 if (crop) {
   cat("\n:: crop & adjust input data\n")
-  if (create_chm) {
-    chmR <- raster::raster(paste0(path_output,"chm.tif"))
-    rgb <- raster::raster(paste0(path_output,"ortho.tif"))
-    dsm <- raster::raster(paste0(path_output,"dsm.tif"))
-    dah <- raster::raster(paste0(path_output,"dah.tif"))
-    
-  } 
-  chmR <- raster::crop(chmR,ext)
-  dsmR <- raster::crop(dsm,ext)
-  dah <- raster::crop(dah,ext)
-  uavRst:::R2SAGA(dah,"dah")
+  #chmR <- raster::raster(paste0(path_output,"chm.tif"))
+  dsm <- raster::raster(paste0(path_output,"dsm.tif"))
+  dtm <- raster::raster(paste0(path_output,"dtm.tif"))
+  
+  
   rgb <- raster::stack(paste0(path_data,orthImg))
+  
+  dah <- raster::raster(paste0(path_output,"dah.tif"))
+  
+  
+  dtmR <- raster::crop(dtm,ext)
+  dsmR <- raster::crop(dsm,ext)
+  dsmR <- raster::resample(dsmR, dtmR, method = 'bilinear')
+  chmR <- dsmR - dtmR
+  # dah <- raster::crop(dah,ext)
+  uavRst:::R2SAGA(dah,"dah")
+  
   rgb <- raster::crop(rgb,ext)
   rgb <- raster::resample(rgb, chmR, method = 'bilinear')
   raster::writeRaster(rgb,paste0(path_output,"ortho.tif"),
@@ -106,18 +113,14 @@ if (crop) {
   
 } else {
   cat("\n:: prepare and adjust ortho image\n")
-  if (create_chm) {
-    chmR <- raster::raster(paste0(path_output,"chm.tif"))
-    rgb <- raster::raster(paste0(path_data,"ortho.tif"))
-    dah <- rgb <- raster::raster(paste0(path_output,"dah.tif"))
-  }
-  
+  chmR <- raster::raster(paste0(path_output,"chm.tif"))
+  rgb <- raster::raster(paste0(path_data,"ortho.tif"))
+  dah <- raster::raster(paste0(path_output,"dah.tif"))
   rgb <- raster::stack(paste0(path_data,orthImg))
   rgb <- raster::resample(rgb, chmR, method = 'bilinear')
   raster::writeRaster(rgb,paste0(path_output,"ortho.tif"),
                       overwrite = TRUE)
   cat(":: calculate RGBI \n")
-  #converting them to SAGA
   rgbI <- uavRst::rs_rgbIndices(rgb[[1]],rgb[[2]],rgb[[3]],indices)
   i <- 1
   for (index in indices) {
@@ -130,36 +133,41 @@ if (crop) {
 
 # call tree crown segmentation 
 crowns <- fa_crown_segmentation(chmR,
-                                minTreeAlt = 5,
+                                minTreeAlt = 7,
                                 is0_join = 1, 
-                                is0_thresh = 0.2, 
-                                majority_radius = 3.0, 
-                                is3_sig1 = 0.01,
+                                is0_thresh = 0.25, 
+                                majority_radius = 5.0, 
+                                is3_sig1 = 0.015,
                                 is3_leafsize = 256, 
                                 is3_neighbour = 0,
-                                is3_sig2 = 1.,
-                                is3_threshold = 0.00001,
+                                is3_sig2 = 2.5,
+                                is3_threshold = 0.00005,
                                 is3_seed_params = indices,
-                                seeding = TRUE
+                                seeding = FALSE
 )
 
+uavRst::potInsolation("chm")
 
-polyStat <- xpolystat(c("chm","dah"),
+polyStat <- xpolystat(c("tot","dir","dif","chm"),
                       spdf = "tree_crowns.shp")
-
+rgdal::writeOGR(obj = polyStat,
+                layer = "polyStat", 
+                driver = "ESRI Shapefile", 
+                dsn = path_run, 
+                overwrite_layer = TRUE)
 cat(":: run post-classification...\n")
 
 # very simple postclassifcation based on crownarea tree height and crowns cut by the picture cutout/border
 # TODO improve classification by training 
-trees_crowns <- fa_basicTreeCrownFilter(crownFn = paste0(path_run,"polyStat.shp"),
-                                        minTreeAlt = 5,
-                                        crownMinArea = 3,
-                                        crownMaxArea = 225)
+# trees_crowns <- fa_basicTreeCrownFilter(crownFn = paste0(path_run,"polyStat.shp"),
+#                                         minTreeAlt = 5,
+#                                         crownMinArea = 3,
+#                                         crownMaxArea = 225)
 
 # pixvalues <- basicExtraction(x = chmR,fN = trees_crowns_2[[2]],responseCat = "ID")
 # 
 # calculate metrics of the crown geometries
-crowns <- uavRst::fa_caMetrics(trees_crowns[[2]])
+crowns <- uavRst::fa_caMetrics(polyStat)
 
 # save results to shape
 rgdal::writeOGR(obj = crowns, 
