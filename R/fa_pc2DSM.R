@@ -60,7 +60,7 @@ fa_pc2DSM <- function(lasDir = NULL,
                    path_lastools = NULL) {
   
   gdal <- link2GI::linkgdalUtils()
-  saga <- link2GI::linkSAGA()
+  if (!exists(sagaCmd)) link2GI::linkSAGA()
   # some basic checks 
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
   lasDir <- path.expand(lasDir)

@@ -4,8 +4,8 @@
 \alias{potInsolation}
 \title{calculate statitiscs of polygon based raster extraction}
 \usage{
-potInsolation(x = NULL, svf_radius = 10000, sfv_method = 0,
-  svf_dlevel = 3, sfv_ndirs = 8, pi_solarconst = 1367, pi_units = 0,
+potInsolation(x = NULL, svf_radius = 10000, svf_method = 0,
+  svf_dlevel = 3, svf_ndirs = 8, pi_solarconst = 1367, pi_units = 0,
   pi_shadow = 1, pi_day = "21/06/17", pi_day_stop = "21/06/17",
   pi_day_step = 1, pi_hour_range_min = 0, pi_hour_range_max = 24,
   pi_hour_step = 0.5, pi_lumped = 70)
@@ -15,11 +15,7 @@ potInsolation(x = NULL, svf_radius = 10000, sfv_method = 0,
 
 \item{svf_radius}{search radius in map units default is 10000.0, set to zero for ignoring,}
 
-\item{sfv_method}{default is 0 (multiscale) NOTE much slower than 1 (sectors),}
-
 \item{svf_dlevel}{multi scale factor default is 3.0 minimum is 1.25}
-
-\item{sfv_ndirs}{number of sectors default is 8.0 minimum is 3.0}
 
 \item{pi_solarconst}{(W/m**2) default is 1367.0,}
 
@@ -40,6 +36,10 @@ potInsolation(x = NULL, svf_radius = 10000, sfv_method = 0,
 \item{pi_hour_step}{= 1.0,}
 
 \item{pi_lumped}{= 70.0}
+
+\item{sfv_method}{default is 0 (multiscale) NOTE much slower than 1 (sectors),}
+
+\item{sfv_ndirs}{number of sectors default is 8.0 minimum is 3.0}
 }
 \value{
 returns all calculations as SAGA Grid for statistical analysis

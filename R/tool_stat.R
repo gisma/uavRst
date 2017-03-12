@@ -39,7 +39,7 @@ xpolystat <- function(x = NULL,
                                   
 cat(":: run statistics...\n")
 # calculate chm statistics for each crown 
-
+  if (!exists(sagaCmd)) link2GI::linkSAGA()
   for (i in seq(1:length(x))) {
     cat(":: calculate ",x[i], " statistics\n")
     ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",

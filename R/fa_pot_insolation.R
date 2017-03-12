@@ -38,42 +38,44 @@ if (!isGeneric('potInsolation')) {
 #'}
 #'
 potInsolation <- function(x = NULL,
-                           svf_radius=10000.000000, 
-                           sfv_method=0, 
-                           svf_dlevel=3.000000, 
-                           sfv_ndirs=8,
-                           pi_solarconst = 1367.000000, 
-                           pi_units = 0, 
-                           pi_shadow = 1 ,
-                           pi_day = "21/06/17", 
-                           pi_day_stop = "21/06/17", 
-                           pi_day_step = 1, 
-                           pi_hour_range_min = 0.000000, 
-                           pi_hour_range_max = 24.000000,
-                           pi_hour_step = 0.500000, 
-                           pi_lumped = 70.000000 )   {
+                          svf_radius=10000.000000, 
+                          svf_method=0, 
+                          svf_dlevel=3.000000, 
+                          svf_ndirs=8,
+                          pi_solarconst = 1367.000000, 
+                          pi_units = 0, 
+                          pi_shadow = 1 ,
+                          pi_day = "21/06/17", 
+                          pi_day_stop = "21/06/17", 
+                          pi_day_step = 1, 
+                          pi_hour_range_min = 0.000000, 
+                          pi_hour_range_max = 24.000000,
+                          pi_hour_step = 0.500000, 
+                          pi_lumped = 70.000000 )   {
   
   cat(":: run pot solar analysis...\n")
+  if (!exists(sagaCmd)) link2GI::linkSAGA()
   
-  
-  
-  ret <-  system(paste0(sagaCmd, " saga_cmd ta_lighting 3 ",
+  cat(":: run sky view factor...\n")
+  ret <-  system(paste0(sagaCmd, " ta_lighting 3 ",
                         " -DEM ",path_run,x,".sgrd",
-                        " -SFV ",path_run,"sfv.sgrd",
+                        " -SVF ",path_run,"svf.sgrd",
                         " -SIMPLE NULL",
                         " -TERRAIN NULL",
                         " -DISTANCE NULL",
-                        " -RADIUS ",sfv_radius, 
-                        " -METHOD ",sfv_method, 
-                        " -DLEVEL ",sfv_dlevel,
-                        " -NDIRS ",sfv_ndirs))
+                        " -RADIUS ",svf_radius, 
+                        " -METHOD ",svf_method, 
+                        " -DLEVEL ",svf_dlevel,
+                        " -NDIRS ",svf_ndirs),
+                 intern = TRUE)
   
-
-  ret <-  system(paste0(sagaCmd, " saga_cmd ta_lighting 2  ",
+  cat(":: run potential insolation analysis\n:: depending on period and setting this will take a long while...\n:: Start Day: ",pi_day,"\n:: Stop Day:  ",pi_day_stop,"\n")
+  
+  ret <-  system(paste0(sagaCmd, " ta_lighting 2  ",
                         " -GRD_DEM ",path_run,x,".sgrd",
-                        " -GRD_SVF ",path_run,"sfv.sgrd", 
+                        " -GRD_SVF ",path_run,"svf.sgrd", 
                         " -GRD_DIRECT ",path_run,"dir.sgrd", 
-                        " -GRD_DIFFUS ",path_run,"dis.sgrd", 
+                        " -GRD_DIFFUS ",path_run,"dif.sgrd", 
                         " -GRD_TOTAL ",path_run,"tot.sgrd", 
                         " -GRD_RATIO ",path_run,"rat.sgrd",                           
                         " -GRD_DURATION ",path_run,"dur.sgrd", 
@@ -92,7 +94,6 @@ potInsolation <- function(x = NULL,
                         " -HOUR_RANGE_MAX ",as.character(pi_hour_range_max),
                         " -HOUR_STEP ",as.character(pi_hour_step), 
                         " -METHOD 2", 
-                        " -LUMPED ",as.character(pi_lumped) ))
-
-
+                        " -LUMPED ",as.character(pi_lumped) ),
+                 intern = TRUE )
 }

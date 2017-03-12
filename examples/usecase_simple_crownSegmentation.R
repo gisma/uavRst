@@ -23,8 +23,11 @@ crop <- TRUE
 #ext  <- raster::extent(498372, 498472,  5664417 ,5664513)
 #ext  <- raster::extent(498300,498620,5664070,5664475)
 # bestry
-ext  <- raster::extent(498432,498545,5664204,5664302)
+#ext  <- raster::extent(498432,498545,5664204,5664302)
 #ext  <- raster::extent(498404,498488,5664458,5664536)
+
+# all sample trees
+ext  <- raster::extent(498310,498610,5664085,5664470)
 
 # define project folder
 projRootDir <- "~/temp6/GRASS7"
@@ -143,31 +146,37 @@ crowns <- fa_crown_segmentation(chmR,
                                 is3_sig2 = 2.5,
                                 is3_threshold = 0.00005,
                                 is3_seed_params = indices,
-                                seeding = FALSE
+                                seeding = TRUE
 )
 
-uavRst::potInsolation("chm")
+# calculate potential insolation
+uavRst::potInsolation("chm",pi_day = "01/06/2017",pi_day_stop = "30/06/2017",pi_hour_step = 1.0)
 
+# extract stats
 polyStat <- xpolystat(c("tot","dir","dif","chm"),
                       spdf = "tree_crowns.shp")
-rgdal::writeOGR(obj = polyStat,
-                layer = "polyStat", 
+
+
+cat(":: run post-classification...\n")
+
+# calculate metrics of the crown geometries
+crowns <- uavRst::fa_caMetrics(polyStat)
+
+rgdal::writeOGR(obj = crowns,
+                layer = "crowns", 
                 driver = "ESRI Shapefile", 
                 dsn = path_run, 
                 overwrite_layer = TRUE)
-cat(":: run post-classification...\n")
 
-# very simple postclassifcation based on crownarea tree height and crowns cut by the picture cutout/border
-# TODO improve classification by training 
-# trees_crowns <- fa_basicTreeCrownFilter(crownFn = paste0(path_run,"polyStat.shp"),
-#                                         minTreeAlt = 5,
-#                                         crownMinArea = 3,
-#                                         crownMaxArea = 225)
+# simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
+trees_crowns <- fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crowns.shp"),
+                                        minTreeAlt = 5,
+                                        crownMinArea = 3,
+                                        crownMaxArea = 225)
 
 # pixvalues <- basicExtraction(x = chmR,fN = trees_crowns_2[[2]],responseCat = "ID")
-# 
-# calculate metrics of the crown geometries
-crowns <- uavRst::fa_caMetrics(polyStat)
+ 
+
 
 # save results to shape
 rgdal::writeOGR(obj = crowns, 
