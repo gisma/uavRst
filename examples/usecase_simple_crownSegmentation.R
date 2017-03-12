@@ -137,6 +137,7 @@ if (crop) {
 # call tree crown segmentation 
 crowns <- fa_crown_segmentation(chmR,
                                 minTreeAlt = 7,
+                                crownMinArea = 3,
                                 is0_join = 1, 
                                 is0_thresh = 0.25, 
                                 majority_radius = 5.0, 

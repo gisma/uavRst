@@ -39,6 +39,7 @@ if (!isGeneric('fa_crown_segmentation')) {
 #'
 fa_crown_segmentation <- function(x = NULL,
                                   minTreeAlt = 5,
+                                  crownMinArea = 3,
                                    is0_output      = 1,     # 0= seed value 1=segment id
                                    is0_join        = 1,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
                                    is0_thresh      = 0.09,  # threshold for join difference in m
@@ -81,8 +82,17 @@ fa_crown_segmentation <- function(x = NULL,
                        " -CLASS_ID 1.000000",
                        " -SPLIT 1"),
                 intern = TRUE)
-  # TODO sf
-  ts <-  uavRst:::getmaxposFromPoly(x,"dummyCrownSegment")
+  tmp <- rgdal::readOGR(path_run,"dummyCrownSegment",verbose = FALSE)
+  tmp <- tmp[tmp$VALUE >= 0,]
+  tmp@data$area <- rgeos::gArea(tmp,byid = TRUE)
+  tmp <- tmp[tmp$area > crownMinArea,]
+  rgdal::writeOGR(obj = tmp,
+                  layer = "dummyCrownSegment", 
+                  driver = "ESRI Shapefile", 
+                  dsn = path_run, 
+                  overwrite_layer = TRUE)
+  
+  ts <-  uavRst:::get_posValueFromPoly(x,"dummyCrownSegment")
   
   # create raw zero mask
   seeds <- ts[[1]] * x

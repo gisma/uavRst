@@ -172,11 +172,11 @@ getmaxposFromLine <- function(dem,line){
   return(maxPos)
 }
 
-getmaxposFromPoly <- function(dem,lN){
+get_posValueFromPoly <- function(dem,lN,max = TRUE, min = FALSE, use_expression = FALSE, expression = NULL){
   dcs <- rgdal::readOGR(path_run,lN,verbose = FALSE)
-  ids <- unique(dcs@data$VALUE)
+  ids <- unique(dcs@data$ID)
  
-  max_xy <-  mclapply(ids,function(x){
+  ret_exp_xy <-  mclapply(ids,function(x){
     cat("calculate id: ",x,"\n")
     mask <- dem
     raster::values(mask) <- NA
@@ -184,26 +184,28 @@ getmaxposFromPoly <- function(dem,lN){
     raster::writeRaster(mask,paste0(rn,"poly.tif"),overwrite = TRUE)
     gdalUtils::gdal_rasterize(src_datasource = paste0(path_run,lN,'.shp'),
                               dst_filename =   paste0(path_run,rn,'poly.tif'),
-                              where = paste0('VALUE=',x),
+                              where = paste0('ID=',x),
                               burn = 1,
                               l = lN)
     
-      #system(paste0('gdal_rasterize -where VALUE=',x,' -l ',lN,' -burn 1 ',lN,'.shp ',rn,'poly.tif'), intern = TRUE, ignore.stdout = TRUE)
+      #system(paste0('gdal_rasterize -where ID=',x,' -l ',lN,' -burn 1 ',lN,'.shp ',rn,'poly.tif'), intern = TRUE, ignore.stdout = TRUE)
     maskR <- raster::raster(paste0(path_run,rn,"poly.tif"))
     exR <- maskR * dem
-    idx = which.max(exR)
-    maxPos = xyFromCell(exR,idx)
-    df <- data.frame(x = maxPos[1], y = maxPos[2], id = x)
+    if (max) idx = which.max(exR)
+    else if (min) idx  = which.min(exR)
+    else if (use_expression) idx  = exR[eval(paste(exR,expression)) ]
+    ret_expPos = xyFromCell(exR,idx)
+    df <- data.frame(x = ret_expPos[1], y = ret_expPos[2], id = x)
     system(paste0("rm ",path_run, rn,"poly.tif"))
     return(df)
     },mc.cores = detectCores())#,mc.cores = detectCores()
-  maxPos <- do.call("rbind", max_xy)
-  maxPos <- maxPos[maxPos$id >= 0,]
-  sp::coordinates(maxPos) <- ~x+y
-  sp::proj4string(maxPos) <- dem@crs
+  ret_expPos <- do.call("rbind", ret_exp_xy)
+  #ret_expPos <- ret_expPos[ret_expPos$id >= 0,]
+  sp::coordinates(ret_expPos) <- ~x+y
+  sp::proj4string(ret_expPos) <- dem@crs
   mask <- dem
   values(mask) <- NA
-  seeds <- raster::rasterize(maxPos,mask)
+  seeds <- raster::rasterize(ret_expPos,mask)
   # writeRaster(mask,"seeds.tif",overwrite=TRUE)
   # gdalUtils::gdalwarp(paste0(path_run,"seeds.tif"), 
   #                     paste0(path_run,"seeds.sdat"), 
