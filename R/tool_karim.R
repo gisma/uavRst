@@ -176,7 +176,7 @@ getmaxposFromLine <- function(dem,line){
 #' extract for all polygons the position of the maximum value
 #' @export
 #' 
-get_max_posFromPoly <- function(dem,lN,poly_split=TRUE){
+get_max_posFromPoly <- function(dem,lN, poly_split=TRUE){
   # read raster input data 
   if (split) system(paste0("rm -rf ",paste0(path_tmp,"split")))
   dem <- raster::raster(dem)
