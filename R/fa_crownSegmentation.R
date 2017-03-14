@@ -26,6 +26,7 @@ if (!isGeneric('fa_crown_segmentation')) {
 #'@param is3_seed_params default is c("GLI","HI") rgb image derived indices
 #'@param majority_radius default is 5.000
 #'@param seeding default  is TRUE switch if seeding is called
+#'@param split default  is TRUE switch if splitting of the polygons is called
 
 #'@return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 #'
@@ -52,7 +53,8 @@ fa_crown_segmentation <- function(x = NULL,
                                    is3_threshold   = 0.001,
                                    is3_seed_params = c("GLI","HI"),
                                    majority_radius = 5.000,
-                                  seeding = TRUE
+                                  seeding = TRUE,
+                                  split = TRUE
                                    
 )  {
   cat("\n:: start crown identification...\n")
@@ -92,7 +94,8 @@ fa_crown_segmentation <- function(x = NULL,
                   dsn = path_run, 
                   overwrite_layer = TRUE)
   
-  ts <-  uavRst:::get_posValueFromPoly(x,"dummyCrownSegment")
+  cat(":: find max height position...\n")
+  ts <-  uavRst:::get_max_posFromPoly(paste0(path_run,"chm.tif"),"dummyCrownSegment",poly_split = split)
   
   # create raw zero mask
   seeds <- ts[[1]] * x

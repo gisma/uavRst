@@ -53,7 +53,7 @@ potInsolation <- function(x = NULL,
                           pi_hour_step = 0.500000, 
                           pi_lumped = 70.000000 )   {
   
-  cat(":: run pot solar analysis...\n")
+  cat(":: run potential insolation analysis...\n")
   if (!exists(sagaCmd)) link2GI::linkSAGA()
   
   cat(":: run sky view factor...\n")

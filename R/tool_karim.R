@@ -171,47 +171,99 @@ getmaxposFromLine <- function(dem,line){
   maxPos = raster::xyFromCell(mask2,idx)
   return(maxPos)
 }
+#' extract for all polygons the position of the maximum value of the applied raster(s)
+#' @description
+#' extract for all polygons the position of the maximum value
+#' @export
+#' 
+get_max_posFromPoly <- function(dem,lN,poly_split=TRUE){
+  # read raster input data 
+  if (split) system(paste0("rm -rf ",paste0(path_tmp,"split")))
+  dem <- raster::raster(dem)
+  fn <- spatial.tools::create_blank_raster(reference_raster=dem,filename = paste0(path_tmp,lN,"raw"))
+  mask <- raster::raster(fn)
+  # maskx <- velox::velox(mask)
+  # chmx <- velox::velox(dem)
+  
+  # read vector input data the sf way
+  sf_dcs <- sf::st_read(paste0(path_run,lN,".shp"),quiet = TRUE)
+  dcs <- as(sf_dcs, "Spatial")
 
-get_posValueFromPoly <- function(dem,lN,max = TRUE, min = FALSE, use_expression = FALSE, expression = NULL){
-  dcs <- rgdal::readOGR(path_run,lN,verbose = FALSE)
-  ids <- unique(dcs@data$ID)
- 
-  ret_exp_xy <-  mclapply(ids,function(x){
-    cat("calculate id: ",x,"\n")
-    mask <- dem
-    raster::values(mask) <- NA
-    rn <- as.character(x)
-    raster::writeRaster(mask,paste0(rn,"poly.tif"),overwrite = TRUE)
-    gdalUtils::gdal_rasterize(src_datasource = paste0(path_run,lN,'.shp'),
-                              dst_filename =   paste0(path_run,rn,'poly.tif'),
-                              where = paste0('ID=',x),
-                              burn = 1,
-                              l = lN)
+  # retrieve unique NAME 
+  ids <- unique(dcs@data$NAME)
+  
+  if (poly_split) {
+    cat(":: split polygons...\n")
+    dir.create(paste0(path_tmp,"split"),recursive=TRUE)
     
-      #system(paste0('gdal_rasterize -where ID=',x,' -l ',lN,' -burn 1 ',lN,'.shp ',rn,'poly.tif'), intern = TRUE, ignore.stdout = TRUE)
-    maskR <- raster::raster(paste0(path_run,rn,"poly.tif"))
-    exR <- maskR * dem
-    if (max) idx = which.max(exR)
-    else if (min) idx  = which.min(exR)
-    else if (use_expression) idx  = exR[eval(paste(exR,expression)) ]
-    ret_expPos = xyFromCell(exR,idx)
-    df <- data.frame(x = ret_expPos[1], y = ret_expPos[2], id = x)
-    system(paste0("rm ",path_run, rn,"poly.tif"))
-    return(df)
-    },mc.cores = detectCores())#,mc.cores = detectCores()
-  ret_expPos <- do.call("rbind", ret_exp_xy)
-  #ret_expPos <- ret_expPos[ret_expPos$id >= 0,]
-  sp::coordinates(ret_expPos) <- ~x+y
-  sp::proj4string(ret_expPos) <- dem@crs
-  mask <- dem
-  values(mask) <- NA
-  seeds <- raster::rasterize(ret_expPos,mask)
-  # writeRaster(mask,"seeds.tif",overwrite=TRUE)
-  # gdalUtils::gdalwarp(paste0(path_run,"seeds.tif"), 
-  #                     paste0(path_run,"seeds.sdat"), 
-  #                     overwrite = TRUE,  
-  #                     of = 'SAGA',
-  #                     verbose = FALSE)
+    # split polygon with respect to the NAME attribute
+    parallel::mclapply(ids,function(x){
+      rn <- as.character(x)
+      gdalUtils::ogr2ogr(src_datasource_name = paste0(path_run,lN,".shp"),
+                         dst_datasource_name = paste0(path_tmp,"split/",lN,"_",rn,".shp"),
+                         where = paste0("NAME='",rn,"'")
+                         , nln = rn)
+    },
+    mc.cores = parallel::detectCores())
+  }
+  # parallel retrival of maxpos
+  
+
+  ret_max_pos <-  parallel::mclapply(ids,function(x) {
+    
+    # assign vars
+    #maskx <- velox::velox(mask)
+    #chmx <- velox::velox(dem)
+     
+    rn <- as.character(x)
+
+    # create temp folder and assign it to raster
+    dir.create(paste0(path_tmp,rn),recursive=TRUE)
+    raster::rasterOptions(tmpdir=paste0(path_tmp,rn)) 
+    
+    # read single polygon sf is even in this construct times faster
+    sf_shp <- sf::st_read(paste0(path_tmp,"split/",lN,"_",rn,".shp"),quiet = TRUE)
+    shp <- as(sf_shp, "Spatial")
+    
+    # reclass VALUE to 1
+    shp@data$VALUE <-1
+    
+    # crop raster acccording to the polygon
+    #maskx$crop(c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
+    #chmx$crop(c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
+    
+    # rastrize mask
+    maskx$rasterize(shp,field = "VALUE",band = 1)
+    
+    # re-convert to raster format
+    m1 <- maskx$as.RasterLayer(band=1)
+    #d1 <- chmx$as.RasterLayer(band=1)
+    
+    # get maxpos of crown area
+    m1 <-raster::crop(m1,c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
+    d1 <-raster::crop(m1,c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
+    max_pos <- raster::xyFromCell(d1,which.max(m1 * dem))
+    
+    # write it to a df
+    df <- data.frame(x = max_pos[1], y = max_pos[2], id = rn)
+   
+    # get rid of temp raster files
+    system(paste0("rm -rf ",paste0(path_tmp,rn)))
+    
+    
+    return(df)},    mc.cores = parallel::detectCores()
+  )
+  
+  # create a spatial point data frame
+  max_pos <- as.data.frame(do.call("rbind", ret_max_pos))
+  sp::coordinates(max_pos) <- ~x+y
+  sp::proj4string(max_pos) <- as.character(dem@crs)
+  max_pos@data$id<- as.numeric(max_pos@data$id)
+  # create seeds file for rasterizing max_pos
+  # re-convert to raster format
+  fn <- spatial.tools::create_blank_raster(reference_raster=dem,filename = paste0(path_tmp,lN,"raw"))
+  mask <- raster::raster(fn)
+  seeds <- raster::rasterize(max_pos,mask,field="id")
   seeds[seeds >= 0] <- 1
   return(seeds)
 }
@@ -337,4 +389,20 @@ R2SAGA <- function(x,fn) {
                       overwrite = TRUE,  
                       of = 'SAGA',
                       verbose = FALSE)
+}
+
+fun_multiply <- function(x)
+{
+  # Note that x is received by the function as a 3-d array:
+  band1 <- x[,,1]
+  band2 <- x[,,2]
+  result <- band1*band2
+  # The output of the function should also be a 3-d array,
+  # even if it is a single band:
+  result <- array(result,dim=c(dim(x)[1],dim(x)[2],1))
+  
+  return(result)
+}
+fun_whichmax <- function(mask,value) { 
+raster::xyFromCell(value,which.max(mask * value))
 }

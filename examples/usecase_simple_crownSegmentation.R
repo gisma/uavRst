@@ -19,10 +19,9 @@ indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI")
 calculate_chm <- FALSE
 
 # just process a clipped area for testing
-crop <- TRUE
-#ext  <- raster::extent(498372, 498472,  5664417 ,5664513)
+only_postprocessing <- TRUE
+#ext  <- raster::extent(498372,498472,5664417,5664513)
 #ext  <- raster::extent(498300,498620,5664070,5664475)
-# bestry
 #ext  <- raster::extent(498432,498545,5664204,5664302)
 #ext  <- raster::extent(498404,498488,5664458,5664536)
 
@@ -39,17 +38,19 @@ las_data_dir <- "/home/creu/apps/LAStools/bin/input"
 link2GI::initProj(projRootDir = projRootDir,
                   projFolders = c("data/","output/","run/","las/") )
 
+# clean dirs
+if (!only_postprocessing) unlink(paste0(path_run,"*"), force = TRUE)
+unlink(paste0(path_tmp,"*"), force = TRUE)
+raster::rasterOptions(tmpdir=path_tmp) 
+
 # set working directory
 setwd(path_run)
-
-# clean run dir
-unlink(paste0(path_run,"*"), force = TRUE)
 
 # link GDAL and SAGA
 gdal <- link2GI::linkgdalUtils()
 saga <- link2GI::linkSAGA()
 
-# ----- start preprocessing ---------------------------------------------------
+# ----- calculate DSM DTM & CHM  ---------------------------------------------------
 
 # CREATE dtm & dsm
 if (calculate_chm) {
@@ -75,64 +76,37 @@ if (calculate_chm) {
   chmR <- dsmR - dtmR
   raster::writeRaster(chmR,paste0(path_output,"chm.tif"),
                       overwrite = TRUE)
-  
-  # calculate DAH
-  
-} # 
+}
 
-# now post processing and/or crop 
-if (crop) {
-  cat("\n:: crop & adjust input data\n")
-  #chmR <- raster::raster(paste0(path_output,"chm.tif"))
+# ----- start preprocessing ---------------------------------------------------
+
+  cat("\n:: crop & preprocess input data\n")
   dsm <- raster::raster(paste0(path_output,"dsm.tif"))
   dtm <- raster::raster(paste0(path_output,"dtm.tif"))
-  
-  
   rgb <- raster::stack(paste0(path_data,orthImg))
-  
-  dah <- raster::raster(paste0(path_output,"dah.tif"))
-  
-  
+
   dtmR <- raster::crop(dtm,ext)
   dsmR <- raster::crop(dsm,ext)
   dsmR <- raster::resample(dsmR, dtmR, method = 'bilinear')
   chmR <- dsmR - dtmR
-  # dah <- raster::crop(dah,ext)
-  uavRst:::R2SAGA(dah,"dah")
-  
+
   rgb <- raster::crop(rgb,ext)
   rgb <- raster::resample(rgb, chmR, method = 'bilinear')
   raster::writeRaster(rgb,paste0(path_output,"ortho.tif"),
                       overwrite = TRUE)
-  cat(":: calculate RGBI \n")
-  rgbI <- uavRst::rs_rgbIndices(rgb[[1]],rgb[[2]],rgb[[3]],indices)
-  
-  #converting them to SAGA
-  i <- 1
-  for (index in indices) {
-    uavRst:::R2SAGA(rgbI[[i]],index)
-    i <- i + 1
-  }
-  
-} else {
-  cat("\n:: prepare and adjust ortho image\n")
-  chmR <- raster::raster(paste0(path_output,"chm.tif"))
-  rgb <- raster::raster(paste0(path_data,"ortho.tif"))
-  dah <- raster::raster(paste0(path_output,"dah.tif"))
-  rgb <- raster::stack(paste0(path_data,orthImg))
-  rgb <- raster::resample(rgb, chmR, method = 'bilinear')
-  raster::writeRaster(rgb,paste0(path_output,"ortho.tif"),
-                      overwrite = TRUE)
-  cat(":: calculate RGBI \n")
-  rgbI <- uavRst::rs_rgbIndices(rgb[[1]],rgb[[2]],rgb[[3]],indices)
-  i <- 1
-  for (index in indices) {
-    uavRst:::R2SAGA(rgbI[[i]],index)
-    i <- i + 1
-  }
-}
 
-# ----  start analysis --------------------------------------------------------
+  cat(":: calculate RGBI \n")
+  rgbI <- uavRst::rs_rgbIndices(rgb[[1]],rgb[[2]],rgb[[3]],indices)
+  
+  cat(":: convert to RGBI to SAGA... \n")
+  i <- 1
+  for (index in indices) {
+    uavRst:::R2SAGA(rgbI[[i]],index)
+    i <- i + 1
+  }
+  
+
+# ----  start crown analysis --------------------------------------------------------
 
 # call tree crown segmentation 
 crowns <- fa_crown_segmentation(chmR,
@@ -185,3 +159,4 @@ rgdal::writeOGR(obj = crowns,
                 driver = "ESRI Shapefile", 
                 dsn = path_run, 
                 overwrite_layer = TRUE)
+cat(":: ...finsihed \n")

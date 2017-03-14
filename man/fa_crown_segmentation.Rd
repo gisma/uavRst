@@ -8,7 +8,7 @@ fa_crown_segmentation(x = NULL, minTreeAlt = 5, crownMinArea = 3,
   is0_output = 1, is0_join = 1, is0_thresh = 0.09, is3_leafsize = 8,
   is3_normalize = 1, is3_neighbour = 1, is3_method = 0, is3_sig1 = 0.1,
   is3_sig2 = 3.01, is3_threshold = 0.001, is3_seed_params = c("GLI",
-  "HI"), majority_radius = 5, seeding = TRUE)
+  "HI"), majority_radius = 5, seeding = TRUE, split = TRUE)
 }
 \arguments{
 \item{x}{spatial raster object}
@@ -38,6 +38,8 @@ fa_crown_segmentation(x = NULL, minTreeAlt = 5, crownMinArea = 3,
 \item{majority_radius}{default is 5.000}
 
 \item{seeding}{default  is TRUE switch if seeding is called}
+
+\item{split}{default  is TRUE switch if splitting of the polygons is called}
 
 \item{minTreealt}{default is 5}
 }
