@@ -148,7 +148,7 @@ ao_pc2Hillshade <- function(lasDir = NULL,
   
   
   cat(":: convert raw DSM  geotiff \n")
-  hillshade <- uavRst:::G2Tiff(runDir = path_output, layer = "hillshade",returnRaster = TRUE)
+  hillshade <- uavRst:::h_grass2tif(runDir = path_output, layer = "hillshade",returnRaster = TRUE)
   
   return(hillshade)  
 }

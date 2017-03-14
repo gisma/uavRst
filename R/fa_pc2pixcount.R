@@ -141,7 +141,7 @@ fa_pc2pixcount <- function(lasDir = NULL,
   
   
   cat(":: convert raw DSM to GeoTiff \n")
-  uavRst:::G2Tiff(runDir = path_output, layer = "point_cloud_dsm")
+  uavRst:::h_grass2tif(runDir = path_output, layer = "point_cloud_dsm")
 
   cat(":: preliminary fill of gaps... \n")
   ret <- system(paste0("gdal_fillnodata.py ",

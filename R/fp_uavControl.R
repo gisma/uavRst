@@ -81,7 +81,7 @@ demCorrection <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,foll
   }  # end of loading DEM data
 
   # check if at least a projection string exist 
-  crsString <- compareProjCode(as.vector(as.character(dem@crs)))
+  crsString <- h_comp_ll_proj4(as.vector(as.character(dem@crs)))
   if (!crsString) {
     # stop("the DEM/DSM is not georeferencend - please provide a correct georeferenced raster object or GeoTiff file\n")
     # if so deproject DEM/DSM because all of the vector data is latlong WGS84
@@ -275,8 +275,8 @@ generateDjiCSV <- function(df, mission, nofiles, maxPoints, p, logger, rth, trac
     endLon <- df@data[maxPoints,2]
     
     # generate flight lines from lanch to start and launch to end point of splitted task
-    home  <- makeLine(c(launchLon,endLon),c(launchLat,endLat),"home")
-    start <- makeLine(c(launchLon,startLon),c(launchLat,startLat),"start")
+    home  <- h_sp_line(c(launchLon,endLon),c(launchLat,endLat),"home")
+    start <- h_sp_line(c(launchLon,startLon),c(launchLat,startLat),"start")
     
     # calculate minimum rth altitude for each line by identifing max altitude
     #homeRth<-max(unlist(raster::extract(dem,home)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
@@ -285,8 +285,8 @@ generateDjiCSV <- function(df, mission, nofiles, maxPoints, p, logger, rth, trac
     maxAltStartFlight <- raster::extract(dem,start,fun = max, na.rm = TRUE,layer = 1, nl = 1) - launchAlt + as.numeric(p$flightAltitude)
     
     # get the max position of the flightlines
-    homemaxpos  <- getmaxposFromLine(dem,home)
-    startmaxpos <- getmaxposFromLine(dem,start)
+    homemaxpos  <- h_line_extract_maxpos(dem,home)
+    startmaxpos <- h_line_extract_maxpos(dem,start)
     
     # log the positions
     levellog(logger, 'INFO', paste("maxaltPos    rth : ", paste0("mission file: ",i," ",homemaxpos[2]," ",homemaxpos[1])))
@@ -454,8 +454,8 @@ generateMavCSV <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistan
     # depending on DEM/DSM sometimes there are no data Values
     if (!is.na(endLat) & !is.na(endLon)) {
       # generate flight lines from lanch to start and launch to end point of splitted task
-      home  <- makeLine(c(launchLon,endLon),c(launchLat,endLat),"Home")
-      start <- makeLine(c(launchLon,startLon),c(launchLat,startLat),"Start")
+      home  <- h_sp_line(c(launchLon,endLon),c(launchLat,endLat),"Home")
+      start <- h_sp_line(c(launchLon,startLon),c(launchLat,startLat),"Start")
       
       # calculate minimum rth altitude for each line by identifing max altitude
       homeRth  <- raster::extract(dem,home, fun = max,na.rm = TRUE,layer = 1, nl = 1) - launchAlt + as.numeric(p$flightAltitude)
@@ -476,8 +476,8 @@ generateMavCSV <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistan
       ##homemaxpos = xyFromCell(home,idx)
       
       # get the max position of the flightlines
-      homemaxpos  <- getmaxposFromLine(dem,home)
-      startmaxpos <- getmaxposFromLine(dem,start)
+      homemaxpos  <- h_line_extract_maxpos(dem,home)
+      startmaxpos <- h_line_extract_maxpos(dem,start)
       
       # calculate heading 
       homeheading  <- geosphere::bearing(c(endLon,endLat),c(launchLon,launchLat), a = 6378137, f = 1/298.257223563)
@@ -1132,9 +1132,9 @@ getAltitudes <- function(demFn ,df,p,followSurfaceRes,logger) {
   
   
   # check if at least a projection string exist 
-  #res<-compareProjCode(as.vector(as.character(rundem@crs)))
-  #demll<-rasterCheckAdjustProjection(rundem)
-  crsString<-compareProjCode(as.vector(as.character(rundem@crs)))
+  #res<-h_comp_ll_proj4(as.vector(as.character(rundem@crs)))
+  #demll<-h_raster_adjust_projection(rundem)
+  crsString<-h_comp_ll_proj4(as.vector(as.character(rundem@crs)))
   if (!crsString) {
     stop("the DEM/DSM is not georeferencend - please provide a correct georeferenced raster object or GeoTiff file\n")
     # if so deproject DEM/DSM because all of the vector data is latlong WGS84

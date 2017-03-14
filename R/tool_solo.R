@@ -1,3 +1,58 @@
+if (!isGeneric('upload2Solo')) {
+  setGeneric('upload2Solo', function(x, ...)
+    standardGeneric('upload2Solo'))
+}
+#' upload mission file to solo
+#'
+#' @description  upload2Solo provides a crude interface to upload the Solo mission file to the 3dr SOLO
+#'
+#' @param connection a valid connection string to the Solo default is "udp:10.1.1.166:14550"
+#' @param prearm controls the prearm status of the Solo prearm check 0=Disabled,1=Enabled,-3=Skip Baro,-5=Skip Compass,-9=Skip GPS,-17=Skip INS,-33=Skip Params/Rangefinder,-65=Skip RC,127=Skip Voltage 
+#' @param missionFile mission file to upload
+#' 
+#' @author
+#' Chris Reudenbach
+#'
+#'
+#'@note #' @note for using the solo stuff you need to install: sudo pip install pymavlink; sudo pip install dronekit-sitl; sudo pip install dronekit; sudo apt-get install sshpass
+#'
+#' @examples
+#' 
+#' 
+#' 
+#' 
+#' upload2Solo("export_1001_solo.waypoints")
+#' 
+#' @export upload2Solo
+#'               
+
+upload2Solo <- function(missionFile=NULL,connection="udp:10.1.1.166:14550",prearm="-9"){
+  
+  
+  command ='python'
+  
+  script <- paste(system.file(package="uavRst"), "python/io_solo_mission.py", sep="/")
+  #script='~/proj/drone/scripte/io_solo_mission.py'
+  
+  option1<-'--connect'
+  connection<-connection
+  option2<-'--prearm'
+  prearm<-prearm
+  option3<-'--mission'
+  missionFile<-missionFile
+  
+  args = c(option1, connection,option2,prearm,option3,missionFile)
+  
+  # Add path to script as first arg
+  allArgs = c(script, args)
+  
+  output = system2(command, args=allArgs, stdout=TRUE)
+  
+  print(paste("Solo returns:", output,"\n"))
+}
+
+
+
 if (!isGeneric('solo2gpx')) {
   setGeneric('solo2gpx', function(x, ...)
     standardGeneric('solo2gpx'))
@@ -67,7 +122,7 @@ solo2gpx <- function(logFiles="solo.t*",logDir="soloLog", download=TRUE,netWarn=
     i=1
     flights <- list()
     for (flight in f) {
-    f <- readGPX(path.expand(paste0(logDir,"/",flight)))
+    f <- h_read_gpx(path.expand(paste0(logDir,"/",flight)))
     flights[[i]]<-f
     i=i+1
     }

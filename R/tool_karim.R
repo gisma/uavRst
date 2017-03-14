@@ -1,6 +1,6 @@
-if (!isGeneric('readGPX ')) {
-  setGeneric('readGPX ', function(x, ...)
-    standardGeneric('readGPX '))
+if (!isGeneric('h_read_gpx ')) {
+  setGeneric('h_read_gpx ', function(x, ...)
+    standardGeneric('h_read_gpx '))
 }
 
 #' Read GPX file
@@ -10,11 +10,11 @@ if (!isGeneric('readGPX ')) {
 #' @param file a GPX filename (including directory)
 #' @param layers vector of GPX layers. Possible options are \code{"waypoints"}, \code{"tracks"}, \code{"routes"}, \code{"track_points"}, \code{"route_points"}. By dedault, all those layers are read.
 #' @return  if the layer has any features a sp object is returned.
-#' @export readGPX
+#' @export h_read_gpx
 #' @note cloned from tmap
 #' 
 
-readGPX <- function(file, layers=c("waypoints", "tracks", "routes", "track_points", "route_points")) {
+h_read_gpx <- function(file, layers=c("waypoints", "tracks", "routes", "track_points", "route_points")) {
   if (!all(layers %in% c("waypoints", "tracks", "routes", "track_points", "route_points"))) stop("Incorrect layer(s)", call. = FALSE)
   
   # check if features exist per layer
@@ -37,9 +37,9 @@ readGPX <- function(file, layers=c("waypoints", "tracks", "routes", "track_point
 }
 
 
-if (!isGeneric('xyz2geoTIFF')) {
-  setGeneric('xyz2geoTIFF', function(x, ...)
-    standardGeneric('xyz2geoTIFF'))
+if (!isGeneric('h_xyz2tif')) {
+  setGeneric('h_xyz2tif', function(x, ...)
+    standardGeneric('h_xyz2tif'))
 }
 #' Read and Convert xyz DEM/DSM Data as typically provided by the Authorities
 #' 
@@ -63,14 +63,14 @@ if (!isGeneric('xyz2geoTIFF')) {
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,files = grep(".tif", unzip(res,list = TRUE)$Name,value = TRUE),junkpaths = TRUE,overwrite = TRUE)
 #' 
-#' xyz2geoTIFF(file.path(getwd(),basename(grep(".g01dgm", unzip(res,list = TRUE)$Name,value = TRUE))))
+#' h_xyz2tif(file.path(getwd(),basename(grep(".g01dgm", unzip(res,list = TRUE)$Name,value = TRUE))))
 #' 
 #' plot(raster(paste0(getwd(),"/",tools::file_path_sans_ext(basename(file.path(getwd(),basename(grep(".g01dgm", unzip(res,list = TRUE)$Name,value = TRUE))))),".tif")))
 #' 
-#' @export xyz2geoTIFF
+#' @export h_xyz2tif
 #' 
 
-xyz2geoTIFF <- function(xyzFN=NUL,  epsgCode ="25832"){
+h_xyz2tif <- function(xyzFN=NUL,  epsgCode ="25832"){
   # read data 
   xyz<-data.table::fread(xyzFN)
   cat("write it to",paste0(dirname(xyzFN),"/",tools::file_path_sans_ext(basename(xyzFN)),".tif"),"\n")
@@ -84,7 +84,7 @@ xyz2geoTIFF <- function(xyzFN=NUL,  epsgCode ="25832"){
 
 
 
-rasterCheckAdjustProjection <- function(x) {
+h_raster_adjust_projection <- function(x) {
   llcrs <- "+proj=longlat +datum=WGS84 +no_defs"
   
   is.fact <- raster::is.factor(x)[1]
@@ -110,7 +110,7 @@ rasterCheckAdjustProjection <- function(x) {
 
 # Check projection of objects according to their keywords -------
 
-compareProjCode <- function(x) {
+h_comp_ll_proj4 <- function(x) {
   proj <- datum <- nodefs <- "FALSE"
   allWGS84 <- as.vector(c("+init=epsg:4326", "+proj=longlat", "+datum=WGS84", "+no_defs", "+ellps=WGS84", "+towgs84=0,0,0"))
   s <- as.vector(strsplit(x," "))
@@ -137,16 +137,6 @@ compareProjCode <- function(x) {
   return(ret)
 }
 
-# Check and potentially adjust projection of objects to be rendered -------
-
-checkAdjustProjection <- function(x) {
-  
-  if (class(x)[1] %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
-    x <- rasterCheckAdjustProjection(x)
-  }
-  
-  return(x)
-}
 
 # 
 # 
@@ -159,7 +149,7 @@ checkAdjustProjection <- function(x) {
 #' @param export write shafefile default = F 
 #' @export
 #' 
-makeLine <- function(p1,p2,ID,export=FALSE){  
+h_sp_line <- function(p1,p2,ID,export=FALSE){  
   line <- SpatialLines(list(Lines(Line(cbind(Lon,Lat)), ID = ID)))
   sp::proj4string(line) <- CRS("+proj=longlat +datum=WGS84 +no_defs")
   if (export) {
@@ -175,7 +165,7 @@ makeLine <- function(p1,p2,ID,export=FALSE){
 #' @param line  sp object
 #' @export
 #' 
-getmaxposFromLine <- function(dem,line){
+h_line_extract_maxpos <- function(dem,line){
   mask <- dem
   raster::values(mask) <- NA
   #...update it with the altitude information of the flightline
@@ -196,7 +186,7 @@ getmaxposFromLine <- function(dem,line){
 #' extract for all polygons the position of the maximum value
 #' @export
 #' 
-get_max_posFromPoly <- function(x,lN, poly_split=TRUE){
+h_poly_extract_maxpos <- function(x,lN, poly_split=TRUE){
   # read raster input data 
   if (poly_split) {system(paste0("rm -rf ",paste0(path_tmp,"split")))}
   dem <- raster::raster(x)
@@ -229,8 +219,8 @@ get_max_posFromPoly <- function(x,lN, poly_split=TRUE){
   # parallel retrival of maxpos
   
   cat("max height coords search...\n")
-  cat("you anaylize ",length(ids) ,"polygons")
-  cat("this will approx take until ",format(Sys.time() + length(ids)*1.5, "   %X "),"\n")
+  cat("you anaylize",length(ids) ,"polygons\n")
+  cat("assuming 5 cm resolution and an average of 15 sqm per polygon\n the analysis will approx run until",format(Sys.time() + length(ids), " %X "),"\n")
   ret_max_pos <-  parallel::mclapply(ids,function(x) {
     
     # assign vars
@@ -287,6 +277,7 @@ get_max_posFromPoly <- function(x,lN, poly_split=TRUE){
   mask <- raster::raster(fn)
   seeds <- raster::rasterize(max_pos,mask,field="id")
   seeds[seeds >= 0] <- 1
+  raster::writeRaster(seeds,paste0(path_run,"seeds.tif"))
   return(list(seeds,max_pos))
 }
 
@@ -298,7 +289,7 @@ get_max_posFromPoly <- function(x,lN, poly_split=TRUE){
 
 #' @export
 #' 
-G2Tiff <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
+h_grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
   
   rgrass7::execGRASS("r.out.gdal",
                      flags     = c("c","overwrite","quiet"),
@@ -314,7 +305,7 @@ G2Tiff <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
 #' @export
-Tiff2G <- function(runDir = NULL, layer = NULL) {
+h_grass2tif <- function(runDir = NULL, layer = NULL) {
   rgrass7::execGRASS('r.external',
                      flags  = c('o',"overwrite","quiet"),
                      input  = paste0(layer,".tif"),
@@ -328,7 +319,7 @@ Tiff2G <- function(runDir = NULL, layer = NULL) {
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
 #' @export
-OGR2G <- function(runDir = NULL, layer = NULL) {
+h_shape2grass <- function(runDir = NULL, layer = NULL) {
   # import point locations to GRASS
   rgrass7::execGRASS('v.in.ogr',
                      flags  = c('o',"overwrite","quiet"),
@@ -342,7 +333,7 @@ OGR2G <- function(runDir = NULL, layer = NULL) {
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
 #' @export
-G2OGR <- function(runDir = NULL, layer = NULL){
+h_grass2shape <- function(runDir = NULL, layer = NULL){
   rgrass7::execGRASS("v.out.ogr",
                      flags  = c("overwrite","quiet"),
                      input  = layer,
@@ -377,12 +368,12 @@ G2OGR <- function(runDir = NULL, layer = NULL){
 #' @examples
 #' \dontrun{
 #' ## when in a package directory, e.g. '~/satellite' 
-#' winUniMrBuild()
+#' h_umr_build()
 #' }
 #' 
-#' @export winUniMrBuild
-#' @name winUniMrBuild
-winUniMrBuild <- function(dsn = getwd(), pkgDir="H:/Dokumente",document = TRUE, ...) {
+#' @export h_umr_build
+#' @name h_umr_build
+h_umr_build <- function(dsn = getwd(), pkgDir="H:/Dokumente",document = TRUE, ...) {
   
   ## reset 'dsn' to 'H:/...'  
   if (length(grep("students_smb", dsn)) > 0) {
@@ -420,7 +411,7 @@ winUniMrBuild <- function(dsn = getwd(), pkgDir="H:/Dokumente",document = TRUE, 
 #' @param fn filname without extension
 #' @param ext extent of the raster in R notation
 #' @export
-SAGA2R <- function(fn,ext) {
+h_saga2r<- function(fn,ext) {
   gdalUtils::gdalwarp(paste0(path_run,fn,".sdat"), 
                       paste0(path_run,fn,".tif"), 
                       overwrite = TRUE,  
@@ -436,7 +427,7 @@ SAGA2R <- function(fn,ext) {
 #' @param x raster object
 #' @param fn filname without extension
 #' @export
-R2SAGA <- function(x,fn) {
+h_r2saga <- function(x,fn) {
   
   raster::writeRaster(x,paste0(path_run,fn,".tif"),overwrite = TRUE)
   # convert to SAGA
@@ -447,7 +438,7 @@ R2SAGA <- function(x,fn) {
                       verbose = FALSE)
 }
 
-fun_multiply <- function(x)
+h_fun_multiply <- function(x)
 {
   # Note that x is received by the function as a 3-d array:
   band1 <- x[,,1]
@@ -459,6 +450,6 @@ fun_multiply <- function(x)
   
   return(result)
 }
-fun_whichmax <- function(mask,value) { 
+h_fun_whichmax <- function(mask,value) { 
 raster::xyFromCell(value,which.max(mask * value))
 }

@@ -60,7 +60,7 @@ fa_crown_segmentation <- function(x = NULL,
   cat("\n:: start crown identification...\n")
   options(warn=-1)
   if (!exists(sagaCmd)) link2GI::linkSAGA()
-  uavRst:::R2SAGA(x,"chm")
+  uavRst:::h_r2saga(x,"chm")
   if (seeding){
   cat(":: run pre-segmentation...\n")
   # first segment run is a simple watershed segmentation just for deriving more reliable seeds 
@@ -96,11 +96,11 @@ fa_crown_segmentation <- function(x = NULL,
                   overwrite_layer = TRUE)
   
   cat(":: find max height position...\n")
-  ts <-  uavRst:::get_max_posFromPoly(paste0(path_run,"chm.tif"),"dummyCrownSegment",poly_split = split)
+  ts <-  uavRst:::h_poly_extract_maxpos(paste0(path_run,"chm.tif"),"dummyCrownSegment",poly_split = split)
   
   # create raw zero mask
   seeds <- ts[[1]] * x
-  uavRst:::R2SAGA(seeds,"treeSeeds")
+  uavRst:::h_r2saga(seeds,"treeSeeds")
   
   # reclass extracted seeds to minTreeAlt
   ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
@@ -168,6 +168,6 @@ fa_crown_segmentation <- function(x = NULL,
   tree_crowns <- rgdal::readOGR(path_run,"tree_crowns", verbose = FALSE)
 
   options(warn=0)
-  cat("segmentation finsihed...")
+  cat("segmentation finsihed...\n")
   return( tree_crowns)
 } 
