@@ -312,8 +312,6 @@ if (!isGeneric('makeFP')) {
 
 
 #' @export makeFP
-#' @export getPresetTask
-#' @aliases  makeFP
 #'
 
 

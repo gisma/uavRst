@@ -767,11 +767,12 @@ cameraExtent <- function(lon, lat, heading, distance, flightaltitude, i, j) {
   return(frame)
 } 
 
-getPresetTask <- function(param="remote") {
-  #' shows existing camera action presets 
-  #' @description 
-  #' NOTE: only for flightPlanMode = "waypoint")
+fp_getPresetTask <- function(param="remote") {
+  # shows existing camera action presets 
+  # @description 
+  # NOTE: only for flightPlanMode = "waypoint")
   # preset waypoints & orthophoto
+
   
   if  (param == "multi_ortho") {
     actiontype = c(1,0,4,0,5,-60,1,0,4,90,1,0,4,180,1,0,4,270,1,0)
@@ -821,7 +822,7 @@ makeFlightParam <- function(surveyArea,flightParams,followSurface) {
   
   p <- list()
   # preset camera action at waypoints 
-  task <- getPresetTask(flightParams["presetFlightTask"])  
+  task <- fp_getPresetTask(flightParams["presetFlightTask"])  
   
   # flight area coordinates either from external file or from argument list
   p$lat1 <- surveyArea[1]
@@ -1042,9 +1043,9 @@ makeFlightPath <- function(treeList,p,uavType,task,demFn,logger){
     if (uavType == "djip3") {
       forward <- geosphere::bearing(treeList@coords[i,], treeList@coords[i + 1,], a = 6378137, f = 1/298.257223563)
       backward <- geosphere::bearing(treeList@coords[i + 1,], treeList@coords[i,], a = 6378137, f = 1/298.257223563)
-      p$task <- getPresetTask("treetop")
+      p$task <- fp_getPresetTask("treetop")
       lns[length(lns) + 1] <- makeUavPoint(treeList@coords[i,], forward, p, group = 99)
-      p$task <- getPresetTask("nothing")
+      p$task <- fp_getPresetTask("nothing")
       posUp  <- calcNextPos(treeList@coords[i,][1], treeList@coords[i,][2], heading = forward, distance = p$climbDist)
       lns[length(lns) + 1] <- makeUavPoint(posUp, forward, p, group = 1)
       posDown <- calcNextPos(treeList@coords[i + 1,][1], treeList@coords[i + 1,][2], backward, distance = p$climbDist)
@@ -1054,9 +1055,9 @@ makeFlightPath <- function(treeList,p,uavType,task,demFn,logger){
     else if (uavType == "solo") {
       forward <- geosphere::bearing(treeList@coords[i,],treeList@coords[i + 1,], a = 6378137, f = 1/298.257223563)
       backward <- geosphere::bearing(treeList@coords[i + 1,],treeList@coords[i,], a = 6378137, f = 1/298.257223563)
-      p$task <- getPresetTask("treetop")
+      p$task <- fp_getPresetTask("treetop")
       lns[length(lns) + 1] <- makeUavPointMAV(lat = treeList@coords[i,][2],lon = treeList@coords[i,][1],head = forward,group = 99)
-      p$task <- getPresetTask("nothing")
+      p$task <- fp_getPresetTask("nothing")
       posUp <- calcNextPos(treeList@coords[i,][1],treeList@coords[i,][2],heading = forward,distance = p$climbDist)
       lns[length(lns) + 1] <- makeUavPointMAV(lat = posUp[2],lon = posUp[1],forward,group = 99) 
       posDown <- calcNextPos(treeList@coords[i + 1,][1],treeList@coords[i + 1,][2],backward,distance = p$climbDist)

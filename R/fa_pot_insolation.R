@@ -1,9 +1,9 @@
-if (!isGeneric('potInsolation')) {
-  setGeneric('potInsolation', function(x, ...)
-    standardGeneric('potInsolation'))
+if (!isGeneric('fa_fa_potInsolation')) {
+  setGeneric('fa_fa_potInsolation', function(x, ...)
+    standardGeneric('fa_fa_potInsolation'))
 }
 
-#'@name potInsolation
+#'@name fa_fa_potInsolation
 #'@title calculate statitiscs of polygon based raster extraction
 #'
 #'@description
@@ -30,14 +30,14 @@ if (!isGeneric('potInsolation')) {
 #'@return returns all calculations as SAGA Grid for statistical analysis
 #'
 #'
-#'@export potInsolation
+#'@export fa_fa_potInsolation
 #'@examples
 #'\dontrun{
 #' # potential insolation based on a CHM
-#' pot_insolation <- potInsolation("chm")
+#' pot_insolation <- fa_fa_potInsolation("chm")
 #'}
 #'
-potInsolation <- function(x = NULL,
+fa_fa_potInsolation <- function(x = NULL,
                           svf_radius=10000.000000, 
                           svf_method=0, 
                           svf_dlevel=3.000000, 

@@ -33,7 +33,8 @@ Imports:
     zoo,
     data.table,
     parallel,
-    spatial.tools
+    spatial.tools,
+    velox
 LinkingTo: Rcpp
 RoxygenNote: 6.0.1
 SystemRequirements: GNU make
