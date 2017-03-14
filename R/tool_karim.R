@@ -287,7 +287,7 @@ get_max_posFromPoly <- function(x,lN, poly_split=TRUE){
   mask <- raster::raster(fn)
   seeds <- raster::rasterize(max_pos,mask,field="id")
   seeds[seeds >= 0] <- 1
-  return(seeds)
+  return(list(seeds,max_pos))
 }
 
 #' converts GRASS raster to geotiff

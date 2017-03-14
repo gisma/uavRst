@@ -72,13 +72,13 @@ fa_crown_segmentation <- function(x = NULL,
                        " -OUTPUT "   ,is0_output, 
                        " -DOWN 1"    , 
                        " -JOIN "     ,is0_join,
-                       " -THRESHOLD ", is0_thresh, 
+                       " -THRESHOLD ",is0_thresh, 
                        " -EDGE 0")
                 ,intern = TRUE)
   
   # convert filtered crown clumps to shape format for descriptive running statitics 
   ret <- system(paste0(sagaCmd, " shapes_grid 6 ",
-                       " -GRID ",path_run,"dummyCrownSegments.sgrd",
+                       " -GRID "    ,path_run,"dummyCrownSegments.sgrd",
                        " -POLYGONS ",path_run,"dummyCrownSegment.shp",
                        " -CLASS_ALL 1",
                        " -CLASS_ID 1.000000",
@@ -89,10 +89,10 @@ fa_crown_segmentation <- function(x = NULL,
   tmp <- tmp[tmp$VALUE >= 0,]
   tmp@data$area <- rgeos::gArea(tmp,byid = TRUE)
   tmp <- tmp[tmp$area > crownMinArea,]
-  rgdal::writeOGR(obj = tmp,
-                  layer = "dummyCrownSegment", 
+  rgdal::writeOGR(obj    = tmp,
+                  layer  = "dummyCrownSegment", 
                   driver = "ESRI Shapefile", 
-                  dsn = path_run, 
+                  dsn    = path_run, 
                   overwrite_layer = TRUE)
   
   cat(":: find max height position...\n")
@@ -104,10 +104,10 @@ fa_crown_segmentation <- function(x = NULL,
   
   # reclass extracted seeds to minTreeAlt
   ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
-                       " -INPUT "     ,path_run,"treeSeeds.sgrd",
-                       " -RESULT "     ,path_run,"seeds.sgrd",
+                       " -INPUT "  ,path_run,"treeSeeds.sgrd",
+                       " -RESULT " ,path_run,"seeds.sgrd",
                        " -METHOD 0 ",
-                       " -OLD ",minTreeAlt ,
+                       " -OLD "    ,minTreeAlt ,
                        " -NEW 0.00000",
                        " -SOPERATOR 1",
                        " -NODATAOPT 0",
@@ -127,15 +127,15 @@ fa_crown_segmentation <- function(x = NULL,
   # Start final segmentation algorithm as provided by SAGA's seeded Region Growing segmentation (imagery_segmentation 3)
   # TODO sensitivity analysis of the parameters
   ret <- system(paste0(sagaCmd, " imagery_segmentation 3 ",
-                       " -SEEDS "   ,path_run,"seeds.sgrd",
-                       " -FEATURES '"   , param_list,
-                       "' -SEGMENTS "   ,path_run,"pre_tree_crowns.shp",
-                       " -LEAFSIZE "   ,is3_leafsize,
+                       " -SEEDS "    ,path_run,"seeds.sgrd",
+                       " -FEATURES '", param_list,
+                       "' -SEGMENTS ",path_run,"pre_tree_crowns.shp",
+                       " -LEAFSIZE " ,is3_leafsize,
                        " -NORMALIZE ",is3_normalize,
                        " -NEIGHBOUR ",is3_neighbour, 
-                       " -METHOD ",is3_method,
-                       " -SIG_1 ",is3_sig1,
-                       " -SIG_2 ",is3_sig2,
+                       " -METHOD "   ,is3_method,
+                       " -SIG_1 "    ,is3_sig1,
+                       " -SIG_2 "    ,is3_sig2,
                        " -THRESHOLD ",is3_threshold),
                 intern = TRUE)
   # fill holes inside the crowns (simple approach)
@@ -148,19 +148,19 @@ fa_crown_segmentation <- function(x = NULL,
   
   # apply majority filter for smoothing the extremly irregular crown boundaries 
   ret <- system(paste0(sagaCmd, " grid_filter 6 ",
-                       " -INPUT ",path_run,"fpre_tree_crowns.sgrd",
-                       " -RESULT ",path_run,"tree_crowns.sgrd",
+                       " -INPUT "   ,path_run,"fpre_tree_crowns.sgrd",
+                       " -RESULT "  ,path_run,"tree_crowns.sgrd",
                        " -MODE 0",
-                       " -RADIUS ",majority_radius,
-                       " -THRESHOLD 0.000000 "),
+                       " -RADIUS "  ,majority_radius,
+                       " -THRESHOLD 0.0 "),
                 intern = TRUE)
   
-  # convert filtered crown clumps to shape format for descriptive running statitics 
+  # convert filtered crown clumps to shape format 
   ret <- system(paste0(sagaCmd, " shapes_grid 6 ",
-                       " -GRID ",path_run,"tree_crowns.sgrd",
-                       " -POLYGONS ",path_run,"tree_crowns.shp",
-                       " -CLASS_ALL 1",
-                       " -CLASS_ID 1.000000",
+                       " -GRID "     ,path_run,"tree_crowns.sgrd",
+                       " -POLYGONS " ,path_run,"tree_crowns.shp",
+                       " -CLASS_ALL 1" ,
+                       " -CLASS_ID 1.0",
                        " -SPLIT 1"),
                 intern = TRUE)
   
