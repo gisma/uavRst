@@ -178,7 +178,7 @@ getmaxposFromLine <- function(dem,line){
 #' 
 get_max_posFromPoly <- function(dem,lN, poly_split=TRUE){
   # read raster input data 
-  if (split) system(paste0("rm -rf ",paste0(path_tmp,"split")))
+  if (poly_split) {system(paste0("rm -rf ",paste0(path_tmp,"split")))}
   dem <- raster::raster(dem)
   fn <- spatial.tools::create_blank_raster(reference_raster=dem,filename = paste0(path_tmp,lN,"raw"))
   mask <- raster::raster(fn)

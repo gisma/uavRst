@@ -62,7 +62,7 @@ fa_crown_segmentation <- function(x = NULL,
   if (!exists(sagaCmd)) link2GI::linkSAGA()
   uavRst:::R2SAGA(x,"chm")
   if (seeding){
-  cat(":: run seed finding...\n")
+  cat(":: run pre-segementation...\n")
   # first segment run is a simple watershed segementation just for deriving more reliable seeds 
   # TODO improve different advanceds seed finding algorithms
   ret <- system(paste0(sagaCmd, " imagery_segmentation 0 ",
@@ -84,6 +84,7 @@ fa_crown_segmentation <- function(x = NULL,
                        " -CLASS_ID 1.000000",
                        " -SPLIT 1"),
                 intern = TRUE)
+  cat(":: filter results...\n")
   tmp <- rgdal::readOGR(path_run,"dummyCrownSegment",verbose = FALSE)
   tmp <- tmp[tmp$VALUE >= 0,]
   tmp@data$area <- rgeos::gArea(tmp,byid = TRUE)
