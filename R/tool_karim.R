@@ -450,6 +450,6 @@ h_fun_multiply <- function(x)
   
   return(result)
 }
-h_fun_whichmax <- function(mask,value) { 
+	h_fun_whichmax <- function(mask,value) { 
 raster::xyFromCell(value,which.max(mask * value))
 }

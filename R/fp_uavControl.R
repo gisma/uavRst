@@ -17,7 +17,7 @@ demCorrection <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,foll
     levellog(logger, 'WARN', "CAUTION!!! no DEM file provided I try to download SRTM data... SRTM DATA has a poor resolution for UAVs!!! ")
     cat("\nCAUTION! No DEM data is provided.\n trying to download SRTM data... \n Be aware that the resulution of SRTM is NOT sufficient for terrain following flights!")
     # download corresponding srtm data
-    dem <- uavRst::getGeoData(name = "SRTM",
+    dem <- uavRst::t_getgeodata(name = "SRTM",
                               xtent = extent(p$lon1,p$lon3,p$lat1,p$lat3), 
                               zone = 0.1 ,
                               merge = TRUE)
@@ -1097,7 +1097,7 @@ getAltitudes <- function(demFn ,df,p,followSurfaceRes,logger) {
     levellog(logger, 'WARN', "CAUTION!!! no DEM file provided I try to download SRTM data... SRTM DATA has a poor resolution for UAVs!!! ")
     cat("\nCAUTION! No DEM data is provided.\n trying to download SRTM data... \n Be aware that the resulution of SRTM is NOT sufficient for terrain following flights!")
     # download corresponding srtm data
-    dem <- uavRst::getGeoData(name = "SRTM",xtent = extent(p$lon1,p$lon3,p$lat1,p$lat3), zone = 1.0,merge = TRUE)
+    dem <- uavRst::t_getgeodata(name = "SRTM",xtent = extent(p$lon1,p$lon3,p$lat1,p$lat3), zone = 1.0,merge = TRUE)
     dem <- setMinMax(dem)
     rundem <- raster::crop(dem,
                            extent(min(p$lon1,p$lon3) - 0.0083,
