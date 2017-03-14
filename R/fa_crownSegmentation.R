@@ -4,10 +4,10 @@ if (!isGeneric('fa_crown_segmentation')) {
 }
 
 #'@name fa_crown_segmentation
-#'@title Tree segementation based on a CHM
+#'@title Tree segmentation based on a CHM
 #'
 #'@description
-#' Tree segementation based on a CHM
+#' Tree segmentation based on a CHM
 #'
 #'@author Chris Reudenbach
 #'
@@ -34,7 +34,7 @@ if (!isGeneric('fa_crown_segmentation')) {
 #'@export fa_crown_segmentation
 #'@examples
 #'\dontrun{
-#' # Tree segementation based on a CHM
+#' # Tree segmentation based on a CHM
 #'  fa_crown_segmentation(x = rasterobj,  "nameofSAGAFile")
 #'}
 #'
@@ -62,8 +62,8 @@ fa_crown_segmentation <- function(x = NULL,
   if (!exists(sagaCmd)) link2GI::linkSAGA()
   uavRst:::R2SAGA(x,"chm")
   if (seeding){
-  cat(":: run pre-segementation...\n")
-  # first segment run is a simple watershed segementation just for deriving more reliable seeds 
+  cat(":: run pre-segmentation...\n")
+  # first segment run is a simple watershed segmentation just for deriving more reliable seeds 
   # TODO improve different advanceds seed finding algorithms
   ret <- system(paste0(sagaCmd, " imagery_segmentation 0 ",
                        " -GRID "     ,path_run,"chm.sgrd",
@@ -120,7 +120,7 @@ fa_crown_segmentation <- function(x = NULL,
   # trees <- sf::st_read(paste0(path_run,"treeSeeds.shp"))
   }
   
-  cat(":: run main segementation...\n")
+  cat(":: run main segmentation...\n")
   # create correct param list s
   param_list <- paste0(path_run,is3_seed_params,".sgrd;")
 
@@ -168,6 +168,6 @@ fa_crown_segmentation <- function(x = NULL,
   tree_crowns <- rgdal::readOGR(path_run,"tree_crowns", verbose = FALSE)
 
   options(warn=0)
-  cat("segementation finsihed...")
+  cat("segmentation finsihed...")
   return( tree_crowns)
 } 

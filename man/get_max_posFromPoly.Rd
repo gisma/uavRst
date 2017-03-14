@@ -4,7 +4,15 @@
 \alias{get_max_posFromPoly}
 \title{extract for all polygons the position of the maximum value of the applied raster(s)}
 \usage{
-get_max_posFromPoly(dem, lN, poly_split = TRUE)
+get_max_posFromPoly(x, lN, poly_split = TRUE)
+}
+\arguments{
+\item{x}{path and name of a GDAL raster file}
+
+\item{lN}{layer name of shape file}
+
+\item{poly_split}{split polygon in single file default is TRUE
+extract for all polygons the position of the maximum value}
 }
 \description{
 extract for all polygons the position of the maximum value

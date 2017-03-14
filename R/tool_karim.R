@@ -148,9 +148,18 @@ checkAdjustProjection <- function(x) {
   return(x)
 }
 
-# create an spatiallineobject from 2 points
-# optional export as shapefile
-makeLine <- function(Lon,Lat,ID,export=FALSE){  
+# 
+# 
+#' create an spatiallineobject from 2 points
+#' @description
+#' create an spatiallineobject from 2 points, optional export as shapefile
+#' @param p1 coordinate of first point
+#' @param p2 coordinate of second point
+#' @param ID id of line
+#' @param export write shafefile default = F 
+#' @export
+#' 
+makeLine <- function(p1,p2,ID,export=FALSE){  
   line <- SpatialLines(list(Lines(Line(cbind(Lon,Lat)), ID = ID)))
   sp::proj4string(line) <- CRS("+proj=longlat +datum=WGS84 +no_defs")
   if (export) {
@@ -159,7 +168,13 @@ makeLine <- function(Lon,Lat,ID,export=FALSE){
   }
   return(line)
 }
-
+#' applies a line to a raster and returns the position of the maximum value
+#' @description
+#'  applies a line to a raster and returns the position of the maximum value
+#' @param dem raster object
+#' @param line  sp object
+#' @export
+#' 
 getmaxposFromLine <- function(dem,line){
   mask <- dem
   raster::values(mask) <- NA
@@ -171,18 +186,23 @@ getmaxposFromLine <- function(dem,line){
   maxPos = raster::xyFromCell(mask2,idx)
   return(maxPos)
 }
+
 #' extract for all polygons the position of the maximum value of the applied raster(s)
 #' @description
 #' extract for all polygons the position of the maximum value
+#' @param x path and name of a GDAL raster file  
+#' @param lN layer name of shape file
+#' @param poly_split split polygon in single file default is TRUE
+#' extract for all polygons the position of the maximum value
 #' @export
 #' 
-get_max_posFromPoly <- function(dem,lN, poly_split=TRUE){
+get_max_posFromPoly <- function(x,lN, poly_split=TRUE){
   # read raster input data 
   if (poly_split) {system(paste0("rm -rf ",paste0(path_tmp,"split")))}
-  dem <- raster::raster(dem)
+  dem <- raster::raster(x)
   fn <- spatial.tools::create_blank_raster(reference_raster=dem,filename = paste0(path_tmp,lN,"raw"))
   mask <- raster::raster(fn)
-  # maskx <- velox::velox(mask)
+  maskx <- velox::velox(mask)
   # chmx <- velox::velox(dem)
   
   # read vector input data the sf way
@@ -193,7 +213,7 @@ get_max_posFromPoly <- function(dem,lN, poly_split=TRUE){
   ids <- unique(dcs@data$NAME)
   
   if (poly_split) {
-    cat(":: split polygons...\n")
+    cat("split polygons...\n")
     dir.create(paste0(path_tmp,"split"),recursive=TRUE)
     
     # split polygon with respect to the NAME attribute
@@ -208,7 +228,9 @@ get_max_posFromPoly <- function(dem,lN, poly_split=TRUE){
   }
   # parallel retrival of maxpos
   
-
+  cat("max height coords search...\n")
+  cat("you anaylize ",length(ids) ,"polygons")
+  cat("this will approx take until ",format(Sys.time() + length(ids)*1.5, "   %X "),"\n")
   ret_max_pos <-  parallel::mclapply(ids,function(x) {
     
     # assign vars
@@ -238,7 +260,7 @@ get_max_posFromPoly <- function(dem,lN, poly_split=TRUE){
     # re-convert to raster format
     m1 <- maskx$as.RasterLayer(band=1)
     #d1 <- chmx$as.RasterLayer(band=1)
-    
+    # TODO which(mat == max(mat), arr.ind=TRUE)
     # get maxpos of crown area
     m1 <-raster::crop(m1,c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
     d1 <-raster::crop(m1,c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
@@ -268,6 +290,14 @@ get_max_posFromPoly <- function(dem,lN, poly_split=TRUE){
   return(seeds)
 }
 
+#' converts GRASS raster to geotiff
+#' @description converts GRASS raster to geotiff
+#' @param runDir path of working directory
+#' @param layer name GRASS raster
+#' @param returnRaster return GRASS raster as an R raster object default = FALSE
+
+#' @export
+#' 
 G2Tiff <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
   
   rgrass7::execGRASS("r.out.gdal",
@@ -279,6 +309,11 @@ G2Tiff <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
   if (returnRaster) return(raster::raster(paste0(runDir,"/",layer,".tif")))
 }
 
+#' converts geotiff to GRASS raster 
+#' @description converts geotiff to GRASS raster 
+#' @param runDir path of working directory
+#' @param layer name GRASS raster
+#' @export
 Tiff2G <- function(runDir = NULL, layer = NULL) {
   rgrass7::execGRASS('r.external',
                      flags  = c('o',"overwrite","quiet"),
@@ -288,6 +323,11 @@ Tiff2G <- function(runDir = NULL, layer = NULL) {
   )
 }
 
+#' converts OGR to GRASS vector 
+#' @description converts OGR to GRASS vector 
+#' @param runDir path of working directory
+#' @param layer name GRASS raster
+#' @export
 OGR2G <- function(runDir = NULL, layer = NULL) {
   # import point locations to GRASS
   rgrass7::execGRASS('v.in.ogr',
@@ -297,6 +337,11 @@ OGR2G <- function(runDir = NULL, layer = NULL) {
   )
 }
 
+#' converts GRASS vector to shape file
+#' @description converts GRASS vector to shape file
+#' @param runDir path of working directory
+#' @param layer name GRASS raster
+#' @export
 G2OGR <- function(runDir = NULL, layer = NULL){
   rgrass7::execGRASS("v.out.ogr",
                      flags  = c("overwrite","quiet"),
@@ -369,6 +414,12 @@ winUniMrBuild <- function(dsn = getwd(), pkgDir="H:/Dokumente",document = TRUE, 
   
   return(invisible(NULL))
 }
+
+#' converts SAGA raster to R raster object
+#' @description converts SAGA raster to R raster object
+#' @param fn filname without extension
+#' @param ext extent of the raster in R notation
+#' @export
 SAGA2R <- function(fn,ext) {
   gdalUtils::gdalwarp(paste0(path_run,fn,".sdat"), 
                       paste0(path_run,fn,".tif"), 
@@ -380,6 +431,11 @@ SAGA2R <- function(fn,ext) {
   return(x)
 }
 
+#' converts SAGA raster to R raster object
+#' @description converts SAGA raster to R raster object
+#' @param x raster object
+#' @param fn filname without extension
+#' @export
 R2SAGA <- function(x,fn) {
   
   raster::writeRaster(x,paste0(path_run,fn,".tif"),overwrite = TRUE)

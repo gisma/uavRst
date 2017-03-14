@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_crownSegmentation.R
 \name{fa_crown_segmentation}
 \alias{fa_crown_segmentation}
-\title{Tree segementation based on a CHM}
+\title{Tree segmentation based on a CHM}
 \usage{
 fa_crown_segmentation(x = NULL, minTreeAlt = 5, crownMinArea = 3,
   is0_output = 1, is0_join = 1, is0_thresh = 0.09, is3_leafsize = 8,
@@ -47,11 +47,11 @@ fa_crown_segmentation(x = NULL, minTreeAlt = 5, crownMinArea = 3,
 basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 }
 \description{
-Tree segementation based on a CHM
+Tree segmentation based on a CHM
 }
 \examples{
 \dontrun{
-# Tree segementation based on a CHM
+# Tree segmentation based on a CHM
  fa_crown_segmentation(x = rasterobj,  "nameofSAGAFile")
 }
 
