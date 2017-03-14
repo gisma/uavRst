@@ -126,7 +126,7 @@ crowns <- fa_crown_segmentation(chmR,
 )
 
 # calculate potential insolation
-uavRst::potInsolation("chm",pi_day = "01/06/2017",pi_day_stop = "30/06/2017",pi_hour_step = 1.0)
+uavRst::fa_pot_insol("chm",pi_day = "01/06/2017",pi_day_stop = "30/06/2017",pi_hour_step = 1.0)
 
 # extract stats
 polyStat <- xpolystat(c("tot","dir","dif","chm"),
