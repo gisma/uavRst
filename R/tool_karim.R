@@ -1,3 +1,4 @@
+# karim is the blue djinn
 if (!isGeneric('h_read_gpx ')) {
   setGeneric('h_read_gpx ', function(x, ...)
     standardGeneric('h_read_gpx '))
