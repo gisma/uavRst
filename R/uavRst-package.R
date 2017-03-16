@@ -9,13 +9,15 @@
 #' \cr
 #' \emph{Maintainer:} Chris Reudenbach \email{reudenbach@@uni-marburg.de}
 #'
-#' @import stringr zoo foreach sp raster htmlwidgets htmltools Rcpp rgeos rgdal gdalUtils tools maptools  mapview data.table parallel spatial.tools velox
+#' @import stringr zoo foreach sp raster htmlwidgets htmltools Rcpp rgeos rgdal gdalUtils tools maptools mapview parallel velox
 #' @importFrom geosphere bearing
 #' @importFrom geosphere distGeo
 #' @importFrom geosphere destPoint
 #' @importFrom igraph clusters
 #' @importFrom igraph graph
 #' @importFrom igraph V
+#' @importFrom data.table fread
+#' @importFrom spatial.tools create_blank_raster 
 #' @import log4r
 #' @import caret
 #'  
