@@ -151,7 +151,7 @@ h_comp_ll_proj4 <- function(x) {
 #' @export
 #' 
 h_sp_line <- function(p1,p2,ID,export=FALSE){  
-  line <- SpatialLines(list(Lines(Line(cbind(Lon,Lat)), ID = ID)))
+  line <- SpatialLines(list(Lines(Line(cbind(p1,p2)), ID = ID)))
   sp::proj4string(line) <- CRS("+proj=longlat +datum=WGS84 +no_defs")
   if (export) {
     writeLinesShape(home,"home.shp")

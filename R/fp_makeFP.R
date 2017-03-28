@@ -671,20 +671,7 @@ makeFP <- function(projectDir = "~",
       
       # calc next coordinate
       pos <- calcNextPos(pOld[1], pOld[2], heading, trackDistance)
-      if (picFootprint) {
-        camera <-
-          spRbind(
-            camera,
-            cameraExtent(
-              pos[1],
-              pos[2],
-              uavViewDir,
-              trackDistance,
-              flightAltitude,
-              i,
-              j
-            )
-          )
+      if (picFootprint) { camera <- spRbind(camera, cameraExtent( pos[1], pos[2], uavViewDir, trackDistance, flightAltitude,i,j))
       }
       pOld <- pos
       flightLength <- flightLength + trackDistance
@@ -695,13 +682,7 @@ makeFP <- function(projectDir = "~",
         lns[length(lns) + 1] <- makeUavPoint(pos, uavViewDir, group = group, p)
       }
       if (uavType == "solo") {
-        lns[length(lns) + 1] <-
-          makeUavPointMAV(
-            lat = pos[2],
-            lon = pos[1],
-            head = uavViewDir,
-            group = group
-          )
+        lns[length(lns) + 1] <- makeUavPointMAV(lat = pos[2], lon = pos[1], head = uavViewDir, group = group)
       }
     }
     
@@ -741,34 +722,20 @@ makeFP <- function(projectDir = "~",
     
     else if ((j %% 2 == 0)) {
       pos <- calcNextPos(pOld[1], pOld[2], crossdir, crossDistance)
-      if (picFootprint) {
-        camera <-
-          spRbind(
-            camera,
-            cameraExtent(
-              pos[1],
-              pos[2],
-              uavViewDir,
-              trackDistance,
-              flightAltitude,
-              i,
-              j
-            )
-          )
+      if (picFootprint) { camera <- spRbind(camera, cameraExtent( pos[1], pos[2], uavViewDir,trackDistance,flightAltitude,i,j))
       }
       pOld <- pos
       flightLength <- flightLength + crossDistance
+      
       if (uavType == "djip3") {
         lns[length(lns) + 1] <- makeUavPoint(pos, uavViewDir, group = 99, p)
+        heading <- updir
       }
       if (uavType == "solo") {
-        lns[length(lns) + 1] <-
-          makeUavPointMAV(
-            lat = pos[2],
-            lon = pos[1],
-            head = uavViewDir,
-            group = 99
-          )
+        lns[length(lns) + 1] <-  makeUavPointMAV( lat = pos[2],
+                                                  lon = pos[1],
+                                                  head = uavViewDir - 180,
+                                                  group = 99)
       }
       heading <- updir
     }
@@ -778,17 +745,14 @@ makeFP <- function(projectDir = "~",
   close(pb)
   
   #estimate time regarding parameter
-  ft <-
-    calculateFlightTime(
-      maxFlightTime,
-      windCondition,
-      maxSpeed,
-      uavOptimumSpeed,
-      flightLength,
-      totalTrackdistance,
-      picRate,
-      logger
-    )
+  ft <- calculateFlightTime( maxFlightTime,
+                             windCondition,
+                             maxSpeed,
+                             uavOptimumSpeed,
+                             flightLength,
+                             totalTrackdistance,
+                             picRate,
+                             logger)
   rawTime <- ft[1]
   maxFlightTime <- ft[2]
   maxSpeed <- ft[3]
@@ -853,42 +817,15 @@ makeFP <- function(projectDir = "~",
     }
     # start the creation of the control file(s)
     cat('generate control files...\n')
-    generateDjiCSV(
-      result[[2]],
-      mission,
-      nofiles,
-      maxPoints,
-      p,
-      logger,
-      round(result[[6]], digits = 0),
-      trackSwitch,
-      "flightDEM.tif",
-      result[[8]],
-      projectDir,
-      workingDir
-    )
+    generateDjiCSV( result[[2]],mission,nofiles,maxPoints,p,logger, round(result[[6]], digits = 0),
+                    trackSwitch,"flightDEM.tif",result[[8]], projectDir,workingDir)
     
   }
   else if (uavType == "solo") {
     writeLines(unlist(lns), fileConn)
     mavDF <- read.csv("tmp.csv", sep = "\t", header = FALSE)
     names(mavDF) <-
-      c(
-        "a",
-        "b",
-        "c",
-        "d",
-        "e",
-        "f",
-        "g",
-        "latitude",
-        "longitude",
-        "altitude",
-        "id",
-        "j",
-        "lat",
-        "lon"
-      )
+      c("a","b","c","d","e","f","g","latitude","longitude","altitude","id","j","lat","lon")
     sp::coordinates(mavDF) <- ~ lon + lat
     sp::proj4string(mavDF) <-
       CRS("+proj=longlat +datum=WGS84 +no_defs")

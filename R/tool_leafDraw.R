@@ -34,13 +34,67 @@
 
 leafDraw <- function(mapCenter=c(50.80801,8.72993),
                      zoom=15, 
-                     line = TRUE, rectangle = TRUE, poly = TRUE, circle = TRUE, point = TRUE,
-                     remove = TRUE, position= "topright", 
+                     line = TRUE, 
+                     rectangle = TRUE, 
+                     poly = TRUE, 
+                     circle = TRUE, 
+                     point = TRUE,
+                     remove = TRUE, 
+                     position= "topright", 
                      maplayer=c("CartoDB.Positron","OpenStreetMap","Esri.WorldImagery","Thunderforest.Landscape","OpenTopoMap"),
-                     overlay=NULL, preset = "all",cex = 10,lwd = 2,alpha = 0.6,opacity = 0.7) {
-  if (!is.null(overlay)){
+                     overlay=NULL,
+                     features=NULL,
+                     preset = "all",
+                     cex = 10,
+                     lwd = 2,
+                     alpha = 0.6,
+                     opacity = 0.7) {
+  
+  # create tmp path
+  tmpPath<- createTempDataTransfer()
+
+    if (!is.null(overlay)){
+      
+      if (class(overlay)  %in% c("SpatialPointsDataFrame","SpatialLinesDataFrame","SpatialLines","SpatialPoints")) {
+        e <- as(raster::extent(overlay), "SpatialPolygons")
+        e <- sp::SpatialPolygonsDataFrame(e, data.frame(ID="overlay"))
+        proj4string(e) <- sp::proj4string(overlay)
+        overlay<-sp::spTransform(e,CRSobj = sp::CRS("+init=epsg:4326"))
+      } else if  (class(overlay)=="SpatialPolygonsDataFrame") {
+        overlay<-sp::spTransform(overlay,CRSobj = sp::CRS("+proj=longlat +datum=WGS84 +no_defs"))
+        overlay <- sp::SpatialPolygonsDataFrame(overlay, data.frame(ID="overlay"))
+      }
+      
+      rgdal::writeOGR(overlay, paste(tmpPath, "jsondata", sep=.Platform$file.sep), "OGRGeoJSON", driver="GeoJSON")
+      
+      # for fastet json read in a html document we wrap it with var data = {};
+      # and we fix the crs item of ogr2json
+      # TODO loop a list of data
+      
+      # main data object
+      lns <- data.table::fread(paste(tmpPath, "jsondata", sep=.Platform$file.sep), header = FALSE, sep = "\n", data.table = FALSE)
+      
+      # do it for main
+      lns[1,] <-paste0('var jsondata = {')
+      lns[3,]<-paste0('"crs": { "type": "name", "properties": { "name": "EPSG:4326" } },')
+      lns[length(lns[,1]),]<- '};'
+      write.table(lns, paste(tmpPath, "jsondata", sep=.Platform$file.sep), sep="\n", row.names=FALSE, col.names=FALSE, quote = FALSE)
+      features<-names(overlay)
+      # correct if only Lines or Polygons (obsolete here?)
+      if (class(overlay)[1] == 'SpatialPolygonsDataFrame' | class(overlay)[1] == 'SpatialPolygons'){
+        noFeature <- length(overlay@polygons)
+      } else if (class(overlay)[1] == 'SpatialLinesDataFrame' | class(overlay)[1] == 'SpatialLines'){
+        noFeature <- length(overlay@lines)
+      } 
+      jsondata<-1
+      
+    
+    
     mapCenter<-c(extent(overlay)[3]+extent(overlay)[4]-extent(overlay)[3],extent(overlay)[1]+extent(overlay)[2]-extent(overlay)[1])
-  }
+    #features<-overlay
+    
+    }  else {jsondata<-0}
+  
   if ( preset == "uav") {
     if (is.null(mapCenter)){
       mapCenter<-c(50.80801,8.72993)}
@@ -77,7 +131,7 @@ leafDraw <- function(mapCenter=c(50.80801,8.72993),
     mapCenter<-mapCenter
     zoom<-zoom
     line<-line
-    maplayer=maplayer
+    maplayer=c("OpenStreetMap","CartoDB.Positron","Esri.WorldImagery","Thunderforest.Landscape","OpenTopoMap")
     overlay=overlay
     rectangle<-rectangle
     poly<-poly
@@ -86,9 +140,7 @@ leafDraw <- function(mapCenter=c(50.80801,8.72993),
     remove<-remove
     position<-position
   }
-  
-  # create tmp path
-  tmpPath<- createTempDataTransfer()
+
   
   ### create the rest of the JS strings
   CRSvarMapCenter<-paste0('var mapCenter = [',mapCenter[1],',',mapCenter[2],'];')
@@ -100,33 +152,7 @@ leafDraw <- function(mapCenter=c(50.80801,8.72993),
   # write the proj4leaflet CRS
   write(CRSinitialZoom,tmpCRS,append = TRUE)
   write(CRSvarMapCenter,tmpCRS,append = TRUE)
-  if (!is.null(overlay)){
-  overlay <- sp::SpatialPolygonsDataFrame(overlay, data.frame(ID="overlay"))
-  rgdal::writeOGR(overlay, paste(tmpPath, "jsondata", sep=.Platform$file.sep), "OGRGeoJSON", driver="GeoJSON")
-  
-  # for fastet json read in a html document we wrap it with var data = {};
-  # and we fix the crs item of ogr2json
-  # TODO loop a list of data
-  
-  # main data object
-  lns <- data.table::fread(paste(tmpPath, "jsondata", sep=.Platform$file.sep), header = FALSE, sep = "\n", data.table = FALSE)
 
-  # do it for main
-  lns[1,] <-paste0('var jsondata = {')
-  lns[3,]<-paste0('"crs": { "type": "name", "properties": { "name": "EPSG:4326" } },')
-  lns[length(lns[,1]),]<- '};'
-  write.table(lns, paste(tmpPath, "jsondata", sep=.Platform$file.sep), sep="\n", row.names=FALSE, col.names=FALSE, quote = FALSE)
-  features<-names(overlay)
-  # correct if only Lines or Polygons (obsolete here?)
-  if (class(overlay)[1] == 'SpatialPolygonsDataFrame' | class(overlay)[1] == 'SpatialPolygons'){
-    noFeature <- length(overlay@polygons)
-  } else if (class(overlay)[1] == 'SpatialLinesDataFrame' | class(overlay)[1] == 'SpatialLines'){
-    noFeature <- length(overlay@lines)
-  } 
-  jsondata<-1
-  
-} else {jsondata<-0}
-  
   
   # create parameter list for the widget
   x <- list(data  = 'undefined',
