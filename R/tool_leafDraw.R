@@ -24,11 +24,17 @@
 #' # all features
 #' leafDraw()
 #' 
-#' # preset for digitizing uav flight areas
-#' leafDraw(preset="uav")
+#' # preset for digitizing uav flight areas in Meuse
 #' 
-#' #' # preset for digitizing extents
-#' leafDraw(preset="ext")
+#' uavRst::leafDraw(overlay = over, preset = "uav")
+#' 
+#' data(meuse) 
+#' coordinates(meuse) <- ~x+y 
+#' proj4string(meuse) <-CRS("+init=epsg:28992") 
+#' me<-sp::spTransform(meuse,CRSobj = sp::CRS("+init=epsg:4326"))
+#'  
+#' # preset for digitizing extents
+#' leafDraw(preset="ext",overlay = me)
 #' @export leafDraw
 #'               
 
@@ -90,7 +96,7 @@ leafDraw <- function(mapCenter=c(50.80801,8.72993),
       
     
     
-    mapCenter<-c(extent(overlay)[3]+extent(overlay)[4]-extent(overlay)[3],extent(overlay)[1]+extent(overlay)[2]-extent(overlay)[1])
+    mapCenter<-c(raster::extent(overlay)[3]+raster::extent(overlay)[4]-raster::extent(overlay)[3],raster::extent(overlay)[1]+raster::extent(overlay)[2]-raster::extent(overlay)[1])
     #features<-overlay
     
     }  else {jsondata<-0}
