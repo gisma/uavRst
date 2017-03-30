@@ -1,9 +1,8 @@
-
 // arbitrary projected local tiles as leaflet map
 
 HTMLWidgets.widget({
 
-  name: 'leafDraw',
+  name: 'select',
 
   type: 'output',
 
@@ -78,104 +77,57 @@ HTMLWidgets.widget({
    };
    // define a dummy layer for the geojson data
     //var myLayer = L.geoJson(undefined,{style:style,onEachFeature:onEachFeature}).addTo(map);
-  
-   var feature = {
-    "type": "Feature",
-    "properties": {
-        "name": "waypoint",
-        "type": "1",
-        "popupContent": "no definition"
-    }
-};
+    
+    
+
+    
     
 	  function onEachFeature(feature, layer) {
-	   
-	       // Create an input
-    var input = L.DomUtil.create('input', 'my-input');
-    // Set a feature property as value
-    input.value = feature.properties.name;
-    // Add a listener to watch for change on input
-    L.DomEvent.addListener(input, 'change', function () {
-        // Input changed, change property value
-        feature.properties.name = input.value;
-    });
-	   
-	       var features = {};
-	       var input = {};
-	       var times = x.features.length;
-    for (var i = 0; i < times;  i++) {
-      var name  = x.features[i]
-      name = L.DomUtil.create(name, 'new-input');
-      name.value = feature.properties[name];
-
-      } 
-	        // Create an input
-    
-    // Set a feature property as value
-
-
-    
-    // Add a listener to watch for change on input
-    L.DomEvent.addListener(name,'change', function () {
-        // Input changed, change property value
-        feature.properties = name;
-        //feature.properties = x.features.value ;
-    });
-    // Bind popup to layer with input
-    layer.bindPopup(feature.properties);
-	
-
-	    
-	    
-/*      var i = 1;
+      var i = 1;
       var content = '';
     // does this feature have a property named popupContent?
-    if (feature.properties) {
-        for (var key in feature.properties) {
-          if (isEven(i)) {
-            content += "<tr><td> " +  key + " </td><td>" + feature.properties[key] +" </td></tr>";
-          } else {
-            content += "<tr class='alt'><td> " +  key + " </td><td>" + feature.properties[key] +" </td></tr>";
-          }
-          i = i + 1;
-        };
-        var popupContent = x.html + content + "</table></body></html>";
-        //console.log(popupContent);
-        layer.bindPopup(popupContent);
-    }*/
+    //if (feature.properties) {
+    //    for (var key in feature.properties) {
+    //      if (isEven(i)) {
+    //        content += "<tr><td> " +  key + " </td><td>" + feature.properties[key] +" </td></tr>";
+    //      } else {
+    //        content += "<tr class='alt'><td> " +  key + " </td><td>" + feature.properties[key] +" </td></tr>";
+    //      }
+    //      i = i + 1;
+    //    };
+    //    var popupContent = x.html + content + "</table></body></html>";
+    //    //console.log(popupContent);
+    //    layer.bindPopup(popupContent);
+    //}
+        layer.on('click', function (e) {
+
+//Set feature selected, you can also use layer.feature.properties
+e.target.feature.properties.selected = true;
+
+//Set style, what ever style option you want
+
+layer.setStyle({opacity:1,width:3, dashArray: 3, fillColor:"#0080FF"});
+
+});
+        layer.on('contextmenu', function (e) {
+
+//Set feature selected, you can also use layer.feature.properties
+e.target.feature.properties.selected = false;
+
+//Set style, what ever style option you want
+
+layer.setStyle({opacity:1,width:1, dashArray: 0,fillColor:x.color});
+
+});
   }
-  
 	// The styles of the layer
 	function style(feature) {
-	        if (feature.properties.ELEV != "" && feature.properties.ELEV != "<Null>" && feature.properties.ELEV != null) {
-	           /* if (feature.properties.ELEV == "1000") {
-	                return {
-	                    color: "green",
-	                    weight: 4,
-	                    opacity: 0.9
-	                }
-	            } else if (feature.properties.ELEV == "2000") {
-	                return {
-	                    color: "blue",
-	                    weight: 4,
-	                    opacity: 0.9
-	                }
-
-	            } else {
-	                return {
-	                    color: "red",
-	                    weight: 2,
-	                    opacity: 0.9
-	                }
-	            }
-	        */
-	        } else {
+	       
 	            return {
 	                color: "magenta",
 	                weight: x.lwd,
 	                opacity: x.opacity
 	            }
-	        }
 	    }
 	var geojsonMarkerOptions = {
     radius: x.cex,
@@ -191,9 +143,9 @@ HTMLWidgets.widget({
     },style:style,onEachFeature:onEachFeature})
     
        var overlayLayers = {};
-      overlayLayers['userOverlay'] = polyLayer;
+      overlayLayers['data'] = polyLayer;
 
-	 //map.addLayer(polyLayer);
+	 map.addLayer(polyLayer);
 
   // layer control
   var layerControl = L.control.layers(baseLayers,overlayLayers).addTo(map);
@@ -202,7 +154,7 @@ HTMLWidgets.widget({
   var layerControl = L.control.layers(baseLayers).addTo(map);  
   }
    // create draw layer
-    var drawnItems = new L.FeatureGroup(polyLayer);
+    var drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);
 
   // init draw control     
@@ -213,7 +165,7 @@ HTMLWidgets.widget({
             shapeOptions: {
                 color: '#FFFF00',
                 weight: 2
-            }},
+            }}, polyline: x.line,
                 rectangle:x.rectangle,
                 polygon: x.poly, 
                 circle: x.circle,
@@ -224,26 +176,13 @@ HTMLWidgets.widget({
                 remove: x.remove,
             }
         }).addTo(map);
-    
+    map.removeControl(drawControl);
     // Each time a feaute is created, it's added to the over arching feature group
      map.on('draw:created', function(e) {
             drawnItems.addLayer(e.layer);
-            var tmp = drawnItems.toGeoJSON();
-            //drawnItems.removeLayer(e.layer);
-            //drawnItems.removeLayer(e.layer);
-   //  var convertedData = JSON.stringify(data);
-   //  var newLayer = L.Proj.geoJson(tmp,{ pointToLayer: function (feature, latlng) {
-  //      return L.circleMarker(latlng, geojsonMarkerOptions);
-  //  },style:style,onEachFeature:onEachFeature})
-  //    overlayLayers['new'] = newLayer;
-  //    drawnItems.addLayer(newLayer);
-  //    layerControl.addOverlay(newLayer, "newLayer");
-      
-       
-          
         });
-
         
+
 /*
     // create "save" link
         var b = document.createElement('a');
@@ -282,30 +221,32 @@ HTMLWidgets.widget({
 
     //  <span style="font: 15px " class="star" >&#x2704;</span>
     //'<span style="font-size: 20px" class="glyphicon glyphicon-download"></span>'
-         L.easyButton(  '<span style="font-size: 5px font-weight:bold" class="glyphicon glyphicon-download"> JS</span>',
-         function(){
-           var data = drawnItems.toGeoJSON();
-           // Stringify the GeoJson
-           var convertedData = JSON.stringify(data);
-           // Create ajax export using download.js
-           download(new Blob([convertedData]), "dlTextBlob.txt", "text/plain");}).addTo(map);
-     
-     
+    
+          
 
-     // if clickevent on "grabber"
-     // document.getElementById('grabber').onclick = function(e) {
-        L.easyButton(  '<span style="font-size: 10px " class="glyphicon glyphicon-download"> KML</span>',
-         function(){
-             var data = drawnItems.toGeoJSON();
-        // Stringify the GeoJson
-        var convertedData = JSON.stringify(data);
-        var kml = tokml(data);
-        //var grabstring = "c(" + kml.replace(/ /g, ",") +")";
-        //document.write(convertedData);
-        //document.getElementById("coords").innerHTML = '<div class="coords"' + grabstring + '"</div>"' 
-        //window.alert(grabstring);}).addTo(map);
-       download(new Blob([kml]), "dlTextBlob.txt", "text/plain");}).addTo(map);
-      //}
+
+            L.easyButton(  '<span style="font-size: 5px font-weight:bold" class="glyphicon glyphicon-download"> J </span>',function(){
+                       var allMarkersObjArray = [];//new Array();
+            var allMarkersGeoJsonArray = [];//new Array();
+
+    $.each(map._layers, function (ml) {
+                //console.log(map._layers)
+                  if (map._layers[ml].feature && map._layers[ml].feature.properties.selected === true) {
+  
+                      allMarkersObjArray.push(this)
+                      allMarkersGeoJsonArray.push(JSON.stringify(this.toGeoJSON()))
+                      
+                    //var data = drawnItems.toGeoJSON();
+                   // Stringify the GeoJson
+                   //var convertedData = JSON.stringify(data);
+                  // Create ajax export using download.js
+          
+                }
+            });
+           // Create ajax export using download.js
+           download(new Blob([allMarkersGeoJsonArray]), "dlTextBlob.txt", "text/plain");}).addTo(map);
+        
+    
 
   // grab the lnlt div and put the mousmove output there
   lnlt = document.getElementById('lnlt');

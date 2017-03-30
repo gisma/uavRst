@@ -1,6 +1,5 @@
-#' digitizing vector features using leaflet draw
-#'
-#' @description  leafDraw is based on the leaflet draw plugin. It provides a bunch of leaflet maps as base layers for digitizing vector features. 
+#' selecting vector features using leaflet draw
+#' @description  select is based on the leaflet draw plugin. It provides a bunch of leaflet maps as base layers for digitizing vector features. 
 #'
 #' @note Yu can either save the digitized object to a json file or you ma grab the json string via the clipboard
 #' @param mapcenter c(lat,lon) central point of the leaflet map
@@ -22,39 +21,39 @@
 #' @examples
 #' 
 #' # all features
-#' leafDraw()
+#' select()
 #' 
-#' # preset for digitizing uav flight areas in Meuse
+#' # preset for digitizing uav flight areas
+#' select(preset="uav")
 #' 
-#' uavRst::leafDraw(overlay = over, preset = "uav")
+#' #' # preset for digitizing extents
+#' select(preset="ext")
 #' 
-#' data(meuse) 
-#' coordinates(meuse) <- ~x+y 
-#' proj4string(meuse) <-CRS("+init=epsg:28992") 
-#' me<-sp::spTransform(meuse,CRSobj = sp::CRS("+init=epsg:4326"))
-#'  
-#' # preset for digitizing extents
-#' leafDraw(preset="ext",overlay = me)
-#' @export leafDraw
+#' @export select
 #'               
 
-leafDraw <- function(mapCenter=c(50.80801,8.72993),
+select <- function(mapCenter=c(50.80801,8.72993),
                      zoom=15, 
-                     line = TRUE, 
-                     rectangle = TRUE, 
-                     poly = TRUE, 
-                     circle = TRUE, 
-                     point = TRUE,
-                     remove = TRUE, 
                      position= "topright", 
                      maplayer=c("CartoDB.Positron","OpenStreetMap","Esri.WorldImagery","Thunderforest.Landscape","OpenTopoMap"),
-                     overlay=NULL,
-                     features=NULL,
-                     preset = "all",
-                     cex = 10,
-                     lwd = 2,
-                     alpha = 0.6,
-                     opacity = 0.7) {
+                     overlay=NULL, cex = 10,lwd = 2,alpha = 0.6,opacity = 0.7) {
+  line = FALSE
+  rectangle = FALSE
+  poly = FALSE
+  circle = FALSE
+  point = FALSE
+  remove = FALSE 
+  mapCenter<-mapCenter
+  zoom<-zoom
+  line<-line
+  maplayer=maplayer
+  overlay=overlay
+  rectangle<-rectangle
+  poly<-poly
+  circle<-circle
+  point<-point
+  remove<-remove
+  position<-position
   
   # create tmp path
   tmpPath<- createTempDataTransfer()
@@ -71,7 +70,7 @@ leafDraw <- function(mapCenter=c(50.80801,8.72993),
       #overlay <- sp::SpatialPolygonsDataFrame(overlay, data.frame(ID="overlay"))
     }
     
-    rgdal::writeOGR(overlay, paste(tmpPath, "jsondata", sep=.Platform$file.sep), "OGRGeoJSON", driver="GeoJSON")
+    rgdal::writeOGR(overlay, paste(tmpPath, "jsondata", sep=.Platform$file.sep), "OGRGeoJSON", driver="GeoJSON", overwrite_layer = TRUE)
     
     # for fastet json read in a html document we wrap it with var data = {};
     # and we fix the crs item of ogr2json
@@ -99,53 +98,8 @@ leafDraw <- function(mapCenter=c(50.80801,8.72993),
     mapCenter<-c(raster::extent(overlay)[3]+raster::extent(overlay)[4]-raster::extent(overlay)[3],raster::extent(overlay)[1]+raster::extent(overlay)[2]-raster::extent(overlay)[1])
     #features<-overlay
     
-  }  else {jsondata<-0}
+  }  else stop("surprise but there is nothing to select from\n")
   
-  if ( preset == "uav") {
-    if (is.null(mapCenter)){
-      mapCenter<-c(50.80801,8.72993)}
-    else {
-      mapCenter<-mapCenter
-    }
-    zoom<-15 
-    line<-TRUE
-    rectangle<-FALSE
-    poly<-FALSE
-    circle<-FALSE
-    point<-FALSE
-    remove<-TRUE
-    maplayer=c("Esri.WorldImagery","OpenStreetMap","Thunderforest.Landscape","OpenTopoMap")
-    overlay=overlay
-  } 
-  else if (preset == "ext") {
-    if (is.null(mapCenter)){
-      mapCenter<-c(50.80801,8.72993)}
-    else {
-      mapCenter<-mapCenter
-    }
-    zoom<-10
-    line<-FALSE
-    rectangle<-TRUE
-    poly<-FALSE
-    circle<-FALSE
-    point<-FALSE
-    remove<-FALSE   
-    position<-"topright"
-    maplayer=c("OpenStreetMap","CartoDB.Positron","Esri.WorldImagery","Thunderforest.Landscape","OpenTopoMap")
-    overlay=NULL
-  } else {
-    mapCenter<-mapCenter
-    zoom<-zoom
-    line<-line
-    maplayer=c("OpenStreetMap","CartoDB.Positron","Esri.WorldImagery","Thunderforest.Landscape","OpenTopoMap")
-    overlay=overlay
-    rectangle<-rectangle
-    poly<-poly
-    circle<-circle
-    point<-point
-    remove<-remove
-    position<-position
-  }
   
   
   ### create the rest of the JS strings
@@ -158,21 +112,20 @@ leafDraw <- function(mapCenter=c(50.80801,8.72993),
   # write the proj4leaflet CRS
   write(CRSinitialZoom,tmpCRS,append = TRUE)
   write(CRSvarMapCenter,tmpCRS,append = TRUE)
+ 
   
   
   # create parameter list for the widget
   x <- list(data  = 'undefined',
-            features=features,
             layer=maplayer,
             zoom = zoom,
-            html = mapview:::getPopupStyle(),
             #refpoint=refpoint,
             line=line,
             rectangle=rectangle,
             poly=poly,
             circle=circle,
             point=point,
-            remove=remove,
+            remove=TRUE,
             position=position,
             scaleBar=TRUE,
             color=mapviewGetOption("raster.palette")(256),
@@ -185,7 +138,7 @@ leafDraw <- function(mapCenter=c(50.80801,8.72993),
             overlay=jsondata
             
   )
-  leafDrawInternal(tmpPath, x = x)  
+  selectInternal(tmpPath, x = x)  
 }
 
 
@@ -224,7 +177,7 @@ createTempDataTransfer <- function (){
   return(tmpPath)
 }
 
-leafDrawInternal <- function(tmpPath, x = NULL) {
+selectInternal <- function(tmpPath, x = NULL) {
   deps<-digiDependencies(tmpPath) 
   sizing = htmlwidgets::sizingPolicy(
     browser.fill = TRUE,
@@ -233,7 +186,7 @@ leafDrawInternal <- function(tmpPath, x = NULL) {
   )
   # create widget
   htmlwidgets::createWidget(
-    name = 'leafDraw',
+    name = 'select',
     x,
     dependencies = deps,
     sizingPolicy = sizing,
@@ -243,13 +196,13 @@ leafDrawInternal <- function(tmpPath, x = NULL) {
 
 ### Widget output function for use in Shiny =================================================
 #
-leafDrawOutput <- function(outputId, width = '100%', height = '800px') {
-  htmlwidgets::shinyWidgetOutput(outputId, 'leafDraw', width, height, package = 'uavRst')
+selectOutput <- function(outputId, width = '100%', height = '800px') {
+  htmlwidgets::shinyWidgetOutput(outputId, 'select', width, height, package = 'uavRst')
 }
 
 ### Widget render function for use in Shiny =================================================
 #
-renderleafDraw<- function(expr, env = parent.frame(), quoted = FALSE) {
+renderselect<- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) {
     expr <- substitute(expr)
   } # force quoted

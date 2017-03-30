@@ -8,8 +8,8 @@ leafDraw(mapCenter = c(50.80801, 8.72993), zoom = 15, line = TRUE,
   rectangle = TRUE, poly = TRUE, circle = TRUE, point = TRUE,
   remove = TRUE, position = "topright", maplayer = c("CartoDB.Positron",
   "OpenStreetMap", "Esri.WorldImagery", "Thunderforest.Landscape",
-  "OpenTopoMap"), overlay = NULL, preset = "all", cex = 10, lwd = 2,
-  alpha = 0.6, opacity = 0.7)
+  "OpenTopoMap"), overlay = NULL, features = NULL, preset = "all",
+  cex = 10, lwd = 2, alpha = 0.6, opacity = 0.7)
 }
 \arguments{
 \item{zoom}{initial zoom level}
@@ -47,11 +47,17 @@ Yu can either save the digitized object to a json file or you ma grab the json s
 # all features
 leafDraw()
 
-# preset for digitizing uav flight areas
-leafDraw(preset="uav")
+# preset for digitizing uav flight areas in Meuse
 
-#' # preset for digitizing extents
-leafDraw(preset="ext")
+uavRst::leafDraw(overlay = over, preset = "uav")
+
+data(meuse) 
+coordinates(meuse) <- ~x+y 
+proj4string(meuse) <-CRS("+init=epsg:28992") 
+me<-sp::spTransform(meuse,CRSobj = sp::CRS("+init=epsg:4326"))
+ 
+# preset for digitizing extents
+leafDraw(preset="ext",overlay = me)
 }
 \author{
 Chris Reudenbach

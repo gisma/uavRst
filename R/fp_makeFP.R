@@ -210,7 +210,7 @@ if (!isGeneric('makeFP')) {
 #' @param rcRange range of estimated range of remote control
 #' @param uavType type of uav. currently "djip3" and "solo" are supported
 #' @param dA if TRUE the real extent of the used DEM is returned helpful for low altitudes flight planning
-#' @param cameraType depending on uav system for dji the dji4k is default for solo you can choose GP3+8MP GP3+11MP and MAPIR2
+#' @param cameraType depending on uav system for dji the dji4k is default for solo you can choose GP3_7MP GP3_11MP and MAPIR2
 #'
 #' @note
 #' To use the script you need to install quite a lot of R-packages and at least the binary GDAL tools as well as SAGA GIS and GRASS GIS according to your system needs. Please find more information at NASA EarthData project: \href{http://giswerk.org/doku.php?id=rs:micrors:uavrs:intro}{uav based Remote Sensing at giswerk.org}).
@@ -233,7 +233,7 @@ if (!isGeneric('makeFP')) {
 #' # fp      optimized footprints of the camera
 #' # fA      flight area with at least 2 overlaps
 #' # rcA     area covered by the RC according to the range and line of sight
-#' # hm    a heatmap abundance of pictures/pixel (VERY SLOW, only if heatMap = TRUE)
+#' # hm      a heatmap abundance of pictures/pixel (VERY SLOW, only if heatMap = TRUE)
 #'
 #'
 #' # load example DEM data
@@ -443,9 +443,9 @@ makeFP <- function(projectDir = "~",
   else if (uavType == "solo") {
     if (cameraType == "MAPIR2") {
       factor <- 1.55
-    } else if (cameraType == "GP3+8MP") {
+    } else if (cameraType == "GP3_7MP") {
       factor <- 2.3
-    } else if (cameraType == "GP3+11MP") {
+    } else if (cameraType == "GP3_11MP") {
       factor <- 2.3
     }
     
@@ -588,25 +588,15 @@ makeFP <- function(projectDir = "~",
   # assign starting point
   pos <- c(p$lon1, p$lat1)
   # calculates the footprint of the first position and returns a SpatialPolygonsDataFrame
-  if (picFootprint) {
-    camera <-
-      cameraExtent(pos[1], pos[2], uavViewDir, trackDistance, flightAltitude, 0, 0)
-  }
-  else {
-    camera = "NULL"
-  }
+  if (picFootprint)  camera <- cameraExtent(pos[1], pos[2], uavViewDir, trackDistance, flightAltitude, 0, 0)
+  else  camera = "NULL"
+  
   # creates the export control parameter set of the first position
   if (uavType == "djip3") {
     lns[length(lns) + 1] <- makeUavPoint(pos, uavViewDir, group = 99, p)
   }
   if (uavType == "solo") {
-    lns[length(lns) + 1] <-
-      makeUavPointMAV(
-        lat = pos[2],
-        lon = pos[1],
-        head = uavViewDir,
-        group = 99
-      )
+    lns[length(lns) + 1] <-  makeUavPointMAV(lat = pos[2],lon = pos[1], head = uavViewDir, group = 99 )
   }
   # push pos to old pos
   pOld <- pos
@@ -614,20 +604,10 @@ makeFP <- function(projectDir = "~",
   # set counter and params for mode = "track" mode
   if (mode == "track") {
     if (uavType == "djip3") {
-      lns[length(lns) + 1] <- 
-        makeUavPoint(pos, 
-                     uavViewDir, 
-                     group = 99, 
-                     p)
+      lns[length(lns) + 1] <- makeUavPoint(pos, uavViewDir, group = 99, p)
     }
     if (uavType == "solo") {
-      lns[length(lns) + 1] <-
-        makeUavPointMAV(
-          lat = pos[2],
-          lon = pos[1],
-          head = uavViewDir,
-          group = 99
-        )
+      lns[length(lns) + 1] <- makeUavPointMAV(lat = pos[2],lon = pos[1],head = uavViewDir,group = 99)
     }
     trackDistance <- len
     multiply <- 1
@@ -638,19 +618,11 @@ makeFP <- function(projectDir = "~",
       lns[length(lns) + 1] <- makeUavPoint(pos, uavViewDir, group = 99, p)
     }
     if (uavType == "solo") {
-      lns[length(lns) + 1] <-
-        makeUavPointMAV(
-          lat = pos[2],
-          lon = pos[1],
-          head = uavViewDir,
-          group = 99
-        )
+      lns[length(lns) + 1] <- makeUavPointMAV(lat = pos[2],lon = pos[1],head = uavViewDir,group = 99)
     }
   }
   # set counter and params for mode = "terrainTrack"
-  else if (mode == "terrainTrack") {
-    group = 99
-  }
+  else if (mode == "terrainTrack") group = 99
   #
   cat("calculating waypoints...\n")
   pb <- pb <- txtProgressBar(max = tracks, style = 3)
@@ -671,8 +643,7 @@ makeFP <- function(projectDir = "~",
       
       # calc next coordinate
       pos <- calcNextPos(pOld[1], pOld[2], heading, trackDistance)
-      if (picFootprint) { camera <- spRbind(camera, cameraExtent( pos[1], pos[2], uavViewDir, trackDistance, flightAltitude,i,j))
-      }
+      if (picFootprint) camera <- spRbind(camera, cameraExtent( pos[1], pos[2], uavViewDir, trackDistance, flightAltitude,i,j))
       pOld <- pos
       flightLength <- flightLength + trackDistance
       if (mode == "track") {
@@ -688,21 +659,7 @@ makeFP <- function(projectDir = "~",
     
     if ((j %% 2 != 0)) {
       pos <- calcNextPos(pOld[1], pOld[2], crossdir, crossDistance)
-      if (picFootprint) {
-        camera <-
-          spRbind(
-            camera,
-            cameraExtent(
-              pos[1],
-              pos[2],
-              uavViewDir,
-              trackDistance,
-              flightAltitude,
-              i,
-              j
-            )
-          )
-      }
+      if (picFootprint) camera <-  spRbind(camera, cameraExtent( pos[1], pos[2], uavViewDir, trackDistance,flightAltitude,i,j))
       pOld <- pos
       flightLength <- flightLength + crossDistance
       if (uavType == "djip3") {
@@ -722,8 +679,7 @@ makeFP <- function(projectDir = "~",
     
     else if ((j %% 2 == 0)) {
       pos <- calcNextPos(pOld[1], pOld[2], crossdir, crossDistance)
-      if (picFootprint) { camera <- spRbind(camera, cameraExtent( pos[1], pos[2], uavViewDir,trackDistance,flightAltitude,i,j))
-      }
+      if (picFootprint) camera <- spRbind(camera, cameraExtent( pos[1], pos[2], uavViewDir,trackDistance,flightAltitude,i,j))
       pOld <- pos
       flightLength <- flightLength + crossDistance
       
@@ -732,12 +688,10 @@ makeFP <- function(projectDir = "~",
         heading <- updir
       }
       if (uavType == "solo") {
-        lns[length(lns) + 1] <-  makeUavPointMAV( lat = pos[2],
-                                                  lon = pos[1],
-                                                  head = uavViewDir - 180,
-                                                  group = 99)
+        lns[length(lns) + 1] <-  makeUavPointMAV( lat = pos[2], lon = pos[1], head = uavViewDir - 180, group = 99)
+        heading <- updir
       }
-      heading <- updir
+      
     }
     # status bar
     setTxtProgressBar(pb, j)
@@ -883,7 +837,7 @@ makeFP <- function(projectDir = "~",
   # if heatMap is requested
   if (heatMap) {
     cat("calculating picture coverage heat map\n")
-    fovH <- fovHeatmap(camera, demFn)
+    fovH <- fovHeatmap(camera, result[[4]])
   } else
   {
     fovH <- "NULL"
@@ -900,7 +854,7 @@ makeFP <- function(projectDir = "~",
         launchP = c(as.numeric(p$launchLon), as.numeric(p$launchLat)),
         flightAlt =  as.numeric(p$flightAltitude),
         rcRange = rcRange,
-        dem = demFn
+        dem = result[[4]]
       )
   } else {
     rcCover = "NULL"

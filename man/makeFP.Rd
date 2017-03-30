@@ -75,7 +75,7 @@ Further explanation at \link{seealso}}
 
 \item{uavType}{type of uav. currently "djip3" and "solo" are supported}
 
-\item{cameraType}{depending on uav system for dji the dji4k is default for solo you can choose GP3+8MP GP3+11MP and MAPIR2}
+\item{cameraType}{depending on uav system for dji the dji4k is default for solo you can choose GP3_7MP GP3_11MP and MAPIR2}
 
 \item{djiBasic}{c(0,0,0,-90)
 \cr curvesize (DJI only) controls the curve angle of the uav passing way points.
@@ -261,7 +261,7 @@ To use the script you need to install quite a lot of R-packages and at least the
 # fp      optimized footprints of the camera
 # fA      flight area with at least 2 overlaps
 # rcA     area covered by the RC according to the range and line of sight
-# hm    a heatmap abundance of pictures/pixel (VERY SLOW, only if heatMap = TRUE)
+# hm      a heatmap abundance of pictures/pixel (VERY SLOW, only if heatMap = TRUE)
 
 
 # load example DEM data

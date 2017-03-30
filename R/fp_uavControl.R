@@ -715,6 +715,7 @@ fovHeatmap <- function(footprint,dem) {
   t        <- resample(dem,t)
   t[]      <- 0
   s        <- t
+  
   for (i in seq(1:length(footprint))) {
     tmp <- raster::rasterize(p[[i]],t)
     s <- raster::stack(tmp, s)
