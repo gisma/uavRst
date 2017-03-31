@@ -35,9 +35,6 @@ proj4string(meuse) <- CRS("+init=epsg:28992")
 
 # preset for digitizing uav flight areas
 
-#' # preset for digitizing extents
-select(preset="ext")
-
 }
 \author{
 Chris Reudenbach

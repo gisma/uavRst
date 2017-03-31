@@ -20,10 +20,8 @@
 #' 
 #' 
 #' # preset for digitizing uav flight areas
-## select(overlay = meuse)
-#' 
-#' #' # preset for digitizing extents
-#' select(preset="ext")
+#  select(overlay = meuse, zoom = 13,position = "bottomright", cex = 2, color = "green")
+
 #' 
 #' @export select
 #'               
