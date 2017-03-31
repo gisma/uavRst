@@ -7,6 +7,10 @@
 #    stylesheet:
 
 dependencies:
+  - name: filesaver
+    version: 1.11.1
+    src: "htmlwidgets/lib/filesaver"
+    script: Filesaver.js
   - name: jquery
     version: 1.11.1
     src: "htmlwidgets/lib/jquery"

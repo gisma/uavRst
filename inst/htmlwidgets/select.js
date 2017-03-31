@@ -254,6 +254,7 @@ HTMLWidgets.widget({
     //  <span style="font: 15px " class="star" >&#x2704;</span>
     //'<span style="font-size: 20px" class="glyphicon glyphicon-download"></span>'
     
+    
           
 
 
@@ -267,7 +268,7 @@ HTMLWidgets.widget({
   
                       allMarkersObjArray.push(this);
                       allMarkersGeoJsonArray.push(JSON.stringify(this.toGeoJSON()));
-                      
+
                     //var data = drawnItems.toGeoJSON();
                    // Stringify the GeoJson
                    //var convertedData = JSON.stringify(data);
@@ -276,10 +277,29 @@ HTMLWidgets.widget({
           
                 }
             });
-           // Create ajax export using download.js
-           download(new Blob([allMarkersGeoJsonArray]), "download.txt", "text/plain");}).addTo(map);
+        //   var file = new File([allMarkersGeoJsonArray], "trdz.txt", {type: "text/plain;charset=utf-8"});
+          // saveAs(file);}).addTo(map);
+           //download("hello world", "dlText.txt", "text/plain");
+           //download(allMarkersGeoJsonArray, "download.txt", "text/plain;charset=utf-8");}).addTo(map);
+        //var file = new File([allMarkersGeoJsonArray], "hello world.txt", {type: "text/plain;charset=utf-8"});
+ //       saveAs(file);}).addTo(map);
         
-    
+
+//var blob = new Blob([allMarkersGeoJsonArray], {
+// type: "text/plain;charset=utf-8"
+//});
+
+// download(blob,"test","");}).addTo(map);
+                      var seldata = (' {' +
+'"type": "FeatureCollection",' + 
+' "crs": { "type": "name", "properties": { "name": "EPSG:4326" } }, ' +
+' "features": [ ' + allMarkersGeoJsonArray + ']}');
+download(new Blob([seldata]), "download.txt", "text/plain;charset=utf-8");}).addTo(map);
+
+  uriContent = "data:text/plain;charset=utf-8," + encodeURIComponent(allMarkersGeoJsonArray);
+//window.save(blob, filename)
+//  window.save(uriContent, "width=200,height=100");}).addTo(map);
+
 
   // grab the lnlt div and put the mousmove output there
   lnlt = document.getElementById('lnlt');
