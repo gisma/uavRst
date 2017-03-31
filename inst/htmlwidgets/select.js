@@ -70,11 +70,11 @@ HTMLWidgets.widget({
     var cex = x.cex
     var color = col;
     var opacity = x.opacity;
-    var lnWidth = x.weight;
+    var lnWidth = 1;
   // style for polygons
    var polyStyle = {
      "color": col,
-     "weight": x.weight,
+     "weight": 1,
      "opacity": x.opacity
    };
    // define a dummy layer for the geojson data
@@ -91,9 +91,9 @@ HTMLWidgets.widget({
                         if (layer.options.weight != 3) {
 						                            layer.setStyle({
                                 weight: 3,
-                                color: "magenta",
+                                color: col,
                                 opacity: 1,
-                                fillOpacity: 0.01
+                                fillOpacity: 0.1
                             });
                             
 							
@@ -105,7 +105,7 @@ HTMLWidgets.widget({
 						
 						                            layer.setStyle({
                                 weight: 1,
-                                color: "magenta",
+                                color: col,
                                 opacity: 1,
                                 fillOpacity: 0.01});
 							//console.log("selected " + feature.properties.name);
@@ -154,7 +154,7 @@ HTMLWidgets.widget({
 	function style(feature) {
 	       
 	            return {
-	                   color: "magenta",
+	                   color: col,
                     fill: true,
                     opacity: 1,
                     fillOpacity: 0.01,
@@ -165,7 +165,7 @@ HTMLWidgets.widget({
     radius: x.cex,
     fillColor: x.color,
     color: x.color,
-    weight: x.lwd,
+    weight: 1,
     opacity: x.opacity
 };
    // create geojsonlayer
@@ -196,7 +196,7 @@ HTMLWidgets.widget({
                 polyline: {
             shapeOptions: {
                 color: '#FFFF00',
-                weight: 2
+                weight: 1
             }}, polyline: x.line,
                 rectangle:x.rectangle,
                 polygon: x.poly, 
