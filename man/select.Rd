@@ -2,7 +2,7 @@
 % Please edit documentation in R/tool_leafSel.R
 \name{select}
 \alias{select}
-\title{selecting vector features using leaflet draw}
+\title{selecting vector features}
 \usage{
 select(mapCenter = c(50.80801, 8.72993), zoom = 15, position = "topright",
   maplayer = c("CartoDB.Positron", "OpenStreetMap", "Esri.WorldImagery",
@@ -20,33 +20,20 @@ select(mapCenter = c(50.80801, 8.72993), zoom = 15, position = "topright",
 
 \item{mapcenter}{c(lat,lon) central point of the leaflet map}
 
-\item{line}{enable the draw tool line tool}
-
-\item{poly}{enable the draw polygon tool}
-
-\item{circle}{enable the draw circle tool}
-
-\item{point}{enable the draw point tool}
-
-\item{remove}{enable/disable the remove feature of the draw tool}
-
 \item{intersection}{enable/disable th possibility to overlay lines or polygons}
-
-\item{preset}{textstring "NULL" full draw version, "uav" for flightarea digitizing, "ext" for rectangles}
 }
 \description{
-select is based on the leaflet draw plugin. It provides a bunch of leaflet maps as base layers for digitizing vector features.
-}
-\note{
-Yu can either save the digitized object to a json file or you ma grab the json string via the clipboard
+select provides a simple interatcive way to select and deselect features from a vector data set. the selection is exportes to a Json format and also written in a textpox for copy and paste issues
 }
 \examples{
 
-# all features
-select()
+# get meuse data
+data(meuse)
+coordinates(meuse) <- ~x+y
+proj4string(meuse) <- CRS("+init=epsg:28992")
+
 
 # preset for digitizing uav flight areas
-select(preset="uav")
 
 #' # preset for digitizing extents
 select(preset="ext")

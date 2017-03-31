@@ -1,18 +1,11 @@
-#' selecting vector features using leaflet draw
-#' @description  select is based on the leaflet draw plugin. It provides a bunch of leaflet maps as base layers for digitizing vector features. 
+#' selecting vector features 
+#' @description  select provides a simple interatcive way to select and deselect features from a vector data set. the selection is exportes to a Json format and also written in a textpox for copy and paste issues 
 #'
-#' @note Yu can either save the digitized object to a json file or you ma grab the json string via the clipboard
 #' @param mapcenter c(lat,lon) central point of the leaflet map
 #' @param zoom initial zoom level
-#' @param line enable the draw tool line tool
-#' @param poly enable the draw polygon tool 
-#' @param circle enable the draw circle tool
-#' @param point enable the draw point tool
-#' @param remove enable/disable the remove feature of the draw tool
 #' @param position place to put the toolbar (topright, topleft, bottomright, bottomleft)
 #' @param intersection enable/disable th possibility to overlay lines or polygons
 #' @param maplayer string as provided by leaflet-provider 
-#' @param preset textstring "NULL" full draw version, "uav" for flightarea digitizing, "ext" for rectangles
 #' @param overlay optional sp object 
 #' 
 #' @author
@@ -20,11 +13,14 @@
 #'
 #' @examples
 #' 
-#' # all features
-#' select()
+#' # get meuse data
+#' data(meuse)
+#' coordinates(meuse) <- ~x+y
+#' proj4string(meuse) <- CRS("+init=epsg:28992")
+#' 
 #' 
 #' # preset for digitizing uav flight areas
-#' select(preset="uav")
+## select(overlay = meuse)
 #' 
 #' #' # preset for digitizing extents
 #' select(preset="ext")
