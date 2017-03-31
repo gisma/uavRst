@@ -20,37 +20,43 @@
 #' 
 #' 
 #' # preset for digitizing uav flight areas
-#  select(overlay = meuse, zoom = 13,position = "bottomright", cex = 2, color = "green")
+#'  select(overlay = meuse, zoom = 13,position = "bottomright", cex = 2, color = "green")
+#'  
+#'  # re-import selection saved as "test.json"
+#'  import <-rgdal::readOGR(dsn = path.expand("~/test.json"), layer = "OGRGeoJSON")
 
 #' 
 #' @export select
 #'               
 
 select <- function(mapCenter=c(50.80801,8.72993),
-                     zoom=12, 
-                     position= "topright", 
-                     maplayer=c("CartoDB.Positron","OpenStreetMap","Esri.WorldImagery","Thunderforest.Landscape","OpenTopoMap"),
-                     overlay=NULL, 
-                   cex = 10,
+                   zoom=15, 
+                   line = TRUE, 
+                   rectangle = FALSE, 
+                   poly = FALSE, 
+                   circle = FALSE, 
+                   point = FALSE,
+                   remove = FALSE, 
+                   position= "topright", 
+                   maplayer=c("CartoDB.Positron","OpenStreetMap","Esri.WorldImagery","Thunderforest.Landscape","OpenTopoMap"),
+                   overlay=NULL,
+                   features=NULL,
+                   cex = 4,
+                   lwd = 1,
                    alpha = 0.6,
                    opacity = 0.7,
-                   color="red") {
-  line = FALSE
-  rectangle = FALSE
-  poly = FALSE
-  circle = FALSE
-  point = FALSE
-  remove = FALSE 
-  mapCenter<-mapCenter
-  zoom<-zoom
+                   color="blue") {
+  line = line
+  rectangle = rectangle
+  poly = poly
+  circle = circle
+  point = point
+  remove = remove 
+  mapCenter = mapCenter
+  zoom = zoom
   line<-line
   maplayer=maplayer
   overlay=overlay
-  rectangle<-rectangle
-  poly<-poly
-  circle<-circle
-  point<-point
-  remove<-remove
   position<-position
   
   # create tmp path

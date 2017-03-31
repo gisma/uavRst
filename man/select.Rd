@@ -4,10 +4,12 @@
 \alias{select}
 \title{selecting vector features}
 \usage{
-select(mapCenter = c(50.80801, 8.72993), zoom = 12, position = "topright",
-  maplayer = c("CartoDB.Positron", "OpenStreetMap", "Esri.WorldImagery",
-  "Thunderforest.Landscape", "OpenTopoMap"), overlay = NULL, cex = 10,
-  alpha = 0.6, opacity = 0.7, color = "red")
+select(mapCenter = c(50.80801, 8.72993), zoom = 15, line = TRUE,
+  rectangle = FALSE, poly = FALSE, circle = FALSE, point = FALSE,
+  remove = FALSE, position = "topright", maplayer = c("CartoDB.Positron",
+  "OpenStreetMap", "Esri.WorldImagery", "Thunderforest.Landscape",
+  "OpenTopoMap"), overlay = NULL, features = NULL, cex = 4, lwd = 1,
+  alpha = 0.6, opacity = 0.7, color = "blue")
 }
 \arguments{
 \item{zoom}{initial zoom level}
@@ -34,6 +36,10 @@ proj4string(meuse) <- CRS("+init=epsg:28992")
 
 
 # preset for digitizing uav flight areas
+ select(overlay = meuse, zoom = 13,position = "bottomright", cex = 2, color = "green")
+ 
+ # re-import selection saved as "test.json"
+ import <-rgdal::readOGR(dsn = path.expand("~/test.json"), layer = "OGRGeoJSON")
 
 }
 \author{

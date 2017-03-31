@@ -193,7 +193,7 @@ HTMLWidgets.widget({
        var overlayLayers = {};
       overlayLayers['userOverlay'] = polyLayer;
 
-	 //map.addLayer(polyLayer);
+	 map.addLayer(polyLayer);
 
   // layer control
   var layerControl = L.control.layers(baseLayers,overlayLayers).addTo(map);
