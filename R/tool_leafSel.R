@@ -29,7 +29,7 @@
 #'               
 
 select <- function(mapCenter=c(50.80801,8.72993),
-                     zoom=15, 
+                     zoom=12, 
                      position= "topright", 
                      maplayer=c("CartoDB.Positron","OpenStreetMap","Esri.WorldImagery","Thunderforest.Landscape","OpenTopoMap"),
                      overlay=NULL, 
@@ -95,7 +95,7 @@ select <- function(mapCenter=c(50.80801,8.72993),
     
     
     
-    mapCenter<-c(raster::extent(overlay)[3]+raster::extent(overlay)[4]-raster::extent(overlay)[3],raster::extent(overlay)[1]+raster::extent(overlay)[2]-raster::extent(overlay)[1])
+    mapCenter<-c((raster::extent(overlay)[3]+raster::extent(overlay)[4])/2,(raster::extent(overlay)[1]+raster::extent(overlay)[2])/2)
     #features<-overlay
     
   }  else stop("surprise but there is nothing to select from\n")

@@ -4,7 +4,7 @@
 \alias{select}
 \title{selecting vector features}
 \usage{
-select(mapCenter = c(50.80801, 8.72993), zoom = 15, position = "topright",
+select(mapCenter = c(50.80801, 8.72993), zoom = 12, position = "topright",
   maplayer = c("CartoDB.Positron", "OpenStreetMap", "Esri.WorldImagery",
   "Thunderforest.Landscape", "OpenTopoMap"), overlay = NULL, cex = 10,
   alpha = 0.6, opacity = 0.7, color = "red")
