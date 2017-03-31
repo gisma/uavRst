@@ -6,19 +6,38 @@
 \usage{
 select(mapCenter = c(50.80801, 8.72993), zoom = 15, line = TRUE,
   rectangle = FALSE, poly = FALSE, circle = FALSE, point = FALSE,
-  remove = FALSE, position = "topright", maplayer = c("CartoDB.Positron",
-  "OpenStreetMap", "Esri.WorldImagery", "Thunderforest.Landscape",
-  "OpenTopoMap"), overlay = NULL, features = NULL, cex = 4, lwd = 1,
-  alpha = 0.6, opacity = 0.7, color = "blue")
+  remove = TRUE, hidemenu = TRUE, position = "topright",
+  maplayer = c("CartoDB.Positron", "OpenStreetMap", "Esri.WorldImagery",
+  "Thunderforest.Landscape", "OpenTopoMap"), overlay = NULL,
+  features = NULL, cex = 4, lwd = 1, alpha = 0.6, opacity = 0.7,
+  color = "blue")
 }
 \arguments{
 \item{zoom}{initial zoom level}
 
+\item{line}{enable/disable the draw tool line tool}
+
+\item{poly}{enable/disable the draw polygon tool}
+
+\item{circle}{enable/disable the draw circle tool}
+
+\item{point}{enable/disable the draw point tool}
+
+\item{remove}{enable/disable the remove feature of the draw tool}
+
 \item{position}{place to put the toolbar (topright, topleft, bottomright, bottomleft)}
 
-\item{maplayer}{string as provided by leaflet-provider}
+\item{maplayer}{leaflet-provider maplayers}
 
-\item{overlay}{optional sp object}
+\item{overlay}{sp object  for selection}
+
+\item{cex}{size of features}
+
+\item{alpha}{0.6,}
+
+\item{opacity}{0.7,}
+
+\item{color}{"blue"}
 
 \item{mapcenter}{c(lat,lon) central point of the leaflet map}
 

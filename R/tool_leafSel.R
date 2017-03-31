@@ -1,12 +1,22 @@
 #' selecting vector features 
 #' @description  select provides a simple interatcive way to select and deselect features from a vector data set. the selection is exportes to a Json format and also written in a textpox for copy and paste issues 
-#'
+
+#' @param overlay sp object  for selection
 #' @param mapcenter c(lat,lon) central point of the leaflet map
 #' @param zoom initial zoom level
+#' @param line enable/disable the draw tool line tool
+#' @param poly enable/disable the draw polygon tool 
+#' @param circle enable/disable the draw circle tool
+#' @param point enable/disable the draw point tool
+#' @param remove enable/disable the remove feature of the draw tool
 #' @param position place to put the toolbar (topright, topleft, bottomright, bottomleft)
 #' @param intersection enable/disable th possibility to overlay lines or polygons
-#' @param maplayer string as provided by leaflet-provider 
-#' @param overlay optional sp object 
+#' @param maplayer  leaflet-provider maplayers
+#' @param cex size of features
+#' @param alpha  0.6,
+#' @param opacity  0.7,
+#' @param color "blue"
+
 #' 
 #' @author
 #' Chris Reudenbach
@@ -36,7 +46,8 @@ select <- function(mapCenter=c(50.80801,8.72993),
                    poly = FALSE, 
                    circle = FALSE, 
                    point = FALSE,
-                   remove = FALSE, 
+                   remove = TRUE, 
+                   hidemenu =TRUE,
                    position= "topright", 
                    maplayer=c("CartoDB.Positron","OpenStreetMap","Esri.WorldImagery","Thunderforest.Landscape","OpenTopoMap"),
                    overlay=NULL,
@@ -138,7 +149,8 @@ select <- function(mapCenter=c(50.80801,8.72993),
             alpha = alpha,
             legend = FALSE,
             opacity = opacity,
-            overlay=jsondata
+            overlay=jsondata,
+            hidemenu=hidemenu
             
   )
   selectInternal(tmpPath, x = x)  

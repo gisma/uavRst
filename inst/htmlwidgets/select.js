@@ -208,7 +208,9 @@ HTMLWidgets.widget({
                 remove: x.remove,
             }
         }).addTo(map);
-    map.removeControl(drawControl);
+    if (x.hidemenu) {
+      map.removeControl(drawControl);
+    }
     // Each time a feaute is created, it's added to the over arching feature group
      map.on('draw:created', function(e) {
             drawnItems.addLayer(e.layer);
