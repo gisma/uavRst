@@ -3,8 +3,8 @@ leafDraw()
 
 # typical flight plan
 traddelkopf60 <- uavRst::makeFP(projectDir="~/uav/gentree/Traddelkopf/",
-                                missionName = "50m",
-                                surveyArea="~/proj/uav/gentree/Traddelkopf/data/task_areas/Traddelkopf_2017_02_paralell.json",
+                                missionName = "50m_c2q",
+                                surveyArea="~/uav/gentree/Traddelkopf/data/Traddelkopf_2017_core2q.json",
                                 followSurface = TRUE,
                                 followSurfaceRes = 1,
                                 flightAltitude = 50,

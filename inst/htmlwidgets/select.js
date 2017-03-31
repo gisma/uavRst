@@ -265,18 +265,19 @@ HTMLWidgets.widget({
                 //console.log(map._layers)
                   if (map._layers[ml].feature && map._layers[ml].feature.properties.selected === true) {
   
-                      allMarkersObjArray.push(this)
-                      allMarkersGeoJsonArray.push(JSON.stringify(this.toGeoJSON()))
+                      allMarkersObjArray.push(this);
+                      allMarkersGeoJsonArray.push(JSON.stringify(this.toGeoJSON()));
                       
                     //var data = drawnItems.toGeoJSON();
                    // Stringify the GeoJson
                    //var convertedData = JSON.stringify(data);
-                  // Create ajax export using download.js
+
+                  //var kml = tokml(allMarkersGeoJsonArray);
           
                 }
             });
            // Create ajax export using download.js
-           download(new Blob([allMarkersGeoJsonArray]), "dlTextBlob.txt", "text/plain");}).addTo(map);
+           download(new Blob([allMarkersGeoJsonArray]), "download.txt", "text/plain");}).addTo(map);
         
     
 
