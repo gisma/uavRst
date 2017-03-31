@@ -35,8 +35,10 @@ HTMLWidgets.widget({
     // Store the map on the element so we could find it later by ID
     $(el).data("leaflet-map", map);
 
+
     //return the initial mapsetup to the renderValue function
     return map;
+     
   },
 
   renderValue: function(el, x, map) {
@@ -47,7 +49,7 @@ HTMLWidgets.widget({
 
       
     
-
+   
    // we define the first layer of the list to be the default one
     var defaultLayer = L.tileLayer.provider(x.layer[0]).addTo(map);
     var baseLayers = {};
@@ -83,50 +85,80 @@ HTMLWidgets.widget({
     
     
 	  function onEachFeature(feature, layer) {
-      var i = 1;
-      var content = '';
-    // does this feature have a property named popupContent?
-    //if (feature.properties) {
-    //    for (var key in feature.properties) {
-    //      if (isEven(i)) {
-    //        content += "<tr><td> " +  key + " </td><td>" + feature.properties[key] +" </td></tr>";
-    //      } else {
-    //        content += "<tr class='alt'><td> " +  key + " </td><td>" + feature.properties[key] +" </td></tr>";
-    //      }
-    //      i = i + 1;
-    //    };
-    //    var popupContent = x.html + content + "</table></body></html>";
-    //    //console.log(popupContent);
-    //    layer.bindPopup(popupContent);
-    //}
-        layer.on('click', function (e) {
-
-//Set feature selected, you can also use layer.feature.properties
-e.target.feature.properties.selected = true;
-
-//Set style, what ever style option you want
-
-layer.setStyle({opacity:1,width:3, dashArray: 3, fillColor:"#0080FF"});
-
-});
-        layer.on('contextmenu', function (e) {
-
-//Set feature selected, you can also use layer.feature.properties
-e.target.feature.properties.selected = false;
-
-//Set style, what ever style option you want
-
-layer.setStyle({opacity:1,width:1, dashArray: 0,fillColor:x.color});
-
-});
-  }
+                 layer.on({
+                    click: function(e) {
+                        //var layer = e.target;
+                        if (layer.options.weight != 3) {
+						                            layer.setStyle({
+                                weight: 3,
+                                color: "magenta",
+                                opacity: 1,
+                                fillOpacity: 0.01
+                            });
+                            
+							
+							e.target.feature.properties.selected = true;
+							
+							//console.log("deselected " + feature.properties.name);
+							
+                        } else {
+						
+						                            layer.setStyle({
+                                weight: 1,
+                                color: "magenta",
+                                opacity: 1,
+                                fillOpacity: 0.01});
+							//console.log("selected " + feature.properties.name);
+							
+							e.target.feature.properties.selected = false;
+							//$('#selectedFeatures').text( feature.properties.name );
+							
+							
+                        }
+					
+											
+						getAllElements();
+					
+                        if (!L.Browser.ie && !L.Browser.opera) {
+                            layer.bringToFront();
+                        }
+                    }
+                });
+	  }
+  
+  function getAllElements() {
+			var allMarkersObjArray = [];
+			var allMarkersGeoJsonArray = [];
+            $.each(map._layers, function (ml) {
+//                if (map._layers[ml].feature && map._layers[ml].feature.properties.selected === true) {
+//					selectedFeatureName.push(map._layers[ml].feature.properties.name);
+//                }
+                  if (map._layers[ml].feature && map._layers[ml].feature.properties.selected === true) {
+  
+                      allMarkersObjArray.push(this)
+                      allMarkersGeoJsonArray.push(JSON.stringify(this.toGeoJSON()))
+                      
+                    //var data = drawnItems.toGeoJSON();
+                   // Stringify the GeoJson
+                   //var convertedData = JSON.stringify(data);
+                  // Create ajax export using download.js
+          
+                }
+            });
+            //console.log(selectedFeatureName);
+			$('#coords').text( allMarkersGeoJsonArray );
+			//$('#selectedCount').text( selectedFeatureName.length );
+		};
+		
 	// The styles of the layer
 	function style(feature) {
 	       
 	            return {
-	                color: "magenta",
-	                weight: x.lwd,
-	                opacity: x.opacity
+	                   color: "magenta",
+                    fill: true,
+                    opacity: 1,
+                    fillOpacity: 0.01,
+                    weight: 1
 	            }
 	    }
 	var geojsonMarkerOptions = {
@@ -225,7 +257,7 @@ layer.setStyle({opacity:1,width:1, dashArray: 0,fillColor:x.color});
           
 
 
-            L.easyButton(  '<span style="font-size: 5px font-weight:bold" class="glyphicon glyphicon-download"> J </span>',function(){
+            L.easyButton(  '<span class="star">&check;</span>',function(){
                        var allMarkersObjArray = [];//new Array();
             var allMarkersGeoJsonArray = [];//new Array();
 
@@ -298,6 +330,8 @@ function addElement(id) {
       newDiv.id = id;
       //newDiv.style.cssText = css;
 }
+
 function isEven(n) {
    return n % 2 == 0;
 }
+

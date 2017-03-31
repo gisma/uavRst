@@ -11,18 +11,24 @@
         font: 9px/1.5 'Helvetica Neue', Arial, Helvetica, sans-serif;}
 
 
-/*#coords{z-index:1500;
+#coords{z-index:1000;
         position: absolute; 
-        bottom:  0px; 
+        bottom:  10px; 
         background-color: rgba(255, 255, 255, 0.7);
         box-shadow: 0 0 2px #bbb; 
-        background-clip: padding-box; 
+        background-clip: content-box; 
+        width: 350px;
+        height: 25px;
+        resize: height;
+        overflow: auto;
+        
+        
         margin:0; color: #333; 
         font: 9px/1.5 'Helvetica Neue', Arial, Helvetica, sans-serif;
-        width: 300px;
+        
         padding: 5px;
-    border: 2px solid navy;
-    margin: 2px;
+    border: 0px solid navy;
+    margin: 0px;
 }
 
 
@@ -44,4 +50,4 @@ z-index:2000;
 
   
 }
-*/
+
