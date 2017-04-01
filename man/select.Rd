@@ -54,11 +54,17 @@ coordinates(meuse) <- ~x+y
 proj4string(meuse) <- CRS("+init=epsg:28992")
 
 
-# preset for digitizing uav flight areas
+# select some points
  select(overlay = meuse, zoom = 13,position = "bottomright", cex = 2, color = "green")
  
  # re-import selection saved as "test.json"
  import <-rgdal::readOGR(dsn = path.expand("~/test.json"), layer = "OGRGeoJSON")
+ 
+ # select some polygons
+ uavRst::select(overlay = gadmCHE,zoom = 7)
+ 
+ #'  # re-import selection saved as "ch_sel.json"
+ import <-rgdal::readOGR(dsn = path.expand("~/ch_sel.json"), layer = "OGRGeoJSON")
 
 }
 \author{
