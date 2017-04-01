@@ -315,11 +315,6 @@ function removeNewLine(item) {
                     //var data = drawnItems.toGeoJSON();
                    // Stringify the GeoJson
                    //var convertedData = JSON.stringify(data);
-                      var seldata = (' {' +
-'"type": "FeatureCollection",' + 
-' "crs": { "type": "name", "properties": { "name": "EPSG:4326" } }, ' +
-' "features": [ ' + allMarkersGeoJsonArray + ']}');
-
                   //var kml = tokml(allMarkersGeoJsonArray);
           
                 }
@@ -338,6 +333,10 @@ function removeNewLine(item) {
 
 // download(blob,"test","");}).addTo(map);
 //$('#coords').text(iterateObject(seldata));  
+                      var seldata = (' {' +
+'"type": "FeatureCollection",' + 
+' "crs": { "type": "name", "properties": { "name": "EPSG:4326" } }, ' +
+' "features": [ ' + allMarkersGeoJsonArray + ']}');
 download(new Blob([seldata]), "download.txt", "text/plain;charset=utf-8");}).addTo(map);
 
 //  uriContent = "data:text/plain;charset=utf-8," + encodeURIComponent(allMarkersGeoJsonArray);
