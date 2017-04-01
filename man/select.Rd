@@ -2,7 +2,7 @@
 % Please edit documentation in R/tool_leafSel.R
 \name{select}
 \alias{select}
-\title{selecting vector features}
+\title{interactive selection of vector features}
 \usage{
 select(mapCenter = c(50.80801, 8.72993), zoom = 15, line = TRUE,
   rectangle = FALSE, poly = FALSE, circle = FALSE, point = FALSE,
@@ -44,7 +44,7 @@ select(mapCenter = c(50.80801, 8.72993), zoom = 15, line = TRUE,
 \item{intersection}{enable/disable th possibility to overlay lines or polygons}
 }
 \description{
-select provides a simple interatcive way to select and deselect features from a vector data set. the selection is exportes to a Json format and also written in a textpox for copy and paste issues
+Simple interactive way to select/deselect features from a vector data set. The selection is exported to geojson format. For control and copy & paste issues the data is pushed to a text box.
 }
 \examples{
 

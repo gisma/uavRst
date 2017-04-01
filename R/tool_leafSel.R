@@ -1,5 +1,5 @@
-#' selecting vector features 
-#' @description  select provides a simple interatcive way to select and deselect features from a vector data set. the selection is exportes to a Json format and also written in a textpox for copy and paste issues 
+#' interactive selection of vector features 
+#' @description  Simple interactive way to select/deselect features from a vector data set. The selection is exported to geojson format. For control and copy & paste issues the data is pushed to a text box.
 
 #' @param overlay sp object  for selection
 #' @param mapcenter c(lat,lon) central point of the leaflet map
