@@ -1,4 +1,12 @@
-
+#download {z-index:1300;
+        position: absolute; 
+        bottom:  0px; 
+        background-color: 
+        rgba(255, 255, 255, 0.7);
+        box-shadow: 0 0 2px #bbb; 
+        background-clip: padding-box; 
+        margin:0; color: #333; 
+        font: 9px/1.5 'Helvetica Neue', Arial, Helvetica, sans-serif;}
 
 #lnlt {z-index:1100;
         position: relative; 
@@ -13,9 +21,10 @@
 
 #coords{z-index:1200;
         position: absolute; 
-        bottom:  10px; 
+        bottom:  20px; 
         background-color: rgba(255, 255, 255, 0.7);
-        box-shadow: 0 0 2px #bbb; 
+        /*box-shadow: 0 0 2px #bbb;*/ 
+        box-shadow:2px 2px 5px 0px rgba(0, 0, 0, 0.7); 
         background-clip: content-box; 
         width: 150px;
         height: 50px;
@@ -24,7 +33,7 @@
         
         
         margin:0; color: #333; 
-        font: 9px/1.5 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        font: 7px/1.5 'Helvetica Neue', Arial, Helvetica, sans-serif;
         
         padding: 5px;
     border: 0px solid navy;
@@ -37,11 +46,11 @@ position:absolute;
 bottom: 1px;
 left: 3px;
         background-color: 
-        rgba(240, 200, 120, 0.7);
+        rgba(255, 255, 255, 0.8);
         box-shadow:2px 2px 5px 0px rgba(0, 0, 0, 0.7); 
         background-clip: padding-box; 
         margin:2px; color: #333; 
-        font: 10px/1.5 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        font: 7px/1.5 'Helvetica Neue', Arial, Helvetica, sans-serif;
 z-index:2000;
 }
 #grabber {

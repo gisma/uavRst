@@ -28,6 +28,7 @@ dependencies:
          - tokml.js
          - easy-button.js
          - bootstrap.min.js
+         - Underscore.js
     stylesheet:
           - leaflet.css
           - leafletfix.css

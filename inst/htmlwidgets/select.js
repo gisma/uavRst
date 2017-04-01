@@ -11,7 +11,9 @@ HTMLWidgets.widget({
     // we need a not htmlwidget div in the widget container
     addElement("lnlt");
     addElement("coords");
-
+    //addElement("download");
+    addElement("export");
+    //addElement("grabber");
     // initialize the leaflet map staticly at the "el" object
     // hard-coding center/zoom here for a non-empty initial view, since there
     // is no way for htmlwidgets to pass initial params to initialize()
@@ -81,7 +83,34 @@ HTMLWidgets.widget({
     //var myLayer = L.geoJson(undefined,{style:style,onEachFeature:onEachFeature}).addTo(map);
     
     
+	       // JSON to CSV Converter
+function iterateObject(obj) {
+  var value = '', header = '';
+          for (name in obj) {
+            if (obj.hasOwnProperty(name)) {
+              if (isObject(obj[name])) {
+                var out = iterateObject(obj[name]);
+                value += out.value;
+                header += out.header;
+              } else {
+                value += removeNewLine(obj[name]) + '; ';
+                header += name + '; ';
+              }
+            }
+          }
+  return {
+    "value":value,
+    "header":header
+  };
+}
+function isObject(obj) {
+  return (typeof obj === 'object');
+}
+function removeNewLine(item) {
+  return item.toString().replace(/(\r\n|\n|\r)/gm,"");
+}
 
+       
     
     
 	  function onEachFeature(feature, layer) {
@@ -129,10 +158,11 @@ HTMLWidgets.widget({
   function getAllElements() {
 			var allMarkersObjArray = [];
 			var allMarkersGeoJsonArray = [];
+			var selectedFeatureName = [];
             $.each(map._layers, function (ml) {
-//                if (map._layers[ml].feature && map._layers[ml].feature.properties.selected === true) {
-//					selectedFeatureName.push(map._layers[ml].feature.properties.name);
-//                }
+                if (map._layers[ml].feature && map._layers[ml].feature.properties.selected === true) {
+        					selectedFeatureName.push(map._layers[ml].feature.properties.name);
+                }
                   if (map._layers[ml].feature && map._layers[ml].feature.properties.selected === true) {
   
                       allMarkersObjArray.push(this)
@@ -145,10 +175,20 @@ HTMLWidgets.widget({
           
                 }
             });
+                      
+
+
             //console.log(selectedFeatureName);
+            //var results = iterateObject(JSON.stringify(seldata));
+            //$('#coords').text(results);    
+            //$('#coords').html(results.value);
+            //$('#coords').html(results.header);
 			$('#coords').text( allMarkersGeoJsonArray );
-			//$('#selectedCount').text( selectedFeatureName.length );
-		};
+			$('#export').text("selected items: # " + selectedFeatureName.length );
+		}
+	
+
+
 		
 	// The styles of the layer
 	function style(feature) {
@@ -217,6 +257,7 @@ HTMLWidgets.widget({
         });
         
 
+
 /*
     // create "save" link
         var b = document.createElement('a');
@@ -274,6 +315,10 @@ HTMLWidgets.widget({
                     //var data = drawnItems.toGeoJSON();
                    // Stringify the GeoJson
                    //var convertedData = JSON.stringify(data);
+                      var seldata = (' {' +
+'"type": "FeatureCollection",' + 
+' "crs": { "type": "name", "properties": { "name": "EPSG:4326" } }, ' +
+' "features": [ ' + allMarkersGeoJsonArray + ']}');
 
                   //var kml = tokml(allMarkersGeoJsonArray);
           
@@ -292,16 +337,26 @@ HTMLWidgets.widget({
 //});
 
 // download(blob,"test","");}).addTo(map);
-                      var seldata = (' {' +
-'"type": "FeatureCollection",' + 
-' "crs": { "type": "name", "properties": { "name": "EPSG:4326" } }, ' +
-' "features": [ ' + allMarkersGeoJsonArray + ']}');
+//$('#coords').text(iterateObject(seldata));  
 download(new Blob([seldata]), "download.txt", "text/plain;charset=utf-8");}).addTo(map);
 
-  uriContent = "data:text/plain;charset=utf-8," + encodeURIComponent(allMarkersGeoJsonArray);
+//  uriContent = "data:text/plain;charset=utf-8," + encodeURIComponent(allMarkersGeoJsonArray);
 //window.save(blob, filename)
 //  window.save(uriContent, "width=200,height=100");}).addTo(map);
 
+// generic button save
+/* var data = {a:1, b:2, c:3};
+var json = JSON.stringify(data);
+var blob = new Blob([json], {type: "application/json"});
+var url  = URL.createObjectURL(blob);
+
+var a = document.createElement('a');
+a.download    = "backup.json";
+a.href        = url;
+a.textContent = "Download backup.json";
+
+document.getElementById('export').appendChild(a);
+*/
 
   // grab the lnlt div and put the mousmove output there
   lnlt = document.getElementById('lnlt');
