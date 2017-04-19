@@ -18,16 +18,16 @@ demCorrection <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,foll
     cat("\nCAUTION! No DEM data is provided.\n trying to download SRTM data... \n Be aware that the resulution of SRTM is NOT sufficient for terrain following flights!")
     # download corresponding srtm data
     dem <- uavRst::t_getgeodata(name = "SRTM",
-                              xtent = extent(p$lon1,p$lon3,p$lat1,p$lat3), 
-                              zone = 0.1 ,
-                              merge = TRUE)
+                                xtent = extent(p$lon1,p$lon3,p$lat1,p$lat3), 
+                                zone = 0.1 ,
+                                merge = TRUE)
     dem <- setMinMax(dem)
     rundem <- raster::crop(dem,
                            extent(min(p$lon1,p$lon3) - 0.0083, 
                                   max(p$lon1,p$lon3) + 0.0083,
                                   min(p$lat1,p$lat3) - 0.0083,
                                   max(p$lat1,p$lat3) + 0.0083)
-                           )
+    )
     raster::writeRaster(dem,"tmpdem.tif",overwrite = TRUE)
     # if demFN is NOT NULL
   } else {
@@ -79,7 +79,7 @@ demCorrection <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,foll
       dem   <- demll
     }
   }  # end of loading DEM data
-
+  
   # check if at least a projection string exist 
   crsString <- h_comp_ll_proj4(as.vector(as.character(dem@crs)))
   if (!crsString) {
@@ -95,7 +95,7 @@ demCorrection <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,foll
   # preprocessing
   if (terrainSmooth) {
     cat("starting terrain smoothing...\n")
-
+    
     # export it to SAGA
     gdalUtils::gdalwarp("demll.tif","demll.sdat", overwrite = TRUE,  of = 'SAGA')
     
@@ -166,7 +166,7 @@ demCorrection <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,foll
     # calculate the agl flight altitude
     #altitude<-altitude+as.numeric(p$flightAltitude)-maxAlt    
     altitude2 <- altitude2 - launchAlt[1] + flightAltitude
-
+    
     
     #write it to the sp object dataframe
     df$altitude <- altitude2
@@ -196,7 +196,7 @@ demCorrection <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,foll
       colnames(dif) <- c("dif")
       fDF           <- fDF[-c(1), ] # drop first line
       fDF$dif       <- dif[,1]
-
+      
       fDF <- fDF[fDF$id == "99" | fDF$dif > altFilter , ]
       
       fDF$lon <- as.numeric(fDF$longitude)
@@ -217,7 +217,7 @@ demCorrection <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,foll
            overwrite = TRUE,  
            t_srs = paste0("+proj=utm +zone=",long2UTMzone(p$lon1)," +datum=WGS84"),
            tr = c(as.numeric(p$followSurfaceRes),as.numeric(p$followSurfaceRes))
-           )
+  )
   if (dA) outputras <- TRUE
   else outputras <- FALSE
   # deproject it again to latlon
@@ -225,7 +225,7 @@ demCorrection <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,foll
                        t_srs = "+proj=longlat +datum=WGS84 +no_defs",
                        overwrite = TRUE,  
                        output_Raster = outputras 
-                       )
+  )
   
   # create a sp polygon object of the DEM area that is useable for a flight task planning
   if (dA) {
@@ -572,7 +572,7 @@ generateMavCSV <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistan
       levellog(logger, 'INFO', paste("created : ", paste0(mission,"-",i,".csv")))
       
       # counter handling for the last file
-      if (maxPoints > nrow(df@data)) {
+      if (maxPoints + addmax > nrow(df@data)) {
         oldmax    <- maxPoints
         maxPoints <- nrow(df@data)
         minPoints <- oldmax
@@ -773,7 +773,7 @@ fp_getPresetTask <- function(param="remote") {
   # @description 
   # NOTE: only for flightPlanMode = "waypoint")
   # preset waypoints & orthophoto
-
+  
   
   if  (param == "multi_ortho") {
     actiontype = c(1,0,4,0,5,-60,1,0,4,90,1,0,4,180,1,0,4,270,1,0)
@@ -1037,7 +1037,7 @@ readTreeTrack<- function(treeTrack){
 }
 
 makeFlightPath <- function(treeList,p,uavType,task,demFn,logger){
-
+  
   lns <- list()
   fileConn <- file("treepoints.csv")
   for (i in 2:nrow(treeList) - 1) {
@@ -1106,7 +1106,7 @@ getAltitudes <- function(demFn ,df,p,followSurfaceRes,logger) {
                                   max(p$lon1,p$lon3) + 0.0083,
                                   min(p$lat1,p$lat3) - 0.0083,
                                   max(p$lat1,p$lat3) + 0.0083)
-                           )
+    )
     raster::writeRaster(dem,"tmpdem.tif",overwrite = TRUE)
   } else {
     # read local dem file
@@ -1117,7 +1117,7 @@ getAltitudes <- function(demFn ,df,p,followSurfaceRes,logger) {
                                     max(p$lon1,p$lon3) + 0.0083,
                                     min(p$lat1,p$lat3) - 0.0083,
                                     max(p$lat1,p$lat3) + 0.0083)
-                             )
+      )
       raster::writeRaster(rundem,"tmpdem.tif",overwrite = TRUE)
       dem <- rundem
     } else {
