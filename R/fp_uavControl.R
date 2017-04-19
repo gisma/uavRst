@@ -508,8 +508,8 @@ generateMavCSV <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistan
                                      raw   = FALSE)
       
       # generate maxHomePos waypoint
-      maxHomePos <- makeUavPointMAV(lat    = homemaxpos[2],
-                                    lon    = homemaxpos[1],
+      maxHomePos <- makeUavPointMAV(lat    = homemaxpos[1,2],
+                                    lon    = homemaxpos[1,1],
                                     alt    = homeRth,
                                     head   = homeheading,
                                     group  = 99,
@@ -566,7 +566,7 @@ generateMavCSV <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistan
       lnsnew[length(lnsnew[,1]) + 1,1] <- paste0(as.character(length(lns[,1]) + 9),sep,"0",sep,"3",sep,"20",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"1")
       
       # write the control file
-      write.table(lnsnew, paste0(projectDir, "/", workingDir,"/control/", mission, i, "_solo.waypoints"), sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE, na = "")
+      write.table(lnsnew, paste0(projectDir, "/", workingDir,"/control/", mission, i, "_solo.txt"), sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE, na = "")
       
       # log event 
       levellog(logger, 'INFO', paste("created : ", paste0(mission,"-",i,".csv")))

@@ -2,14 +2,14 @@
 leafDraw()
 
 # typical flight plan
-traddelkopf60 <- uavRst::makeFP(projectDir="~/uav/gentree/Traddelkopf/",
-                                missionName = "50m_training_1",
-                                surveyArea="~/uav/gentree/Traddelkopf/data/Traddelkopf_training_1.json",
+traddelkopf60 <- uavRst::makeFP(projectDir="~/uav/gentree/hagenstein/",
+                                missionName = "hs_test",
+                                surveyArea="~/uav/gentree/hagenstein/data/hagestein_quer_landmod.json",
                                 followSurface = TRUE,
                                 followSurfaceRes = 1,
-                                flightAltitude = 50,
-                                overlap = 0.8,
-                                demFn = "~/proj/uav/gentree/Traddelkopf/data/DGM1_kellerwald.tif",
+                                flightAltitude = 60,
+                                overlap = 0.88,
+                                demFn = "~/uav/gentree/hagenstein/data/dgm2.tif",
                                 altFilter = .5,
                                 horizonFilter = 25,
                                 picRate = 2,
