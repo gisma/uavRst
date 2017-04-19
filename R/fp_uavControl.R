@@ -492,8 +492,8 @@ generateMavCSV <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistan
                                       raw   = FALSE)
       
       # generate maxStartPos waypoint
-      maxStartPos <- makeUavPointMAV(lat    = startmaxpos[2],
-                                     lon    = startmaxpos[1],
+      maxStartPos <- makeUavPointMAV(lat    = startmaxpos[1,2],
+                                     lon    = startmaxpos[1,1],
                                      alt    = startRth,
                                      head   = startheading,
                                      group  = 99,
