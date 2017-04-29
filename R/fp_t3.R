@@ -156,5 +156,5 @@ fp_t3p<- function(projectDir="~",
   p$climbDist<-climbDist
   p$task<- robubu:::getPresetTask("treetop")
   
-  fullTreeList<-robubu:::makeFlightPath(treeList,p,uavType,task,demFn,logger)
+  fullTreeList<-uavRst::makeFlightPathT3(treeList,p,uavType,task,demFn,logger)
 }

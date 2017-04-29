@@ -30,22 +30,22 @@
 #' 
 #' 
 #' # select some points
-#'  select(overlay = meuse, zoom = 13,position = "bottomright", cex = 2, color = "green")
+#'  sp_sel(overlay = meuse, zoom = 13,position = "bottomright", cex = 2, color = "green")
 #'  
 #'  # re-import selection saved as "test.json"
 #'  import <-rgdal::readOGR(dsn = path.expand("~/test.json"), layer = "OGRGeoJSON")
 #'  
 #'  # select some polygons
-#'  uavRst::select(overlay = gadmCHE,zoom = 7)
+#'  uavRst::sp_sel(overlay = gadmCHE,zoom = 7)
 #'  
 #'  #'  # re-import selection saved as "ch_sel.json"
 #'  import <-rgdal::readOGR(dsn = path.expand("~/ch_sel.json"), layer = "OGRGeoJSON")
 
 #' 
-#' @export select
+#' @export sp_sel
 #'               
 
-select <- function(mapCenter=c(50.80801,8.72993),
+sp_sel <- function(mapCenter=c(50.80801,8.72993),
                    zoom=15, 
                    line = TRUE, 
                    rectangle = FALSE, 
@@ -159,7 +159,7 @@ select <- function(mapCenter=c(50.80801,8.72993),
             hidemenu=hidemenu
             
   )
-  selectInternal(tmpPath, x = x)  
+  sp_selInternal(tmpPath, x = x)  
 }
 
 
@@ -198,7 +198,7 @@ createTempDataTransfer <- function (){
   return(tmpPath)
 }
 
-selectInternal <- function(tmpPath, x = NULL) {
+sp_selInternal <- function(tmpPath, x = NULL) {
   deps<-digiDependencies(tmpPath) 
   sizing = htmlwidgets::sizingPolicy(
     browser.fill = TRUE,
@@ -207,7 +207,7 @@ selectInternal <- function(tmpPath, x = NULL) {
   )
   # create widget
   htmlwidgets::createWidget(
-    name = 'select',
+    name = 'sp_sel',
     x,
     dependencies = deps,
     sizingPolicy = sizing,
@@ -217,13 +217,13 @@ selectInternal <- function(tmpPath, x = NULL) {
 
 ### Widget output function for use in Shiny =================================================
 #
-selectOutput <- function(outputId, width = '100%', height = '800px') {
-  htmlwidgets::shinyWidgetOutput(outputId, 'select', width, height, package = 'uavRst')
+sp_selOutput <- function(outputId, width = '100%', height = '800px') {
+  htmlwidgets::shinyWidgetOutput(outputId, 'sp_sel', width, height, package = 'uavRst')
 }
 
 ### Widget render function for use in Shiny =================================================
 #
-renderselect<- function(expr, env = parent.frame(), quoted = FALSE) {
+rendersp_sel<- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) {
     expr <- substitute(expr)
   } # force quoted

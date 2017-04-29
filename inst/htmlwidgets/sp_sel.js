@@ -2,7 +2,7 @@
 
 HTMLWidgets.widget({
 
-  name: 'select',
+  name: 'sp_sel',
 
   type: 'output',
 

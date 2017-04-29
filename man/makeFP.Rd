@@ -6,7 +6,7 @@
 an optimal picture retrieval with respect to DSM/DEM and orthophoto
 calculation.}
 \usage{
-makeFP(projectDir = "~", missionName = "autoflightcontrol",
+makeFP(projectDir = "~", locationName = "dummylocation",
   surveyArea = NULL, flightAltitude = 100, launchAltitude = NULL,
   followSurface = FALSE, followSurfaceRes = NULL, demFn = NULL,
   altFilter = 1, horizonFilter = 30, terrainSmooth = FALSE,
@@ -14,12 +14,12 @@ makeFP(projectDir = "~", missionName = "autoflightcontrol",
   maxSpeed = 20, maxFlightTime = 10, picRate = 2, windCondition = 1,
   uavType = "solo", cameraType = "MAPIR2", uavViewDir = 0,
   djiBasic = c(0, 0, 0, -90, 0), dA = FALSE, heatMap = FALSE,
-  picFootprint = FALSE, rcRange = NULL, startLitchi = FALSE)
+  picFootprint = FALSE, rcRange = NULL)
 }
 \arguments{
-\item{projectDir}{path to the main folder where several projects can be hosted}
+\item{projectDir}{path to the main folder where several locations can be hosted}
 
-\item{missionName}{base string for mission filenames}
+\item{locationName}{path to the location folder where all tasks of this plot are hosted}
 
 \item{surveyArea}{you may provide either the coordinates by
 c(lon1,lat1,lon2,lat2,lon3,lat3,launchLat,launchLon) or
@@ -98,7 +98,7 @@ By default it is set to (\code{= 0.0}).
 
 \item{rcRange}{range of estimated range of remote control}
 
-\item{startLitchi}{if TRUE it starts an offline Litchi website for converting the data (preliminary workaround)}
+\item{taskName}{base string for taskName filenames}
 }
 \description{
 The basic idea is to provide an easy to use workflow for
@@ -293,16 +293,16 @@ fp$demA
 ##     U have to use a high resulution DSM
 ##     (here simulated with a standard DEM)
 
-fp<-makeFP(projectDir ="/home/creu/uav/test",
-missionName = "test30",
-surveyArea=c(50.80801,8.72993,50.80590,8.731153,50.80553,8.73472,50.80709,8.734),
-followSurface = TRUE,
-flightAltitude = 30,
-demFn = "~/dem.tif",
-windCondition = 3,
-uavType = "djip3",
-followSurfaceRes = 5,
-altFilter = .75)
+fp<-makeFP(projectDir ="~/uav/test",
+           locationName = "DEPA01",
+           surveyArea=c(50.80801,8.72993,50.80590,8.731153,50.80553,8.73472,50.80709,8.734),
+           followSurface = TRUE,
+           flightAltitude = 30,
+           demFn = "~/dem.tif",
+           windCondition = 3,
+           uavType = "djip3",
+           followSurfaceRes = 5,
+           altFilter = .75)
 
 
 ## (3) use of external vector data to define the surveyArea...
@@ -315,8 +315,8 @@ leafDraw(preset="uav")
 ## assuming resulting file is named "uav.json"
 ## use it for planning
 
-fp<-makeFP(projectDir="~/uav/uav/test",
-                   missionName = "50m",
+fp<-makeFP(projectDir="~/uav/test",
+                   locationName = "DEPA01",
                    surveyArea="~/uav.json",
                    followSurface = TRUE,
                    followSurfaceRes = 1,

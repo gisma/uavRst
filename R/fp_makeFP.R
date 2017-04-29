@@ -153,7 +153,8 @@ if (!isGeneric('makeFP')) {
 #'   }
 #'   }
 
-#' @param projectDir path to the main folder where several projects can be hosted
+#' @param projectDir path to the main folder where several locations can be hosted
+#' @param locationName path to the location folder where all tasks of this plot are hosted
 #' @param surveyArea  you may provide either the coordinates by
 #' c(lon1,lat1,lon2,lat2,lon3,lat3,launchLat,launchLon) or
 #' an OGR compatible file (preferably geoJSON or KML) with
@@ -163,7 +164,7 @@ if (!isGeneric('makeFP')) {
 #' @param launchAltitude absolute altitude of launching position.
 #' It will overwrite the DEM based estimation if any other value than -9999
 #' @param demFn  filename of the corresponding DEM data file
-#' @param missionName base string for mission filenames
+#' @param taskName base string for taskName filenames
 #' @param followSurface  \code{boolean}  TRUE performs an altitude correction
 #' of the missions flight altitude using additional DEM data.
 #' If no DEM data is provided and \code{followSurface} is TRUE,
@@ -205,7 +206,7 @@ if (!isGeneric('makeFP')) {
 #' @param followSurfaceRes horizontal step distance for analyzing the DEM altitudes
 #' @param picRate fastest stable interval (s) for shooting pictures
 #' @param windCondition 1= calm 2= light air 1-5km/h, 3= light breeze 6-11km/h, 4=gentle breeze 12-19km/h 5= moderate breeze 20-28km/h
-#' @param startLitchi if TRUE it starts an offline Litchi website for converting the data (preliminary workaround)
+
 #' @param maxFlightTime user defined estimation of the lipo lifetime (20 min default)
 #' @param rcRange range of estimated range of remote control
 #' @param uavType type of uav. currently "djip3" and "solo" are supported
@@ -265,16 +266,16 @@ if (!isGeneric('makeFP')) {
 #' ##     U have to use a high resulution DSM
 #' ##     (here simulated with a standard DEM)
 #'
-#' fp<-makeFP(projectDir ="/home/creu/uav/test",
-#' missionName = "test30",
-#' surveyArea=c(50.80801,8.72993,50.80590,8.731153,50.80553,8.73472,50.80709,8.734),
-#' followSurface = TRUE,
-#' flightAltitude = 30,
-#' demFn = "~/dem.tif",
-#' windCondition = 3,
-#' uavType = "djip3",
-#' followSurfaceRes = 5,
-#' altFilter = .75)
+#' fp<-makeFP(projectDir ="~/uav/test",
+#'            locationName = "DEPA01",
+#'            surveyArea=c(50.80801,8.72993,50.80590,8.731153,50.80553,8.73472,50.80709,8.734),
+#'            followSurface = TRUE,
+#'            flightAltitude = 30,
+#'            demFn = "~/dem.tif",
+#'            windCondition = 3,
+#'            uavType = "djip3",
+#'            followSurfaceRes = 5,
+#'            altFilter = .75)
 #'
 #'
 #' ## (3) use of external vector data to define the surveyArea...
@@ -287,8 +288,8 @@ if (!isGeneric('makeFP')) {
 #' ## assuming resulting file is named "uav.json"
 #' ## use it for planning
 #'
-#' fp<-makeFP(projectDir="~/uav/uav/test",
-#'                    missionName = "50m",
+#' fp<-makeFP(projectDir="~/uav/test",
+#'                    locationName = "DEPA01",
 #'                    surveyArea="~/uav.json",
 #'                    followSurface = TRUE,
 #'                    followSurfaceRes = 1,
@@ -316,7 +317,7 @@ if (!isGeneric('makeFP')) {
 
 
 makeFP <- function(projectDir = "~",
-                   missionName = "autoflightcontrol",
+                   locationName = "dummylocation",
                    surveyArea = NULL,
                    flightAltitude = 100,
                    launchAltitude = NULL,
@@ -340,71 +341,70 @@ makeFP <- function(projectDir = "~",
                    dA = FALSE,
                    heatMap = FALSE,
                    picFootprint = FALSE,
-                   rcRange = NULL,
-                   startLitchi = FALSE)
+                   rcRange = NULL)
 {
   ###  setup environ and params
   cat("setup environ and params...\n")
   # assign flight mission name
-  mission <-
-    paste(paste0(missionName, "_", flightAltitude), sep = .Platform$file.sep)
+  workingDir <- format(Sys.time(), "%Y_%m_%d_%H-%M") 
+  taskName <-paste(paste0(locationName, "_",
+                          flightAltitude,"m_",
+                          uavType,"_", 
+                          cameraType,"_", 
+                          tools::file_path_sans_ext(basename(surveyArea)),"_", 
+                          workingDir), sep = .Platform$file.sep)
   
-  workingDir <- missionName
+  
+  
   # create directories if needed
-  if (!file.exists(file.path(projectDir, workingDir))) {
-    dir.create(file.path(projectDir, workingDir), recursive = TRUE)
+  if (!file.exists(file.path(projectDir, locationName, workingDir))) {
+    dir.create(file.path(projectDir, locationName, workingDir), recursive = TRUE)
   }
-  if (!file.exists(file.path(projectDir, workingDir, "run"))) {
-    dir.create(file.path(projectDir, workingDir, "/run"), recursive = TRUE)
+  if (!file.exists(file.path(projectDir, locationName, workingDir, "run"))) {
+    dir.create(file.path(projectDir, locationName,workingDir, "/run"), recursive = TRUE)
   }
-  if (!file.exists(file.path(projectDir, workingDir, "control"))) {
-    dir.create(file.path(projectDir, workingDir, "control"), recursive = TRUE)
+  if (!file.exists(file.path(projectDir, locationName,workingDir, "control"))) {
+    dir.create(file.path(projectDir, locationName,workingDir, "control"), recursive = TRUE)
   }
-  if (!file.exists(file.path(projectDir, workingDir, "soloLog"))) {
-    dir.create(file.path(projectDir, workingDir, "soloLog"), recursive = TRUE)
+  if (!file.exists(file.path(projectDir, locationName,workingDir, "log"))) {
+    dir.create(file.path(projectDir, locationName,workingDir, "log"), recursive = TRUE)
   }
-  if (!file.exists(file.path(projectDir, "data"))) {
-    dir.create(file.path(projectDir, "data"), recursive = TRUE)
+  if (!file.exists(file.path(projectDir,locationName, "data"))) {
+    dir.create(file.path(projectDir,locationName, "data"), recursive = TRUE)
   }
+  if (!is.null(surveyArea)) {
+    file.copy(surveyArea, paste0(file.path(projectDir,locationName, "/data"), "/", basename(surveyArea)))
+    surveyArea <- paste0(file.path(projectDir,locationName, "/data"), "/", basename(surveyArea))
+      
+  }
+  
   if (!is.null(demFn)) {
-    file.copy(demFn, paste0(file.path(projectDir, "data"), "/", basename(demFn)))
-    demFn <-
-      paste0(file.path(projectDir, "data"), "/", basename(demFn))
+    file.copy(demFn, paste0(file.path(projectDir,locationName, "/data"), "/", basename(demFn)))
+    demFn <- paste0(file.path(projectDir,locationName, "/data"), "/", basename(demFn))
+    
   }
   # setting R environ temp folder to the current working directory
-  Sys.setenv(TMPDIR = file.path(projectDir, workingDir, "run"))
+  Sys.setenv(TMPDIR = file.path(projectDir, locationName, workingDir, "run"))
   
   # set R working directory
-  setwd(file.path(projectDir, workingDir, "run"))
+  setwd(file.path(projectDir,locationName, workingDir, "run"))
   
   # set common read write permissions
   #Sys.chmod(list.dirs("../.."), "777")
   
   # create log file
-  logger <-
-    create.logger(logfile = paste0(
-      file.path(projectDir, workingDir, "control/"),
-      strsplit(basename(mission), "\\.")[[1]][1],
-      '.log'
-    ))
+  logger <- create.logger(logfile = paste0(file.path(projectDir, locationName, workingDir, "log/"),strsplit(basename(taskName), "\\.")[[1]][1],'.log'))
   level(logger) <- "INFO"
   levellog(logger, 'INFO', "                                                           ")
   levellog(logger, 'INFO', "                                                           ")
-  levellog(logger,
-           'INFO',
-           "--------------------- START RUN ---------------------------")
-  levellog(logger, 'INFO', paste("Working folder: ", file.path(projectDir, workingDir)))
+  levellog(logger,'INFO',"--------------------- START RUN ---------------------------")
+  levellog(logger, 'INFO', paste("Working folder: ", file.path(projectDir, locationName, workingDir)))
   
   # generate misson control filename
-  csvFn <-
-    paste(
-      file.path(projectDir, workingDir, "control"),
-      paste0(mission, ".csv"),
-      sep = .Platform$file.sep
-    )
+  csvFn <-paste(file.path(projectDir, locationName, workingDir, "control"),paste0(taskName, ".csv"),sep = .Platform$file.sep)
   
   # get survey area
-  surveyArea <- getSurveyExtent(surveyArea, projectDir, logger)
+  surveyArea <- calcSurveyArea(surveyArea, projectDir, logger)
   
   # need picfootprint for calculating the heatmap
   if (heatMap) {
@@ -415,29 +415,23 @@ makeFP <- function(projectDir = "~",
   if (uavType == "djip3") {
     cameraType<-"dji4k"
     factor <- 1.71
-    flightParams = c(
-      flightPlanMode = flightPlanMode,
-      launchAltitude = launchAltitude,
-      flightAltitude = flightAltitude,
-      presetFlightTask = presetFlightTask,
-      overlap = overlap,
-      curvesize = djiBasic[1],
-      #curvesize
-      rotationdir = djiBasic[2],
-      #rotationdir
-      gimbalmode = djiBasic[3],
-      #gimbalmode
-      gimbalpitchangle = djiBasic[4],
-      #gimbalpitchangle
-      uavViewDir = uavViewDir,
-      followSurfaceRes = followSurfaceRes
-    )
+    flightParams = c(flightPlanMode = flightPlanMode,
+                     launchAltitude = launchAltitude,
+                     flightAltitude = flightAltitude,
+                     presetFlightTask = presetFlightTask,
+                     overlap = overlap,
+                     curvesize = djiBasic[1],        # curvesize
+                     rotationdir = djiBasic[2],      # rotationdir
+                     gimbalmode = djiBasic[3],       # gimbalmode
+                     gimbalpitchangle = djiBasic[4], # gimbalpitchangle
+                     uavViewDir = uavViewDir,
+                     followSurfaceRes = followSurfaceRes)
+    
     #calc & assign overlapping factor as a function of flightAltitude
     fliAltRatio <- 1 - overlap
     
     # FOV*agl*(1-overlap)
-    uavOptimumSpeed <-
-      ceiling(factor * flightAltitude * fliAltRatio)
+    uavOptimumSpeed <- ceiling(factor * flightAltitude * fliAltRatio)
     
   }
   else if (uavType == "solo") {
@@ -450,21 +444,19 @@ makeFP <- function(projectDir = "~",
     }
     
     
-    flightParams = c(
-      flightPlanMode = flightPlanMode,
-      launchAltitude = launchAltitude,
-      flightAltitude = flightAltitude,
-      presetFlightTask = presetFlightTask,
-      overlap = overlap,
-      uavViewDir = uavViewDir,
-      followSurfaceRes = followSurfaceRes
-    )
+    flightParams = c(flightPlanMode = flightPlanMode,
+                     launchAltitude = launchAltitude,
+                     flightAltitude = flightAltitude,
+                     presetFlightTask = presetFlightTask,
+                     overlap = overlap,
+                     uavViewDir = uavViewDir,
+                     followSurfaceRes = followSurfaceRes)
+    
     #calc & assign overlapping factor as a function of flightAltitude
     fliAltRatio <- 1 - overlap
     
     # FOV*agl*(1-overlap)
-    uavOptimumSpeed <-
-      ceiling(factor * flightAltitude * fliAltRatio)
+    uavOptimumSpeed <- ceiling(factor * flightAltitude * fliAltRatio)
   }
   
   # adapt default flight params to runtime request
@@ -479,8 +471,7 @@ makeFP <- function(projectDir = "~",
   
   
   # calc distance beteen two pictures using a camera dependent multiplicator
-  trackDistance <-
-    calcTrackDistance(fliAltRatio, flightAltitude, factor)
+  trackDistance <- calcTrackDistance(fliAltRatio, flightAltitude, factor)
   totalTrackdistance <- trackDistance
   # to keep it simple we tacke picture as squares
   crossDistance <- trackDistance
@@ -489,57 +480,28 @@ makeFP <- function(projectDir = "~",
   # create an sp polygon object of the mission area
   taskArea <- taskarea(p, csvFn)
   # reproject it to UTM
-  taskAreaUTM <-
-    spTransform(taskArea, CRS(
-      paste(
-        "+proj=utm +zone=",
-        long2UTMzone(p$lon1),
-        " ellps=WGS84",
-        sep = ''
-      )
-    ))
+  taskAreaUTM <- spTransform(taskArea, CRS(paste("+proj=utm +zone=",long2UTMzone(p$lon1)," ellps=WGS84",sep = '')))
   # calculate area
   surveyAreaUTM <- rgeos::gArea(taskAreaUTM)
   
   # calculate heading from launch position to mission start position
-  launch2startHeading <-
-    geosphere::bearing(
-      c(p$launchLon, p$launchLat),
-      c(p$lon1, p$lat1),
-      a = 6378137,
-      f = 1 / 298.257223563
-    )
+  launch2startHeading <- geosphere::bearing(c(p$launchLon, p$launchLat),c(p$lon1, p$lat1),a = 6378137,f = 1 / 298.257223563)
   
   # calculate and assign  heading base flight track W-E
-  updir <-
-    geosphere::bearing(c(p$lon1, p$lat1),
-                       c(p$lon2, p$lat2),
-                       a = 6378137,
-                       f = 1 / 298.257223563)
+  updir <- geosphere::bearing(c(p$lon1, p$lat1),c(p$lon2, p$lat2),a = 6378137,f = 1 / 298.257223563)
   
   # calculate and assign  heading base flight track E-W
-  downdir <-
-    geosphere::bearing(c(p$lon2, p$lat2),
-                       c(p$lon1, p$lat1),
-                       a = 6378137,
-                       f = 1 / 298.257223563)
+  downdir <- geosphere::bearing(c(p$lon2, p$lat2),c(p$lon1, p$lat1),a = 6378137,f = 1 / 298.257223563)
   
   # calculate and assign  heading base flight track trackline to trackline
-  crossdir <-
-    geosphere::bearing(c(p$lon2, p$lat2),
-                       c(p$lon3, p$lat3),
-                       a = 6378137,
-                       f = 1 / 298.257223563)
+  crossdir <- geosphere::bearing(c(p$lon2, p$lat2),c(p$lon3, p$lat3),a = 6378137,f = 1 / 298.257223563)
   
   # calculate and assign  distance of the base flight track
   len <- geosphere::distGeo(c(p$lon1, p$lat1), c(p$lon2, p$lat2))
   
   # calculate and assign distance of the cross base flight track
-  crosslen <-
-    distGeo(c(p$lon2, p$lat2),
-            c(p$lon3, p$lat3),
-            a = 6378137,
-            f = 1 / 298.257223563)
+  crosslen <- distGeo(c(p$lon2, p$lat2),c(p$lon3, p$lat3),a = 6378137,f = 1 / 298.257223563)
+  
   if (is.null(followSurfaceRes)) {
     followSurfaceRes <- trackDistance
   }
@@ -580,15 +542,12 @@ makeFP <- function(projectDir = "~",
   # define output line var
   lns <- list()
   
-  
-  lns <-
-    launch2flightalt(p, lns, uavViewDir, launch2startHeading, uavType)
-  
+  lns <- launch2flightalt(p, lns, uavViewDir, launch2startHeading, uavType)
   
   # assign starting point
   pos <- c(p$lon1, p$lat1)
   # calculates the footprint of the first position and returns a SpatialPolygonsDataFrame
-  if (picFootprint)  camera <- cameraExtent(pos[1], pos[2], uavViewDir, trackDistance, flightAltitude, 0, 0)
+  if (picFootprint)  camera <- calcCamFoot(pos[1], pos[2], uavViewDir, trackDistance, flightAltitude, 0, 0)
   else  camera = "NULL"
   
   # creates the export control parameter set of the first position
@@ -643,7 +602,7 @@ makeFP <- function(projectDir = "~",
       
       # calc next coordinate
       pos <- calcNextPos(pOld[1], pOld[2], heading, trackDistance)
-      if (picFootprint) camera <- spRbind(camera, cameraExtent( pos[1], pos[2], uavViewDir, trackDistance, flightAltitude,i,j))
+      if (picFootprint) camera <- spRbind(camera, calcCamFoot( pos[1], pos[2], uavViewDir, trackDistance, flightAltitude,i,j))
       pOld <- pos
       flightLength <- flightLength + trackDistance
       if (mode == "track") {
@@ -659,7 +618,7 @@ makeFP <- function(projectDir = "~",
     
     if ((j %% 2 != 0)) {
       pos <- calcNextPos(pOld[1], pOld[2], crossdir, crossDistance)
-      if (picFootprint) camera <-  spRbind(camera, cameraExtent( pos[1], pos[2], uavViewDir, trackDistance,flightAltitude,i,j))
+      if (picFootprint) camera <-  spRbind(camera, calcCamFoot( pos[1], pos[2], uavViewDir, trackDistance,flightAltitude,i,j))
       pOld <- pos
       flightLength <- flightLength + crossDistance
       if (uavType == "djip3") {
@@ -679,7 +638,7 @@ makeFP <- function(projectDir = "~",
     
     else if ((j %% 2 == 0)) {
       pos <- calcNextPos(pOld[1], pOld[2], crossdir, crossDistance)
-      if (picFootprint) camera <- spRbind(camera, cameraExtent( pos[1], pos[2], uavViewDir,trackDistance,flightAltitude,i,j))
+      if (picFootprint) camera <- spRbind(camera, calcCamFoot( pos[1], pos[2], uavViewDir,trackDistance,flightAltitude,i,j))
       pOld <- pos
       flightLength <- flightLength + crossDistance
       
@@ -721,38 +680,12 @@ makeFP <- function(projectDir = "~",
     writeLines(unlist(lns[1:length(lns) - 1]), fileConn)
     djiDF <- read.csv("tmp.csv", sep = ",", header = FALSE)
     # add correct header
-    names(djiDF) <-
-      unlist(strsplit(
-        makeUavPoint(
-          pos,
-          uavViewDir,
-          group = 99,
-          p,
-          header = TRUE,
-          sep = ' '
-        ),
-        split = " "
-      ))
+    names(djiDF) <-unlist(strsplit(makeUavPoint(pos,uavViewDir,group = 99,p,header = TRUE,sep = ' '),split = " "))
     # make it spatial
     sp::coordinates(djiDF) <- ~ lon + lat
-    sp::proj4string(djiDF) <-
-      CRS("+proj=longlat +datum=WGS84 +no_defs")
+    sp::proj4string(djiDF) <- CRS("+proj=longlat +datum=WGS84 +no_defs")
     # now DEM stuff
-    result <-
-      demCorrection(
-        demFn,
-        djiDF,
-        p,
-        altFilter,
-        horizonFilter,
-        followSurface,
-        followSurfaceRes,
-        terrainSmooth,
-        logger,
-        projectDir,
-        dA,
-        workingDir
-      )
+    result <- analyzeDSM(demFn,djiDF,p,altFilter,horizonFilter,followSurface,followSurfaceRes,terrainSmooth,logger,projectDir,dA,workingDir,locationName)
     # assign adapted dem to demFn
     demFn <- result[[3]]
     dfcor <- result[[2]]
@@ -771,36 +704,22 @@ makeFP <- function(projectDir = "~",
     }
     # start the creation of the control file(s)
     cat('generate control files...\n')
-    generateDjiCSV( result[[2]],mission,nofiles,maxPoints,p,logger, round(result[[6]], digits = 0),
-                    trackSwitch,"flightDEM.tif",result[[8]], projectDir,workingDir)
-    
+    # generate single tasks waypoint file for DJI Litchi import format
+    calcDjiTask( result[[2]],taskName,nofiles,maxPoints,p,logger, round(result[[6]], digits = 0), trackSwitch,"flightDEM.tif",result[[8]], projectDir,workingDir,locationName)
   }
   else if (uavType == "solo") {
     writeLines(unlist(lns), fileConn)
-    mavDF <- read.csv("tmp.csv", sep = "\t", header = FALSE)
-    names(mavDF) <-
-      c("a","b","c","d","e","f","g","latitude","longitude","altitude","id","j","lat","lon")
+    mavDF <- read.csv("tmp.csv", colClasses=c("V4"="character",
+                                              "V5"="character",
+                                              "V6"="character",
+                                              "V7"="character"),sep = "\t", header = FALSE)
+    names(mavDF) <- c("a","b","c","d","e","f","g","latitude","longitude","altitude","id","j","lat","lon")
     sp::coordinates(mavDF) <- ~ lon + lat
-    sp::proj4string(mavDF) <-
-      CRS("+proj=longlat +datum=WGS84 +no_defs")
+    sp::proj4string(mavDF) <- CRS("+proj=longlat +datum=WGS84 +no_defs")
     
     if (is.null(launchAltitude)) {
-      result <-
-        demCorrection(
-          demFn,
-          mavDF,
-          p,
-          altFilter,
-          horizonFilter ,
-          followSurface,
-          followSurfaceRes,
-          terrainSmooth,
-          logger,
-          projectDir =projectDir,
-          dA,
-          workingDir = workingDir
-        )
-      
+      # analyze DEM related stuff
+      result <- analyzeDSM(demFn,mavDF,p,altFilter,horizonFilter ,followSurface,followSurfaceRes,terrainSmooth,logger,projectDir =projectDir,dA,workingDir = workingDir,locationName)
       # assign adapted dem to demFn
       lauchPos <- result[[1]]
       dfcor <- result[[2]]
@@ -810,44 +729,23 @@ makeFP <- function(projectDir = "~",
       maxPoints <- ceiling(nrow(dfcor@data) / nofiles) + 1
       
     }
-    generateMavCSV(
-      result[[2]],
-      mission,
-      nofiles,
-      rawTime,
-      mode,
-      trackDistance,
-      maxFlightTime,
-      logger,
-      p,
-      len,
-      multiply,
-      tracks,
-      result,
-      maxSpeed / 3.6,
-      uavType,
-      "flightDEM.tif",
-      maxAlt = result[[6]],
-      projectDir,
-      workingDir
-    )
+    # generate single tasks waypoint file for MAV Solo format
+    calcMAVTask(result[[2]],taskName,nofiles,rawTime,mode,trackDistance,maxFlightTime,logger,p,len, multiply,tracks,result,maxSpeed / 3.6,uavType,"flightDEM.tif",maxAlt = result[[6]], projectDir,workingDir,locationName)
   }
   close(fileConn)
   
   # if heatMap is requested
   if (heatMap) {
     cat("calculating picture coverage heat map\n")
-    fovH <- fovHeatmap(camera, result[[4]])
+    fovH <- calcFovHeatmap(camera, result[[4]])
   } else
   {
     fovH <- "NULL"
   }
   
-  
-  
   # call rcShed
   if (!is.null(rcRange)) {
-
+    
     cat("calculating RC-range\n")
     rcCover <-
       rcShed(
@@ -864,7 +762,7 @@ makeFP <- function(projectDir = "~",
   
   
   # write log file status and params
-  levellog(logger, 'INFO', paste("missionname     : ", mission))
+  levellog(logger, 'INFO', paste("taskName     : ", taskName))
   levellog(logger, 'INFO', paste("DEM filename    : ", names(demFn)))
   levellog(logger, 'INFO', paste("surveyArea      : ", surveyAreaUTM))
   levellog(logger, 'INFO', paste("launchAltitude  : ", launchAltitude))
@@ -879,98 +777,42 @@ makeFP <- function(projectDir = "~",
   levellog(logger, 'INFO', paste("curvesize       : ", p$curvesize))
   levellog(logger, 'INFO', paste("rotationdir     : ", p$rotationdir))
   levellog(logger, 'INFO', paste("gimbalmode      : ", p$gimbalmode))
-  levellog(logger,
-           'INFO',
-           paste("gimbalpitchangle: ", p$gimbalpitchangle))
+  levellog(logger,'INFO',paste("gimbalpitchangle: ", p$gimbalpitchangle))
   levellog(logger, 'INFO', paste("overlap         : ", overlap))
   levellog(logger, 'INFO', paste("uavViewDir      : ", uavViewDir))
   levellog(logger, 'INFO', paste("picFootprint    : ", picFootprint))
-  levellog(logger,
-           'INFO',
-           paste("followSurfaceRes: ", followSurfaceRes))
+  levellog(logger,'INFO',paste("followSurfaceRes: ", followSurfaceRes))
   levellog(logger, 'INFO', paste("surveyAreaCoords: ", surveyArea))
   levellog(logger, 'INFO', paste("windCondition   : ", windCondition))
   levellog(logger, 'INFO', "-")
-  levellog(logger,
-           'INFO',
-           "----- use the following mission params! --------------")
-  levellog(logger,
-           'INFO',
-           paste("set RTH flight altitude to    : ", round(result[[6]], digits = 0), " (m)"))
-  levellog(logger,
-           'INFO',
-           paste(
-             "set mission speed to a max of: ",
-             round(maxSpeed, digits = 1),
-             "  (km/h)      "
-           ))
-  levellog(logger,
-           'INFO',
-           paste("set pic rate to at least : ", picIntervall, "  (sec/pic) "))
-  levellog(logger,
-           'INFO',
-           paste("calculated mission time    : ", rawTime,      "  (min)      "))
-  levellog(logger,
-           'INFO',
-           paste("estimated battery lifetime  : ", maxFlightTime,      "  (min)      "))
-  levellog(logger,
-           'INFO',
-           paste("Area covered               : ", surveyAreaUTM / 10000,      "  (ha)"))
+  levellog(logger,'INFO',"----- use the following task params! --------------")
+  levellog(logger,'INFO',paste("set RTH flight altitude to    : ", round(result[[6]], digits = 0), " (m)"))
+  levellog(logger,'INFO',paste("set flight speed to a max of: ",round(maxSpeed, digits = 1),"  (km/h)      "))
+  levellog(logger,'INFO',paste("set pic rate to at least : ", picIntervall, "  (sec/pic) "))
+  levellog(logger,'INFO',paste("calculated mission time    : ", rawTime,      "  (min)      "))
+  levellog(logger,'INFO',paste("estimated battery lifetime  : ", maxFlightTime,      "  (min)      "))
+  levellog(logger,'INFO',paste("Area covered               : ", surveyAreaUTM / 10000,      "  (ha)"))
   # return params for visualisation and main results for overview
-  if (startLitchi) {
-    openLitchi()
-    cat("--- END ", mission, " Litchi ---")
+  if ((flightPlanMode == 'track' | flightPlanMode == 'terrainTrack') & rawTime > maxFlightTime)  {
+    note <- "flighttime > battery lifetime! control files have been splitted. Have Fun..."
   }
-  if ((flightPlanMode == 'track' |
-       flightPlanMode == 'terrainTrack') & rawTime > maxFlightTime)
-  {
-    note <-
-      "flighttime > battery lifetime! control files have been splitted. Have Fun..."
+  else if (flightPlanMode == 'waypoints') {
+    note <- "control files are splitted after max 98 waypoints (litchi control file restricted number)"
   }
-  else if (flightPlanMode == 'waypoints')
-  {
-    note <-
-      "control files are splitted after max 98 waypoints (litchi control file restricted number)"
-  }
-  else {
-    note <- " Have Fun "
-  }
-  dumpFile(paste0(
-    file.path(projectDir, workingDir, "control/"),
-    strsplit(basename(mission), "\\.")[[1]][1],
-    '.log'
-  ))
-  cat(
-    "\n ",
-    "\n NOTE 1:",
-    as.character(note),
-    "",
-    "\n NOTE 2: You will find all parameters in the logfile:",
-    paste0(
-      file.path(projectDir, workingDir, "control/"),
-      strsplit(basename(mission), "\\.")[[1]][1],
-      '.log'
-    ),
-    "",
-    "\n "
-  )
-  x <- c(result[[1]],
-         # launch Pos
-         result[[2]],
-         # waypoints
-         result[[5]],
-         # resampled dem contour
-         result[[3]],
-         # original DEM
-         result[[4]],
-         # resampled dem
-         camera,
-         # camera footprint (DJI only)
-         taskArea,
-         # Area of flight task
-         rcCover,
-         # Estimated area that is covered by RC
-         fovH)                 # Heatmap of overlapping Pictures
+  else { note <- " Have Fun " }
+  dumpFile(paste0(file.path(projectDir, locationName, workingDir, "log/"),strsplit(basename(taskName), "\\.")[[1]][1],'.log'))
+  cat("\n ",
+      "\n NOTE 1:",as.character(note),"",
+      "\n NOTE 2: You will find all parameters in the logfile:",paste0(file.path(projectDir, locationName, workingDir, "log/"),strsplit(basename(taskName), "\\.")[[1]][1],'.log'),"","\n ")
+  x <- c(result[[1]], # launch Pos
+         result[[2]], # waypoints
+         result[[5]], # resampled dem contour
+         result[[3]], # original DEM
+         result[[4]], # resampled dem
+         camera,      # camera footprint (DJI only)
+         taskArea,    # Area of flight task
+         rcCover,     # Estimated area that is covered by RC
+         fovH)        # Heatmap of overlapping Pictures
   names(x) <- c("lp", "wp", "demA", "oDEM", "rDEM", "fp", "fA", "rcA", "hm")
   return(x)
 }
