@@ -344,11 +344,13 @@ calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,
       
       # ascent2start WP
       lnsnew[5,1] <- mavCmd(id = 3, 
+                            cmd = 16,
                             lat = round(calcNextPos(launchLon,launchLat,startheading,5)[2],6),
                             lon = round(calcNextPos(launchLon,launchLat,startheading,5)[1],6),
                             alt = round(startRth,0))
       # maxStartPos WP
       lnsnew[6,1] <- mavCmd(id = 4, 
+                            cmd = 16,
                             lat = round(startmaxpos[1,2],6),
                             lon = round(startmaxpos[1,1],6),
                             alt = round(startRth,0))
@@ -359,7 +361,7 @@ calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,
                                   p2 = round(speed,6))
       lnsnew[8,1] <-       mavCmd(id = 6, 
                                   cmd = 115, 
-                                  p1 = round(abs(uavViewDir),0))
+                                  p1 = round(abs(uavViewDir),1))
       lc <- 8
       # task WP & task speed
       for (j in  seq(1,(addmax - 1)*2)) {
@@ -378,11 +380,13 @@ calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,
       
       # ascent2home WP
       lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = as.character(length(lns[,1]) + 5), 
+                                                 cmd = 16,
                                                  lat = round(calcNextPos(endLon,endLat,homeheading,5)[2],6),
                                                  lon = round(calcNextPos(endLon,endLat,homeheading,5)[1],6),
                                                  alt = round(homeRth,0))
       # maxhomepos WP
       lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = as.character(length(lns[,1]) + 6), 
+                                                 cmd = 16,
                                                  lat = round(homemaxpos[1,2],6),
                                                  lon = round(homemaxpos[1,1],6),
                                                  alt = round(homeRth,0))
@@ -1406,7 +1410,7 @@ DEM2FlSurface<- function(p,dem,logger){
   
 }
 
-mavCmd <- function(id,wp=0,cf="3",cmd="16",p1="0.000000",p2="0.000000",p3="0.000000",p4="0.000000",lon="0.000000",lat="0.000000",alt="0.000000",autocont="1"){
+mavCmd <- function(id,wp=0,cf="3",cmd="82",p1="0.000000",p2="0.000000",p3="0.000000",p4="0.000000",lon="0.000000",lat="0.000000",alt="0.000000",autocont="1"){
   sep <- "\t"
   #<INDEX> <CURRENT WP> <COORD FRAME> <COMMAND> <PARAM1> <PARAM2> <PARAM3> <PARAM4> <PARAM5/X/LONGITUDE> <PARAM6/Y/LATITUDE> <PARAM7/Z/ALTITUDE> <AUTOCONTINUE>
   return(paste0(id,sep,wp,sep,cf,sep,cmd,sep,p1,sep,p2,sep,p3,sep,p4,sep,lat,sep,lon,sep,alt,sep,autocont))

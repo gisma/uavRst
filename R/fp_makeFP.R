@@ -346,13 +346,15 @@ makeFP <- function(projectDir = "~",
   ###  setup environ and params
   cat("setup environ and params...\n")
   # assign flight mission name
-  workingDir <- format(Sys.time(), "%Y_%m_%d_%H-%M") 
+  #workingDir <- format(Sys.time(), "%Y_%m_%d_%H-%M") 
+  workingDir <- format(Sys.time(), "%Y_%m_%d") 
   taskName <-paste(paste0(locationName, "_",
                           flightAltitude,"m_",
                           uavType,"_", 
                           cameraType,"_", 
                           tools::file_path_sans_ext(basename(surveyArea)),"_", 
-                          workingDir), sep = .Platform$file.sep)
+                          format(Sys.time(), "%Y_%m_%d_%H-%M")),
+                   sep = .Platform$file.sep)
   
   
   
