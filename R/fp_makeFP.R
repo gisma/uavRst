@@ -329,7 +329,7 @@ makeFP <- function(projectDir = "~",
                    terrainSmooth= FALSE,
                    flightPlanMode = "track",
                    presetFlightTask = "remote",
-                   overlap = 0.7,
+                   overlap = 0.8,
                    maxSpeed = 20.0,
                    maxFlightTime = 10,
                    picRate = 2,
@@ -522,11 +522,11 @@ makeFP <- function(projectDir = "~",
   heading <- updir
   
   # set universal view direction of the uav
-  if (!is.null(flightParams["uavViewDir"])) {
-    uavViewDir <- updir - as.numeric(flightParams["uavViewDir"])
+  if (abs(as.numeric(flightParams["uavViewDir"])) == 0) {
+    uavViewDir <- updir
   }
   else {
-    uavViewDir <- as.numeric(flightParams["uavViewDir"])
+    uavViewDir <- abs(as.numeric(flightParams["uavViewDir"]))
   }
   
   # init of control id #1 common  #99 turnpoints of single tracks
@@ -730,7 +730,7 @@ makeFP <- function(projectDir = "~",
       
     }
     # generate single tasks waypoint file for MAV Solo format
-    calcMAVTask(result[[2]],taskName,nofiles,rawTime,mode,trackDistance,maxFlightTime,logger,p,len, multiply,tracks,result,maxSpeed / 3.6,uavType,"flightDEM.tif",maxAlt = result[[6]], projectDir,workingDir,locationName)
+    calcMAVTask(result[[2]],taskName,nofiles,rawTime,mode,trackDistance,maxFlightTime,logger,p,len, multiply,tracks,result,maxSpeed / 3.6,uavType,"flightDEM.tif",maxAlt = result[[6]], projectDir,workingDir,locationName,uavViewDir)
   }
   close(fileConn)
   

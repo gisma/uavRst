@@ -245,7 +245,7 @@ analyzeDSM <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,followS
 # (1) controls with respect to  waypoint number and/or batterylifetime  the splitting of the mission files to seperate task files
 # (2) calculate and insert rth and fts waypoints with respect to the terrain obstacles to generate a save start and end of a task
 
-calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,batteryTime,logger,p,len,multiply,tracks,param,speed,uavType,dem,maxAlt,projectDir, workingDir,locationName){
+calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,batteryTime,logger,p,len,multiply,tracks,param,speed,uavType,dem,maxAlt,projectDir, workingDir,locationName,uavViewDir){
   
   minPoints <- 1
   # set number of waypoints per file
@@ -324,6 +324,7 @@ calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,
       lnsnew <- data.frame()
       
       # MAV start sequence
+      
       # HEADER LINE  
       lnsnew[1,1] <- "QGC WPL 110"
       # HOMEPOINT 
@@ -343,33 +344,33 @@ calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,
       
       # ascent2start WP
       lnsnew[5,1] <- mavCmd(id = 3, 
-                            cmd = 16,
                             lat = round(calcNextPos(launchLon,launchLat,startheading,5)[2],6),
                             lon = round(calcNextPos(launchLon,launchLat,startheading,5)[1],6),
                             alt = round(startRth,0))
       # maxStartPos WP
-      lnsnew[7,1] <- mavCmd(id = 5, 
-                            cmd = 16,
+      lnsnew[6,1] <- mavCmd(id = 4, 
                             lat = round(startmaxpos[1,2],6),
                             lon = round(startmaxpos[1,1],6),
                             alt = round(startRth,0))
       
       # SPEED task
-      lnsnew[6,1] <-       mavCmd(id = 4, 
+      lnsnew[7,1] <-       mavCmd(id = 5, 
                                   cmd = 178, 
                                   p2 = round(speed,6))
-      
+      lnsnew[8,1] <-       mavCmd(id = 6, 
+                                  cmd = 115, 
+                                  p1 = round(abs(uavViewDir),0))
+      lc <- 8
       # task WP & task speed
       for (j in  seq(1,(addmax - 1)*2)) {
         if (is.odd(j)){
           sp<- str_split(pattern = "\t",string = lns[ceiling(j/2),])
-          lnsnew[j + 7,1] <-   mavCmd(id = j + 5, 
-                                      cmd = 16,
+          lnsnew[j + lc,1] <-   mavCmd(id = j + lc - 2, 
                                       lat = sp[[1]][1],
                                       lon = sp[[1]][2],
                                       alt = sp[[1]][3])}
         else {
-          lnsnew[j + 7,1] <- mavCmd(id = j + 5, 
+          lnsnew[j + lc,1] <- mavCmd(id = j + lc - 2, 
                                     cmd = 178, 
                                     p2 = round(speed,6))
         }
@@ -377,13 +378,11 @@ calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,
       
       # ascent2home WP
       lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = as.character(length(lns[,1]) + 5), 
-                                                 cmd = 16,
                                                  lat = round(calcNextPos(endLon,endLat,homeheading,5)[2],6),
                                                  lon = round(calcNextPos(endLon,endLat,homeheading,5)[1],6),
                                                  alt = round(homeRth,0))
       # maxhomepos WP
       lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = as.character(length(lns[,1]) + 6), 
-                                                 cmd = 16,
                                                  lat = round(homemaxpos[1,2],6),
                                                  lon = round(homemaxpos[1,1],6),
                                                  alt = round(homeRth,0))
