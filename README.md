@@ -3,7 +3,7 @@ Unmanned Aerial Vehicle Remote Sensing Tools
 
 ====
 
-```uavRst``` is a collection of tools for uav autonomous flight planning and analysis. Up to now it is dedicated to low budget rtf-UAVs as the DJI Phantom series and the 3DR Solo.
+```uavRst``` is a collection of tools for uav autonomous flight planning and analysis. Up to now it is dedicated to low budget rtf-UAVs as the DJI Phantom series and all Pixhawk based uavs like the 3DR Solo.
 
 The packgage is far from beeing well organized. Nevertheless it can roughly diveded in 5 categories as marked by more or less meaningful prefixes:
 
