@@ -4,7 +4,7 @@
 \alias{fp_t3p}
 \title{fp_t3p take tree top pictures}
 \usage{
-fp_t3p(projectDir = "~", missionName = "autoflightcontrol",
+fp_t3p(projectDir = "~", locationName = "autoflightcontrol",
   missionTrackList = NULL, launchPos = NULL, demFn = NULL,
   flightAltitude = 75, climbDist = 7.5, aboveTreeAlt = 15,
   presetFlightTask = "remote", maxSpeed = 25, followSurfaceRes = 5,
@@ -15,7 +15,7 @@ fp_t3p(projectDir = "~", missionName = "autoflightcontrol",
 \item{projectDir}{path to the main folder where several projects can be hosted
 It will overwrite the DEM based estimation if any other value than -9999}
 
-\item{missionName}{base string for mission filenames}
+\item{locationName}{base string for mission filenames}
 
 \item{demFn}{filname of the corresponding DEM data file}
 
@@ -74,7 +74,7 @@ basic idea is to fly in a serie to object positions with respect to the surface 
 }
 \examples{
 t3<-fp_t3p(projectDir ="/home/creu/uav/bayerwald",
-missionName = "filzmoosTree",
+locationName = "filzmoosTree",
 missionTrackList="~/uav/bayerwald/Selected_trees_Filz.txt",
 demFn = "~/uav/grossfilz/grosserfilz.tif",
 windCondition = 2,

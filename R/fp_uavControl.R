@@ -81,8 +81,9 @@ analyzeDSM <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,followS
   }  # end of loading DEM data
   
   # check if at least a projection string exist 
-  crsString <- h_comp_ll_proj4(as.vector(as.character(dem@crs)))
-  if (!crsString) {
+  crsString <- h_comp_ll_proj4((as.character(dem@crs)))
+                               
+if (!crsString) {
     # stop("the DEM/DSM is not georeferencend - please provide a correct georeferenced raster object or GeoTiff file\n")
     # if so deproject DEM/DSM because all of the vector data is latlong WGS84
     demll <- gdalwarp(srcfile = "tmpdem.tif", dstfile = "demll.tif", 
@@ -950,7 +951,7 @@ launch2flightalt <- function(p, lns, uavViewDir, launch2startHeading, uavType) {
 }
 
 MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed = maxSpeed/3.6){
-  mission <- p$missionName
+  mission <- p$locationName
   
   df     <- param[[2]]
   dem    <- param[[3]]
@@ -1033,14 +1034,15 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed
 
 
 readTreeTrack<- function(treeTrack){
-  tTkDF<-read.csv(treeTrack,sep="\t",header = TRUE)
-  sp::coordinates(tTkDF) <- ~x+y
-  sp::proj4string(tTkDF) <- sp::CRS("+proj=utm +zone=33 +datum=WGS84 +no_defs")
-  tTkDF<-sp::spTransform(tTkDF, sp::CRS("+proj=longlat +datum=WGS84 +no_defs"))
+  tTkDF<-read.csv(treeTrack,sep=",",header = TRUE)
+  sp::coordinates(tTkDF) <- ~X+Y
+  sp::proj4string(tTkDF) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
+  #sp::proj4string(tTkDF) <- sp::CRS("+proj=utm +zone=33 +datum=WGS84 +no_defs")
+  #tTkDF<-sp::spTransform(tTkDF, sp::CRS("+proj=longlat +datum=WGS84 +no_defs"))
   return(tTkDF)
 }
 
-makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger){
+makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,locationName){
   
   lns <- list()
   fileConn <- file("treepoints.csv")
@@ -1077,12 +1079,12 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger){
     names(djiDF) <- unlist(strsplit( makeUavPoint(pos,uavViewDir,group = 99,p,header = TRUE,sep = ' '),split = " "))
     sp::coordinates(djiDF) <- ~lon+lat
     sp::proj4string(djiDF) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
-    result <- getAltitudes(demFn ,djiDF,p,followSurfaceRes = 5,logger)
+    result <- getAltitudes(demFn ,djiDF,p,followSurfaceRes = 5,logger,projectDir,locationName)
     #result<-analyzeDSM(demFn, djiDF,p,p$altFilter,p$followSurface,p$followSurfaceRes,logger,projectDir)
     #result<-analyzeDSM(demFn ,djiDF,p,followSurface=followSurface,followSurfaceResfollowSurfaceRes,logger=logger,projectDir=projectDir)
     #    write.csv(djiDF@data,file = paste0(strsplit(getwd(),"/tmp")[[1]][1],"/control/","mission",".csv"),quote = FALSE,row.names = FALSE)
-    #writeDjiTreeCsv(result[[2]],p$missionName)
-    writeDjiTreeCSV(result[[2]],p$missionName,1,94,p,logger,round(result[[4]],digits = 0),trackSwitch,result[[3]],result[[6]])
+    #writeDjiTreeCsv(result[[2]],p$locationName)
+    writeDjiTreeCSV(result[[2]],p$locationName,1,94,p,logger,round(result[[4]],digits = 0),trackSwitch,result[[3]],result[[6]])
     return(result)
     
   } else if (uavType == "solo") {
@@ -1092,13 +1094,13 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger){
     names(df) <- c("a","b","c","d","e","f","g","lat","lon","latitude","longitude","altitude","id","j")
     sp::coordinates(df) <- ~lon+lat
     sp::proj4string(df) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
-    result <- getAltitudes(demFn ,df,p,followSurfaceRes = 5,logger)
+    result <- getAltitudes(demFn ,df,p,followSurfaceRes = 5,logger,projectDir,locationName)
     MAVTreeCSV(flightPlanMode = "track",trackDistance = 10000,logger = logger,p = p,param = result,maxSpeed = p$maxSpeed)
     return(result)
   }
 }
 
-getAltitudes <- function(demFn ,df,p,followSurfaceRes,logger) {
+getAltitudes <- function(demFn ,df,p,followSurfaceRes,logger,projectDir,locationName) {
   if (is.null(demFn)) {
     levellog(logger, 'WARN', "CAUTION!!! no DEM file provided I try to download SRTM data... SRTM DATA has a poor resolution for UAVs!!! ")
     cat("\nCAUTION! No DEM data is provided.\n trying to download SRTM data... \n Be aware that the resulution of SRTM is NOT sufficient for terrain following flights!")
@@ -1131,24 +1133,16 @@ getAltitudes <- function(demFn ,df,p,followSurfaceRes,logger) {
                                ymn = min(p$lat1,p$lat3) - 0.0083,
                                ymx = max(p$lat1,p$lat3) + 0.0083)
       
-      file.copy(demFn, paste0(file.path(projectDir,locationName,workingDir,"run"),"/tmpdem.tif"))
+      file.copy(demFn, paste0(file.path(projectDir,locationName, "run"),"/tmpdem.tif"))
       dem <- rundem
     }
   }  # end of loading DEM data
   
-  
-  # check if at least a projection string exist 
-  #res<-h_comp_ll_proj4(as.vector(as.character(rundem@crs)))
-  #demll<-h_raster_adjust_projection(rundem)
-  crsString<-h_comp_ll_proj4(as.vector(as.character(rundem@crs)))
-  if (!crsString) {
-    stop("the DEM/DSM is not georeferencend - please provide a correct georeferenced raster object or GeoTiff file\n")
-    # if so deproject DEM/DSM because all of the vector data is latlong WGS84
-  } else {
     demll <- gdalwarp(srcfile = "tmpdem.tif", dstfile = "demll.tif", overwrite=TRUE,  t_srs = "+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )  
+    
     demll <- setMinMax(demll)
     
-  }
+
   
   # extract all waypoint altitudes
   altitude <- raster::extract(demll,df,layer = 1, nl = 1)

@@ -10,7 +10,7 @@ if (!isGeneric('fp_t3p')) {
 #' @param projectDir path to the main folder where several projects can be hosted
 #' It will overwrite the DEM based estimation if any other value than -9999
 #' @param demFn  filname of the corresponding DEM data file
-#' @param missionName base string for mission filenames
+#' @param locationName base string for mission filenames
 #' @param followSurface  \code{boolean}  TRUE performs an altitude correction 
 #' of the missions flight altitude using additional DEM data. 
 #' If no DEM data is provided and \code{followSurface} is TRUE, 
@@ -50,7 +50,7 @@ if (!isGeneric('fp_t3p')) {
 #'
 #' @examples
 #' t3<-fp_t3p(projectDir ="/home/creu/uav/bayerwald",
-#' missionName = "filzmoosTree",
+#' locationName = "filzmoosTree",
 #' missionTrackList="~/uav/bayerwald/Selected_trees_Filz.txt",
 #' demFn = "~/uav/grossfilz/grosserfilz.tif",
 #' windCondition = 2,
@@ -64,7 +64,7 @@ if (!isGeneric('fp_t3p')) {
 #'               
 
 fp_t3p<- function(projectDir="~",
-               missionName="autoflightcontrol",
+                locationName="autoflightcontrol",
                missionTrackList=NULL,
                launchPos=NULL,
                demFn=NULL,
@@ -83,12 +83,13 @@ fp_t3p<- function(projectDir="~",
   
   
   # assign flight mission name 
-  mission<-paste(missionName, sep=.Platform$file.sep)
+  mission<-paste(locationName, sep=.Platform$file.sep)
   
-  workingDir<-missionName
+  workingDir<-locationName
   # create directories if needed
   if(!file.exists(file.path(projectDir, workingDir))){dir.create(file.path(projectDir, workingDir),recursive = TRUE)}
   if(!file.exists(file.path(projectDir, workingDir,"tmp"))){  dir.create(file.path(projectDir, workingDir,"/tmp"),recursive = TRUE)}
+  if(!file.exists(file.path(projectDir, workingDir,"run"))){  dir.create(file.path(projectDir, workingDir,"/run"),recursive = TRUE)}
   if(!file.exists(file.path(projectDir, workingDir,"control"))) { dir.create(file.path(projectDir, workingDir,"control"),recursive = TRUE)}
   if(!file.exists(file.path(projectDir,"data"))){dir.create(file.path(projectDir,"data"),recursive = TRUE)}
   # setting R environ temp folder to the current working directory
@@ -113,16 +114,9 @@ fp_t3p<- function(projectDir="~",
   csvFn<- paste(file.path(projectDir, workingDir,"control"), paste0(mission,".csv"), sep=.Platform$file.sep)
   
   # import flight area if provided by an external vector file
-  file.copy(overwrite = TRUE, from = missionTrackList, to = file.path(projectDir,"data"))
-  test<-try(flightList<-robubu:::readTreeTrack(missionTrackList))
-  if (class(test)!="try-error"){
-    treeList<-flightList
-  }
-  else{
-    log4r::levellog(logger, 'FATAL', "### can not find/read flight list")        
-    stop("### could not read flight list")
-  }
-  test<-try(robubu:::readLaunchPos(launchPos))
+  #file.copy(overwrite = TRUE, from = missionTrackList, to = file.path(projectDir,"data"))
+  flightList<-uavRst:::readTreeTrack(missionTrackList)
+  test<-try(uavRst:::readLaunchPos(launchPos))
   if (class(test)!="try-error"){
     launchPos<-test
   }
@@ -134,7 +128,7 @@ fp_t3p<- function(projectDir="~",
   p<-list()
   p$launchLat<-launchPos@coords[2]
   p$launchLon<-launchPos@coords[1]
-  p$missionName<-missionName
+  p$locationName<-locationName
   p$missionTrackList<-missionTrackList
   p$demFn<-demFn
   p$flightAltitude<-flightAltitude
@@ -154,7 +148,7 @@ fp_t3p<- function(projectDir="~",
   p$altFilter<-altFilter
   p$projectDir<-projectDir
   p$climbDist<-climbDist
-  p$task<- robubu:::getPresetTask("treetop")
+  p$task<- uavRst:::fp_getPresetTask("treetop")
   
-  fullTreeList<-uavRst::makeFlightPathT3(treeList,p,uavType,task,demFn,logger)
+  fullTreeList<-uavRst:::makeFlightPathT3(flightList,p,uavType,task,demFn,logger,projectDir,locationName)
 }
