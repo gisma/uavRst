@@ -1020,7 +1020,7 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed
     # trigger rth event
     lnsnew[length(lnsnew[,1])+1,1] <- paste0(as.character(length(lns[,1])+1),sep,"0",sep,"3",sep,"20",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"1")
     # write the control file
-    write.table(lnsnew, paste0(strsplit(getwd(),"/run")[[1]][1],"/control/",mission,"_",i,"_solo.txt"), sep="\t", row.names=FALSE, col.names=FALSE, quote = FALSE,na = "")
+    write.table(lnsnew, paste0(strsplit(getwd(),"/tmp")[[1]][1],"/control/",mission,"_",i,"_solo.txt"), sep="\t", row.names=FALSE, col.names=FALSE, quote = FALSE,na = "")
     # log event 
     levellog(logger, 'INFO', paste("created : ", paste0(mission,"-",i,".csv")))
     minPoints<-maxPoints
@@ -1066,9 +1066,9 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
       lns[length(lns) + 1] <- makeUavPointMAV(lat = treeList@coords[i,][2],lon = treeList@coords[i,][1],head = forward,group = 99)
       p$task <- fp_getPresetTask("nothing")
       posUp <- calcNextPos(treeList@coords[i,][1],treeList@coords[i,][2],heading = forward,distance = p$climbDist)
-      lns[length(lns) + 1] <- makeUavPointMAV(lat = posUp[2],lon = posUp[1],forward,group = 99) 
+      lns[length(lns) + 1] <- makeUavPointMAV(lat = posUp[2],lon = posUp[1],head = forward,group = 1) 
       posDown <- calcNextPos(treeList@coords[i + 1,][1],treeList@coords[i + 1,][2],backward,distance = p$climbDist)
-      lns[length(lns) + 1] <- makeUavPointMAV(lat = posDown[2],lon = posDown[1],forward,group = 99) 
+      lns[length(lns) + 1] <- makeUavPointMAV(lat = posDown[2],lon = posDown[1],head = forward,group = 1) 
       writeLines(unlist(lns), fileConn)
     }
   }
@@ -1091,7 +1091,8 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
     cat("calculating DEM related stuff\n")
     df <- read.csv("treepoints.csv",sep = "\t",header = FALSE)
     #names(df) <-unlist(strsplit( makeUavPointMAV(pos,uavViewDir,group=99,p,header = TRUE,sep=' '),split = " "))
-    names(df) <- c("a","b","c","d","e","f","g","lat","lon","latitude","longitude","altitude","id","j")
+    #
+    names(df) <- c("a","b","c","d","e","f","g","latitude","longitude","altitude","id","autocont","lat","lon")
     sp::coordinates(df) <- ~lon+lat
     sp::proj4string(df) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
     result <- getAltitudes(demFn ,df,p,followSurfaceRes = 5,logger,projectDir,locationName)
