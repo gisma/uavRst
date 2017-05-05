@@ -1100,9 +1100,9 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
    
     
     MAVTreeCSV(flightPlanMode = "track",trackDistance = 10000,logger = logger,p = p,param = result,maxSpeed = p$maxSpeed)
-    names(result[[2]]) <- c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude","id", "AUTOCONT")
+    names(result[[2]]) <- c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude","id", "AUTOCONTINUE")
     keeps<- c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude", "AUTOCONTINUE")
-    result[[2]]<-df@data[keeps]
+    result[[2]]<-result[[2]]@data[keeps]
     return(result)
   }
 }

@@ -29,7 +29,7 @@ t3p<-t3p(projectDir ="/home/creu/uav/bayerwald",
          missionTrackList="~/uav/bayerwald/Selected_trees_Filz.txt",
          demFn = "~/uav/grossfilz/grosserfilz.tif",
          windCondition = 2,
-         uavType = "solo",
+         uavType = "djip3",
          followSurfaceRes=5,
          launchPos = c(13.409114897133804,48.92039612988935))
 
