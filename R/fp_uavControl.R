@@ -962,6 +962,7 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed
   nofiles <- 1
   maxPoints <- nrow(df@data)
   mp <- maxPoints
+  
   a  <- 0
   b  <- 0
   c  <- 3
@@ -990,10 +991,10 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed
     
     # calculate minimum rth altitude for each line by identifing max altitude
     homeRTH<-max(unlist(raster::extract(dem,home,layer = 1, nl = 1)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
-    
+    names(df) <-c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude","id")
     # write and re-read waypoints
     sep<-"\t"
-    keeps <- c("a","b","c","d","e","f","g","latitude","longitude","altitude","j")
+    keeps <- c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude","id")
     df@data<-df@data[keeps]
     write.table(df@data[minPoints:maxPoints,1:(ncol(df@data))],file = "tmp.csv",quote = FALSE,row.names = FALSE,sep = "\t")
     lns <- data.table::fread("tmp.csv", skip=1L, header = FALSE,sep = "\n", data.table = FALSE)
@@ -1096,7 +1097,12 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
     sp::coordinates(df) <- ~lon+lat
     sp::proj4string(df) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
     result <- getAltitudes(demFn ,df,p,followSurfaceRes = 5,logger,projectDir,locationName)
+   
+    
     MAVTreeCSV(flightPlanMode = "track",trackDistance = 10000,logger = logger,p = p,param = result,maxSpeed = p$maxSpeed)
+    names(result[[2]]) <- c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude","id", "AUTOCONT")
+    keeps<- c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude", "AUTOCONTINUE")
+    result[[2]]<-df@data[keeps]
     return(result)
   }
 }
@@ -1146,7 +1152,9 @@ getAltitudes <- function(demFn ,df,p,followSurfaceRes,logger,projectDir,location
 
   
   # extract all waypoint altitudes
-  altitude <- raster::extract(demll,df,layer = 1, nl = 1)
+  altitude <- as.data.frame(raster::extract(demll,df,layer = 1, nl = 1))
+  names(altitude) <- "altitude"
+  altitude<-as.matrix(altitude)
   # get maximum altitude of the task area
   maxAlt <- max(altitude,na.rm = TRUE)
   log4r::levellog(logger, 'INFO', paste("maximum DEM Altitude : ", maxAlt," m"))
@@ -1177,7 +1185,8 @@ getAltitudes <- function(demFn ,df,p,followSurfaceRes,logger,projectDir,location
   df$altitude <- altitude
   taltitude <- as.data.frame(rawAltitude + as.numeric(p$aboveTreeAlt) - maxAlt)
   taltitude$id <- df@data$id
-  names(taltitude) <- c("altitude","id")
+  
+  
   tmp <- df@data
   tmp$altitude[tmp$id == 99 ] <- taltitude$altitude[taltitude$id == 99 ]
   df$altitude <- tmp$altitude

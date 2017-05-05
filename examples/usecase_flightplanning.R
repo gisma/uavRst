@@ -33,3 +33,13 @@ t3p<-t3p(projectDir ="/home/creu/uav/bayerwald",
          followSurfaceRes=5,
          launchPos = c(13.409114897133804,48.92039612988935))
 
+t3<-fp_t3p(projectDir ="/home/creu/uav/gentree/Traddelkopf",
+           locationName = "treeTree",
+           missionTrackList="~/uav/gentree/Traddelkopf/data/trees.txt",
+           demFn = "~/uav/gentree/Traddelkopf/data/DGM1_kellerwald.tif",
+           windCondition = 2,
+           uavType = "solo",
+           followSurfaceRes=5,
+           launchPos = c(8.979992866516115,51.13024583390035))
+mapview(t3$wp,zcol = "altitude",lwd=1,cex=5)+mapview(t3$lp,color="red",cex=5)
+
