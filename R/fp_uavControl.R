@@ -1008,11 +1008,36 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed
     lnsnew[3,1] <-       paste0("1",sep,"0",sep,"3",sep,"22",sep,"200.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,as.character(param$flightAltitude),sep,"1")
     #set mission speed
     lnsnew[4,1] <-       paste0("2",sep,"0",sep,"3",sep,"178",sep,"0.0",sep,maxSpeed,sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"1")
-    
+  
+    lnsnew[5,1] <-       mavCmd(id = 6, 
+                                cmd = 115, 
+                                p1 = round(abs(90),1))  
     # create "normal" waypoints
-    for (j in 1:length(lns[,1])) {
-      lnsnew[j+4,1]<-paste0(as.character(j+2),"\t",lns[j,])
+    
+    lc <- 5
+    # task WP & task speed
+    for (j in  seq(1,(length(lns[,1]) - 1)*2)) {
+      if (is.odd(j)){
+        sp<- str_split(pattern = "\t",string = lns[ceiling(j/2),])
+        lnsnew[j + lc,1] <-   mavCmd(id = j + lc - 2, 
+                                     lat = sp[[1]][8],
+                                     lon = sp[[1]][9],
+                                     alt = sp[[1]][10])}
+      else {
+        lnsnew[j + lc,1] <- mavCmd(id = j + lc - 2, 
+                                   cmd = 18, 
+                                   p1 = 1,
+                                   p3 = round(5,6),
+                                   p4 = round(90,6),
+                                   lat = sp[[1]][8],
+                                   lon = sp[[1]][9],
+                                   alt = sp[[1]][10])
+      }
     }
+    
+    # for (j in 1:length(lns[,1])) {
+    #   lnsnew[j+4,1]<-paste0(as.character(j+2),"\t",lns[j,])
+    # }
     
     #set rth altitude
     lnsnew[length(lnsnew[,1])+1,1]<-  paste0(as.character(length(lns[,1])+1),sep,"0",sep,"3",sep,"30",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,as.character(homeRTH),sep,"1")
