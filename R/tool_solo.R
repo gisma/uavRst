@@ -53,19 +53,21 @@ upload2Solo <- function(missionFile=NULL,connection="udp:10.1.1.166:14550",prear
 
 
 
-if (!isGeneric('solo2gpx')) {
-  setGeneric('solo2gpx', function(x, ...)
-    standardGeneric('solo2gpx'))
+if (!isGeneric('soloLog')) {
+  setGeneric('soloLog', function(x, ...)
+    standardGeneric('soloLog'))
 }
 #' download tlog files from solo and convert them to gpx files
 #'
-#' @description  solo2gpx is interfacing the mavtogpx.py converter
+#' @description  soloLogs is interfacing the mavtogpx.py converter. It downloads and/ or converts the 3DR Solo logfiles
 #'
 #' @param logFiles pattern of which kind of logs should be downloaded for telemetry it is "solo.t*"
 #' @param logDir path to the folder where the logs should be downloaded to
-#' @param download boolean if you want to download log files from the solo controller 
+#' @param downloadOnly boolean if you ONLY want to download the log files from the solo controller to a directory 
 #' @param netWarn if true warns and waits before starting a connection to the controller to connect to the solo wifi
-#' @param import import of the selecected as sp objects
+#' @param organize renames the log and gpx files according to their timeperiod
+#' 
+#' @param makeSP generates SP objects from the gpx files
 #' 
 #' @author
 #' Chris Reudenbach
@@ -73,18 +75,25 @@ if (!isGeneric('solo2gpx')) {
 #' @examples
 #' 
 #' ## download current telemetry log file from controller and convert it to gpx
-#' solo2gpx(logDir="~/tmp/solo",logFiles = "solo.tlog")
+#' soloLog(logDir="~/tmp/solo",logFiles = "solo.tlog")
 #' 
 #' ## download all available telemetry logfiles from the controller
-#' solo2gpx(logDir="~/tmp/solo")
+#' soloLog(logDir="~/tmp/solo")
 #' 
 #' ## download ALL logfiles from the controller
-#' solo2gpx(logDir="~/tmp/solo", logFiles = "*")
+#' soloLog(logDir="~/tmp/solo", logFiles = "*")
 #' 
-#' @export solo2gpx
+#' @export soloLog
 #'               
 
-solo2gpx <- function(logFiles="solo.t*",logDir="soloLog", download=TRUE,netWarn=TRUE,import=FALSE){
+soloLog <- function(logFiles="solo.t*",
+                     logDir="~/soloLog", 
+                     
+                     downloadOnly=FALSE,
+                     netWarn=TRUE,
+                     organize=TRUE,
+                     makeSP = FALSE){
+  logDir<- path.expand(logDir)
   command <-"mavtogpx.py"
   option1<-paste0(logDir,"/",logFiles)
   
@@ -92,20 +101,22 @@ solo2gpx <- function(logFiles="solo.t*",logDir="soloLog", download=TRUE,netWarn=
     dir.create(file.path(logDir), recursive = TRUE)
   }
   
-  if (download){
-    invisible(readline(prompt="Press [enter] to continue\n The controller shutdown after a while - check connection\n"))
-    cat("downloading and converting will take a while without prompting anything...\n be patient in the end you will know.\n")
-    log<-system( paste0("sshpass -p 'TjSDBkAu'  scp 'root@10.1.1.1:/log/",logFiles,"' ",logDir,"/. " ),wait=TRUE)
-    if (log == 0) {
-      f <- list.files(logDir, pattern=extension(logFiles))
-      cat(f," downloaded...\n")
-      cat("Download from solo controllor seems to be ok\n")
-    } else {
-      cat('FATAL', "### can not find/read input file")        
-      stop("### could not read any log data\n")
-    }  
-    
-  }
+  
+  invisible(readline(prompt="Press [enter] to continue\n The controller shutdown after a while - check connection\n"))
+  cat("downloading and converting will take a while without prompting anything...\n be patient in the end you will know.\n")
+  log<-system( paste0("sshpass -p 'TjSDBkAu'  scp 'root@10.1.1.1:/log/",logFiles,"' ",logDir,"/. " ),wait=TRUE)
+  if (log == 0) {
+    f <- list.files(logDir, pattern=extension(logFiles))
+    cat(f," downloaded...\n")
+    cat("Download from solo controllor seems to be ok\n")
+  } else {
+    cat('FATAL', "### can not find/read input file")        
+    stop("### could not read any log data\n")
+  }  
+  if (downloadOnly){
+    cat("All logs downloaded...")
+    exit
+  } 
   
   test<-system2("mavtogpx.py","-h",stdout = TRUE)
   if (grep("usage: mavtogpx.py",test)){
@@ -113,19 +124,43 @@ solo2gpx <- function(logFiles="solo.t*",logDir="soloLog", download=TRUE,netWarn=
     cat("converting log files to to gpx...\n")
     test<-system2(command, option1,stdout = TRUE)
     cat(test)
-    } else {
+  } else {
     stop("No pymavlink lib. Try: sudo pip install pymavlink\n")
   }
-  if (import) {
-    cat("read gpx to a nested list of sp objects\n")
+  
+  
+  if (organize) {
+    cat("rename files...\n")
     f <- list.files(logDir, pattern="gpx")
+
     i=1
     flights <- list()
     for (flight in f) {
-    f <- h_read_gpx(path.expand(paste0(logDir,"/",flight)))
-    flights[[i]]<-f
-    i=i+1
+      f <- h_read_gpx(path.expand(paste0(logDir,"/",flight)))
+      flights[[i]]<-f
+      firstTime<-as.character(flights[[i]]$track_points@data$time)[1]
+      lastTime<-as.character(flights[[i]]$track_points@data$time)[length(flights[[i]]$track_points@data$time)]
+      la1<-gsub(x = lastTime, pattern = "\\/",replacement = "")
+      la2<-gsub(x = la1, pattern = "\\ ",replacement = "_")
+      la3<-substr(gsub(x = la2, pattern = "\\:",replacement = "-"),10,17)
+      
+      fi1<-gsub(x = firstTime, pattern = "\\/",replacement = "")
+      fi2<-gsub(x = fi1, pattern = "\\ ",replacement = "_")
+      fi3<-substr(gsub(x = fi2, pattern = "\\:",replacement = "-"),1,17)
+      logName<- paste0(logDir,"/",fi3,"_",la3,"_solo.tlog")
+      gpxName<- paste0(logDir,"/",fi3,"_",la3,"_solo.gpx")      
+      fNgpx <- paste0(logDir,"/",list.files(logDir, pattern="gpx"))
+      fNlog <- paste0(logDir,"/",list.files(logDir, pattern="tlog",include.dirs = FALSE))
+      if (!file.exists(logName)) file.rename(fNlog[i],logName)
+      else {cat("you'd already converted ",logName,"\n")}
+      if (!file.exists(gpxName)) file.rename(fNgpx[i],gpxName)
+      else {cat("you'd already converted ",gpxName,"\n")}
+      
+      i=i+1
     }
-    return(flights)
+    cat("All logfiles stored and coverted ...\n")
+    if (makeSP) {
+      cat("export as sp objects ...\n")
+      return(flights)}
   }
 }

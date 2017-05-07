@@ -81,7 +81,7 @@ fp_t3p<- function(projectDir="~",
                launchAltitude=-9999,
                uavType="djip3") {
   
-  
+  demFn <- path.expand(demFn)
   # assign flight mission name 
   mission<-paste(locationName, sep=.Platform$file.sep)
   
@@ -93,10 +93,10 @@ fp_t3p<- function(projectDir="~",
   if(!file.exists(file.path(projectDir, workingDir,"control"))) { dir.create(file.path(projectDir, workingDir,"control"),recursive = TRUE)}
   if(!file.exists(file.path(projectDir,"data"))){dir.create(file.path(projectDir,"data"),recursive = TRUE)}
   # setting R environ temp folder to the current working directory
-  Sys.setenv(TMPDIR=file.path(projectDir, workingDir,"tmp"))
+  Sys.setenv(TMPDIR=file.path(projectDir, workingDir,"run"))
   
   # set R working directory
-  setwd(file.path(projectDir, workingDir,"tmp"))
+  setwd(file.path(projectDir, workingDir,"run"))
   
   Sys.chmod(list.dirs("../.."), "777")
   

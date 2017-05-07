@@ -1016,22 +1016,28 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed
     
     lc <- 5
     # task WP & task speed
-    for (j in  seq(1,(length(lns[,1]) - 1)*2)) {
-      if (is.odd(j)){
-        sp<- str_split(pattern = "\t",string = lns[ceiling(j/2),])
-        lnsnew[j + lc,1] <-   mavCmd(id = j + lc - 2, 
-                                     lat = sp[[1]][8],
-                                     lon = sp[[1]][9],
-                                     alt = sp[[1]][10])}
-      else {
-        lnsnew[j + lc,1] <- mavCmd(id = j + lc - 2, 
-                                   cmd = 18, 
+    for (j in  seq(1,(length(lns[,1]) - 1))) {
+      sp<- str_split(pattern = "\t",string = lns[ceiling(j),])
+      if (sp[[1]][3] == 18){
+        
+        lnsnew[j + lc , 1] <- mavCmd(id = j  + lc - 2,
+                                   cmd = 18,
                                    p1 = 1,
                                    p3 = round(5,6),
                                    p4 = round(90,6),
                                    lat = sp[[1]][8],
                                    lon = sp[[1]][9],
                                    alt = sp[[1]][10])
+
+        }
+      
+      else {
+
+        lnsnew[j + lc,1] <-   mavCmd(id = j + lc - 2, cmd = 16,
+                                     lat = sp[[1]][8],
+                                     lon = sp[[1]][9],
+                                     alt = sp[[1]][10])
+
       }
     }
     
@@ -1046,7 +1052,7 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed
     # trigger rth event
     lnsnew[length(lnsnew[,1])+1,1] <- paste0(as.character(length(lns[,1])+1),sep,"0",sep,"3",sep,"20",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"1")
     # write the control file
-    write.table(lnsnew, paste0(strsplit(getwd(),"/tmp")[[1]][1],"/control/",mission,"_",i,"_solo.txt"), sep="\t", row.names=FALSE, col.names=FALSE, quote = FALSE,na = "")
+    write.table(lnsnew, paste0(strsplit(getwd(),"/run")[[1]][1],"/control/",mission,"_",i,"_solo.txt"), sep="\t", row.names=FALSE, col.names=FALSE, quote = FALSE,na = "")
     # log event 
     levellog(logger, 'INFO', paste("created : ", paste0(mission,"-",i,".csv")))
     minPoints<-maxPoints
@@ -1089,9 +1095,18 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
       forward <- geosphere::bearing(treeList@coords[i,],treeList@coords[i + 1,], a = 6378137, f = 1/298.257223563)
       backward <- geosphere::bearing(treeList@coords[i + 1,],treeList@coords[i,], a = 6378137, f = 1/298.257223563)
       p$task <- fp_getPresetTask("treetop")
-      lns[length(lns) + 1] <- makeUavPointMAV(lat = treeList@coords[i,][2],lon = treeList@coords[i,][1],head = forward,group = 99)
+      lns[length(lns) + 1] <- makeUavPointMAV( cmd = 18,  
+                                               p1 = 1,    
+                                               p3 = round(5,6),
+                                               #p4 = round(90,6),
+                                               lat = treeList@coords[i,][2],
+                                               lon = treeList@coords[i,][1],
+                                               head = forward,
+                                               group = 99) 
+     #lns[length(lns) + 1] <- makeUavPointMAV(lat = treeList@coords[i,][2],lon = treeList@coords[i,][1],head = forward,group = 99)
       p$task <- fp_getPresetTask("nothing")
       posUp <- calcNextPos(treeList@coords[i,][1],treeList@coords[i,][2],heading = forward,distance = p$climbDist)
+
       lns[length(lns) + 1] <- makeUavPointMAV(lat = posUp[2],lon = posUp[1],head = forward,group = 1) 
       posDown <- calcNextPos(treeList@coords[i + 1,][1],treeList@coords[i + 1,][2],backward,distance = p$climbDist)
       lns[length(lns) + 1] <- makeUavPointMAV(lat = posDown[2],lon = posDown[1],head = forward,group = 1) 
@@ -1250,7 +1265,7 @@ writeDjiTreeCsv <-function(df,mission){
   
   for (i in 1:nofiles) {
     if (maxPoints>nrow(df@data)){maxPoints<-nrow(df@data)}
-    write.csv(df@data[minPoints:maxPoints,1:(ncol(df@data)-2)],file = paste0(strsplit(getwd(),"/tmp")[[1]][1],"/control/",mission,i,"_dji.csv"),quote = FALSE,row.names = FALSE)
+    write.csv(df@data[minPoints:maxPoints,1:(ncol(df@data)-2)],file = paste0(strsplit(getwd(),"/run")[[1]][1],"/control/",mission,i,"_dji.csv"),quote = FALSE,row.names = FALSE)
     minPoints<-maxPoints
     maxPoints<-maxPoints+96
     
