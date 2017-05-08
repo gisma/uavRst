@@ -71,6 +71,7 @@ fp_t3p<- function(projectDir="~",
                flightAltitude=75,
                climbDist=7.5,
                aboveTreeAlt=15,
+               circleDiameter = 2.5,
                presetFlightTask="remote",
                maxSpeed=25.0,
                followSurfaceRes=5,
@@ -79,7 +80,7 @@ fp_t3p<- function(projectDir="~",
                windCondition=1,
                rcRange=-9999,
                launchAltitude=-9999,
-               uavType="djip3") {
+               uavType="solo") {
   
   demFn <- path.expand(demFn)
   # assign flight mission name 
@@ -119,6 +120,7 @@ fp_t3p<- function(projectDir="~",
   test<-try(uavRst:::readLaunchPos(launchPos))
   if (class(test)!="try-error"){
     launchPos<-test
+    flightArea<- flightList+launchPos
   }
   else{
     log4r::levellog(logger, 'FATAL', "### can not find/read launchPosition")        
@@ -150,5 +152,5 @@ fp_t3p<- function(projectDir="~",
   p$climbDist<-climbDist
   p$task<- uavRst:::fp_getPresetTask("treetop")
   
-  fullTreeList<-uavRst:::makeFlightPathT3(flightList,p,uavType,task,demFn,logger,projectDir,locationName)
+  fullTreeList<-uavRst:::makeFlightPathT3(flightList,p,uavType,task,demFn,logger,projectDir,locationName,circleDiameter,flightArea)
 }

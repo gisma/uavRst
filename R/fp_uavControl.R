@@ -950,12 +950,16 @@ launch2flightalt <- function(p, lns, uavViewDir, launch2startHeading, uavType) {
   return(lns)
 }
 
-MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed = maxSpeed/3.6){
+MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed = maxSpeed/3.6,diameter){
   mission <- p$locationName
   
   df     <- param[[2]]
   dem    <- param[[3]]
   maxAlt <- param[[6]]
+  
+
+  
+  
   
   minPoints <- 1
   #nofiles<- ceiling(rawTime/batteryTime)
@@ -976,21 +980,60 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed
   #if (maxPoints > nrow(df@data)) {maxPoints<-nrow(df@data)}
   # store launchposition and coordinates we need them for the rth calculations
   for (i in 1:nofiles) {
+    launchLon<- p$launchLon
+    launchLat<- p$launchLat
+    launchAlt<- param$la
+    # for safety issues we need to generate synthetic climb and sink waypoints 
     # take current start position of the split task
-    actualLat <- df@data[minPoints,8]
-    actualLon <- df@data[minPoints,9]
+    startLat <- df@data[minPoints ,8]
+    startLon <- df@data[minPoints ,9]
+    
     # take current end position of split task
-    nextLat <- df@data[maxPoints,8]
-    nextLon <- df@data[maxPoints,9]
+    endLat <- df@data[maxPoints - 1,8]
+    endLon <- df@data[maxPoints - 1,9]
+    
+    # depending on DEM/DSM sometimes there are no data Values
     # generate flight lines from lanch to start and launch to end point of splitted task
-    yhome <- c(actualLat,nextLat)
-    xhome <- c(actualLon,nextLon)
-    home <- SpatialLines(list(Lines(Line(cbind(xhome,yhome)), ID="home")))
-    sp::proj4string(home) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
-    #sp::proj4string(start) <-sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
+    home  <- h_sp_line(c(launchLon,endLon),c(launchLat,endLat),"Home")
+    start <- h_sp_line(c(launchLon,startLon),c(launchLat,startLat),"Start")
     
     # calculate minimum rth altitude for each line by identifing max altitude
-    homeRTH<-max(unlist(raster::extract(dem,home,layer = 1, nl = 1)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
+    homeRth  <- raster::extract(dem,home, fun = max,na.rm = TRUE,layer = 1, nl = 1) - launchAlt + as.numeric(p$flightAltitude)
+    startRth <- raster::extract(dem,start,fun = max,na.rm = TRUE,layer = 1, nl = 1) - launchAlt + as.numeric(p$flightAltitude)
+    
+    # add 10% of flight altitude as safety buffer
+    homeRth  <- homeRth  + 0.1 * homeRth
+    startRth <- startRth + 0.1 * startRth
+    
+    # get the max position of the flightlines
+    homemaxpos  <- h_line_extract_maxpos(dem,home)
+    startmaxpos <- h_line_extract_maxpos(dem,start)
+    
+    # calculate heading 
+    homeheading  <- geosphere::bearing(c(endLon,endLat),c(launchLon,launchLat), a = 6378137, f = 1/298.257223563)
+    startheading <- geosphere::bearing(c(launchLon,launchLat),c(startLon,startLat), a = 6378137, f = 1/298.257223563)
+    
+    
+    
+    
+    
+    
+    # # take current start position of the split task
+    # actualLat <- df@data[minPoints,8]
+    # actualLon <- df@data[minPoints,9]
+    # # take current end position of split task
+    # nextLat <- df@data[maxPoints,8]
+    # nextLon <- df@data[maxPoints,9]
+    # # generate flight lines from lanch to start and launch to end point of splitted task
+    # yhome <- c(actualLat,nextLat)
+    # xhome <- c(actualLon,nextLon)
+    # home <- SpatialLines(list(Lines(Line(cbind(xhome,yhome)), ID="home")))
+    # sp::proj4string(home) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
+    # #sp::proj4string(start) <-sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
+    # 
+    # # calculate minimum rth altitude for each line by identifing max altitude
+    # homeRTH<-max(unlist(raster::extract(dem,home,layer = 1, nl = 1)))+as.numeric(p$flightAltitude)-as.numeric(maxAlt)
+    
     names(df) <-c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude","id")
     # write and re-read waypoints
     sep<-"\t"
@@ -1003,28 +1046,50 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed
     # create default header line  
     lnsnew[1,1] <- "QGC WPL 110"
     # create homepoint 
-    lnsnew[2,1] <-       paste0("0",sep,"1",sep,"0",sep,"16",sep,"0",sep,"0",sep,"0",sep,"0",sep,p$launchLat,sep,p$launchLon,sep,as.character(param$launchAltitude),sep,"1")
-    # CREATE takeoff
-    lnsnew[3,1] <-       paste0("1",sep,"0",sep,"3",sep,"22",sep,"200.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,as.character(param$flightAltitude),sep,"1")
-    #set mission speed
-    lnsnew[4,1] <-       paste0("2",sep,"0",sep,"3",sep,"178",sep,"0.0",sep,maxSpeed,sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"1")
-  
-    lnsnew[5,1] <-       mavCmd(id = 6, 
+    lnsnew[2,1] <- mavCmd(id = 1, 
+                          cmd = 16,
+                          lat = p$launchLat,
+                          lon = p$launchLon,
+                          alt = param$launchAltitude) 
+    # TAKEOFF
+    lnsnew[3,1] <- mavCmd(id = 1, 
+                          cmd = 22, 
+                          alt = round(40,6))
+
+    # SPEED taxiway
+    lnsnew[4,1] <-       mavCmd(id = 2, 
+                                cmd = 178, 
+                                p2 = round(maxSpeed,6))
+    
+    # ascent2start WP
+    lnsnew[5,1] <- mavCmd(id = 3, 
+                          cmd = 16,
+                          lat = round(calcNextPos(launchLon,launchLat,startheading,5)[2],6),
+                          lon = round(calcNextPos(launchLon,launchLat,startheading,5)[1],6),
+                          alt = round(50,6))
+    # maxStartPos WP
+    lnsnew[6,1] <- mavCmd(id = 4, 
+                          cmd = 16,
+                          lat = round(startmaxpos[1,2],6),
+                          lon = round(startmaxpos[1,1],6),
+                          alt = round(startRth,6))
+    
+    lnsnew[7,1] <-       mavCmd(id = 5, 
                                 cmd = 115, 
-                                p1 = round(abs(90),1))  
+                                p1 = round(abs(0),1))
     # create "normal" waypoints
     
-    lc <- 5
+    lc <- 7
     # task WP & task speed
     for (j in  seq(1,(length(lns[,1]) - 1))) {
       sp<- str_split(pattern = "\t",string = lns[ceiling(j),])
-      if (sp[[1]][3] == 18){
-        
+      if (sp[[1]][3] == 19){
+        # circle waypoint
         lnsnew[j + lc , 1] <- mavCmd(id = j  + lc - 2,
-                                   cmd = 18,
-                                   p1 = 1,
-                                   p3 = round(5,6),
-                                   p4 = round(90,6),
+                                   cmd = 19, #Loiter around this MISSION for X seconds
+                                   p1 = 100.0,
+                                   p3 = round(diameter/2,6),
+                                   p4 = 0,
                                    lat = sp[[1]][8],
                                    lon = sp[[1]][9],
                                    alt = sp[[1]][10])
@@ -1032,7 +1097,10 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed
         }
       
       else {
+        # up or down waypoint
+        # 
 
+          
         lnsnew[j + lc,1] <-   mavCmd(id = j + lc - 2, cmd = 16,
                                      lat = sp[[1]][8],
                                      lon = sp[[1]][9],
@@ -1041,18 +1109,36 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, param, maxSpeed
       }
     }
     
+    ## old implementation
     # for (j in 1:length(lns[,1])) {
     #   lnsnew[j+4,1]<-paste0(as.character(j+2),"\t",lns[j,])
     # }
+  
+    # MAV fly to launch sequence
+    # RTH altitude TODO
+    lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = as.character(length(lns[,1]) + 7), 
+                                               cmd = 30,
+                                               alt = round(homeRth,0))
+    # SPEED max return speed
+    lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = as.character(length(lns[,1]) + 8), 
+                                               cmd = 178,
+                                               p2 = round(maxSpeed,6))
+    # trigger RTL event
+    lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = as.character(length(lns[,1]) + 9), 
+                                               cmd = 20)
     
-    #set rth altitude
-    lnsnew[length(lnsnew[,1])+1,1]<-  paste0(as.character(length(lns[,1])+1),sep,"0",sep,"3",sep,"30",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,as.character(homeRTH),sep,"1")
-    #set max return speed
-    lnsnew[length(lnsnew[,1])+1,1] <- paste0(as.character(length(lns[,1])+1),sep,"0",sep,"3",sep,"178",sep,"0.0",sep,"250",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"1")
-    # trigger rth event
-    lnsnew[length(lnsnew[,1])+1,1] <- paste0(as.character(length(lns[,1])+1),sep,"0",sep,"3",sep,"20",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"1")
     # write the control file
+    # write.table(lnsnew, paste0(projectDir, "/",locationName , "/", workingDir,"/control/", mission,"_", i, "_solo.txt"), sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE, na = "")
     write.table(lnsnew, paste0(strsplit(getwd(),"/run")[[1]][1],"/control/",mission,"_",i,"_solo.txt"), sep="\t", row.names=FALSE, col.names=FALSE, quote = FALSE,na = "")
+      
+    # #set rth altitude
+    # lnsnew[length(lnsnew[,1])+1,1]<-  paste0(as.character(length(lns[,1])+1),sep,"0",sep,"3",sep,"30",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,as.character(homeRTH),sep,"1")
+    # #set max return speed
+    # lnsnew[length(lnsnew[,1])+1,1] <- paste0(as.character(length(lns[,1])+1),sep,"0",sep,"3",sep,"178",sep,"0.0",sep,"250",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"1")
+    # # trigger rth event
+    # lnsnew[length(lnsnew[,1])+1,1] <- paste0(as.character(length(lns[,1])+1),sep,"0",sep,"3",sep,"20",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"1")
+    # write the control file
+    # write.table(lnsnew, paste0(strsplit(getwd(),"/run")[[1]][1],"/control/",mission,"_",i,"_solo.txt"), sep="\t", row.names=FALSE, col.names=FALSE, quote = FALSE,na = "")
     # log event 
     levellog(logger, 'INFO', paste("created : ", paste0(mission,"-",i,".csv")))
     minPoints<-maxPoints
@@ -1074,7 +1160,43 @@ readTreeTrack<- function(treeTrack){
   return(tTkDF)
 }
 
-makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,locationName){
+makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,locationName,diameter,flightArea){
+  if (is.null(demFn)) {
+    levellog(logger, 'WARN', "CAUTION!!! no DEM file provided")
+    stop("CAUTION!!! no DEM file provided")}
+  cat("preprocessing DSM data...\n")
+  if (class(demFn)[1] == "character") rst <- raster::raster(demFn)
+  # read local dem file
+  if (class(rst)[1] %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
+    rundem<-rst
+    proj <- projection(rundem)
+    demll <- gdalwarp(srcfile = demFn, dstfile = "demll.tif", overwrite=TRUE,  t_srs = "+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE ) 
+    
+    rundem <- raster::crop(demll,extent(flightArea@bbox[1] - 0.00421,
+                                        flightArea@bbox[3] + 0.00421,
+                                        flightArea@bbox[2] - 0.00421,
+                                        flightArea@bbox[4] + 0.00421))
+    raster::writeRaster(rundem,"tmpdem.tif",overwrite = TRUE)
+    demll <- rundem 
+    #file.copy("tmpdem.tif", paste0(file.path(projectDir,locationName, workingDir,"run"),"/tmpdem.tif")) 
+    dem  <- demll
+    
+  } else {
+    rundem <- raster::raster(demFn,
+                             xmn = min(p$lon1,p$lon3) - 0.0083,
+                             xmx = max(p$lon1,p$lon3) + 0.0083,
+                             ymn = min(p$lat1,p$lat3) - 0.0083,
+                             ymx = max(p$lat1,p$lat3) + 0.0083)
+    
+    file.copy(demFn, paste0(file.path(projectDir,locationName, "run"),"/tmpdem.tif"))
+    dem <- rundem
+  }
+  
+  
+  demll <- gdalwarp(srcfile = "tmpdem.tif", dstfile = "demll.tif", overwrite=TRUE,  t_srs = "+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )  
+  
+  demll <- setMinMax(demll)
+  
   
   lns <- list()
   fileConn <- file("treepoints.csv")
@@ -1092,24 +1214,84 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
       writeLines(unlist(lns), fileConn)
     }
     else if (uavType == "solo") {
+      cat("calculating positions ",i," of ",nrow(treeList),"\r")
+      pos = cbind(p$launchLon,p$launchLat)
+      #coords = cbind(treeList@coords[i ,][1],treeList@coords[i ,][2])
+      pos1 = sp::SpatialPoints(pos)
+      pos1 = SpatialPointsDataFrame(pos, as.data.frame("LaunchPos"))
+      # promote data frame to spatial
+      sp::proj4string(pos1) <-CRS("+proj=longlat +datum=WGS84 +no_defs")
+      
+      if (p$launchAltitude == -9999){
+        tmpalt <- raster::extract(dem,pos1,layer = 1, nl = 1)  
+        p$launchAltitude <- as.numeric(tmpalt)
+        # otherwise take it from the parameter set
+      } else 
+      {
+        p$launchAltitude <- as.numeric(p$launchAltitude)
+      }
       forward <- geosphere::bearing(treeList@coords[i,],treeList@coords[i + 1,], a = 6378137, f = 1/298.257223563)
       backward <- geosphere::bearing(treeList@coords[i + 1,],treeList@coords[i,], a = 6378137, f = 1/298.257223563)
-      p$task <- fp_getPresetTask("treetop")
-      lns[length(lns) + 1] <- makeUavPointMAV( cmd = 18,  
+      posUp <- calcNextPos(treeList@coords[i,][1],treeList@coords[i,][2],heading = forward,distance = p$climbDist)
+      posDown <- calcNextPos(treeList@coords[i,][1],treeList@coords[i,][2],backward,distance = p$climbDist)
+      posNext <- c(treeList@coords[i + 1,][1],treeList@coords[i + 1,][2])
+      
+      seg_max_toDown <- h_get_seg_fparams(demll,
+                                           start = c(posDown[1],posDown[2]),
+                                           target = c(treeList@coords[i,][1],treeList@coords[i,][2]),
+                                           p)
+      
+      
+      seg_max_toUp <- h_get_seg_fparams(demll,
+                                          start = c(posDown[1],posDown[2]),
+                                          target = c(posUp[1],posUp[2]),
+                                          p)      
+      
+      
+      seg_max_toNext <- h_get_seg_fparams(demll,
+                                           start = c(posDown[1],posDown[2]),
+                                           target = c(treeList@coords[i + 1,][1],treeList@coords[i + 1,][2]),
+                                           p)      
+
+      # lns[length(lns) + 1] <- makeUavPointMAV(lat = as.numeric(seg_max_toFirst[3]),
+      #                                         lon = as.numeric(seg_max_toFirst[2]),
+      #                                         alt =  as.numeric(seg_max_toFirst[1]),
+      #                                         head =  as.numeric(seg_max_toFirst[4]),
+      #                                         group = 99) 
+      
+      #p$task <- fp_getPresetTask("nothing")
+      lns[length(lns) + 1] <- makeUavPointMAV(lat = posDown[2],
+                                              lon = posDown[1],
+                                              head = 0,
+                                              alt =  as.numeric(seg_max_toDown[1]),
+                                              group = 1) 
+
+      
+      lns[length(lns) + 1] <- makeUavPointMAV( cmd = 19,  
                                                p1 = 1,    
                                                p3 = round(5,6),
                                                #p4 = round(90,6),
                                                lat = treeList@coords[i,][2],
                                                lon = treeList@coords[i,][1],
-                                               head = forward,
+                                               head = 0,
                                                group = 99) 
-     #lns[length(lns) + 1] <- makeUavPointMAV(lat = treeList@coords[i,][2],lon = treeList@coords[i,][1],head = forward,group = 99)
-      p$task <- fp_getPresetTask("nothing")
-      posUp <- calcNextPos(treeList@coords[i,][1],treeList@coords[i,][2],heading = forward,distance = p$climbDist)
-
-      lns[length(lns) + 1] <- makeUavPointMAV(lat = posUp[2],lon = posUp[1],head = forward,group = 1) 
-      posDown <- calcNextPos(treeList@coords[i + 1,][1],treeList@coords[i + 1,][2],backward,distance = p$climbDist)
-      lns[length(lns) + 1] <- makeUavPointMAV(lat = posDown[2],lon = posDown[1],head = forward,group = 1) 
+      
+      # lns[length(lns) + 1] <- makeUavPointMAV(lat = as.numeric(seg_max_toUp[3]),
+      #                                         lon = as.numeric(seg_max_toUp[2]),
+      #                                         alt = as.numeric(seg_max_toUp[1]),
+      #                                         head = as.numeric(seg_max_toUp[4]),
+      #                                         group = 1) 
+      
+      lns[length(lns) + 1] <- makeUavPointMAV(lat = posUp[2],
+                                              lon = posUp[1],
+                                              head = forward,
+                                              alt =  as.numeric(seg_max_toNext[1]),
+                                              group = 1) 
+      # lns[length(lns) + 1] <- makeUavPointMAV(lat = as.numeric(seg_max_toNext[3]),
+      #                                         lon = as.numeric(seg_max_toNext[2]),
+      #                                         alt =  as.numeric(seg_max_toNext[1]),
+      #                                         head =  as.numeric(seg_max_toNext[4]),
+      #                                         group = 99) 
       writeLines(unlist(lns), fileConn)
     }
   }
@@ -1120,26 +1302,22 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
     names(djiDF) <- unlist(strsplit( makeUavPoint(pos,uavViewDir,group = 99,p,header = TRUE,sep = ' '),split = " "))
     sp::coordinates(djiDF) <- ~lon+lat
     sp::proj4string(djiDF) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
-    result <- getAltitudes(demFn ,djiDF,p,followSurfaceRes = 5,logger,projectDir,locationName)
-    #result<-analyzeDSM(demFn, djiDF,p,p$altFilter,p$followSurface,p$followSurfaceRes,logger,projectDir)
-    #result<-analyzeDSM(demFn ,djiDF,p,followSurface=followSurface,followSurfaceResfollowSurfaceRes,logger=logger,projectDir=projectDir)
-    #    write.csv(djiDF@data,file = paste0(strsplit(getwd(),"/tmp")[[1]][1],"/control/","mission",".csv"),quote = FALSE,row.names = FALSE)
-    #writeDjiTreeCsv(result[[2]],p$locationName)
+    result <- getAltitudes(demll ,djiDF,p,followSurfaceRes = 5,logger,projectDir,locationName,flightArea)
     writeDjiTreeCSV(result[[2]],p$locationName,1,94,p,logger,round(result[[4]],digits = 0),trackSwitch,result[[3]],result[[6]])
     return(result)
     
   } else if (uavType == "solo") {
-    cat("calculating DEM related stuff\n")
+    cat("getting altitudes...\n")
     df <- read.csv("treepoints.csv",sep = "\t",header = FALSE)
-    #names(df) <-unlist(strsplit( makeUavPointMAV(pos,uavViewDir,group=99,p,header = TRUE,sep=' '),split = " "))
-    #
     names(df) <- c("a","b","c","d","e","f","g","latitude","longitude","altitude","id","autocont","lat","lon")
     sp::coordinates(df) <- ~lon+lat
     sp::proj4string(df) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
-    result <- getAltitudes(demFn ,df,p,followSurfaceRes = 5,logger,projectDir,locationName)
+    
+    # sp::spTransform(treeList,CRSobj = CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+    result <- getAltitudes(demll ,df,p,followSurfaceRes = 5,logger,projectDir,locationName,flightArea)
    
     
-    MAVTreeCSV(flightPlanMode = "track",trackDistance = 10000,logger = logger,p = p,param = result,maxSpeed = p$maxSpeed)
+    MAVTreeCSV(flightPlanMode = "track",trackDistance = 10000,logger = logger,p = p,param = result,maxSpeed = p$maxSpeed,diameter=2.5)
     names(result[[2]]) <- c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude","id", "AUTOCONTINUE")
     keeps<- c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude", "AUTOCONTINUE")
     result[[2]]@data<-result[[2]]@data[keeps]
@@ -1147,48 +1325,7 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
   }
 }
 
-getAltitudes <- function(demFn ,df,p,followSurfaceRes,logger,projectDir,locationName) {
-  if (is.null(demFn)) {
-    levellog(logger, 'WARN', "CAUTION!!! no DEM file provided I try to download SRTM data... SRTM DATA has a poor resolution for UAVs!!! ")
-    cat("\nCAUTION! No DEM data is provided.\n trying to download SRTM data... \n Be aware that the resulution of SRTM is NOT sufficient for terrain following flights!")
-    # download corresponding srtm data
-    dem <- uavRst::t_getgeodata(name = "SRTM",xtent = extent(p$lon1,p$lon3,p$lat1,p$lat3), zone = 1.0,merge = TRUE)
-    dem <- setMinMax(dem)
-    rundem <- raster::crop(dem,
-                           extent(min(p$lon1,p$lon3) - 0.0083,
-                                  max(p$lon1,p$lon3) + 0.0083,
-                                  min(p$lat1,p$lat3) - 0.0083,
-                                  max(p$lat1,p$lat3) + 0.0083)
-    )
-    raster::writeRaster(dem,"tmpdem.tif",overwrite = TRUE)
-  } else {
-    # read local dem file
-    if (class(demFn)[1] %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
-      rundem <- demFn
-      rundem <- raster::crop(rundem,
-                             extent(min(p$lon1,p$lon3) - 0.0083,
-                                    max(p$lon1,p$lon3) + 0.0083,
-                                    min(p$lat1,p$lat3) - 0.0083,
-                                    max(p$lat1,p$lat3) + 0.0083)
-      )
-      raster::writeRaster(rundem,"tmpdem.tif",overwrite = TRUE)
-      dem <- rundem
-    } else {
-      rundem <- raster::raster(demFn,
-                               xmn = min(p$lon1,p$lon3) - 0.0083,
-                               xmx = max(p$lon1,p$lon3) + 0.0083,
-                               ymn = min(p$lat1,p$lat3) - 0.0083,
-                               ymx = max(p$lat1,p$lat3) + 0.0083)
-      
-      file.copy(demFn, paste0(file.path(projectDir,locationName, "run"),"/tmpdem.tif"))
-      dem <- rundem
-    }
-  }  # end of loading DEM data
-  
-    demll <- gdalwarp(srcfile = "tmpdem.tif", dstfile = "demll.tif", overwrite=TRUE,  t_srs = "+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )  
-    
-    demll <- setMinMax(demll)
-    
+getAltitudes <- function(demll ,df,p,followSurfaceRes,logger,projectDir,locationName,flightArea) {
 
   
   # extract all waypoint altitudes
@@ -1216,6 +1353,7 @@ getAltitudes <- function(demFn ,df,p,followSurfaceRes,logger,projectDir,location
   # calculate the flight altitude shift due to launching and max altitude
   p$flightAltitude <- as.numeric(p$flightAltitude) + (maxAlt - as.numeric(launchAlt))
   p$aboveTreeAlt <- as.numeric(p$aboveTreeAlt) + (maxAlt - as.numeric(launchAlt))
+  fa<-as.numeric(p$flightAltitude) + (maxAlt - as.numeric(launchAlt))
   
   rthFlightAlt <- p$flightAltitude
   p$rthAltitude <- rthFlightAlt
@@ -1226,9 +1364,10 @@ getAltitudes <- function(demFn ,df,p,followSurfaceRes,logger,projectDir,location
   taltitude <- as.data.frame(rawAltitude + as.numeric(p$aboveTreeAlt) - maxAlt)
   taltitude$id <- df@data$id
   
-  
+  #TODO flightaltitude treealtitude
   tmp <- df@data
   tmp$altitude[tmp$id == 99 ] <- taltitude$altitude[taltitude$id == 99 ]
+  #tmp$altitude[tmp$id == 1 ] <- taltitude$altitude[taltitude$id == 1 ]
   df$altitude <- tmp$altitude
   return <- c(pos,df,demll,rthFlightAlt,launchAlt,maxAlt)
   names(return) <- c("lp","wp","dsm","rth","la","xa")
@@ -1246,7 +1385,7 @@ readLaunchPos <- function(fN,extend=FALSE){
     # points from scratch
     coords = cbind(fN[1],fN[2])
     launchPos = sp::SpatialPoints(coords)
-    launchPos = SpatialPointsDataFrame(coords, as.data.frame("LaunchPosition"))
+    launchPos = SpatialPointsDataFrame(coords, as.data.frame("name"))
     # promote data frame to spatial
     sp::proj4string(launchPos) <-CRS("+proj=longlat +datum=WGS84 +no_defs")
   }
@@ -1460,3 +1599,30 @@ mavCmd <- function(id,wp=0,cf="3",cmd="82",p1="0.000000",p2="0.000000",p3="0.000
   return(paste0(id,sep,wp,sep,cf,sep,cmd,sep,p1,sep,p2,sep,p3,sep,p4,sep,lat,sep,lon,sep,alt,sep,autocont))
 }
 is.odd <- function(x) x %% 2 != 0
+
+h_get_seg_fparams <- function(dem,
+                              start,
+                              target,
+                              p){
+  # depending on DEM/DSM sometimes there are no data Values
+  startAlt<-p$launchAltitude
+  seg  <- h_sp_line(c(start[1],target[1]),c(start[2],target[2]),"seg")
+  
+  
+  # calculate minimum rth altitude for each line by identifing max altitude
+  seg_flight_altitude  <- raster::extract(dem,seg, fun = max,na.rm = TRUE,layer = 1, nl = 1) - startAlt + as.numeric(p$flightAltitude)
+  
+  # add 10% of flight altitude as safety buffer
+  #seg_flight_altitude  <- seg_flight_altitude  + 0.1 * seg_flight_altitude
+  
+  
+  # get the max position of the flightlines
+  seg_max_pos  <- h_line_extract_maxpos(dem,seg)
+  
+  
+  # calculate heading 
+  #                                  
+  seg_heading  <- geosphere::bearing(c(target[1],target[2]),c(start[1],start[2]), a = 6378137, f = 1/298.257223563)
+  
+  return (c(seg_flight_altitude,seg_max_pos,seg_heading,seg))
+}
