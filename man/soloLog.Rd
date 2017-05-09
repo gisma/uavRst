@@ -2,17 +2,17 @@
 % Please edit documentation in R/tool_solo.R
 \name{soloLog}
 \alias{soloLog}
-\title{download tlog files from solo and convert them to gpx files}
+\title{Download , reorganize and export the telemetry (tlog) files from 3DR Solo (and Pixhawk)}
 \usage{
 soloLog(logFiles = "solo.t*", logDir = "~/soloLog", downloadOnly = FALSE,
   netWarn = TRUE, organize = TRUE, makeSP = FALSE)
 }
 \arguments{
-\item{logFiles}{pattern of which kind of logs should be downloaded for telemetry it is "solo.t*"}
+\item{logFiles}{pattern of which kind of logs should be downloaded for telemetry it is "solo.t*" which means all log files...}
 
-\item{logDir}{path to the folder where the logs should be downloaded to}
+\item{logDir}{(existing) destination path to which the logs should be downloaded to}
 
-\item{downloadOnly}{boolean if you ONLY want to download the log files from the solo controller to a directory}
+\item{downloadOnly}{default = FALSE, set to TRUE  if you ONLY want to download the log files from the solo controller to the logDir}
 
 \item{netWarn}{if true warns and waits before starting a connection to the controller to connect to the solo wifi}
 
@@ -21,10 +21,14 @@ soloLog(logFiles = "solo.t*", logDir = "~/soloLog", downloadOnly = FALSE,
 \item{makeSP}{generates SP objects from the gpx files}
 }
 \description{
-soloLogs is interfacing the mavtogpx.py converter. It downloads and/ or converts the 3DR Solo logfiles
+Wraps the mavtogpx.py converter as provided by the dronkit library. It downloads and/ or converts the 3DR Solo logfiles. Otionally you may import the geometries and data as sp objects in R
 }
 \note{
-for using the solo stuff you need to install: sudo pip install pymavlink; sudo pip install dronekit-sitl; sudo pip install dronekit; sudo apt-get install sshpass
+for using the solo stuff you need to install: \cr 
+sudo pip install pymavlink  \cr 
+sudo pip install dronekit-sitl \cr 
+sudo pip install dronekit \cr 
+sudo apt-get install sshpass \cr
 }
 \examples{
 

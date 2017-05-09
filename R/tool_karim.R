@@ -150,15 +150,41 @@ h_comp_ll_proj4 <- function(x) {
 #' @param export write shafefile default = F 
 #' @export
 #' 
-h_sp_line <- function(p1,p2,ID,export=FALSE){  
+h_sp_line <- function(p1,
+                      p2,
+                      ID,
+                      proj4="+proj=longlat +datum=WGS84 +no_defs",
+                      export=FALSE) {   
   line <- SpatialLines(list(Lines(Line(cbind(p1,p2)), ID = ID)))
-  sp::proj4string(line) <- CRS("+proj=longlat +datum=WGS84 +no_defs")
+  sp::proj4string(line) <- CRS(proj4)
   if (export) {
-    writeLinesShape(home,"home.shp")
-    writeLinesShape(start,"start.shp")
+    writeLinesShape(line,paste0(ID,"home.shp"))
   }
   return(line)
 }
+#' create an spatialpointobject from 1 points
+#' @description
+#' create an spatialpointobject from 1 points, optional export as shapefile
+#' @param p1 coordinate of first point
+#' @param ID name of point
+#' @param export write shafefile default = F 
+#' @export
+#' 
+h_sp_point <- function(lon,
+                       lat,
+                       ID="point",
+                       proj4="+proj=longlat +datum=WGS84 +no_defs",
+                       export=FALSE) {
+  point = cbind(lon,lat)
+  point = sp::SpatialPoints(point)
+  point = SpatialPointsDataFrame(point, as.data.frame(ID))
+  sp::proj4string(point) <- CRS(proj4)
+  if (export) {
+    writeLinesShape(ID,paste0(ID,".shp"))
+  }
+  return(point)
+}
+
 #' applies a line to a raster and returns the position of the maximum value
 #' @description
 #'  applies a line to a raster and returns the position of the maximum value

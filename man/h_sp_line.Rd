@@ -4,7 +4,8 @@
 \alias{h_sp_line}
 \title{create an spatiallineobject from 2 points}
 \usage{
-h_sp_line(p1, p2, ID, export = FALSE)
+h_sp_line(p1, p2, ID, proj4 = "+proj=longlat +datum=WGS84 +no_defs",
+  export = FALSE)
 }
 \arguments{
 \item{p1}{coordinate of first point}

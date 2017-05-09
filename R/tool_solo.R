@@ -57,13 +57,13 @@ if (!isGeneric('soloLog')) {
   setGeneric('soloLog', function(x, ...)
     standardGeneric('soloLog'))
 }
-#' download tlog files from solo and convert them to gpx files
+#' Download , reorganize and export the telemetry (tlog) files from 3DR Solo (and Pixhawk) 
 #'
-#' @description  soloLogs is interfacing the mavtogpx.py converter. It downloads and/ or converts the 3DR Solo logfiles
+#' @description  Wraps the mavtogpx.py converter as provided by the dronkit library. It downloads and/ or converts the 3DR Solo logfiles. Otionally you may import the geometries and data as sp objects in R
 #'
-#' @param logFiles pattern of which kind of logs should be downloaded for telemetry it is "solo.t*"
-#' @param logDir path to the folder where the logs should be downloaded to
-#' @param downloadOnly boolean if you ONLY want to download the log files from the solo controller to a directory 
+#' @param logFiles pattern of which kind of logs should be downloaded for telemetry it is "solo.t*" which means all log files...
+#' @param logDir (existing) destination path to which the logs should be downloaded to 
+#' @param downloadOnly default = FALSE, set to TRUE  if you ONLY want to download the log files from the solo controller to the logDir
 #' @param netWarn if true warns and waits before starting a connection to the controller to connect to the solo wifi
 #' @param organize renames the log and gpx files according to their timeperiod
 #' 
@@ -71,7 +71,12 @@ if (!isGeneric('soloLog')) {
 #' 
 #' @author
 #' Chris Reudenbach
-#' @note for using the solo stuff you need to install: sudo pip install pymavlink; sudo pip install dronekit-sitl; sudo pip install dronekit; sudo apt-get install sshpass
+#' @note for using the solo stuff you need to install: \cr 
+#' sudo pip install pymavlink  \cr 
+#' sudo pip install dronekit-sitl \cr 
+#' sudo pip install dronekit \cr 
+#' sudo apt-get install sshpass \cr 
+#' 
 #' @examples
 #' 
 #' ## download current telemetry log file from controller and convert it to gpx
@@ -87,12 +92,12 @@ if (!isGeneric('soloLog')) {
 #'               
 
 soloLog <- function(logFiles="solo.t*",
-                     logDir="~/soloLog", 
-                     
-                     downloadOnly=FALSE,
-                     netWarn=TRUE,
-                     organize=TRUE,
-                     makeSP = FALSE){
+                    logDir="~/soloLog", 
+                    downloadOnly=FALSE,
+                    netWarn=TRUE,
+                    organize=TRUE,
+                    makeSP = FALSE){
+  
   logDir<- path.expand(logDir)
   command <-"mavtogpx.py"
   option1<-paste0(logDir,"/",logFiles)
@@ -132,7 +137,7 @@ soloLog <- function(logFiles="solo.t*",
   if (organize) {
     cat("rename files...\n")
     f <- list.files(logDir, pattern="gpx")
-
+    
     i=1
     flights <- list()
     for (flight in f) {
