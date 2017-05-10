@@ -950,7 +950,7 @@ launch2flightalt <- function(p, lns, uavViewDir, launch2startHeading, uavType) {
   return(lns)
 }
 
-MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed = maxSpeed/3.6,circleRadius,df){
+MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed = maxSpeed/3.6,circleRadius,df,takeOffAlt){
   mission <- p$locationName
   
  # df     <- param[[2]]
@@ -1005,6 +1005,12 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed =
     homeRth  <- homeRth  + 0.1 * homeRth
     startRth <- startRth + 0.1 * startRth
     
+    if (startRth < 50) {
+      takeOffAlt <- as.numeric(startRth)
+    } else {
+      takeOffAlt <- 50
+    }
+    
     # get the max position of the flightlines
     homemaxpos  <- h_line_extract_maxpos(dem,home)
     startmaxpos <- h_line_extract_maxpos(dem,start)
@@ -1025,15 +1031,15 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed =
     # create default header line  
     lnsnew[1,1] <- "QGC WPL 110"
     # create homepoint 
-    lnsnew[2,1] <- mavCmd(id = 1, 
-                          cmd = 16,
+    lnsnew[2,1] <- mavCmd(id = 0, 
+                          cmd = 179,
                           lat = p$launchLat,
                           lon = p$launchLon,
                           alt = p$launchAltitude) 
     # TAKEOFF
     lnsnew[3,1] <- mavCmd(id = 1, 
-                          cmd = 22, 
-                          alt = round(40,6))
+                          cmd = 22,   # 22 MAV_CMD_NAV_TAKEOFF
+                          alt = round(takeOffAlt,6))
     
     # SPEED taxiway
     lnsnew[4,1] <-       mavCmd(id = 2, 
@@ -1043,9 +1049,9 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed =
     # ascent2start WP
     lnsnew[5,1] <- mavCmd(id = 3, 
                           cmd = 16,
-                          lat = round(calcNextPos(launchLon,launchLat,startheading,5)[2],6),
-                          lon = round(calcNextPos(launchLon,launchLat,startheading,5)[1],6),
-                          alt = round(50,6))
+                          lat = round(calcNextPos(launchLon,launchLat,startheading,15)[2],6),
+                          lon = round(calcNextPos(launchLon,launchLat,startheading,15)[1],6),
+                          alt = round(takeOffAlt + (startRth - takeOffAlt) / 2 ,6))
     # maxStartPos WP
     lnsnew[6,1] <- mavCmd(id = 4, 
                           cmd = 16,
@@ -1055,7 +1061,7 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed =
     
     lnsnew[7,1] <-       mavCmd(id = 5, 
                                 cmd = 115, 
-                                p1 = round(abs(0),1))
+                                p1 = "0.000000")
     # create "normal" waypoints
     
     lc <- 7
@@ -1065,10 +1071,8 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed =
       if (sp[[1]][3] == 19){
         # circle waypoint
         lnsnew[j + lc , 1] <- mavCmd(id = j  + lc - 2,
-                                     cmd = 19, #Loiter around this MISSION for X seconds
-                                     p1 = round(12,6), # seconds hoovering
-                                     p3 = round(0.6), #round(circleRadius/2,6),
-                                     p4 = round(0,6),
+                                     cmd = 19,
+                                     p1 = "12.00000",    
                                      lat = sp[[1]][8],
                                      lon = sp[[1]][9],
                                      alt = sp[[1]][10])
@@ -1080,7 +1084,8 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed =
         # 
         
         
-        lnsnew[j + lc,1] <-   mavCmd(id = j + lc - 2, cmd = 16,
+        lnsnew[j + lc,1] <-   mavCmd(id = j + lc - 2, 
+                                     cmd = 16,
                                      lat = sp[[1]][8],
                                      lon = sp[[1]][9],
                                      alt = sp[[1]][10])
@@ -1139,7 +1144,7 @@ readTreeTrack<- function(treeTrack){
   return(tTkDF)
 }
 
-makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,locationName,circleRadius,flightArea){
+makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,locationName,circleRadius,flightArea,takeOffAlt){
   if (is.null(demFn)) {
     levellog(logger, 'WARN', "CAUTION!!! no DEM file provided")
     stop("CAUTION!!! no DEM file provided")}
@@ -1322,7 +1327,8 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
                dem = demll,
                maxSpeed = p$maxSpeed,
                circleRadius,
-               df = df)
+               df = df,
+               takeOffAlt)
     names(df) <- c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude","id", "AUTOCONTINUE")
     keeps<- c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude", "AUTOCONTINUE")
     df@data<-df@data[keeps]
