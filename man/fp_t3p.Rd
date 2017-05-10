@@ -7,7 +7,7 @@
 fp_t3p(projectDir = "~", locationName = "autoflightcontrol",
   missionTrackList = NULL, launchPos = NULL, demFn = NULL,
   flightAltitude = 75, climbDist = 7.5, aboveTreeAlt = 15,
-  circleDiameter = 2.5, presetFlightTask = "remote", maxSpeed = 25,
+  circleRadius = 5, presetFlightTask = "remote", maxSpeed = 25,
   followSurfaceRes = 5, altFilter = 1, maxFL = 10, windCondition = 1,
   rcRange = -9999, launchAltitude = -9999, uavType = "solo")
 }

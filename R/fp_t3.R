@@ -71,7 +71,7 @@ fp_t3p<- function(projectDir="~",
                flightAltitude=75,
                climbDist=7.5,
                aboveTreeAlt=15,
-               circleDiameter = 2.5,
+               circleRadius = 5.0,
                presetFlightTask="remote",
                maxSpeed=25.0,
                followSurfaceRes=5,
@@ -152,5 +152,5 @@ fp_t3p<- function(projectDir="~",
   p$climbDist<-climbDist
   p$task<- uavRst:::fp_getPresetTask("treetop")
   
-  fullTreeList<-uavRst:::makeFlightPathT3(flightList,p,uavType,task,demFn,logger,projectDir,locationName,circleDiameter,flightArea)
+  fullTreeList<-uavRst:::makeFlightPathT3(flightList,p,uavType,task,demFn,logger,projectDir,locationName,circleRadius,flightArea)
 }

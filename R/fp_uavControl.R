@@ -950,7 +950,7 @@ launch2flightalt <- function(p, lns, uavViewDir, launch2startHeading, uavType) {
   return(lns)
 }
 
-MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed = maxSpeed/3.6,diameter,df){
+MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed = maxSpeed/3.6,circleRadius,df){
   mission <- p$locationName
   
  # df     <- param[[2]]
@@ -1067,7 +1067,7 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed =
         lnsnew[j + lc , 1] <- mavCmd(id = j  + lc - 2,
                                      cmd = 19, #Loiter around this MISSION for X seconds
                                      p1 = round(12,6), # seconds hoovering
-                                     p3 = round(0.6), #round(diameter/2,6),
+                                     p3 = round(0.6), #round(circleRadius/2,6),
                                      p4 = round(0,6),
                                      lat = sp[[1]][8],
                                      lon = sp[[1]][9],
@@ -1139,7 +1139,7 @@ readTreeTrack<- function(treeTrack){
   return(tTkDF)
 }
 
-makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,locationName,diameter,flightArea){
+makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,locationName,circleRadius,flightArea){
   if (is.null(demFn)) {
     levellog(logger, 'WARN', "CAUTION!!! no DEM file provided")
     stop("CAUTION!!! no DEM file provided")}
@@ -1151,28 +1151,32 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
     proj <- projection(rundem)
     demll <- gdalwarp(srcfile = demFn, dstfile = "demll.tif", overwrite=TRUE,  t_srs = "+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE ) 
     
-    rundem <- raster::crop(demll,extent(flightArea@bbox[1] - 0.00421,
-                                        flightArea@bbox[3] + 0.00421,
-                                        flightArea@bbox[2] - 0.00421,
-                                        flightArea@bbox[4] + 0.00421))
+    rundem <- raster::crop(demll,
+                           extent(flightArea@bbox[1] - 0.00421,
+                                  flightArea@bbox[3] + 0.00421,
+                                  flightArea@bbox[2] - 0.00421,
+                                  flightArea@bbox[4] + 0.00421))
     raster::writeRaster(rundem,"tmpdem.tif",overwrite = TRUE)
     demll <- rundem 
     #file.copy("tmpdem.tif", paste0(file.path(projectDir,locationName, workingDir,"run"),"/tmpdem.tif")) 
     dem  <- demll
     
   } else {
-    rundem <- raster::raster(demFn,
+    rundem <- raster::raster(demFn, 
                              xmn = min(p$lon1,p$lon3) - 0.0083,
                              xmx = max(p$lon1,p$lon3) + 0.0083,
                              ymn = min(p$lat1,p$lat3) - 0.0083,
                              ymx = max(p$lat1,p$lat3) + 0.0083)
     
-    file.copy(demFn, paste0(file.path(projectDir,locationName, "run"),"/tmpdem.tif"))
+    file.copy(demFn,  paste0(file.path(projectDir,locationName, "run"),"/tmpdem.tif"))
     dem <- rundem
   }
-  
-  
-  demll <- gdalwarp(srcfile = "tmpdem.tif", dstfile = "demll.tif", overwrite=TRUE,  t_srs = "+proj=longlat +datum=WGS84 +no_defs",output_Raster = TRUE )  
+ 
+  demll <- gdalwarp(srcfile = "tmpdem.tif", 
+                    dstfile = "demll.tif", 
+                    t_srs = "+proj=longlat +datum=WGS84 +no_defs",
+                    overwrite=TRUE,
+                    output_Raster = TRUE )  
   
   demll <- setMinMax(demll)
   
@@ -1193,7 +1197,7 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
       writeLines(unlist(lns), fileConn)
     }
     else if (uavType == "solo") {
-      cat("calculating positions ",i," of ",nrow(treeList),"\r")
+      cat("calculating flight corridors according to position ",i," of ",nrow(treeList),"\r")
       lp <- h_sp_point(p$launchLon,p$launchLat,"LaunchPos")
 
       if (p$launchAltitude == -9999){
@@ -1207,14 +1211,9 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
       # extract all waypoint altitudes
       altitude <- as.data.frame(raster::extract(demll,treeList,layer = 1, nl = 1))
       altitude<-as.matrix(altitude)
-      # get maximum altitude of the task area
+      # get maximum altitude of the flight corridors
       maxAlt <- max(altitude,na.rm = TRUE)
-      # # calculate the flight altitude shift due to launching and max altitude
-      # p$flightAltitude <- as.numeric(p$flightAltitude) + (maxAlt - as.numeric(p$launchAltitude))
-      # p$aboveTreeAlt <- as.numeric(p$aboveTreeAlt) + (maxAlt - as.numeric(p$launchAltitude))
-      
-      
-            
+
       if (i >= nrow(treeList)){
         forward <- geosphere::bearing(treeList@coords[i,],lp, a = 6378137, f = 1/298.257223563)
         backward <- geosphere::bearing(lp,treeList@coords[i,], a = 6378137, f = 1/298.257223563)
@@ -1256,8 +1255,10 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
       
                       
       tree_Alt <- h_get_point_fparams(demll,
-                                        point = c(treeList@coords[i,][1],treeList@coords[i,][2]),
-                                        p)      
+                                      point = c(treeList@coords[i,][1],treeList@coords[i,][2]),
+                                      p,
+                                      radius =circleRadius
+                                      )      
       
       
       seg_max_toNext <- h_get_seg_fparams(demll,
@@ -1280,7 +1281,7 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
                                                lat = treeList@coords[i,][2],
                                                lon = treeList@coords[i,][1],
                                                head = 0.000000,
-                                                 alt= round(tree_Alt,6),
+                                               alt= round(tree_Alt,6),
                                                group = 99) 
       # create UP WP
       lns[length(lns) + 1] <- makeUavPointMAV(lat = posUp[2],
@@ -1311,16 +1312,16 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
     sp::proj4string(df) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
     
     # sp::spTransform(treeList,CRSobj = CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
-   # result <- getAltitudes(demll ,df,p,followSurfaceRes = 5,logger,projectDir,locationName,flightArea)
+    # result <- getAltitudes(demll ,df,p,followSurfaceRes = 5,logger,projectDir,locationName,flightArea)
     
     
-     MAVTreeCSV(flightPlanMode = "track",
+    MAVTreeCSV(flightPlanMode = "track",
                trackDistance = 10000,
                logger = logger,
                p = p,
                dem = demll,
                maxSpeed = p$maxSpeed,
-               diameter=2.5,
+               circleRadius,
                df = df)
     names(df) <- c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude","id", "AUTOCONTINUE")
     keeps<- c("CURRENT_WP","COORD_FRAME","COMMAND","PARAM1","PARAM2","PARAM3","PARAM4","latitude","longitude","altitude", "AUTOCONTINUE")
@@ -1633,13 +1634,14 @@ h_get_seg_fparams <- function(dem,
 }
 
 h_get_point_fparams <- function(dem,
-                              point,
-                              p){
+                                point,
+                                p, 
+                                radius= 5.0){
   # depending on DEM/DSM sometimes there are no data Values
   startAlt<-p$launchAltitude
   seg  <- h_sp_point(point[1],point[2],"point")
   seg_utm <- sp::spTransform(seg,CRSobj =  paste0("+proj=utm +zone=",long2UTMzone(seg@bbox[1])," +datum=WGS84"))
-  seg_buf<-rgeos::gBuffer(spgeom = seg_utm,width = 5.0)
+  seg_buf<-rgeos::gBuffer(spgeom = seg_utm,width = radius)
   seg_buf <- sp::spTransform(seg_buf,CRSobj = "+proj=longlat +datum=WGS84 +no_defs" )
   # calculate minimum rth altitude for each line by identifing max altitude
   seg_flight_altitude  <- raster::extract(dem,seg_buf, fun = max,na.rm = TRUE,layer = 1, nl = 1) - startAlt + as.numeric(p$aboveTreeAlt)
