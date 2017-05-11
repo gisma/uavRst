@@ -53,4 +53,12 @@ t3<-fp_t3p(projectDir ="/home/creu/uav/gentree/Hagenstein",
            followSurfaceRes=1,
            launchPos = c(8.905967,51.161932))
 #8.905491828918459,51.1581923912853
-library(mapview)
+
+t3<-fp_t3p(projectDir ="/home/creu/uav/test/",
+           locationName = "treeTree",
+           missionTrackList="~/Schreibtisch/mr/drei.csv",
+           demFn = "~/uav/test/data/mrbiko.tif",
+           windCondition = 2,
+           uavType = "solo",
+           followSurfaceRes=20,flightAltitude = 50,aboveTreeAlt = 20,
+           launchPos = c(8.73427,50.79488))

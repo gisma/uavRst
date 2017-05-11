@@ -953,14 +953,6 @@ launch2flightalt <- function(p, lns, uavViewDir, launch2startHeading, uavType) {
 MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed = maxSpeed/3.6,circleRadius,df,takeOffAlt){
   mission <- p$locationName
   
- # df     <- param[[2]]
-#  dem    <- param[[3]]
-
-  
-  
-  
-  
-  
   minPoints <- 1
   #nofiles<- ceiling(rawTime/batteryTime)
   nofiles <- 1
@@ -1031,40 +1023,40 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed =
     # create default header line  
     lnsnew[1,1] <- "QGC WPL 110"
     # create homepoint 
-    lnsnew[2,1] <- mavCmd(id = 0, 
-                          cmd = 179,
-                          lat = p$launchLat,
-                          lon = p$launchLon,
-                          alt = p$launchAltitude) 
+    # lnsnew[2,1] <- mavCmd(id = 0, 
+    #                       cmd = 179,
+    #                       lat = p$launchLat,
+    #                       lon = p$launchLon,
+    #                       alt = p$launchAltitude) 
     # TAKEOFF
-    lnsnew[3,1] <- mavCmd(id = 1, 
+    lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = 1, 
                           cmd = 22,   # 22 MAV_CMD_NAV_TAKEOFF
                           alt = round(takeOffAlt,6))
     
     # SPEED taxiway
-    lnsnew[4,1] <-       mavCmd(id = 2, 
+    lnsnew[length(lnsnew[,1]) + 1,1] <-       mavCmd(id = 2, 
                                 cmd = 178, 
                                 p2 = round(maxSpeed,6))
     
     # ascent2start WP
-    lnsnew[5,1] <- mavCmd(id = 3, 
+    lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = 3, 
                           cmd = 16,
                           lat = round(calcNextPos(launchLon,launchLat,startheading,15)[2],6),
                           lon = round(calcNextPos(launchLon,launchLat,startheading,15)[1],6),
                           alt = round(takeOffAlt + (startRth - takeOffAlt) / 2 ,6))
     # maxStartPos WP
-    lnsnew[6,1] <- mavCmd(id = 4, 
+    lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = 4, 
                           cmd = 16,
                           lat = round(startmaxpos[1,2],6),
                           lon = round(startmaxpos[1,1],6),
                           alt = round(startRth,6))
     
-    lnsnew[7,1] <-       mavCmd(id = 5, 
+    lnsnew[length(lnsnew[,1]) + 1,1] <-       mavCmd(id = 5, 
                                 cmd = 115, 
                                 p1 = "0.000000")
     # create "normal" waypoints
+    lc <- length(lnsnew[,1])
     
-    lc <- 7
     # task WP & task speed
     for (j in  seq(1,(length(lns[,1]) - 1))) {
       sp<- str_split(pattern = "\t",string = lns[ceiling(j),])
@@ -1076,27 +1068,18 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed =
                                      lat = sp[[1]][8],
                                      lon = sp[[1]][9],
                                      alt = sp[[1]][10])
-        
       }
       
       else {
         # up or down waypoint
-        # 
-        
-        
         lnsnew[j + lc,1] <-   mavCmd(id = j + lc - 2, 
                                      cmd = 16,
                                      lat = sp[[1]][8],
                                      lon = sp[[1]][9],
                                      alt = sp[[1]][10])
-        
       }
     }
     
-    ## old implementation
-    # for (j in 1:length(lns[,1])) {
-    #   lnsnew[j+4,1]<-paste0(as.character(j+2),"\t",lns[j,])
-    # }
     
     # MAV fly to launch sequence
     # RTH altitude TODO
@@ -1112,19 +1095,17 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed =
                                                cmd = 20)
     
     # write the control file
-    # write.table(lnsnew, paste0(projectDir, "/",locationName , "/", workingDir,"/control/", mission,"_", i, "_solo.txt"), sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE, na = "")
-    write.table(lnsnew, paste0(strsplit(getwd(),"/run")[[1]][1],"/control/",mission,"_",i,"_solo.txt"), sep="\t", row.names=FALSE, col.names=FALSE, quote = FALSE,na = "")
+    write.table(lnsnew, 
+                paste0(strsplit(getwd(),"/run")[[1]][1],"/control/",mission,"_",i,"_solo.txt"), 
+                sep="\t", 
+                row.names=FALSE, 
+                col.names=FALSE, 
+                quote = FALSE,
+                na = "")
     
-    # #set rth altitude
-    # lnsnew[length(lnsnew[,1])+1,1]<-  paste0(as.character(length(lns[,1])+1),sep,"0",sep,"3",sep,"30",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,as.character(homeRTH),sep,"1")
-    # #set max return speed
-    # lnsnew[length(lnsnew[,1])+1,1] <- paste0(as.character(length(lns[,1])+1),sep,"0",sep,"3",sep,"178",sep,"0.0",sep,"250",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"1")
-    # # trigger rth event
-    # lnsnew[length(lnsnew[,1])+1,1] <- paste0(as.character(length(lns[,1])+1),sep,"0",sep,"3",sep,"20",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"0.0",sep,"1")
-    # write the control file
-    # write.table(lnsnew, paste0(strsplit(getwd(),"/run")[[1]][1],"/control/",mission,"_",i,"_solo.txt"), sep="\t", row.names=FALSE, col.names=FALSE, quote = FALSE,na = "")
     # log event 
     levellog(logger, 'INFO', paste("created : ", paste0(mission,"-",i,".csv")))
+    
     minPoints<-maxPoints
     maxPoints<-maxPoints+mp
     if (maxPoints>nrow(df@data)){
