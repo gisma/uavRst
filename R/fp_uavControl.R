@@ -904,10 +904,12 @@ calculateFlightTime <- function(maxFlightTime, windCondition, maxSpeed, uavOptim
     windConditionFactor <- 0.6
   } else if (windCondition == 4) {
     windConditionFactor <- 0.4
-  } else if (windCondition < 4) {
+  } else if (windCondition == 5) {
+    windConditionFactor <- 0.2
+  } else if (windCondition > 5) {
     windConditionFactor <- 0.0
     levellog(logger, 'INFO', "come on, it is a uav not the falcon...")  
-    stop("come on, it is a uav not the falcon...")
+    stop("come on, it is a cheap uav not a falcon...")
   }
   
   # log preset picture rate sec/pic

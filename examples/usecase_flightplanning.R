@@ -62,3 +62,27 @@ t3<-fp_t3p(projectDir ="/home/creu/uav/test/",
            uavType = "solo",
            followSurfaceRes=20,flightAltitude = 50,aboveTreeAlt = 20,
            launchPos = c(8.73427,50.79488))
+
+fp <- makeFP(projectDir ="/home/creu/uav/uniwald",
+           locationName = "habi_stein",
+           surveyArea = "/home/creu/uav/uniwald/data/habitat_steinbruch.json",
+           followSurface = TRUE,
+           flightAltitude = 40,
+           demFn = "~/uav/uniwald/data/geonode-lidar_dsm_01m.tif",
+           windCondition = 2,
+           followSurfaceRes = 1,
+           cameraType = "GP3_7MP",
+           uavType = "solo"
+)
+
+fp <- makeFP(projectDir ="/home/creu/uav/uniwald",
+             locationName = "lahn",
+             surveyArea = "/home/creu/uav/uniwald/lahn/data/flightarea_lahn.kml",
+             followSurface = TRUE,
+             flightAltitude = 40,
+             demFn = "~/uav/uniwald/data/geonode-lidar_dsm_01m.tif",
+             windCondition = 2,
+             followSurfaceRes = 1,
+             cameraType = "MAPIR2",
+             uavType = "solo"
+)
