@@ -246,7 +246,7 @@ analyzeDSM <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,followS
 # (1) controls with respect to  waypoint number and/or batterylifetime  the splitting of the mission files to seperate task files
 # (2) calculate and insert rth and fts waypoints with respect to the terrain obstacles to generate a save start and end of a task
 
-calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,batteryTime,logger,p,len,multiply,tracks,param,speed,uavType,dem,maxAlt,projectDir, workingDir,locationName,uavViewDir){
+calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,batteryTime,logger,p,len,multiply,tracks,param,speed,uavType,dem,maxAlt,projectDir, workingDir,locationName,uavViewDir,cmd){
   
   minPoints <- 1
   # set number of waypoints per file
@@ -345,7 +345,7 @@ calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,
       
       # ascent2start WP
       lnsnew[5,1] <- mavCmd(id = 3, 
-                            cmd = 16,
+                            cmd = cmd,
                             lat = round(calcNextPos(launchLon,launchLat,startheading,5)[2],6),
                             lon = round(calcNextPos(launchLon,launchLat,startheading,5)[1],6),
                             alt = round(startRth,0))
@@ -369,6 +369,7 @@ calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,
         if (is.odd(j)){
           sp<- str_split(pattern = "\t",string = lns[ceiling(j/2),])
           lnsnew[j + lc,1] <-   mavCmd(id = j + lc - 2, 
+                                       cmd = 16,
                                        lat = sp[[1]][1],
                                        lon = sp[[1]][2],
                                        alt = sp[[1]][3])}
@@ -1030,30 +1031,30 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed =
     #                       alt = p$launchAltitude) 
     # TAKEOFF
     lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = 1, 
-                          cmd = 22,   # 22 MAV_CMD_NAV_TAKEOFF
-                          alt = round(takeOffAlt,6))
+                                               cmd = 22,   # 22 MAV_CMD_NAV_TAKEOFF
+                                               alt = round(takeOffAlt,6))
     
     # SPEED taxiway
     lnsnew[length(lnsnew[,1]) + 1,1] <-       mavCmd(id = 2, 
-                                cmd = 178, 
-                                p2 = round(maxSpeed,6))
+                                                     cmd = 178, 
+                                                     p2 = round(maxSpeed,6))
     
     # ascent2start WP
     lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = 3, 
-                          cmd = 16,
-                          lat = round(calcNextPos(launchLon,launchLat,startheading,15)[2],6),
-                          lon = round(calcNextPos(launchLon,launchLat,startheading,15)[1],6),
-                          alt = round(takeOffAlt + (startRth - takeOffAlt) / 2 ,6))
+                                               cmd = 16,
+                                               lat = round(calcNextPos(launchLon,launchLat,startheading,15)[2],6),
+                                               lon = round(calcNextPos(launchLon,launchLat,startheading,15)[1],6),
+                                               alt = round(takeOffAlt + (startRth - takeOffAlt) / 2 ,6))
     # maxStartPos WP
     lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = 4, 
-                          cmd = 16,
-                          lat = round(startmaxpos[1,2],6),
-                          lon = round(startmaxpos[1,1],6),
-                          alt = round(startRth,6))
+                                               cmd = 16,
+                                               lat = round(startmaxpos[1,2],6),
+                                               lon = round(startmaxpos[1,1],6),
+                                               alt = round(startRth,6))
     
     lnsnew[length(lnsnew[,1]) + 1,1] <-       mavCmd(id = 5, 
-                                cmd = 115, 
-                                p1 = "0.000000")
+                                                     cmd = 115, 
+                                                     p1 = "0.000000")
     # create "normal" waypoints
     lc <- length(lnsnew[,1])
     
@@ -1154,10 +1155,10 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
                              ymn = min(p$lat1,p$lat3) - 0.0083,
                              ymx = max(p$lat1,p$lat3) + 0.0083)
     
-    file.copy(demFn,  paste0(file.path(projectDir,locationName, "run"),"/tmpdem.tif"))
+    file.copy(demFn,  paste0(file.path(projectDir,locationName, workingDir,"run"),"/tmpdem.tif"))
     dem <- rundem
   }
- 
+  
   demll <- gdalwarp(srcfile = "tmpdem.tif", 
                     dstfile = "demll.tif", 
                     t_srs = "+proj=longlat +datum=WGS84 +no_defs",
@@ -1185,7 +1186,7 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
     else if (uavType == "solo") {
       cat("calculating flight corridors according to position ",i," of ",nrow(treeList),"\r")
       lp <- h_sp_point(p$launchLon,p$launchLat,"LaunchPos")
-
+      
       if (p$launchAltitude == -9999){
         tmpalt <- raster::extract(dem,lp,layer = 1, nl = 1)  
         p$launchAltitude <- as.numeric(tmpalt)
@@ -1199,7 +1200,7 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
       altitude<-as.matrix(altitude)
       # get maximum altitude of the flight corridors
       maxAlt <- max(altitude,na.rm = TRUE)
-
+      
       if (i >= nrow(treeList)){
         forward <- geosphere::bearing(treeList@coords[i,],lp, a = 6378137, f = 1/298.257223563)
         backward <- geosphere::bearing(lp,treeList@coords[i,], a = 6378137, f = 1/298.257223563)
@@ -1233,18 +1234,18 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
         down_smtlat <- treeList@coords[i - 1,][2]
       }
       
-    
+      
       seg_max_toDown <- h_get_seg_fparams(demll,
                                           start = c(down_smtlon,down_smtlat),
                                           target = c(treeList@coords[i,][1],treeList@coords[i,][2]),
                                           p)
       
-                      
+      
       tree_Alt <- h_get_point_fparams(demll,
                                       point = c(treeList@coords[i,][1],treeList@coords[i,][2]),
                                       p,
                                       radius =circleRadius
-                                      )      
+      )      
       
       
       seg_max_toNext <- h_get_seg_fparams(demll,

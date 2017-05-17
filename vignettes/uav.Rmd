@@ -1,7 +1,7 @@
   ---
-title: "MakeUavRemoteControlledSurvey (murcs) - autonomous flight planning in R"
+title: "uavRst - Unmanned aerial Vehicle Remote Sensing Tools "
 author: "Chris Reudenbach"
-date: "October 01, 2016"
+date: "October 10, 2016"
 output:
   html_document:
     toc: yes
@@ -10,15 +10,15 @@ output:
 
 ![](http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png) (CC-BY-NC-SA)
 
-This document was produced on _`r format(Sys.time(), "%a %b %d %Y")`_ using `robubu` version **`r packageVersion("robubu")`**
+This version of the document was produced on _`r format(Sys.time(), "%a %b %d %Y")`_ using `robubu` version **`r packageVersion("robubu")`**
 
 ------
 
 # Installation
-Currently you will find makeflightplan and the rest of the uav stuff only in the robubu package. If you want to use it the probably easiest way to install `robubu` is to use `library("devtools")`. With `devtools` installed and loaded type the following:
+The `uavRst` package needs the `library("devtools")`:
 
 ```{r, eval = FALSE, warning=FALSE, message=FALSE, fig.width=9.47}
-install_github("gisma/robubu")
+devtools::install_github("gisma/uavRst")
 ```
 
 ------

@@ -336,6 +336,7 @@ makeFP <- function(projectDir = "~",
                    windCondition = 1,
                    uavType = "solo",
                    cameraType = "MAPIR2",
+                   cmd=16,
                    uavViewDir = 0,
                    djiBasic = c(0, 0, 0,-90, 0),
                    dA = FALSE,
@@ -732,7 +733,7 @@ makeFP <- function(projectDir = "~",
       
     }
     # generate single tasks waypoint file for MAV Solo format
-    calcMAVTask(result[[2]],taskName,nofiles,rawTime,mode,trackDistance,maxFlightTime,logger,p,len, multiply,tracks,result,maxSpeed / 3.6,uavType,"flightDEM.tif",maxAlt = result[[6]], projectDir,workingDir,locationName,uavViewDir)
+    calcMAVTask(result[[2]],taskName,nofiles,rawTime,mode,trackDistance,maxFlightTime,logger,p,len, multiply,tracks,result,maxSpeed / 3.6,uavType,"flightDEM.tif",maxAlt = result[[6]], projectDir,workingDir,locationName,uavViewDir,cmd)
   }
   close(fileConn)
   
@@ -816,5 +817,6 @@ makeFP <- function(projectDir = "~",
          rcCover,     # Estimated area that is covered by RC
          fovH)        # Heatmap of overlapping Pictures
   names(x) <- c("lp", "wp", "demA", "oDEM", "rDEM", "fp", "fA", "rcA", "hm")
+  system(paste0("rm -rf ",file.path(projectDir,locationName,workingDir,"run")))
   return(x)
 }

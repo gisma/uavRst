@@ -12,7 +12,7 @@ makeFP(projectDir = "~", locationName = "dummylocation",
   altFilter = 1, horizonFilter = 30, terrainSmooth = FALSE,
   flightPlanMode = "track", presetFlightTask = "remote", overlap = 0.8,
   maxSpeed = 20, maxFlightTime = 10, picRate = 2, windCondition = 1,
-  uavType = "solo", cameraType = "MAPIR2", uavViewDir = 0,
+  uavType = "solo", cameraType = "MAPIR2", cmd = 16, uavViewDir = 0,
   djiBasic = c(0, 0, 0, -90, 0), dA = FALSE, heatMap = FALSE,
   picFootprint = FALSE, rcRange = NULL)
 }
