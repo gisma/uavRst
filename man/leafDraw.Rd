@@ -4,11 +4,11 @@
 \alias{leafDraw}
 \title{digitizing vector features using leaflet draw}
 \usage{
-leafDraw(mapCenter = c(50.80801, 8.72993), zoom = 15, line = TRUE,
-  rectangle = TRUE, poly = TRUE, circle = TRUE, point = TRUE,
-  remove = TRUE, position = "topright", maplayer = c("CartoDB.Positron",
-  "OpenStreetMap", "Esri.WorldImagery", "Thunderforest.Landscape",
-  "OpenTopoMap"), overlay = NULL, features = NULL, preset = "all",
+leafDraw(mapCenter = NULL, zoom = 15, line = TRUE, rectangle = TRUE,
+  poly = TRUE, circle = TRUE, point = TRUE, remove = TRUE,
+  position = "topright", maplayer = c("CartoDB.Positron", "OpenStreetMap",
+  "Esri.WorldImagery", "Thunderforest.Landscape", "OpenTopoMap"),
+  overlay = NULL, features = NULL, preset = "all", locPreset = "muf",
   cex = 10, lwd = 2, alpha = 0.6, opacity = 0.7)
 }
 \arguments{
@@ -31,6 +31,8 @@ leafDraw(mapCenter = c(50.80801, 8.72993), zoom = 15, line = TRUE,
 \item{overlay}{optional sp object}
 
 \item{preset}{textstring "NULL" full draw version, "uav" for flightarea digitizing, "ext" for rectangles}
+
+\item{locPreset}{character default is "muf" for Marburg University Forest, others are "tra" Traddelstein, "hag" Hagenstein, "baw" Bayerwald.}
 
 \item{mapcenter}{c(lat,lon) central point of the leaflet map}
 

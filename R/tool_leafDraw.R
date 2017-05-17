@@ -14,6 +14,7 @@
 #' @param intersection enable/disable th possibility to overlay lines or polygons
 #' @param maplayer string as provided by leaflet-provider 
 #' @param preset textstring "NULL" full draw version, "uav" for flightarea digitizing, "ext" for rectangles
+#' @param locPreset character default is "muf" for Marburg University Forest, others are "tra" Traddelstein, "hag" Hagenstein, "baw" Bayerwald.
 #' @param overlay optional sp object 
 #' 
 #' @author
@@ -38,7 +39,7 @@
 #' @export leafDraw
 #'               
 
-leafDraw <- function(mapCenter=c(50.80801,8.72993),
+leafDraw <- function(mapCenter=NULL,
                      zoom=15, 
                      line = TRUE, 
                      rectangle = TRUE, 
@@ -51,10 +52,27 @@ leafDraw <- function(mapCenter=c(50.80801,8.72993),
                      overlay=NULL,
                      features=NULL,
                      preset = "all",
+                     locPreset = "muf",
                      cex = 10,
                      lwd = 2,
                      alpha = 0.6,
                      opacity = 0.7) {
+  
+  if (is.null(mapCenter)) {
+    if ( locPreset == "muf") {
+      mapCenter<-c(50.84,8.68)
+    } else if (locPreset == "tra") {
+      mapCenter<-c(51.13,8.97)  
+    } else if (locPreset == "hag") {
+      mapCenter<-c(51.16,8.90)  
+    }else if (locPreset == "baw") {
+      mapCenter<-c(48.92,13.40)  
+    }
+  }
+  
+  else {
+    mapCenter<-mapCenter
+  }
   
   # create tmp path
   tmpPath<- createTempDataTransfer()

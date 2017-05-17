@@ -896,16 +896,16 @@ calcTrackDistance <- function(fliAltRatio,flightAltitude,factor=1.71) {
 calculateFlightTime <- function(maxFlightTime, windCondition, maxSpeed, uavOptimumspeed, flightLength, totalTrackdistance, picRate, logger) {
   # wind speed adaption for reducing the lifetime of the battery Roughly the Beaufort scale is used
   
-  if (windCondition == 1) {
-    windConditionFactor <- 1
+  if (windCondition == 0) {
+    windConditionFactor <- 1.0
+  } else if (windCondition == 1) {
+    windConditionFactor <- 0.9
   } else if (windCondition == 2) {
-    windConditionFactor <- 0.8
+    windConditionFactor <- 0.7
   } else if (windCondition == 3) {
-    windConditionFactor <- 0.6
-  } else if (windCondition == 4) {
     windConditionFactor <- 0.4
-  } else if (windCondition == 5) {
-    windConditionFactor <- 0.2
+  } else if (windCondition == 4) {
+    windConditionFactor <- 0.1
   } else if (windCondition > 5) {
     windConditionFactor <- 0.0
     levellog(logger, 'INFO', "come on, it is a uav not the falcon...")  
