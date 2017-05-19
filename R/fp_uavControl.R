@@ -329,11 +329,11 @@ calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,
       # HEADER LINE  
       lnsnew[1,1] <- "QGC WPL 110"
       # HOMEPOINT 
-      lnsnew[2,1] <- mavCmd(id = 0,
-                            cmd = 179,
-                            lat = round(p$launchLat,6),
-                            lon = round(p$launchLon,6),
-                            alt = round(param$launchAltitude))
+      # lnsnew[2,1] <- mavCmd(id = 0,
+      #                       cmd = 179,
+      #                       lat = round(p$launchLat,6),
+      #                       lon = round(p$launchLon,6),
+      #                       alt = round(param$launchAltitude))
       # TAKEOFF
       lnsnew[3,1] <- mavCmd(id = 1, 
                             cmd = 22, 
@@ -953,6 +953,7 @@ launch2flightalt <- function(p, lns, uavViewDir, launch2startHeading, uavType) {
   return(lns)
 }
 
+# generate raw mavtree list 
 MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed = maxSpeed/3.6,circleRadius,df,takeOffAlt){
   mission <- p$locationName
   
@@ -1118,7 +1119,7 @@ MAVTreeCSV <- function(flightPlanMode, trackDistance, logger, p, dem, maxSpeed =
   
 }
 
-
+# read text file contasining x,y coordinates
 readTreeTrack<- function(treeTrack){
   tTkDF<-read.csv(treeTrack,sep=",",header = TRUE)
   sp::coordinates(tTkDF) <- ~X+Y
@@ -1128,6 +1129,7 @@ readTreeTrack<- function(treeTrack){
   return(tTkDF)
 }
 
+# calculate a obstacle free flight path for  a given list of coordinates
 makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,locationName,circleRadius,flightArea,takeOffAlt){
   if (is.null(demFn)) {
     levellog(logger, 'WARN', "CAUTION!!! no DEM file provided")
@@ -1320,9 +1322,9 @@ makeFlightPathT3 <- function(treeList,p,uavType,task,demFn,logger,projectDir,loc
   }
 }
 
+# get altitudes for dji flightpath
 getAltitudes <- function(demll ,df,p,followSurfaceRes,logger,projectDir,locationName,flightArea) {
-  
-  
+
   # extract all waypoint altitudes
   altitude <- as.data.frame(raster::extract(demll,df,layer = 1, nl = 1))
   names(altitude) <- "altitude"
@@ -1369,6 +1371,7 @@ getAltitudes <- function(demll ,df,p,followSurfaceRes,logger,projectDir,location
   return(return)
 }
 
+# get launch position coordinates
 readLaunchPos <- function(fN,extend=FALSE){
   if (class(fN) != "numeric") {
     flightBound <- importSurveyArea(fN)
@@ -1394,8 +1397,6 @@ writeDjiTreeCsv <-function(df,mission){
   maxPoints<-96
   minPoints<-1
   maxFlightLength <- 15
-  
-  
   
   for (i in 1:nofiles) {
     if (maxPoints>nrow(df@data)){maxPoints<-nrow(df@data)}
@@ -1485,8 +1486,8 @@ writeDjiTreeCSV <-function(df,mission,nofiles,maxPoints,p,logger,rth,trackSwitch
 }
 
 
-################################
 
+# get UTM zone of given longitude
 long2UTMzone <- function(long) {
   (floor((long + 180)/6) %% 60) + 1
 }
@@ -1546,6 +1547,7 @@ makeUavPointMAV<- function(lat=0.000000,lon=0.000000,alt=100.0,head=0,wp=0,cf=3,
 #  # create the header
 #}
 
+# DEPRECEATED  optimizing the DSM for low altitude flights...
 DEM2FlSurface<- function(p,dem,logger){
   
   cat("\n optimizing the DSM for low altitude flights...\n")
@@ -1593,8 +1595,11 @@ mavCmd <- function(id,wp=0,cf="3",cmd="82",p1="0.000000",p2="0.000000",p3="0.000
   #<INDEX> <CURRENT WP> <COORD FRAME> <COMMAND> <PARAM1> <PARAM2> <PARAM3> <PARAM4> <PARAM5/X/LONGITUDE> <PARAM6/Y/LATITUDE> <PARAM7/Z/ALTITUDE> <AUTOCONTINUE>
   return(paste0(id,sep,wp,sep,cf,sep,cmd,sep,p1,sep,p2,sep,p3,sep,p4,sep,lat,sep,lon,sep,alt,sep,autocont))
 }
+
+# getting true for odd numbers
 is.odd <- function(x) x %% 2 != 0
 
+# extract highest altitude position and agl of a single track
 h_get_seg_fparams <- function(dem,
                               start,
                               target,
@@ -1623,6 +1628,7 @@ h_get_seg_fparams <- function(dem,
   return (c(seg_flight_altitude,seg_max_pos,seg_heading,seg))
 }
 
+# extract highest altitude position and agl of a position with  a defined radius
 h_get_point_fparams <- function(dem,
                                 point,
                                 p, 
@@ -1636,10 +1642,6 @@ h_get_point_fparams <- function(dem,
   # calculate minimum rth altitude for each line by identifing max altitude
   seg_flight_altitude  <- raster::extract(dem,seg_buf, fun = max,na.rm = TRUE,layer = 1, nl = 1) - startAlt + as.numeric(p$aboveTreeAlt)
   
-  
-  
-  
   # calculate heading 
-  
   return (c(seg_flight_altitude))
 }

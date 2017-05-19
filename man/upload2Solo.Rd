@@ -28,6 +28,3 @@ upload2Solo provides a crude interface to upload the Solo mission file to the 3d
 upload2Solo("export_1001_solo.waypoints")
 
 }
-\author{
-Chris Reudenbach
-}

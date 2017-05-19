@@ -1,4 +1,4 @@
-  ---
+---
 title: "uavRst - Unmanned aerial Vehicle Remote Sensing Tools "
 author: "Chris Reudenbach"
 date: "October 10, 2016"
@@ -10,7 +10,7 @@ output:
 
 ![](http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png) (CC-BY-NC-SA)
 
-This version of the document was produced on _`r format(Sys.time(), "%a %b %d %Y")`_ using `robubu` version **`r packageVersion("robubu")`**
+This version of the document was produced on _`r format(Sys.time(), "%a %b %d %Y")`_ using `uavRst` version **`r packageVersion("uavRst")`**
 
 ------
 
@@ -26,11 +26,11 @@ devtools::install_github("gisma/uavRst")
 
 # Some remarks about UAV flying 
 
-The basic idea is to provide an easy to use workflow for controlling rtf UAVs from planning and flying autonoumous surveys to derivation and postclassification of the data. 
+The basic idea is to provide an easy to use workflow for controlling rtf UAVs from planning and flying autonoumous surveys up to the derivation and postclassification of the data. The focus is set on retrieving your own data for answering your own questions keeping in mind the specific advantages and disadvantages of UAV derived data. RTF UAV#s provide very high spatial and very low spectral resolutions. Additionally the point cloud is only genereated by visible surface structures. 
 
-The central script for survey planning is murcs (Make Uav Survey Controlfile).  murcs creates either intermediate flight control files for the dji phantom x UAVs or ready to upload control files for the 3DR Solo.
+The central script for survey planning is ```makeFP ```.  It creates either intermediate flight control files for the dji phantom x UAVs or ready to upload control files for MAVLINK conform flightcontrollers like the Pixhawk as used in the 3DR Solo uav.
 
-The dji control files are designed for using with the propietary litchi flight control app exchange format, while the 3DR Solo files are using the MAVLINK common message set, that is used by the PixHawk flight controller family. Both are implemented very rudimentary.
+The dji control files are designed for using with the propietary litchi flight control app exchange format, while the 3DR Solo files are using the MAVLINK common message set, that is used by the PixHawk flight controller family. 
 
 ## DJI Phantom family
 The reason using DJI is their absolute straightforward usage. Everybody can fly with a DJI but the price ist a hermetically closed system. Only the  litchi app provides additionally to a cloud based mission planer an offline/standalone interface to upload a csv formated waypoint file for autonomous flights to the Phantom.

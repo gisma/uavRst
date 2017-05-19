@@ -217,8 +217,6 @@ if (!isGeneric('makeFP')) {
 #' To use the script you need to install quite a lot of R-packages and at least the binary GDAL tools as well as SAGA GIS and GRASS GIS according to your system needs. Please find more information at NASA EarthData project: \href{http://giswerk.org/doku.php?id=rs:micrors:uavrs:intro}{uav based Remote Sensing at giswerk.org}).
 #'
 #'
-#' @author
-#' Chris Reudenbach
 #'
 #' @examples
 #'
@@ -333,7 +331,7 @@ makeFP <- function(projectDir = "~",
                    maxSpeed = 20.0,
                    maxFlightTime = 10,
                    picRate = 2,
-                   windCondition = 1,
+                   windCondition = 0,
                    uavType = "solo",
                    cameraType = "MAPIR2",
                    cmd=16,
@@ -342,7 +340,8 @@ makeFP <- function(projectDir = "~",
                    dA = FALSE,
                    heatMap = FALSE,
                    picFootprint = FALSE,
-                   rcRange = NULL)
+                   rcRange = NULL,
+                   copy = FALSE)
 {
   ###  setup environ and params
   cat("setup environ and params...\n")
@@ -381,7 +380,7 @@ makeFP <- function(projectDir = "~",
       
   }
   
-  if (!is.null(demFn)) {
+  if (!is.null(demFn) & copy ) {
     file.copy(demFn, paste0(file.path(projectDir,locationName, "/data"), "/", basename(demFn)))
     demFn <- paste0(file.path(projectDir,locationName, "/data"), "/", basename(demFn))
     
@@ -398,7 +397,6 @@ makeFP <- function(projectDir = "~",
   # create log file
   logger <- create.logger(logfile = paste0(file.path(projectDir, locationName, workingDir, "log/"),strsplit(basename(taskName), "\\.")[[1]][1],'.log'))
   level(logger) <- "INFO"
-  levellog(logger, 'INFO', "                                                           ")
   levellog(logger, 'INFO', "                                                           ")
   levellog(logger,'INFO',"--------------------- START RUN ---------------------------")
   levellog(logger, 'INFO', paste("Working folder: ", file.path(projectDir, locationName, workingDir)))

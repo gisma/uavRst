@@ -62,6 +62,3 @@ For a comprehensive overview of remote sensing indices have a look at: \url{http
 Wavelength ranges for overlapping digital camera bands are: red 580-670 nm, green 480-610 nm, and blue 400-520 nm (Hunt et al., 2005)
 http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=2161&context=usdaarsfacpub
 }
-\author{
-Chris Reudenbach
-}

@@ -11,10 +11,10 @@ makeFP(projectDir = "~", locationName = "dummylocation",
   followSurface = FALSE, followSurfaceRes = NULL, demFn = NULL,
   altFilter = 1, horizonFilter = 30, terrainSmooth = FALSE,
   flightPlanMode = "track", presetFlightTask = "remote", overlap = 0.8,
-  maxSpeed = 20, maxFlightTime = 10, picRate = 2, windCondition = 1,
+  maxSpeed = 20, maxFlightTime = 10, picRate = 2, windCondition = 0,
   uavType = "solo", cameraType = "MAPIR2", cmd = 16, uavViewDir = 0,
   djiBasic = c(0, 0, 0, -90, 0), dA = FALSE, heatMap = FALSE,
-  picFootprint = FALSE, rcRange = NULL)
+  picFootprint = FALSE, rcRange = NULL, copy = FALSE)
 }
 \arguments{
 \item{projectDir}{path to the main folder where several locations can be hosted}
@@ -336,7 +336,4 @@ mapview::mapview(fp2$fA,color="blue", alpha.regions = 0.1,lwd=0.5)+
 mapview(fp2$oDEM,col=terrain.colors(256))+
 mapview::mapview(fp2$demA,color="black", alpha.regions = 0.1,lwd=0.5)
 }
-}
-\author{
-Chris Reudenbach
 }

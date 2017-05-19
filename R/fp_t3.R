@@ -45,8 +45,6 @@ if (!isGeneric('fp_t3p')) {
 #' @param uavType type of uav. currently "djip3" and "solo" are supported
 #' @param maxFl maximum duration of a flight in minutes
 
-#' @author
-#' Chris Reudenbach
 #'
 #' @examples
 #' t3<-fp_t3p(projectDir ="/home/creu/uav/bayerwald",

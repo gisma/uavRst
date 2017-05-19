@@ -30,7 +30,7 @@ leafDraw(mapCenter = NULL, zoom = 15, line = TRUE, rectangle = TRUE,
 
 \item{overlay}{optional sp object}
 
-\item{preset}{textstring "NULL" full draw version, "uav" for flightarea digitizing, "ext" for rectangles}
+\item{preset}{character defaut is "NULL" full draw version, "uav" for flightarea digitizing, "ext" for rectangles}
 
 \item{locPreset}{character default is "muf" for Marburg University Forest, others are "tra" Traddelstein, "hag" Hagenstein, "baw" Bayerwald.}
 
@@ -50,17 +50,13 @@ Yu can either save the digitized object to a json file or you ma grab the json s
 leafDraw()
 
 # preset for digitizing uav flight areas in Meuse
-
-uavRst::leafDraw(overlay = over, preset = "uav")
-
 data(meuse) 
 coordinates(meuse) <- ~x+y 
 proj4string(meuse) <-CRS("+init=epsg:28992") 
 me<-sp::spTransform(meuse,CRSobj = sp::CRS("+init=epsg:4326"))
- 
+uavRst::leafDraw(overlay = me, preset = "uav")
+  
 # preset for digitizing extents
 leafDraw(preset="ext",overlay = me)
-}
-\author{
-Chris Reudenbach
+
 }

@@ -16,10 +16,6 @@
 #' @param alpha  0.6,
 #' @param opacity  0.7,
 #' @param color "blue"
-
-#' 
-#' @author
-#' Chris Reudenbach
 #'
 #' @examples
 #' 

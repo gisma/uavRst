@@ -52,8 +52,6 @@ if (!isGeneric('h_xyz2tif')) {
 #' @return 
 #' a geoT
 #' 
-#' @author
-#' Chris Reudenbach
 #' 
 
 #' @examples

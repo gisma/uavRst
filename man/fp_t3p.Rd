@@ -86,6 +86,3 @@ launchPos = c(13.409114897133804,48.92039612988935))
 mapview(t3$wp,zcol = "altitude",lwd=1,cex=5)+mapview(t3$lp,color="red",cex=5)
 
 }
-\author{
-Chris Reudenbach
-}

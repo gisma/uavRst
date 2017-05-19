@@ -42,6 +42,3 @@ soloLog(logDir="~/tmp/solo")
 soloLog(logDir="~/tmp/solo", logFiles = "*")
 
 }
-\author{
-Chris Reudenbach
-}

@@ -76,8 +76,8 @@ fp <- makeFP(projectDir ="/home/creu/uav/uniwald",
 )
 
 fp <- makeFP(projectDir ="/home/creu/uav/uniwald",
-             locationName = "lahn",
-             surveyArea = "/home/creu/uav/uniwald/lahn/data/flightarea_lahn.kml",
+             locationName = "steinbruch",
+             surveyArea = "/home/creu/uav/uniwald/test/data/test.json",
              followSurface = TRUE,
              flightAltitude = 40,
              demFn = "~/uav/uniwald/data/geonode-lidar_dsm_01m.tif",

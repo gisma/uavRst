@@ -5,7 +5,6 @@
 #' @name uavRst
 #' @docType package
 #' @title Unmanned Aerial Vehicle Remote Sensing Tools - awesome gis tools to fly
-#' @author Chris Reudenbach,
 #' \cr
 #' \emph{Maintainer:} Chris Reudenbach \email{reudenbach@@uni-marburg.de}
 #'

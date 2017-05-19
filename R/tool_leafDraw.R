@@ -13,12 +13,10 @@
 #' @param position place to put the toolbar (topright, topleft, bottomright, bottomleft)
 #' @param intersection enable/disable th possibility to overlay lines or polygons
 #' @param maplayer string as provided by leaflet-provider 
-#' @param preset textstring "NULL" full draw version, "uav" for flightarea digitizing, "ext" for rectangles
+#' @param preset character defaut is "NULL" full draw version, "uav" for flightarea digitizing, "ext" for rectangles
 #' @param locPreset character default is "muf" for Marburg University Forest, others are "tra" Traddelstein, "hag" Hagenstein, "baw" Bayerwald.
 #' @param overlay optional sp object 
 #' 
-#' @author
-#' Chris Reudenbach
 #'
 #' @examples
 #' 
@@ -26,18 +24,16 @@
 #' leafDraw()
 #' 
 #' # preset for digitizing uav flight areas in Meuse
-#' 
-#' uavRst::leafDraw(overlay = over, preset = "uav")
-#' 
 #' data(meuse) 
 #' coordinates(meuse) <- ~x+y 
 #' proj4string(meuse) <-CRS("+init=epsg:28992") 
 #' me<-sp::spTransform(meuse,CRSobj = sp::CRS("+init=epsg:4326"))
-#'  
+#' uavRst::leafDraw(overlay = me, preset = "uav")
+#'   
 #' # preset for digitizing extents
 #' leafDraw(preset="ext",overlay = me)
+#' 
 #' @export leafDraw
-#'               
 
 leafDraw <- function(mapCenter=NULL,
                      zoom=15, 

@@ -10,8 +10,6 @@ if (!isGeneric('upload2Solo')) {
 #' @param prearm controls the prearm status of the Solo prearm check 0=Disabled,1=Enabled,-3=Skip Baro,-5=Skip Compass,-9=Skip GPS,-17=Skip INS,-33=Skip Params/Rangefinder,-65=Skip RC,127=Skip Voltage 
 #' @param missionFile mission file to upload
 #' 
-#' @author
-#' Chris Reudenbach
 #'
 #'
 #'@note #' @note for using the solo stuff you need to install: sudo pip install pymavlink; sudo pip install dronekit-sitl; sudo pip install dronekit; sudo apt-get install sshpass
@@ -69,8 +67,6 @@ if (!isGeneric('soloLog')) {
 #' 
 #' @param makeSP generates SP objects from the gpx files
 #' 
-#' @author
-#' Chris Reudenbach
 #' @note for using the solo stuff you need to install: \cr 
 #' sudo pip install pymavlink  \cr 
 #' sudo pip install dronekit-sitl \cr 

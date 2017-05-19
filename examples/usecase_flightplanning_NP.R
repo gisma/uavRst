@@ -37,3 +37,5 @@ t2<-fp_t3p(projectDir ="/home/creu/uav/gentree/Traddelkopf",
            flightAltitude = 60,
            aboveTreeAlt = 45,
            launchPos = c(8.980250,51.130313))
++-
+  soloLog(logDir = "/home/creu/temp3")

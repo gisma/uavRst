@@ -22,8 +22,6 @@
 #' VARI (green-red)/(green+red-blue). A Visible Atmospherically Resistant Index (VARI)\cr
 #' VVI  (1-(r-30)/(r+30))*(1-(g-50)/(g+50))*(1-(b-1)/(b+1))
 #' 
-#' @author
-#' Chris Reudenbach
 #' 
 #' @name rs_rgbIndices
 #' @export rs_rgbIndices

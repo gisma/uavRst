@@ -67,6 +67,3 @@ proj4string(meuse) <- CRS("+init=epsg:28992")
  import <-rgdal::readOGR(dsn = path.expand("~/ch_sel.json"), layer = "OGRGeoJSON")
 
 }
-\author{
-Chris Reudenbach
-}

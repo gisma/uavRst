@@ -4,16 +4,13 @@
 \name{uavRst}
 \alias{uavRst}
 \alias{uavRst-package}
-\title{Unmanned Aerial Vehicle Remote Sensing Tools - awesome gis tools to fly}
+\title{Unmanned Aerial Vehicle Remote Sensing Tools - awesome gis tools to fly
+\cr
+\emph{Maintainer:} Chris Reudenbach \email{reudenbach@uni-marburg.de}}
 \description{
 Unmanned Aerial Vehicle Remote Sensing Tools
 }
 \details{
 The package provides some  R-GI functionality for dealing with Unmanned Aerial Vehicle Remote Sensing
-}
-\author{
-Chris Reudenbach,
-\cr
-\emph{Maintainer:} Chris Reudenbach \email{reudenbach@uni-marburg.de}
 }
 \keyword{package}
