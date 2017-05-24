@@ -161,21 +161,20 @@ To use the script you need to install quite a lot of R-packages and at least the
 
  \preformatted{
 
-  #--#  #-->             #--#  #
-  |  |  |               /  /  /
-  |  |  |              /  /  /
-  |  |  |             /  /  /
-  #  #--#         <--#  #--#
+  #--#  #-->             #-----#
+  |  |  |               /    
+  |  |  |              #-----#
+  |  |  |                   /
+  #  #--#         <--#-----#
   }
  If \code{flightPlanMode} is equal \code{waypoints} the result is an equal spatial distribution of way points:
  \preformatted{
 
-  #--#  #-->             #--#  #
-  |  |  |               /  /  /
-  #  #  #              #  #  #
-  |  |  |             /  /  /
-  #  #--#         <--#  #--#
-
+  #--#  #-->             #--#--#
+  |  |  |               /    
+  #  #  #              #--#--#
+  |  |  |                   /
+  #  #--#         <--#--#--#'
   }
 
 

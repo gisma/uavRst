@@ -1,3 +1,25 @@
+sologetlog <- function(connection="udp:10.1.1.166:14550",prearm="-9"){
+  
+  
+  command ='python'
+  
+  script <- paste(system.file(package="uavRst"), "python/io_solo_params.py", sep="/")
+  #script='~/proj/drone/scripte/io_solo_mission.py'
+  
+  option1<-'--connect'
+  connection<-connection
+
+  args = c(option1, connection)
+  
+  # Add path to script as first arg
+  allArgs = c(script, args)
+  
+  output = system2(command, args=allArgs, stdout=TRUE)
+  
+  print(paste("Solo returns:", output,"\n"))
+}
+
+
 if (!isGeneric('upload2Solo')) {
   setGeneric('upload2Solo', function(x, ...)
     standardGeneric('upload2Solo'))
