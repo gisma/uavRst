@@ -76,7 +76,7 @@ if (!isGeneric('makeFP')) {
 #'   |  |  |               /    
 #'   #  #  #              #--#--#
 #'   |  |  |                   /
-#'   #  #--#         <--#--#--#'
+#'   #  #--#         <--#--#--#
 #'   }
 #'
 #'
@@ -374,8 +374,8 @@ makeFP <- function(projectDir = "~",
     dir.create(file.path(projectDir,locationName, "data"), recursive = TRUE)
   }
   if (!is.null(surveyArea)) {
-    file.copy(surveyArea, paste0(file.path(projectDir,locationName, "/data"), "/", basename(surveyArea)))
-    surveyArea <- paste0(file.path(projectDir,locationName, "/data"), "/", basename(surveyArea))
+    file.copy(surveyArea, paste0(file.path(projectDir,locationName, "data")))
+    surveyArea <- paste0(file.path(projectDir,locationName, "data"), "/", basename(surveyArea))
       
   }
   
@@ -394,11 +394,11 @@ makeFP <- function(projectDir = "~",
   #Sys.chmod(list.dirs("../.."), "777")
   
   # create log file
-  logger <- create.logger(logfile = paste0(file.path(projectDir, locationName, workingDir, "log/"),strsplit(basename(taskName), "\\.")[[1]][1],'.log'))
-  level(logger) <- "INFO"
-  levellog(logger, 'INFO', "                                                           ")
-  levellog(logger,'INFO',"--------------------- START RUN ---------------------------")
-  levellog(logger, 'INFO', paste("Working folder: ", file.path(projectDir, locationName, workingDir)))
+  logger <- log4r::create.logger(logfile = paste0(file.path(projectDir, locationName, workingDir, "log/"),strsplit(basename(taskName), "\\.")[[1]][1],'.log'))
+  log4r::level(logger) <- "INFO"
+  log4r::levellog(logger, 'INFO', "                                                           ")
+  log4r::levellog(logger,'INFO',"--------------------- START RUN ---------------------------")
+  log4r::levellog(logger, 'INFO', paste("Working folder: ", file.path(projectDir, locationName, workingDir)))
   
   # generate misson control filename
   csvFn <-paste(file.path(projectDir, locationName, workingDir, "control"),paste0(taskName, ".csv"),sep = .Platform$file.sep)
@@ -762,36 +762,36 @@ makeFP <- function(projectDir = "~",
   
   
   # write log file status and params
-  levellog(logger, 'INFO', paste("taskName     : ", taskName))
-  levellog(logger, 'INFO', paste("DEM filename    : ", names(demFn)))
-  levellog(logger, 'INFO', paste("surveyArea      : ", surveyAreaUTM))
-  levellog(logger, 'INFO', paste("launchAltitude  : ", launchAltitude))
-  levellog(logger, 'INFO', paste("followSurface   : ", followSurface))
-  levellog(logger, 'INFO', paste("altfilter       : ", altFilter))
-  levellog(logger, 'INFO', paste("horizonFilter   : ", horizonFilter))
-  levellog(logger, 'INFO', paste("flightPlanMode  : ", flightPlanMode))
-  levellog(logger, 'INFO', paste("flightAltitude  : ", flightAltitude))
-  levellog(logger,
+  log4r::levellog(logger, 'INFO', paste("taskName     : ", taskName))
+  log4r::levellog(logger, 'INFO', paste("DEM filename    : ", names(demFn)))
+  log4r::levellog(logger, 'INFO', paste("surveyArea      : ", surveyAreaUTM))
+  log4r::levellog(logger, 'INFO', paste("launchAltitude  : ", launchAltitude))
+  log4r::levellog(logger, 'INFO', paste("followSurface   : ", followSurface))
+  log4r::levellog(logger, 'INFO', paste("altfilter       : ", altFilter))
+  log4r::levellog(logger, 'INFO', paste("horizonFilter   : ", horizonFilter))
+  log4r::levellog(logger, 'INFO', paste("flightPlanMode  : ", flightPlanMode))
+  log4r::levellog(logger, 'INFO', paste("flightAltitude  : ", flightAltitude))
+  log4r::levellog(logger,
            'INFO',
            paste("presetFlightTask: ", presetFlightTask))
-  levellog(logger, 'INFO', paste("curvesize       : ", p$curvesize))
-  levellog(logger, 'INFO', paste("rotationdir     : ", p$rotationdir))
-  levellog(logger, 'INFO', paste("gimbalmode      : ", p$gimbalmode))
-  levellog(logger,'INFO',paste("gimbalpitchangle: ", p$gimbalpitchangle))
-  levellog(logger, 'INFO', paste("overlap         : ", overlap))
-  levellog(logger, 'INFO', paste("uavViewDir      : ", uavViewDir))
-  levellog(logger, 'INFO', paste("picFootprint    : ", picFootprint))
-  levellog(logger,'INFO',paste("followSurfaceRes: ", followSurfaceRes))
-  levellog(logger, 'INFO', paste("surveyAreaCoords: ", surveyArea))
-  levellog(logger, 'INFO', paste("windCondition   : ", windCondition))
-  levellog(logger, 'INFO', "-")
-  levellog(logger,'INFO',"----- use the following task params! --------------")
-  levellog(logger,'INFO',paste("set RTH flight altitude to    : ", round(result[[6]], digits = 0), " (m)"))
-  levellog(logger,'INFO',paste("set flight speed to a max of: ",round(maxSpeed, digits = 1),"  (km/h)      "))
-  levellog(logger,'INFO',paste("set pic rate to at least : ", picIntervall, "  (sec/pic) "))
-  levellog(logger,'INFO',paste("calculated mission time    : ", rawTime,      "  (min)      "))
-  levellog(logger,'INFO',paste("estimated battery lifetime  : ", maxFlightTime,      "  (min)      "))
-  levellog(logger,'INFO',paste("Area covered               : ", surveyAreaUTM / 10000,      "  (ha)"))
+  log4r::levellog(logger, 'INFO', paste("curvesize       : ", p$curvesize))
+  log4r::levellog(logger, 'INFO', paste("rotationdir     : ", p$rotationdir))
+  log4r::levellog(logger, 'INFO', paste("gimbalmode      : ", p$gimbalmode))
+  log4r::levellog(logger,'INFO',paste("gimbalpitchangle: ", p$gimbalpitchangle))
+  log4r::levellog(logger, 'INFO', paste("overlap         : ", overlap))
+  log4r::levellog(logger, 'INFO', paste("uavViewDir      : ", uavViewDir))
+  log4r::levellog(logger, 'INFO', paste("picFootprint    : ", picFootprint))
+  log4r::levellog(logger,'INFO',paste("followSurfaceRes: ", followSurfaceRes))
+  log4r::levellog(logger, 'INFO', paste("surveyAreaCoords: ", surveyArea))
+  log4r::levellog(logger, 'INFO', paste("windCondition   : ", windCondition))
+  log4r::levellog(logger, 'INFO', "-")
+  log4r::levellog(logger,'INFO',"----- use the following task params! --------------")
+  log4r::levellog(logger,'INFO',paste("set RTH flight altitude to    : ", round(result[[6]], digits = 0), " (m)"))
+  log4r::levellog(logger,'INFO',paste("set flight speed to a max of: ",round(maxSpeed, digits = 1),"  (km/h)      "))
+  log4r::levellog(logger,'INFO',paste("set pic rate to at least : ", picIntervall, "  (sec/pic) "))
+  log4r::levellog(logger,'INFO',paste("calculated mission time    : ", rawTime,      "  (min)      "))
+  log4r::levellog(logger,'INFO',paste("estimated battery lifetime  : ", maxFlightTime,      "  (min)      "))
+  log4r::levellog(logger,'INFO',paste("Area covered               : ", surveyAreaUTM / 10000,      "  (ha)"))
   # return params for visualisation and main results for overview
   if ((flightPlanMode == 'track' | flightPlanMode == 'terrainTrack') & rawTime > maxFlightTime)  {
     note <- "flighttime > battery lifetime! control files have been splitted. Have Fun..."

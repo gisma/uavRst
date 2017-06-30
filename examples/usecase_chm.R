@@ -34,7 +34,7 @@ saga <- link2GI::linkSAGA()
                         gisdbase_path = filepath_base,
                         thin_with_grid = "0.5",
                         level_max = "5" ,
-                        grid_size = "0.05")
+                        grid_size = "0.05"),
   dsmR <- dsm[[1]]
   dtmR <- dtm[[1]]
   

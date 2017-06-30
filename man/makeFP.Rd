@@ -174,7 +174,7 @@ To use the script you need to install quite a lot of R-packages and at least the
   |  |  |               /    
   #  #  #              #--#--#
   |  |  |                   /
-  #  #--#         <--#--#--#'
+  #  #--#         <--#--#--#
   }
 
 

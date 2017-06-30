@@ -19,7 +19,7 @@ analyzeDSM <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,followS
     # download corresponding srtm data
     dem <- uavRst::t_getgeodata(name = "SRTM",
                                 xtent = extent(p$lon1,p$lon3,p$lat1,p$lat3), 
-                                zone = 0.1 ,
+                                zone = 1.5 ,
                                 merge = TRUE)
     dem <- setMinMax(dem)
     rundem <- raster::crop(dem,
@@ -247,7 +247,7 @@ analyzeDSM <- function(demFn ,df,p,altFilter,horizonFilter,followSurface,followS
 # (2) calculate and insert rth and fts waypoints with respect to the terrain obstacles to generate a save start and end of a task
 
 calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,batteryTime,logger,p,len,multiply,tracks,param,speed,uavType,dem,maxAlt,projectDir, workingDir,locationName,uavViewDir,cmd){
-  
+  fin <- FALSE
   minPoints <- 1
   # set number of waypoints per file
   maxPoints <- ceiling(nrow(df@data)/nofiles)
@@ -335,34 +335,34 @@ calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,
       #                       lon = round(p$launchLon,6),
       #                       alt = round(param$launchAltitude))
       # TAKEOFF
-      lnsnew[3,1] <- mavCmd(id = 1, 
-                            cmd = 22, 
-                            alt = round(startRth,6))
+      lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = 1, 
+                                                 cmd = 22, 
+                                                 alt = round(startRth,6))
       # SPEED taxiway
-      lnsnew[4,1] <-       mavCmd(id = 2, 
-                                  cmd = 178, 
-                                  p2 = round(speed*4.0,6))
+      lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = 2, 
+                                                 cmd = 178, 
+                                                 p2 = round(speed*4.0,6))
       
       # ascent2start WP
-      lnsnew[5,1] <- mavCmd(id = 3, 
-                            cmd = cmd,
-                            lat = round(calcNextPos(launchLon,launchLat,startheading,5)[2],6),
-                            lon = round(calcNextPos(launchLon,launchLat,startheading,5)[1],6),
-                            alt = round(startRth,0))
+      lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = 3, 
+                                                 cmd = cmd,
+                                                 lat = round(calcNextPos(launchLon,launchLat,startheading,5)[2],6),
+                                                 lon = round(calcNextPos(launchLon,launchLat,startheading,5)[1],6),
+                                                 alt = round(startRth,0))
       # maxStartPos WP
-      lnsnew[6,1] <- mavCmd(id = 4, 
-                            cmd = 16,
-                            lat = round(startmaxpos[1,2],6),
-                            lon = round(startmaxpos[1,1],6),
-                            alt = round(startRth,0))
+      lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = 4, 
+                                                 cmd = 16,
+                                                 lat = round(startmaxpos[1,2],6),
+                                                 lon = round(startmaxpos[1,1],6),
+                                                 alt = round(startRth,0))
       
       # SPEED task
-      lnsnew[7,1] <-       mavCmd(id = 5, 
-                                  cmd = 178, 
-                                  p2 = round(speed,6))
-      lnsnew[8,1] <-       mavCmd(id = 6, 
-                                  cmd = 115, 
-                                  p1 = round(abs(uavViewDir),1))
+      lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = 5, 
+                                                 cmd = 178, 
+                                                 p2 = round(speed,6))
+      lnsnew[length(lnsnew[,1]) + 1,1] <- mavCmd(id = 6, 
+                                                 cmd = 115, 
+                                                 p1 = round(abs(uavViewDir),1))
       lc <- 8
       # task WP & task speed
       for (j in  seq(1,(addmax - 1)*2)) {
@@ -413,14 +413,16 @@ calcMAVTask <- function(df,mission,nofiles,rawTime,flightPlanMode,trackDistance,
       levellog(logger, 'INFO', paste("created : ", paste0(mission,"-",i,".csv")))
       
       # counter handling for the last file
-      if (maxPoints + addmax > nrow(df@data)) {
+      if (maxPoints + addmax > nrow(df@data) & fin == FALSE) {
         oldmax    <- maxPoints
         maxPoints <- nrow(df@data)
         minPoints <- oldmax
         addmax    <- maxPoints - minPoints
+        fin <- TRUE
       } else {
         minPoints <- maxPoints - 2
         maxPoints <- maxPoints + addmax
+        
       }
     }
   }
@@ -611,7 +613,7 @@ calcSurveyArea <- function(surveyArea,projectDir,logger) {
       stop("### you did not provide a launching coordinate")
     }
     else {
-      file.copy( from = surveyArea, to = file.path(projectDir,"data"))
+      #file.copy( from = surveyArea, to = file.path(projectDir,"data"))
       test <- try(flightBound <- readExternalFlightBoundary(surveyArea))
       if (class(test) != "try-error") {
         surveyArea <- flightBound 
