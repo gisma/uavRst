@@ -302,7 +302,7 @@ h_poly_extract_maxpos <- function(x,lN, poly_split=TRUE){
   mask <- raster::raster(fn)
   seeds <- raster::rasterize(max_pos,mask,field="id")
   seeds[seeds >= 0] <- 1
-  raster::writeRaster(seeds,paste0(path_run,"seeds.tif"))
+  raster::writeRaster(seeds,paste0(path_run,"seeds.tif"),overwrite=TRUE)
   return(list(seeds,max_pos))
 }
 
