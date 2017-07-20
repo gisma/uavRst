@@ -123,3 +123,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+static const R_CallMethodDef CallEntries[] = {
+    {"uavRst_gsubC", (DL_FUNC) &uavRst_gsubC, 3},
+    {"uavRst_brewPopupRowC", (DL_FUNC) &uavRst_brewPopupRowC, 2},
+    {"uavRst_brewPopupRowAltC", (DL_FUNC) &uavRst_brewPopupRowAltC, 2},
+    {"uavRst_brewPopupCoords", (DL_FUNC) &uavRst_brewPopupCoords, 2},
+    {"uavRst_mergePopupRows", (DL_FUNC) &uavRst_mergePopupRows, 2},
+    {"uavRst_createTemplate", (DL_FUNC) &uavRst_createTemplate, 1},
+    {"uavRst_listPopupTemplates", (DL_FUNC) &uavRst_listPopupTemplates, 3},
+    {"uavRst_df2String", (DL_FUNC) &uavRst_df2String, 1},
+    {"uavRst_one2JSON", (DL_FUNC) &uavRst_one2JSON, 1},
+    {"uavRst_all2JSONlist", (DL_FUNC) &uavRst_all2JSONlist, 1},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_uavRst(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}

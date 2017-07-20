@@ -8,7 +8,7 @@ Demonstrates how to get and set vehicle state and parameter information,
 and how to observe vehicle attribute (state) changes.
 Full documentation is provided at http://python.dronekit.io/examples/vehicle_state.html
 """
-from dronekit import connect, VehicleMode
+from dronekit import connect, VehicleMode, Command
 import time
 
 #Set up option parsing to get connection string
@@ -18,15 +18,16 @@ parser.add_argument('--connect',
                     help="vehicle connection target string. If not specified, SITL automatically started and used.")
 args = parser.parse_args()
 
-connection_string = args.connect
+
+connection_string = 'udp:10.1.1.166:14550'
 sitl = None
 
 
 #Start SITL if no connection string specified
-if not connection_string:
-  import dronekit_sitl
-sitl = dronekit_sitl.start_default()
-connection_string = sitl.connection_string()
+#if not connection_string:
+#  import dronekit_sitl
+#sitl = dronekit_sitl.start_default()
+#connection_string = sitl.connection_string()
 
 
 # Connect to the Vehicle. 
@@ -67,7 +68,7 @@ print " Attitude: %s" % vehicle.attitude
 print " Velocity: %s" % vehicle.velocity
 print " GPS: %s" % vehicle.gps_0
 print " Gimbal status: %s" % vehicle.gimbal
-print " Battery: %s" % vehicle.battery
+print " Battery: %s" % ^
 print " EKF OK?: %s" % vehicle.ekf_ok
 print " Last Heartbeat: %s" % vehicle.last_heartbeat
 print " Rangefinder: %s" % vehicle.rangefinder
@@ -229,8 +230,8 @@ vehicle.parameters['THR_MIN']=20
 for x in range(1,5):
   #Callbacks may not be updated for a few seconds
   if vehicle.parameters['THR_MIN']==20:
-  break
-time.sleep(1)
+      break
+      time.sleep(1)
 
 
 #Callback function for "any" parameter
