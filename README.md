@@ -2,11 +2,9 @@
 Unmanned Aerial Vehicle Remote Sensing Tools (depreceated)
 
 
-The [uavRst](https://github.com/gisma/uavRst) package will be split in four different packages:
+The [uavRst](https://github.com/gisma/uavRst) package is in the process to be splitted in in four different packages:
 
-The package family will be split in 4 parts:
-
-  * flight planning ```uavRmp```
+  * flight planning ```uavRmp``` (already existing)
   * forest analysis ```uavRfa```
   * remote sensing ```uavRrs```
   * archaeology ```uavRao```
