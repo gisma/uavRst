@@ -244,7 +244,7 @@ h_poly_extract_maxpos <- function(x,lN, poly_split=TRUE){
   # parallel retrival of maxpos
   
   cat("     max height coords search...\n")
-  cat("     you anaylize",length(ids) ,"polygons\n")
+  cat("     analize",length(ids) ,"polygons\n")
   cat("     assuming 5 cm resolution and an average of 15 sqm per polygon\n     the analysis will approx run until",format(Sys.time() + length(ids), " %X "),"\n")
   ret_max_pos <-  parallel::mclapply(ids,function(x) {
     

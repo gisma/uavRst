@@ -10,17 +10,18 @@
 
 
 #' A \code{RasterLayer} with the index calculates as:\cr
-#' BI  sqrt((R**2+G**2+B*2)/3 Brightness Index\cr
-#' CI (R-G)/(R+G) Soil Colour Index\cr
-#' GLI (2*g - r - b)/(2*g + r + b) Green leaf index Vis Louhaichi et al. (2001)\cr
-#' HI (2*R-G-B)/(G-B) Primary colours Hue Index\cr
-#' NDTI (R-G)/(R+G) Normalized difference turbidity index Water\cr
+#' BI    sqrt((R**2+G**2+B*2)/3 Brightness Index\cr
+#' CI    (R-G)/(R+G) Soil Colour Index\cr
+#' GLI   (2*g - r - b)/(2*g + r + b) Green leaf index Vis Louhaichi et al. (2001)\cr
+#' HI    (2*R-G-B)/(G-B) Primary colours Hue Index\cr
+#' NDTI  (R-G)/(R+G) Normalized difference turbidity index Water\cr
 #' NGRDI (G-R)/(G+R) Normalized green red difference index (sometimes GRVI) Tucker (1979)
-#' RI R**2/(B*G**3) Redness Index\cr
-#' SI (R-B)/(R+B) Spectral Slope Saturation Index\cr
-#' TGI  -0.5[190(R670-R550)-120(R670 - R480)] The triangular greenness index (TGI) estimates chlorophyll concentration in leaves and canopies\cr
-#' VARI (green-red)/(green+red-blue). A Visible Atmospherically Resistant Index (VARI)\cr
-#' VVI  (1-(r-30)/(r+30))*(1-(g-50)/(g+50))*(1-(b-1)/(b+1))
+#' RI    R**2/(B*G**3) Redness Index\cr
+#' SI    (R-B)/(R+B) Spectral Slope Saturation Index\cr
+#' TGI   -0.5[190(R670-R550)-120(R670 - R480)] The triangular greenness index (TGI) estimates chlorophyll concentration in leaves and canopies\cr
+#' VARI  (green-red)/(green+red-blue). A Visible Atmospherically Resistant Index (VARI)\cr
+#' VVI   (1-(r-30)/(r+30))*(1-(g-50)/(g+50))*(1-(b-1)/(b+1))
+#  GLAI  (25 * (green - red) / (green +  red -  blue ) + 1.25 )
 #' 
 #' 
 #' @name rs_rgbIndices
@@ -28,19 +29,13 @@
 #' 
 #' @references
 #' 
-#' Planetary Habitability Laboratory (2015): Visible Vegetation Index (VVI). Available online via \url{http://phl.upr.edu/projects/visible-vegetation-index-vvi}.
-#' 
-#' Lacaux, J. P., Tourre, Y. M., Vignolles, C., Ndione, J. A., and Lafaye, M.: Classification of ponds from high-spatial resolution remote sensing: Application to Rift Valley Fever epidemics in Senegal, Remote Sens. Environ., 106, 66-74, 2007. 
-#' 
-#' Gitelson, A., et al.: Vegetation and Soil Lines in Visible Spectral Space: A Concept and Technique for Remote Estimation of Vegetation Fraction.  International Journal of Remote Sensing 23 (2002): 2537-2562. (VARI)
-#' 
-#' MADEIRA, J., BEDIDI, A., CERVELLE, B., POUGET, M. and FLAY, N., 1997, Visible spectrometric indices of hematite (Hm) and goethite (Gt) content in lateritic soils: 5490 N. Levin et al. the application of a Thematic Mapper (TM) image for soil-mapping in Brasilia, Brazil. International Journal of Remote Sensing, 18, pp. 2835-2852.
-#'  
-#' MATHIEU, R., POUGET, M., CERVELLE, B. and ESCADAFAL, R., 1998, Relationships between satellite-based radiometric indices simulated using laboratory reflectance data and typic soil colour of an arid environment. Remote Sensing of Environment, 66, pp. 17-28. 
-#' 
-#' Louhaichi, M., Borman, M.M., Johnson, D.E., 2001. Spatially located platform and aerial photography for documentation of grazing impacts on wheat. Geocarto International 16, 65-70.
-#' 
-#' Tucker, C.J., 1979. Red and photographic infrared linear combinations for monitoring vegetation. Remote Sensing of Environment 8, 127-150.
+#' Planetary Habitability Laboratory (2015): Visible Vegetation Index (VVI). Available online via \url{http://phl.upr.edu/projects/visible-vegetation-index-vvi}.\cr
+#' Lacaux, J. P., Tourre, Y. M., Vignolles, C., Ndione, J. A., and Lafaye, M.: Classification of ponds from high-spatial resolution remote sensing: Application to Rift Valley Fever epidemics in Senegal, Remote Sens. Environ., 106, 66-74, 2007. \cr
+#' Gitelson, A., et al.: Vegetation and Soil Lines in Visible Spectral Space: A Concept and Technique for Remote Estimation of Vegetation Fraction.  International Journal of Remote Sensing 23 (2002): 2537-2562. (VARI)\cr
+#' MADEIRA, J., BEDIDI, A., CERVELLE, B., POUGET, M. and FLAY, N., 1997, Visible spectrometric indices of hematite (Hm) and goethite (Gt) content in lateritic soils: 5490 N. Levin et al. the application of a Thematic Mapper (TM) image for soil-mapping in Brasilia, Brazil. International Journal of Remote Sensing, 18, pp. 2835-2852.\cr
+#' MATHIEU, R., POUGET, M., CERVELLE, B. and ESCADAFAL, R., 1998, Relationships between satellite-based radiometric indices simulated using laboratory reflectance data and typic soil colour of an arid environment. Remote Sensing of Environment, 66, pp. 17-28. \cr
+#' Louhaichi, M., Borman, M.M., Johnson, D.E., 2001. Spatially located platform and aerial photography for documentation of grazing impacts on wheat. Geocarto International 16, 65-70.\cr
+#' Tucker, C.J., 1979. Red and photographic infrared linear combinations for monitoring vegetation. Remote Sensing of Environment 8, 127-150.\cr
 #' 
 #' @seealso 
 #' For a comprehensive overview of remote sensing indices have a look at: \url{http://www.indexdatabase.de/db/i.php}(A database for remote sensing indices)\cr
@@ -60,7 +55,7 @@
 #' 
 #' 
 rs_rgbIndices<- function(red,green,blue,
-                      rgbi=c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI")) {
+                      rgbi=c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI")) {
   
   ## compatibility check
   if (raster::nlayers(rgb) < 3)
@@ -97,7 +92,7 @@ rs_rgbIndices<- function(red,green,blue,
       NDTI <- (red - green) / (red + green)
       names(NDTI) <- "NDTI"
       return(NDTI)
-      
+      GLAI
     } else if (item == "RI") {
       # redness index
       cat("\ncalculate redness index (RI)")
@@ -154,7 +149,7 @@ rs_rgbIndices<- function(red,green,blue,
       names(NGRDI) <- "NGRDI"
       return(NGRDI)
             
-    }  else if (item=="GLAI"){
+    }  else if (item=="GLAI"){indices
       # NGRDI Normalized green red difference index 
       cat("\ncalculate greenish Leaf Area Index  (GLAI) (highly experimental)")
       vevi<-(green - red) / (green +  red -  blue )

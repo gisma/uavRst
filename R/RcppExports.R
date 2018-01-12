@@ -2,42 +2,42 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 gsubC <- function(pattern, replacement, x) {
-    .Call('uavRst_gsubC', PACKAGE = 'uavRst', pattern, replacement, x)
+    .Call('_uavRst_gsubC', PACKAGE = 'uavRst', pattern, replacement, x)
 }
 
 brewPopupRowC <- function(colname, value) {
-    .Call('uavRst_brewPopupRowC', PACKAGE = 'uavRst', colname, value)
+    .Call('_uavRst_brewPopupRowC', PACKAGE = 'uavRst', colname, value)
 }
 
 brewPopupRowAltC <- function(colname, value) {
-    .Call('uavRst_brewPopupRowAltC', PACKAGE = 'uavRst', colname, value)
+    .Call('_uavRst_brewPopupRowAltC', PACKAGE = 'uavRst', colname, value)
 }
 
 brewPopupCoords <- function(colname, value) {
-    .Call('uavRst_brewPopupCoords', PACKAGE = 'uavRst', colname, value)
+    .Call('_uavRst_brewPopupCoords', PACKAGE = 'uavRst', colname, value)
 }
 
 mergePopupRows <- function(names, values) {
-    .Call('uavRst_mergePopupRows', PACKAGE = 'uavRst', names, values)
+    .Call('_uavRst_mergePopupRows', PACKAGE = 'uavRst', names, values)
 }
 
 createTemplate <- function(tmpPath) {
-    .Call('uavRst_createTemplate', PACKAGE = 'uavRst', tmpPath)
+    .Call('_uavRst_createTemplate', PACKAGE = 'uavRst', tmpPath)
 }
 
 listPopupTemplates <- function(x, names, tmpPath) {
-    .Call('uavRst_listPopupTemplates', PACKAGE = 'uavRst', x, names, tmpPath)
+    .Call('_uavRst_listPopupTemplates', PACKAGE = 'uavRst', x, names, tmpPath)
 }
 
 df2String <- function(x) {
-    .Call('uavRst_df2String', PACKAGE = 'uavRst', x)
+    .Call('_uavRst_df2String', PACKAGE = 'uavRst', x)
 }
 
 one2JSON <- function(x) {
-    .Call('uavRst_one2JSON', PACKAGE = 'uavRst', x)
+    .Call('_uavRst_one2JSON', PACKAGE = 'uavRst', x)
 }
 
 all2JSONlist <- function(x) {
-    .Call('uavRst_all2JSONlist', PACKAGE = 'uavRst', x)
+    .Call('_uavRst_all2JSONlist', PACKAGE = 'uavRst', x)
 }
 
