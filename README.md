@@ -1,20 +1,19 @@
 # uavRst
-Unmanned Aerial Vehicle Remote Sensing Tools
+Unmanned Aerial Vehicle Remote Sensing Tools (depreceated)
 
 
-The [uavRst](https://github.com/gisma/uavRst) package for is designed for uav autonomous flight planning and analysis to open the opportunity for low budget, open source based remote sensing of surfaces using ```R```. It is aiming to provide an easy to use workflow for controlling rtf UAVs from planning and flying autonomous surveys, over pre- and post-processing of the derived data.
+The [uavRst](https://github.com/gisma/uavRst) package is in the process to be splitted in in four different packages:
 
-Up to now it is dedicated to low budget rtf-UAVs as the DJI Phantom series and all Pixhawk based uavs like the 3DR Solo.
+  * flight planning ```uavRmp``` (already existing)
+  * forest analysis ```uavRfa```
+  * remote sensing ```uavRrs```
+  * archaeology ```uavRao```
 
-## Supported UAV platforms
+## Mission Planning
 
-The reason using DJI is their absolute straightforward usage. Everybody can fly with a DJI but the price to pay off is a hermetically closed system. Only the litchi app provides additionally to a cloud based mission planer an offline/standalone interface that is up to date and facilitate the upload of a CSV formatted waypoint file to control autonomous flights with the the Phantom.
+It it is strongly encouraged to use the new package for flight planning [uavRmp](https://github.com/gisma/uavRmp) for uav autonomous mission planning. In the first place it is a simple and open source planning tool for monitoring flights of low budget drones based on ```R```. It provide an easy workflow for planning autonomous 
+surveys including battery-dependent task splitting, save departures, and approaches of each monitoring chunks. 
 
-The open uav community is focused on the PixHawk autopilot unit and the Mission Planner software. It is well documented and several APIs are provided. Nevertheless an affordable terrain following autonomous flight planning tool is not available yet. It creates basic ```MAVLINK``` format compliant mission files that can be uploaded directly or via a Ground Control Station to the Pixhawk controller/Solo.
-
-## Mission planning 
-
-The core planning tool ```makeFP``` (make flight plan) creates either intermediate flight control files for the dji phantom x UAVs or ready to upload control files for the 3DR Solo. The dji control files are designed for using with the proprietary litchi flight control app exchange format, while the 3DR Solo files are using the ```MAVLINK``` common message format, that is used by the PixHawk flight controller family.
 
 ## Analysis
 
