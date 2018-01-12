@@ -8,7 +8,7 @@
 #' \cr
 #' \emph{Maintainer:} Chris Reudenbach \email{reudenbach@@uni-marburg.de}
 #'
-#' @import stringr zoo foreach sp raster htmlwidgets htmltools Rcpp rgeos rgdal gdalUtils tools maptools mapview parallel velox
+#' @import stringr zoo foreach sp raster htmlwidgets htmltools Rcpp rgeos rgdal gdalUtils tools maptools mapview doParallel velox CAST pastecs
 #' @importFrom geosphere bearing
 #' @importFrom geosphere distGeo
 #' @importFrom geosphere destPoint

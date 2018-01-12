@@ -24,8 +24,8 @@
 #  GLAI  (25 * (green - red) / (green +  red -  blue ) + 1.25 )
 #' 
 #' 
-#' @name rs_rgbIndices
-#' @export rs_rgbIndices
+#' @name rgbIndices
+#' @export rgbIndices
 #' 
 #' @references
 #' 
@@ -54,12 +54,12 @@
 #' }
 #' 
 #' 
-rs_rgbIndices<- function(red,green,blue,
+rgbIndices<- function(red,green,blue,
                       rgbi=c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI")) {
   
   ## compatibility check
-  if (raster::nlayers(rgb) < 3)
-    stop("Argument 'rgb' needs to be a Raster* object with at least 3 layers (usually red, green and blue).")
+  #  if (raster::nlayers(rgb) < 3)
+  #    stop("Argument 'rgb' needs to be a Raster* object with at least 3 layers (usually red, green and blue).")
   
   ### processing
   
@@ -69,10 +69,11 @@ rs_rgbIndices<- function(red,green,blue,
   # green <- raster::raster(rgb[[2]])
   # blue <- raster::raster(rgb[[3]])
   
+  
   indices <- lapply(rgbi, function(item){
     ## calculate Visible Vegetation Index vvi
     if (item == "VVI"){
-      cat("\ncalculate Visible Vegetation Index (VVI)")
+      cat("\n      calculate Visible Vegetation Index (VVI)")
       VVI <- (1 - abs((red - 30) / (red + 30))) * 
         (1 - abs((green - 50) / (green + 50))) * 
         (1 - abs((blue - 1) / (blue + 1)))
@@ -81,62 +82,62 @@ rs_rgbIndices<- function(red,green,blue,
       
     } else if (item == "VARI") {
       # calculate Visible Atmospherically Resistant Index (VARI)
-      cat("\ncalculate Visible Atmospherically Resistant Index (VARI)")
+      cat("\n      calculate Visible Atmospherically Resistant Index (VARI)")
       VARI <- (green - red) / (green + red - blue)
       names(VARI) <- "VARI"
       return(VARI)
       
     } else if (item == "NDTI") {
       ## Normalized difference turbidity index
-      cat("\ncalculate Normalized difference turbidity index (NDTI)")
+      cat("\n      calculate Normalized difference turbidity index (NDTI)")
       NDTI <- (red - green) / (red + green)
       names(NDTI) <- "NDTI"
       return(NDTI)
       GLAI
     } else if (item == "RI") {
       # redness index
-      cat("\ncalculate redness index (RI)")
+      cat("\n      calculate redness index (RI)")
       RI <- red**2 / (blue*green**3)
       names(RI) <- "RI"
       return(RI)
       
     } else if (item == "CI") {
       # CI Soil Colour Index
-      cat("\ncalculate Soil Colour Index (CI)")
+      cat("\n      calculate Soil Colour Index (CI)")
       CI <- (red - green) / (red + green)
       names(CI) <- "CI"
       return(CI)
       
     } else if (item == "BI") {
       #  Brightness Index
-      cat("\ncalculate Brightness Index (BI)")
+      cat("\n      calculate Brightness Index (BI)")
       BI <- sqrt((red**2 + green**2 + blue*2) / 3)
       names(BI) <- "BI"
       return(BI)
       
     } else if (item == "SI") {
       # SI Spectra Slope Saturation Index
-      cat("\ncalculate Spectra Slope Saturation Index (SI)")
+      cat("\n      calculate Spectra Slope Saturation Index (SI)")
       SI <- (red - blue) / (red + blue) 
       names(SI) <- "SI"
       return(SI)
       
     } else if (item=="HI"){    
       # HI Primary colours Hue Index
-      cat("\ncalculate Primary colours Hue Index (HI)")
+      cat("\n      calculate Primary colours Hue Index (HI)")
       HI<-(2*red-green-blue)/(green-blue)
       names(HI) <- "HI"
       return(HI)
       
     } else if (item=="TGI"){
       # Triangular greenness index
-      cat("\ncalculate Triangular greenness index (TGI)")
+      cat("\n      calculate Triangular greenness index (TGI)")
       TGI <- -0.5*(190*(red - green)- 120*(red - blue))
       names(TGI) <- "TGI"
       return(TGI)
       
     } else if (item=="GLI"){
-      cat("\ncalculate Green leaf index (GLI)")
+      cat("\n      calculate Green leaf index (GLI)")
       # Green leaf index
       GLI<-(2*green-red-blue)/(2*green+red+blue)
       names(GLI) <- "GLI"
@@ -144,14 +145,14 @@ rs_rgbIndices<- function(red,green,blue,
       
     } else if (item=="NGRDI"){
       # NGRDI Normalized green red difference index 
-      cat("\ncalculate Normalized green red difference index  (NGRDI)")
+      cat("\n      calculate Normalized green red difference index  (NGRDI)")
       NGRDI<-(green-red)/(green+red) 
       names(NGRDI) <- "NGRDI"
       return(NGRDI)
-            
+      
     }  else if (item=="GLAI"){indices
       # NGRDI Normalized green red difference index 
-      cat("\ncalculate greenish Leaf Area Index  (GLAI) (highly experimental)")
+      cat("\n      calculate greenish Leaf Area Index  (GLAI) (highly experimental)")
       vevi<-(green - red) / (green +  red -  blue )
       GLAI = (25 * vevi + 1.25 )
       names(GLAI) <- "GLAI"
@@ -162,3 +163,4 @@ rs_rgbIndices<- function(red,green,blue,
   })
   return(raster::stack(indices))
 }
+

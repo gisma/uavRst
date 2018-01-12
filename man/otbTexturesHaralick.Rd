@@ -12,7 +12,7 @@
 \S4method{otbTexturesHaralick}{RasterBrick}(x, texture = "all",
   path_output = NULL, return_raster = TRUE, parameters.xyrad = list(c(1,
   1)), parameters.xyoff = list(c(1, 1)), parameters.minmax = c(0, 255),
-  parameters.nbbin = 8, channel = NULL, verbose = FALSE, ram = "8192")
+  parameters.nbbin = 8, channel = NULL, verbose = TRUE, ram = "8192")
 
 \S4method{otbTexturesHaralick}{RasterLayer}(x, texture = "all",
   path_output = NULL, return_raster = TRUE, parameters.xyrad = list(c(1,

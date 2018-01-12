@@ -115,7 +115,7 @@ setMethod("otbTexturesHaralick",
                    parameters.minmax=c(0,255),
                    parameters.nbbin=8,
                    channel=NULL,
-                   verbose=FALSE,
+                   verbose=TRUE,
                    ram="8192"){
             if (is.null(path_output)) path_output <- file.path(getwd(),"/")
             raster::writeRaster(x, file = file.path(path_output, "tmp.tif"), overwrite = TRUE)
@@ -329,3 +329,15 @@ setMethod("otbTexturesHaralick",
               return(raster::stack(ret_textures))  
             }
           })
+
+# calculate orfeo LocalStatisticExtraction
+otbLocalStat<- function(fn,module="otbcli_LocalStatisticExtraction",param=c("localStat","4096",3)){
+  directory<-dirname(fn)
+  output<-paste0(directory, "/",param[1])
+  command<-module
+  command<-paste(command, "-in ", fn)
+  command<-paste(command, "-out ", output)
+  command<-paste(command, "-ram ",param[2])
+  command<-paste(command, "-radius ",param[3])
+  system(command)  
+}
