@@ -82,7 +82,7 @@ rgb_all<- flist<-list()
     if (hara){
       uavRst::otbTexturesHaralick(x = paste0(filterBand,"_",basename(imageFiles[i])),
                                   output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),
-                                  parameters.xyrad=harakernel, 
+                                  
                                   texture = haratype)
     }
     # delete single channel for synthetic channel calculation
