@@ -226,7 +226,7 @@ setMethod("otbTexturesHaralick",
                    channel=NULL,
                    verbose=FALSE,
                    ram="8192"){
-            
+            otb<- link2GI::linkOTB()
             if(texture == "all"){
               texture <- c("simple", "advanced", "higher")
             }
@@ -241,12 +241,15 @@ setMethod("otbTexturesHaralick",
                 ret_textures <- lapply(parameters.xyoff, function(xyoff){
                   ret_textures <- lapply(texture, function(txt){
                     path_outfile <- paste0(path_output,
-                                           "band_", band, "_", 
+                                           "band_", band, "_",
                                            output_name, "_",
                                            txt, "_",
                                            xyrad[1], xyrad[2], "_",
                                            xyoff[1], xyoff[2],
                                            ".tif")
+                    # path_outfile <- paste0(path_output,
+                    #                        output_name)
+                    
                     command<-paste0(path_OTB,"otbcli_HaralickTextureExtraction",
                                     " -in ", x,
                                     " -channel ", band,

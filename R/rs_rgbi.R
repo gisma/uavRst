@@ -24,7 +24,6 @@
 #  GLAI  (25 * (green - red) / (green +  red -  blue ) + 1.25 )
 #' 
 #' 
-#' @name rgbIndices
 #' @export rgbIndices
 #' 
 #' @references
@@ -54,7 +53,7 @@
 #' }
 #' 
 #' 
-rgbIndices<- function(red,green,blue,
+rgbIndices <- function(red,green,blue,
                       rgbi=c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI")) {
   
   ## compatibility check
