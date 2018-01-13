@@ -8,13 +8,15 @@
 # require(foreach)
 require(doParallel)
 
-# switch for using  HaralickTextureExtraction
+# switch for using  HaralickTextureExtraction performs very well for all kind of image data
+# for a review of a lot of feature extraction algorithms look at:
+# http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf
 # options are "all" "simple" "advanced"  "higher"
 # NOTE IT TAKES A LOT OF TIME
 hara=TRUE
-haratype="simple"
+haratype="advanced"
 
-# switch if standard statiskic is calculated (mean,variance, curtosis, skewness)
+# switch if standard statistic is calculated (mean,variance, curtosis, skewness)
 stat=TRUE
 
 # selection of channels 
@@ -23,7 +25,8 @@ channels<-c("red","green")
 
 # selection of indices 
 # options are ("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI")
-indices <- c("VARI","NDTI","TGI","GLI","NGRDI","GLAI") 
+#c("VARI","NDTI","TGI","GLI","NGRDI","GLAI")
+indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI") 
 
 kernel<- 3
 
@@ -86,6 +89,7 @@ rgb_all<- flist<-list()
   }
   # stack the results
   rgb_all<-raster::stack(rgb_rgbi,raster::stack(flist))
+  if (raster::nlayers(rgb_all) > 256) stop(paste0("\n", raster::nlayers(rgb_all) ,"calculated...  Geotiffs may have 256... reduce your synthetic channels"))
   flist<-list()
   # export as geotiff
   fn<-paste0(path_id,"/index_",basename(imageFiles[i]))
