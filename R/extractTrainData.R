@@ -42,7 +42,7 @@ extractTrainData<-function(rasterStack  = NULL,
   trainingDF =  data.frame()
   #extract trainPlots Area pixel values
   for (j in 1:length(rasterStack)) {
-    cat("\n::: extracting trainPlots data from image ",j," of ... ",length(rasterStack),"\n")
+    cat("\n  :: extracting trainPlots data from image ",j," of ... ",length(rasterStack),"\n")
     categorymap<-rgeos::gUnionCascaded(trainPlots[[j]],id=trainPlots[[j]]@data$id)
     dataSet <- raster::extract(rasterStack[[j]], categorymap,df=TRUE)
     ## add filename as category

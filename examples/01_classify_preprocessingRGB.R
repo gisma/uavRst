@@ -2,6 +2,10 @@
 # calculates RGB indices. stitstics and haralick 
 # ---- define global parameters -----------------------------------------------
 #### packages
+# require(link2GI)
+# require(CAST)
+# require(raster)
+# require(foreach)
 require(doParallel)
 
 hara=TRUE
