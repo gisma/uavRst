@@ -2,7 +2,7 @@
 # calculates RGB indices. stitstics and haralick 
 # ---- define global parameters -----------------------------------------------
 #### packages
- require(doParallel)
+require(doParallel)
 
 hara=TRUE
 haratype="simple"
@@ -39,36 +39,37 @@ rgb<- lapply(imageFiles, FUN=raster::stack)
 
 ### calculate indices and base stat export it to tif
 rgb_all<- flist<-list()
- cl <- makeCluster(detectCores())
- registerDoParallel(cl)  
-  out <- foreach(i = 1:length(rgb),indices = indices) %dopar% {
-    library(raster)  
-    library(uavRst)
-#for (i in 1:length(rgb)){
+cl <- makeCluster(detectCores())
+registerDoParallel(cl)  
+out <- foreach(i = 1:length(rgb),indices = indices) %dopar% {
+  library(raster)  
+  library(uavRst)
+  #for (i in 1:length(rgb)){
   rgb_rgbi<-raster::stack(rgb[[i]],uavRst::rgbIndices(rgb[[i]][[1]],rgb[[i]][[2]],rgb[[i]][[3]],indices))
   
   for (filterBand in channels){
     if (filterBand=="red") bandNr <- 1
     if (filterBand=="green") bandNr <- 2
     if (filterBand=="blue") bandNr <- 3
-  # export single channel for synthetic band calculation
-  raster::writeRaster(rgb_rgbi[[bandNr]],paste0(filterBand,"_",basename(imageFiles[i])),overwrite=TRUE)
-  
-  if (stat){
-    uavRst:::otbLocalStat(fn = paste0(filterBand,"_",basename(imageFiles[i])),param=c(paste0(filterBand,"stat_",basename(imageFiles[i])),"4096",kernel))
+    # export single channel for synthetic band calculation
+    raster::writeRaster(rgb_rgbi[[bandNr]],paste0(filterBand,"_",basename(imageFiles[i])),overwrite=TRUE)
+    
+    if (stat){
+      uavRst:::otbLocalStat(fn = paste0(filterBand,"_",basename(imageFiles[i])),param=c(paste0(filterBand,"stat_",basename(imageFiles[i])),"4096",kernel))
+    }
+    
+    if (hara){
+      uavRst::otbTexturesHaralick(x = paste0(filterBand,"_",basename(imageFiles[i])),output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),texture = haratype)
+    }
+    # delete single channel for synthetic channel calculation
+    # file.remove(paste0(filterBand,"_",basename(imageFiles[i])))
+    # get the rest in a list
+    flist<-append(flist,Sys.glob(paste0("*",filterBand,"_",basename(imageFiles[i]),"*")))
+    
   }
-  
-  if (hara){
-    uavRst::otbTexturesHaralick(x = paste0(filterBand,"_",basename(imageFiles[i])),output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),texture = haratype)
-  }
-  # delete single channel for synthetic channel calculation
-  file.remove(paste0(filterBand,"_",basename(imageFiles[i])))
-  # get the rest in a list
-  flist<-append(flist,Sys.glob(paste0("*",filterBand,"*")))
-  
-}
   # stack the results
   rgb_all<-raster::stack(rgb_rgbi,raster::stack(flist))
+  flist<-list()
   # export as geotiff
   fn<-paste0(path_id,"/index_",basename(imageFiles[i]))
   raster::writeRaster(rgb_all,fn,overwrite=TRUE)
