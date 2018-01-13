@@ -39,12 +39,12 @@ rgb<- lapply(imageFiles, FUN=raster::stack)
 
 ### calculate indices and base stat export it to tif
 rgb_all<- flist<-list()
-cl <- makeCluster(detectCores())
-registerDoParallel(cl)  
-out <- foreach(i = 1:length(rgb),indices = indices) %dopar% {
-  library(raster)  
-  library(uavRst)
-  #for (i in 1:length(rgb)){
+# cl <- makeCluster(detectCores()-1)
+# registerDoParallel(cl)  
+# out <- foreach(i = 1:length(rgb),indices = indices) %dopar% {
+#   library(raster)  
+#   library(uavRst)
+  for (i in 1:length(rgb)){
   rgb_rgbi<-raster::stack(rgb[[i]],uavRst::rgbIndices(rgb[[i]][[1]],rgb[[i]][[2]],rgb[[i]][[3]],indices))
   
   for (filterBand in channels){
@@ -77,5 +77,5 @@ out <- foreach(i = 1:length(rgb),indices = indices) %dopar% {
   #file.remove(flist)
 }
 
-stopCluster(cl)
+#stopCluster(cl)
 cat("\n::: finished preprocessing RGB data...\n")
