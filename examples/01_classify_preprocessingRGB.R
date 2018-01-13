@@ -90,12 +90,13 @@ rgb_all<- flist<-list()
   # stack the results
   rgb_all<-raster::stack(rgb_rgbi,raster::stack(flist))
   if (raster::nlayers(rgb_all) > 256) stop(paste0("\n", raster::nlayers(rgb_all) ,"calculated...  Geotiffs may have 256... reduce your synthetic channels"))
-  flist<-list()
+  
   # export as geotiff
   fn<-paste0(path_id,"/index_",basename(imageFiles[i]))
   raster::writeRaster(rgb_all,fn,overwrite=TRUE)
   # cleanup
-  #file.remove(flist)
+  file.remove(unlist(flist))
+  flist<-list()
 }
 
 #stopCluster(cl)
