@@ -6,7 +6,7 @@ currentShptrainDir <- "training"
 runname<-"test1"
 proj <- "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 idNumber=c(1,2)
-idnames= c("green","nogreen")
+idNames= c("green","nogreen")
 
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
@@ -17,12 +17,6 @@ link2GI::initProj(projRootDir = projRootDir,
 
 # set working directory
 setwd(path_run)
-
-# source(paste(path_fu,"trainModel.R",sep=.Platform$file.sep))
-# source(paste(path_fu,"extractTrainData.R",sep=.Platform$file.sep))
-# source(paste(path_fu,"classificationStats.R",sep=.Platform$file.sep))
-# source(paste(path_fu,"classificationStats.R",sep=.Platform$file.sep))
-# source(paste(path_fu,"latticeCombineGrid.R",sep=.Platform$file.sep))
 
 # ----- start extraction ---------------------------------------------------
 # get image data
@@ -38,8 +32,11 @@ training <- lapply(trainingFiles, FUN=raster::shapefile)
 # start training process
 trainingDF <- uavRst::extractTrainData(rasterStack  = trainStack,
                                trainPlots = training,
-                                         ids=idNumber,
-                                         idLabel= idNames) 
+                               ids=idNumber,
+                               idLabel= idNames,
+                               trainDataFn = paste0(path_output,runname,"_trainingDF.RData")
+                               ) 
+
 saveRDS(trainingDF,path=paste0(path_output,runname,"_trainingDF.RData"))
   
 cat(":: extraction...finsihed \n")

@@ -122,17 +122,18 @@ extractTrainData<-function(rasterStack  = NULL,
     cat("\n  :: extracting trainPlots data from image ",j," of ... ",length(rasterStack))
     categorymap<-rgeos::gUnionCascaded(trainPlots[[j]],id=trainPlots[[j]]@data$id)
     dataSet <- raster::extract(rasterStack[[j]], categorymap,df=TRUE)
-    names(dataSet)<-(seq (1:length((dataSet))))
+    names(dataSet)<-(c("ID",seq (2:length((dataSet)))))
     ## add filename as category
     dataSet$FN= substr(names(rasterStack[[j]][[1]]),1,nchar(names(rasterStack[[j]][[1]]))-2)
     #names(dataSet)<- names
+    dataSet[is.na(dataSet)] <- 0
     dataSet=dataSet[complete.cases(dataSet),]
     trainingDF<-rbind(trainingDF, dataSet)
   }
-  
+  save(trainingDF, file = trainDataFn)
   ## reclassify data frame
   for (i in 1:length(ids)){
-    trainingDF$ID[trainingDF$ID==i]<-label[i]
+    trainingDF$ID[trainingDF$ID==i]<-idLabel[i]
   }
   trainingDF$ID <- as.factor(trainingDF$ID)
   

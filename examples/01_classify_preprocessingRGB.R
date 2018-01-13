@@ -21,12 +21,12 @@ stat=TRUE
 
 # selection of channels 
 # options are "red" "green" "blue"
-channels<-c("red","green")
+channels<-c("green")
 
 # selection of indices 
 # options are ("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI")
 #c("VARI","NDTI","TGI","GLI","NGRDI","GLAI")
-indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI") 
+indices <- c("VARI","NDTI","TGI","GLI","NGRDI","GLAI") 
 
 kernel<- 3
 
