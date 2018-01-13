@@ -75,46 +75,261 @@ gdalsplit<-function(fn){
   }
 }
 
-
-# calculate orfeo radiometric indices
-otbRadiometricIndices<- function(fn,module,list=c("Soil:RI","Soil:CI","Soil:BI")){
-  module<-"otbcli_RadiometricIndices"
-  directory<-dirname(fn)
-  output<-paste0(directory, "/otbOut.tif")
-  command<-module
-  command<-paste(command, "-in ", fn)
-  command<-paste(command, "-out ", output)
-  command<-paste(command, "-ram 4096")
-  command<-paste(command, "-channels.blue 1")
-  command<-paste(command, "-channels.green 2")
-  command<-paste(command, "-channels.red 3")
-  command<-paste(command, "-list ",as.character(list))
-  system(command)  
-  i=1
-  for (item in list){
-    cat(item)
-    gdal_translate(output, paste0(directory,"/",substr(item,6,8),".tif"), b = i)
-    i<-i+1
-  }
+if (!isGeneric('extractTrainData')) {
+  setGeneric('extractTrainData', function(x, ...)
+    standardGeneric('extractTrainData'))
 }
 
-# calculate orfeo HaralickTextureExtraction
-otbHaraTex<- function(fn,module="otbcli_HaralickTextureExtraction",param=c("haraTex","4096",2,2,1,1,0,255,8,"higher")){
-  directory<-dirname(fn)
-  output<-paste0(directory, "/",param[1],".tif")
-  command<-module
-  command<-paste(command, "-in ", fn)
-  command<-paste(command, "-out ", output)
-  command<-paste(command, "-ram ",param[2])
-  command<-paste(command, "-parameters.xrad ",param[3])
-  command<-paste(command, "-parameters.yrad ",param[4])
-  command<-paste(command, "-parameters.xoff ",param[5])
-  command<-paste(command, "-parameters.yoff ",param[6])
-  command<-paste(command, "-parameters.min ",param[7])
-  command<-paste(command, "-parameters.max ",param[8])
-  command<-paste(command, "-parameters.nbbin ",param[9])
-  command<-paste(command, "-texture ",param[10])
-  system(command)  
+#'@name extractTrainData
+#'@title extracts training data from a raster stack
+#'
+#'@description
+#' extracts training data from a raster stack
+#'
+#'@author Chris Reudenbach
+#'
+#'@param rasterStack  default is \code{NULL} rasterstack wcontaining all image data
+#'@param trainPlots default is \code{NULL}  sp object providing training geometries
+#'@param ids default is \code{c(1,2)} classification ids 
+#'@param idLabel default is \code{c("yes","no")} names of ids
+#'@param trainDataFn default is \code{filepath(temp(),"trainingDF.RData")} Name of the extracted training data file
+#'
+
+#'@return extractTrainData returns a dataframe with all training data
+#'
+#'@export extractTrainData
+#'@examples
+#'\dontrun{
+#'
+#' trainingDF <- extractTrainData(rasterStack  = trainStack,
+#'                                training     = training,
+#'                                ids=c(1,2),
+#'                                idLabel= c("green","nogreen")) 
+#'}
+#'
+
+
+extractTrainData<-function(rasterStack  = NULL,
+                           trainPlots     = NULL,
+                           ids=c(1,2),
+                           idLabel= c("green","nogreen"),
+                           trainDataFn=filepath(temp(),"trainingDF.RData")) {
+  
+  cat("\n::: extract trainPlots data...\n")
+  trainingDF =  data.frame()
+  #extract trainPlots Area pixel values
+  for (j in 1:length(rasterStack)) {
+    cat("\n  :: extracting trainPlots data from image ",j," of ... ",length(rasterStack))
+    categorymap<-rgeos::gUnionCascaded(trainPlots[[j]],id=trainPlots[[j]]@data$id)
+    dataSet <- raster::extract(rasterStack[[j]], categorymap,df=TRUE)
+    names(dataSet)<-(seq (1:length((dataSet))))
+    ## add filename as category
+    dataSet$FN= substr(names(rasterStack[[j]][[1]]),1,nchar(names(rasterStack[[j]][[1]]))-2)
+    #names(dataSet)<- names
+    dataSet=dataSet[complete.cases(dataSet),]
+    trainingDF<-rbind(trainingDF, dataSet)
+  }
+  
+  ## reclassify data frame
+  for (i in 1:length(ids)){
+    trainingDF$ID[trainingDF$ID==i]<-label[i]
+  }
+  trainingDF$ID <- as.factor(trainingDF$ID)
+  
+  ## save dataframe
+  save(trainingDF, file = trainDataFn)
+  return(trainingDF)
+}
+
+#' trains model according to trainingdata and image stacks
+#' 
+#' @param ids ids
+#' @param position position
+#' @param  imageFiles image files
+#' @param out_prefix out prefix string
+#' @param ext extension
+#' @param path   output path
+#' @param dropChars chars to drop
+#' 
+#' @export getCounts
+#' @examples  
+#' df1<-getCounts(position = position
+#' imageFiles = imageFiles
+#' dropChars = 8
+#' pre=pre
+#' ext=".tif")
+
+getCounts<- function(ids=c(1,2),
+                     position=NULL,
+                     imageFiles = NULL,
+                     buffersize=1.5,
+                     out_prefix="classified_index_",
+                     ext=".tif",
+                     path = path_output,
+                     dropChars=0) {
+  
+  buffers<-rgeos::gBuffer(position,width=buffersize) 
+  ex<-data.frame()
+  df<- lapply(seq(1:length(position)), function(i) {
+    fn<-paste0(path,out_prefix,substr(position[i,]$tree,1,nchar(position[i,]$tree)-dropChars),ext)
+    
+    if (file.exists(fn)){
+      ex <- as.data.frame(unlist(raster::extract(raster(fn) , position[i,]    , buffer=buffersize, df=TRUE)))
+      
+      idVal<-as.numeric(vector(length = length(ids)))
+      for (j in 1:length(ids)){
+        idVal[j] <- sum(ex[ex[2] == ids[j],  2])/j
+        #nogreen <- table(ex[ex[2] == id2,  ])
+      }}
+    #  all=nogreen+green  
+    #  gr=green/all
+    #  no=nogreen/all
+    
+    return(c(idVal,basename(fn)))
+    #return(c("green"=gr,"nogreen"=no,"all"=all, "plot"=basename(imageFiles[i])))
+  }
+  )
+  result <- do.call("rbind", df)
+  return(result)
+}
+
+#' classify images using raster predict
+#' 
+#' @param imageFiles imagestacke for classification
+#' @param model classification model
+#' @param  in_prefix in frefix  string
+#' @param out_prefix out prefix string
+#' @param bandNames band names 
+#' 
+#' @export predictRGB 
+#' 
+# predictRGB(imageFiles=imagestack,
+#             model = model_final,
+#             in_prefix = "index_",
+#             out_prefix = "classified_",
+#             bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis")) 
+
+predictRGB <- function(imageFiles=NULL,
+                       model = NULL,
+                       in_prefix = "index_",
+                       out_prefix = "classified_",
+                       bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis")) {
+  
+  cat("\n::: start prediction aka classifikation...\n")
+  cl <- makeCluster(detectCores())
+  registerDoParallel(cl)
+  foreach(i = 1:length(imageFiles)) %dopar% {
+    #for (i in 1:length(imageFiles)) {
+    library(raster)  
+    library(randomForest)
+    library(caret)
+    fn<-basename(imageFiles[i])
+    path_out<-substr(dirname(imageFiles[i]),1,nchar(dirname(imageFiles[i]))-3)
+    fnOut <- paste0(path_out,"output/",out_prefix,fn)
+    
+    img2predict<-raster::stack(imageFiles[i])
+    names(img2predict)<-bandNames
+    predictImg<- raster::predict(img2predict,
+                                 model,
+                                 progress= "text")
+    raster::writeRaster(predictImg, filename = fnOut, overwrite = TRUE)
+  }
+  stopCluster(cl)
+}
+
+#' trains model according to trainingdata and image stacks
+#' 
+#' @param imageFiles imagestacke for classification
+#' @param model classification model
+#' @param  in_prefix in frefix  string
+#' @param out_prefix out prefix string
+#' @param bandNames band names 
+#' trainingDF =NULL,
+#' @param predictors   default is \code{c("R","G","B")}
+#' @param response     default is \code{"ID"}
+#' @param spaceVar     default is \code{"FN"}
+#' @param names        default is \code{c("ID","R","G","B","A","FN")}
+#' @param noLoc        default is \code{3}
+#' @param cl_method    default is \code{"rf"}
+#' @param metric_ffs   default is \code{"kappa"}
+#' @param metric_caret default is \code{ "ROC"}
+#' @param pVal         default is \code{ 0.5}
+#' @param prefin       default is \code{"final_"}
+#' @param preffs       default is \code{"ffs_"}
+#' @param modelSaveName default is \code{"model.RData" }
+#' 
+#' @export trainModel
+#' @examples  
+#' result<-  trainModel(trainingDF =trainingDF,
+#'                      predictors   = c("R","G","B","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis"),
+#'                      response     = "ID",
+#'                      spaceVar     = "FN",
+#'                      names = c("ID","R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis","FN"),
+#'                      noLoc        = length(imageTrainFiles),
+#'                      cl_method    = "rf",
+#'                      metric_ffs   = "kappa",
+#'                      metric_caret = "ROC",
+#'                      pVal         = 0.5) 
+
+trainModel<-function(   trainingDF =NULL,
+                        predictors   = c("R","G","B"),
+                        response     = "ID",
+                        spaceVar     = "FN",
+                        names        = c("ID","R","G","B","A","FN"),
+                        noLoc        = 3,
+                        cl_method    = "rf",
+                        metric_ffs   = "kappa",
+                        metric_caret = "ROC",
+                        pVal         = 0.5,
+                        prefin       ="final_",
+                        preffs       ="ffs_",
+                        modelSaveName="model.RData" ) {
+  
+  # create subset according to pval
+  trainIndex<-caret::createDataPartition(trainingDF$ID, p = pVal,list=FALSE)
+  data_train <- trainingDF[ trainIndex,]
+  data_test <- trainingDF[-trainIndex,]
+  # create llo 
+  spacefolds <- CAST::CreateSpacetimeFolds(x=data_train,
+                                           spacevar = spaceVar,
+                                           k=noLoc, # of CV
+                                           seed=100)
+  # define control values  
+  ctrl <- caret::trainControl(method="cv",
+                              savePredictions = TRUE,
+                              verbose=TRUE,
+                              index=spacefolds$index,
+                              indexOut=spacefolds$indexOut,
+                              returnResamp = "all")
+  # make it paralel
+  cl <- makeCluster(detectCores())
+  registerDoParallel(cl)  
+  ffs_model <- ffs(data_train[,predictors],
+                   data_train[,response],
+                   method=cl_method,
+                   metric=metric_ffs,
+                   trControl = ctrl,
+                   withinSE=TRUE, 
+                   tuneGrid = expand.grid(mtry = 2)
+  )
+  save(ffs_model,file = paste0(path_result,preffs,saveModelName))
+  
+  
+  predictors <- data_train[,names(ffs_model$trainingData)[-length(names(ffs_model$trainingData))]]
+  
+  model_final <- train(predictors,
+                       data_train[,response],
+                       method = cl_method,
+                       metric=metric_caret,
+                       #returnResamp = "all",
+                       importance =TRUE,
+                       tuneLength = length(predictors),
+                       trControl = ctrl)
+  stopCluster(cl)
+  
+  save(model_final,file = paste0(path_result,prefin,saveModelName) )
+  
+  return(list(model_ffs,model_final,perf,cstat))
 }
 
 
