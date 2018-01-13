@@ -5,8 +5,8 @@
 currentShptrainDir <- "training"
 runname<-"test1"
 proj <- "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
-idNumber=c(1,2)
-idNames= c("green","nogreen")
+idNumber=c(1,2,3,4,5)
+idNames= c("green","nogreen","green","nogreen","nogreen")
 
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
@@ -37,7 +37,7 @@ trainingDF <- uavRst::extractTrainData(rasterStack  = trainStack,
                                trainDataFn = paste0(path_output,runname,"_trainingDF.RData")
                                ) 
 
-saveRDS(trainingDF,path=paste0(path_output,runname,"_trainingDF.RData"))
+#saveRDS(trainingDF,path=paste0(path_output,runname,"_trainingDF.RData"))
   
 cat(":: extraction...finsihed \n")
 

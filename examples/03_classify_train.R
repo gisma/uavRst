@@ -2,11 +2,11 @@
 # ---- define global parameters -----------------------------------------------
 #### packages
 # require(link2GI)
-# require(CAST)
+require(CAST)
 # require(raster)
-# require(foreach)
-# require(doParallel)
-
+ require(foreach)
+ require(doParallel)
+runname<-"test1"
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
 currentImgtrainDir <- "training"
@@ -24,14 +24,15 @@ setwd(path_run)
 # source(paste(path_fu,"latticeCombineGrid.R",sep=.Platform$file.sep))
 
 
-load(trainingDF,path=paste0(path_output,runname,"_trainingDF.RData"))
-
-result<-  trainModel(trainingDF =trainingDF,
-             predictors   = c("R","G","B","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis"),
+load(paste0(path_output,runname,"_trainingDF.RData"))
+na<-names(trainingDF)
+pred<-na[3:length(na)-1]
+result<-  uavRst::trainModel(trainingDF =trainingDF,
+             predictors   = pred,
              response     = "ID",
              spaceVar     = "FN",
-             names = c("ID","R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis","FN"),
-             noLoc        = length(imageTrainFiles),
+             names        =  na,
+             noLoc        = length(unique(trainingDF$FN)),
              cl_method    = "rf",
              metric_ffs   = "kappa",
              metric_caret = "ROC",
