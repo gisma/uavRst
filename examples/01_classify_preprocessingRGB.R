@@ -13,8 +13,6 @@ require(doParallel)
 # NOTE IT TAKES A LOT OF TIME
 hara=TRUE
 haratype="simple"
-# 1,1 is adequate to kernel=3
-harakernel=list(c(1,1))
 
 # switch if standard statiskic is calculated (mean,variance, curtosis, skewness)
 stat=TRUE
@@ -26,7 +24,6 @@ channels<-c("red","green")
 # selection of indices 
 # options are ("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI")
 indices <- c("VARI","NDTI","TGI","GLI","NGRDI","GLAI") 
-
 
 kernel<- 3
 
@@ -75,15 +72,11 @@ rgb_all<- flist<-list()
     raster::writeRaster(rgb_rgbi[[bandNr]],paste0(filterBand,"_",basename(imageFiles[i])),overwrite=TRUE)
     
     if (stat){
-      uavRst:::otbLocalStat(fn = paste0(filterBand,"_",basename(imageFiles[i])),
-                            param=c(paste0(filterBand,"stat_",basename(imageFiles[i])),"4096",kernel))
+      uavRst:::otbLocalStat(fn = paste0(filterBand,"_",basename(imageFiles[i])),param=c(paste0(filterBand,"stat_",basename(imageFiles[i])),"4096",kernel))
     }
     
     if (hara){
-      uavRst::otbTexturesHaralick(x = paste0(filterBand,"_",basename(imageFiles[i])),
-                                  output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),
-                                  
-                                  texture = haratype)
+      uavRst::otbTexturesHaralick(x = paste0(filterBand,"_",basename(imageFiles[i])),output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),texture = haratype)
     }
     # delete single channel for synthetic channel calculation
     # file.remove(paste0(filterBand,"_",basename(imageFiles[i])))
