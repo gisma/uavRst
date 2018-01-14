@@ -4,7 +4,6 @@
 
 currentShptrainDir <- "training"
 runname<-"test1"
-proj <- "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 idNumber=c(1,2,3,4,5)
 idNames= c("green","nogreen","green","nogreen","nogreen")
 

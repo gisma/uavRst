@@ -120,9 +120,11 @@ extractTrainData<-function(rasterStack  = NULL,
   #extract trainPlots Area pixel values
   for (j in 1:length(rasterStack)) {
     cat("\n  :: extracting trainPlots data from image ",j," of ... ",length(rasterStack))
+    load(paste0(path_id,"/bnames_",basename(rasterStack[[j]]@file@name),".RData"))
     categorymap<-rgeos::gUnionCascaded(trainPlots[[j]],id=trainPlots[[j]]@data$id)
     dataSet <- raster::extract(rasterStack[[j]], categorymap,df=TRUE)
-    names(dataSet)<-(c("ID",seq (2:length((dataSet)))))
+    names(dataSet)<-append(c("ID"),bnames)
+    #names(dataSet)<-(c("ID",seq (2:length((dataSet)))))
     ## add filename as category
     dataSet$FN= substr(names(rasterStack[[j]][[1]]),1,nchar(names(rasterStack[[j]][[1]]))-2)
     #names(dataSet)<- names
@@ -130,7 +132,7 @@ extractTrainData<-function(rasterStack  = NULL,
     dataSet=dataSet[complete.cases(dataSet),]
     trainingDF<-rbind(trainingDF, dataSet)
   }
-  save(trainingDF, file = trainDataFn)
+ # save(trainingDF, file = trainDataFn)
   ## reclassify data frame
   for (i in 1:length(ids)){
     trainingDF$ID[trainingDF$ID==i]<-idLabel[i]
@@ -333,4 +335,60 @@ trainModel<-function(   trainingDF =NULL,
   return(list(model_ffs,model_final,perf,cstat))
 }
 
+makebNames <- function(rgbi    = c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI"),
+                       haratxt = "simple",
+                       stat    = c("Mean","Variance", "Skewness", "Kurtosis")){
+  rgbi<-append(c("red","green","blue","alpha"),rgbi)
+  if(haratxt == "simple"){
+    bnames <- c("Energy", "Entropy", "Correlation", 
+                "Inverse_Difference_Moment", "Inertia", 
+                "Cluster_Shade", "Cluster_Prominence",
+                "Haralick_Correlation")
+  } else if(haratxt == "advanced"){
+    bnames <- c("Mean", "Variance", "Dissimilarity",
+                "Sum_Average", 
+                "Sum_Variance", "Sum_Entropy", 
+                "Difference_of_Variances", 
+                "Difference_of_Entropies", 
+                "IC1", "IC2")
+  } else if(haratxt == "higher"){
+    bnames <- c("Short_Run_Emphasis", 
+                "Long_Run_Emphasis", 
+                "Grey-Level_Nonuniformity", 
+                "Run_Length_Nonuniformity", 
+                "Run_Percentage", 
+                "Low_Grey-Level_Run_Emphasis", 
+                "High_Grey-Level_Run_Emphasis", 
+                "Short_Run_Low_Grey-Level_Emphasis", 
+                "Short_Run_High_Grey-Level_Emphasis", 
+                "Long_Run_Low_Grey-Level_Emphasis",
+                "Long_Run_High_Grey-Level_Emphasis")
+  } else if(haratxt == "all"){
+    bnames <- c("Energy", "Entropy", "Correlation", 
+                "Inverse_Difference_Moment", "Inertia", 
+                "Cluster_Shade", "Cluster_Prominence",
+                "Haralick_Correlation",
+                "Mean", "Variance", "Dissimilarity",
+                "Sum_Average", 
+                "Sum_Variance", "Sum_Entropy", 
+                "Difference_of_Variances", 
+                "Difference_of_Entropies", 
+                "IC1", "IC2",
+                "Short_Run_Emphasis", 
+                "Long_Run_Emphasis", 
+                "Grey-Level_Nonuniformity", 
+                "Run_Length_Nonuniformity", 
+                "Run_Percentage", 
+                "Low_Grey-Level_Run_Emphasis", 
+                "High_Grey-Level_Run_Emphasis", 
+                "Short_Run_Low_Grey-Level_Emphasis", 
+                "Short_Run_High_Grey-Level_Emphasis", 
+                "Long_Run_Low_Grey-Level_Emphasis",
+                "Long_Run_High_Grey-Level_Emphasis")
+  }
+  
+  return(append(rgbi,append(stat,bnames)))
+  
+  
+}
 
