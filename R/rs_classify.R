@@ -281,7 +281,7 @@ trainModel<-function(   trainingDF =NULL,
                         names        = c("ID","R","G","B","A","FN"),
                         noLoc        = 3,
                         cl_method    = "rf",
-                        metric_ffs   = "kappa",
+                        metric_ffs   = "Kappa",
                         metric_caret = "ROC",
                         pVal         = 0.5,
                         prefin       ="final_",
@@ -305,7 +305,7 @@ trainModel<-function(   trainingDF =NULL,
                               indexOut=spacefolds$indexOut,
                               returnResamp = "all")
   # make it paralel
-  cl <- makeCluster(detectCores()/2)
+  cl <- makeCluster(3)
   registerDoParallel(cl)  
   ffs_model <- ffs(data_train[,predictors],
                    data_train$ID,

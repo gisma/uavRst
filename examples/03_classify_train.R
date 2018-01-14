@@ -34,7 +34,7 @@ result<-  uavRst::trainModel(trainingDF =trainingDF,
              names        =  na,
              noLoc        = length(unique(trainingDF$FN)),
              cl_method    = "rf",
-             metric_ffs   = "kappa",
+             metric_ffs   = "Kappa",
              metric_caret = "ROC",
              pVal         = 0.5) 
 
