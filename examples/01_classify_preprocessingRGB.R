@@ -14,7 +14,7 @@ require(doParallel)
 # options are "all" "simple" "advanced"  "higher"
 # NOTE IT TAKES A LOT OF TIME
 hara=TRUE
-haratype="advanced"
+haratype="simple"
 
 # switch if standard statistic is calculated (mean,variance, curtosis, skewness)
 stat=TRUE

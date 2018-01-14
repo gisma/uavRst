@@ -287,7 +287,7 @@ trainModel<-function(   trainingDF =NULL,
                         modelSaveName="model.RData" ) {
   
   # create subset according to pval
-  trainIndex<-caret::createDataPartition(trainingDF$ID, p = pVal,list=FALSE)
+  trainIndex<-caret::createDataPartition(trainingDF$ID, p = pVal, list=FALSE)
   data_train <- trainingDF[ trainIndex,]
   data_test <- trainingDF[-trainIndex,]
   # create llo 
@@ -303,10 +303,10 @@ trainModel<-function(   trainingDF =NULL,
                               indexOut=spacefolds$indexOut,
                               returnResamp = "all")
   # make it paralel
-  cl <- makeCluster(detectCores())
+  cl <- makeCluster(detectCores()/2)
   registerDoParallel(cl)  
   ffs_model <- ffs(data_train[,predictors],
-                   data_train[,response],
+                   data_train$ID,
                    method=cl_method,
                    metric=metric_ffs,
                    trControl = ctrl,
