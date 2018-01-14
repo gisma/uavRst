@@ -14,7 +14,6 @@ require(doParallel)
 # options are "all" "simple" "advanced"  "higher"
 # NOTE IT TAKES A LOT OF TIME
 hara=TRUE
-haratype="advanced"
 
 # switch if standard statistic is calculated (mean,variance, curtosis, skewness)
 stat=TRUE
@@ -29,6 +28,13 @@ channels<-c("green")
 indices <- c("VARI","NDTI","TGI","GLI","NGRDI","GLAI") 
 
 kernel<- 3
+
+if (hara) {
+  haratype="simple"
+} else {
+  haratype=""
+}
+
 
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
@@ -84,6 +90,7 @@ rgb_all<- flist<-list()
     # delete single channel for synthetic channel calculation
     # file.remove(paste0(filterBand,"_",basename(imageFiles[i])))
     # get the rest in a list
+    file.remove(paste0(filterBand,"_",basename(imageFiles[i])))
     flist<-append(flist, Sys.glob(paste0("*","_",basename(imageFiles[i]),"*")))
     
   }
@@ -93,7 +100,11 @@ rgb_all<- flist<-list()
   
   # export as geotiff
   fn<-paste0(path_id,"/index_",basename(imageFiles[i]))
+  bnames<-uavRst:::makebNames(rgbi = indices, haratxt = haratype)
+  save(bnames,file = paste0(path_id,"/bnames_index_",basename(imageFiles[i]),".RData"))
+  names(rgb_all)<-bnames
   raster::writeRaster(rgb_all,fn,overwrite=TRUE)
+  
   # cleanup
   file.remove(unlist(flist))
   flist<-list()
@@ -101,3 +112,30 @@ rgb_all<- flist<-list()
 
 #stopCluster(cl)
 cat("\n::: finished preprocessing RGB data...\n")
+cat("\n::: start extraction of training data...\n")
+
+
+# ----- start extraction ---------------------------------------------------
+# get image data
+imageTrainFiles <- list.files(pattern="[.]tif$", path=paste0(path_id,"/"), full.names=TRUE)
+trainStack<-list()
+for (i in 1:length(imageTrainFiles)) trainStack[[i]]<- raster::brick(imageTrainFiles[i])
+
+
+# get training data
+trainingFiles <- list.files(pattern="[.]shp$", path=paste0(path_data,currentShptrainDir), full.names=TRUE)
+training <- lapply(trainingFiles, FUN=raster::shapefile)
+
+# start training process
+trainingDF <- uavRst::extractTrainData(rasterStack  = trainStack,
+                                       trainPlots = training,
+                                       ids=idNumber,
+                                       idLabel= idNames,
+                                       trainDataFn = paste0(path_output,runname,"_trainingDF.RData")
+) 
+
+#saveRDS(trainingDF,path=paste0(path_output,runname,"_trainingDF.RData"))
+
+cat(":: extraction...finsihed \n")
+
+
