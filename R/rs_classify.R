@@ -305,10 +305,10 @@ trainModel<-function(   trainingDF =NULL,
                               indexOut=spacefolds$indexOut,
                               returnResamp = "all")
   # make it paralel
-  cl <- makeCluster(detectCores())
+  cl <- makeCluster(detectCores()-1)
   registerDoParallel(cl)  
   ffs_model <- ffs(data_train[,predictors],
-                   data_train[,response],
+                   data_train$ID,
                    method=cl_method,
                    metric=metric_ffs,
                    trControl = ctrl,
