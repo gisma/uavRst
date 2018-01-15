@@ -28,7 +28,7 @@ setwd(path_run)
 # get image and geometry data for training purposes
 imageTrainFiles <- list.files(pattern="[.]tif$", path=paste0(path_data,currentShptrainDir), full.names=TRUE)
 geomTrainFiles  <- list.files(pattern="[.]shp$", path=paste0(path_data,currentShptrainDir), full.names=TRUE)
-rdataTrainFiles  <- list.files(pattern="[.]RData$", path=paste0(path_data,currentShptrainDir), full.names=TRUE)
+rdataTrainFiles  <- list.files(pattern="bnames", path=paste0(path_data,currentShptrainDir), full.names=TRUE)
  imageTrainStack <- lapply(imageTrainFiles, FUN=raster::stack)
  geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
 

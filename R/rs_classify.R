@@ -136,7 +136,7 @@ extractTrainData<-function(rasterStack  = NULL,
     dataSet$ID <- as.factor(dataSet$ID)
     
     trainingDF<-rbind(trainingDF, dataSet)
-    save(dataSet, file = paste0(trainDataFn[[j]],"_",j,".RData"))
+      save(dataSet, file = paste0(path_output,basename(trainDataFn[[j]]),"_",j,".RData"))
   }
  # save(trainingDF, file = trainDataFn)
   ## reclassify data frame
