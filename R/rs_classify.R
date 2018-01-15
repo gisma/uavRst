@@ -330,7 +330,7 @@ trainModel<-function(   trainingDF =NULL,
                        trControl = ctrl)
   stopCluster(cl)
   
-  save(model_final,file = paste0(path_result,prefin,saveModelName) )
+  save(model_final,file = paste0(path_output,prefin,saveModelName) )
   
   return(list(model_ffs,model_final,perf,cstat))
 }
