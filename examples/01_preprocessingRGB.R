@@ -1,7 +1,7 @@
 # pre-processing of RGB UAV ortho imagery
 # calculates RGB indices. statistics and haralick 
 #### packages
-rm(list =ls()
+rm(list =ls())
 require(link2GI)
 require(CAST)
 require(raster)
@@ -14,14 +14,14 @@ require(doParallel)
 # NOTE IT TAKES A LOT OF TIME
 hara=TRUE
 # options are "all" "simple" "advanced"  "higher"
-haratype="advanced"
+haratype="all"
 # statistic: (mean,variance, curtosis, skewness)
 stat=TRUE
 #channels options "red" "green" "blue"
 channels<-c("green")
 # indices: options are ("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI")
 #c("VARI","NDTI","TGI","GLI","NGRDI","GLAI")
-indices <- c("VARI","NDTI","TGI","GLI","NGRDI","GLAI") 
+indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI") 
 
 
 # kernelsize
@@ -92,7 +92,7 @@ rgb_all<- flist<-list()
     
   }
   # stack the results
-  rgb_all<-raster::stack(rgb_rgbi,raster::stack(flist))
+  rgb_all<-raster::stack(rgb_rgbi,raster::stack(unlist(flist)))
   if (raster::nlayers(rgb_all) > 256) stop(paste0("\n", raster::nlayers(rgb_all) ,"calculated...  Geotiffs may have 256... reduce your synthetic channels"))
   
   # export as geotiff
