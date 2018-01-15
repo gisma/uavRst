@@ -146,7 +146,7 @@ extractTrainData<-function(rasterStack  = NULL,
   trainingDF$ID <- as.factor(trainingDF$ID)
   
   ## save dataframe
-  save(trainingDF, file = paste0(dirname(trainDataFn[[1]]),"traindat.RData"))
+  save(trainingDF, file = paste0(dirname(trainDataFn[[1]]),"traindat_",length(rasterStack),"files.RData"))
   return(trainingDF)
 }
 
