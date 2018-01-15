@@ -1,11 +1,11 @@
-# training and classifying for green leav classification from UAV ortho imagery
-# ---- define global parameters -----------------------------------------------
+# training and prediction 
 #### packages
-# require(link2GI)
+rm(list =ls()
+require(link2GI)
 require(CAST)
-# require(raster)
- require(foreach)
- require(doParallel)
+require(raster)
+require(foreach)
+require(doParallel)
 runname<-"test1"
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
@@ -28,15 +28,15 @@ load(paste0(path_output,runname,"_trainingDF.RData"))
 na<-names(trainingDF)
 pred<-na[3:length(na)-1]
 result<-  uavRst::trainModel(trainingDF =trainingDF,
-             predictors   = pred,
-             response     = "ID",
-             spaceVar     = "FN",
-             names        =  na,
-             noLoc        = length(unique(trainingDF$FN)),
-             cl_method    = "rf",
-             metric_ffs   = "Kappa",
-             metric_caret = "ROC",
-             pVal         = 0.5) 
+                             predictors   = pred,
+                             response     = "ID",
+                             spaceVar     = "FN",
+                             names        =  na,
+                             noLoc        = length(unique(trainingDF$FN)),
+                             cl_method    = "rf",
+                             metric_ffs   = "Kappa",
+                             metric_caret = "ROC",
+                             pVal         = 0.5) 
 
 
 # load("model_final.RData")

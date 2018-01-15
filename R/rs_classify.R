@@ -118,19 +118,25 @@ extractTrainData<-function(rasterStack  = NULL,
   cat("\n::: extract trainPlots data...\n")
   trainingDF =  data.frame()
   #extract trainPlots Area pixel values
+  #https://gis.stackexchange.com/questions/253618/r-multicore-approach-to-extract-raster-values-using-spatial-points
   for (j in 1:length(rasterStack)) {
     cat("\n  :: extracting trainPlots data from image ",j," of ... ",length(rasterStack))
-    load(paste0(path_id,"/bnames_",basename(rasterStack[[j]]@file@name),".RData"))
+    load(trainDataFn[[j]])
     categorymap<-rgeos::gUnionCascaded(trainPlots[[j]],id=trainPlots[[j]]@data$id)
     dataSet <- raster::extract(rasterStack[[j]], categorymap,df=TRUE)
     names(dataSet)<-append(c("ID"),bnames)
-    #names(dataSet)<-(c("ID",seq (2:length((dataSet)))))
     ## add filename as category
     dataSet$FN= substr(names(rasterStack[[j]][[1]]),1,nchar(names(rasterStack[[j]][[1]]))-2)
     #names(dataSet)<- names
     dataSet[is.na(dataSet)] <- 0
     dataSet=dataSet[complete.cases(dataSet),]
+    for (i in 1:length(ids)){
+      dataSet$ID[dataSet$ID==i]<-idLabel[i]
+    }
+    dataSet$ID <- as.factor(dataSet$ID)
+    
     trainingDF<-rbind(trainingDF, dataSet)
+      save(dataSet, file = paste0(path_output,basename(trainDataFn[[j]]),"_",j,".RData"))
   }
  # save(trainingDF, file = trainDataFn)
   ## reclassify data frame
@@ -226,12 +232,13 @@ predictRGB <- function(imageFiles=NULL,
     library(raster)  
     library(randomForest)
     library(caret)
+    load(paste0(path_id,"/bnames_",basename(rasterStack[[j]][[1]]@file@name),".RData"))
     fn<-basename(imageFiles[i])
     path_out<-substr(dirname(imageFiles[i]),1,nchar(dirname(imageFiles[i]))-3)
     fnOut <- paste0(path_out,"output/",out_prefix,fn)
     
     img2predict<-raster::stack(imageFiles[i])
-    names(img2predict)<-bandNames
+    names(img2predict)<-bnames
     predictImg<- raster::predict(img2predict,
                                  model,
                                  progress= "text")
@@ -305,10 +312,11 @@ trainModel<-function(   trainingDF =NULL,
                               indexOut=spacefolds$indexOut,
                               returnResamp = "all")
   # make it paralel
+
   cl <- makeCluster(3)
   registerDoParallel(cl)  
   ffs_model <- ffs(data_train[,predictors],
-                   data_train$ID,
+                   eval(parse(text=paste("data_train$",response,sep = ""))),
                    method=cl_method,
                    metric=metric_ffs,
                    trControl = ctrl,
@@ -324,7 +332,7 @@ trainModel<-function(   trainingDF =NULL,
                        data_train[,response],
                        method = cl_method,
                        metric=metric_caret,
-                       #returnResamp = "all",
+                       returnResamp = "all",
                        importance =TRUE,
                        tuneLength = length(predictors),
                        trControl = ctrl)
