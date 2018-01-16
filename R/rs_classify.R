@@ -111,8 +111,6 @@ if (!isGeneric('extractTrainData')) {
 
 extractTrainData<-function(rasterStack  = NULL,
                            trainPlots     = NULL,
-                           ids=c(1,2),
-                           idLabel= c("green","nogreen"),
                            trainDataFn=filepath(temp(),"trainingDF.RData")) {
   
   cat("\n::: extract trainPlots data...\n")
@@ -130,23 +128,19 @@ extractTrainData<-function(rasterStack  = NULL,
     #names(dataSet)<- names
     dataSet[is.na(dataSet)] <- 0
     dataSet=dataSet[complete.cases(dataSet),]
-    for (i in 1:length(ids)){
-      dataSet$ID[dataSet$ID==i]<-idLabel[i]
-    }
-    dataSet$ID <- as.factor(dataSet$ID)
-    
+  
     trainingDF<-rbind(trainingDF, dataSet)
       save(dataSet, file = paste0(path_output,basename(trainDataFn[[j]]),"_",j,".RData"))
   }
  # save(trainingDF, file = trainDataFn)
   ## reclassify data frame
-  for (i in 1:length(ids)){
-    trainingDF$ID[trainingDF$ID==i]<-idLabel[i]
-  }
-  trainingDF$ID <- as.factor(trainingDF$ID)
-  
+  # for (i in 1:length(ids)){
+  #   trainingDF$ID[trainingDF$ID==i]<-idLabel[i]
+  # }
+  # trainingDF$ID <- as.factor(trainingDF$ID)
+  # 
   ## save dataframe
-  save(trainingDF, file = paste0(dirname(trainDataFn[[1]]),"traindat.RData"))
+  save(trainingDF, file = paste0(dirname(trainDataFn[[1]]),"traindat_",length(rasterStack),"files.RData"))
   return(trainingDF)
 }
 
@@ -293,7 +287,8 @@ trainModel<-function(   trainingDF =NULL,
                         pVal         = 0.5,
                         prefin       ="final_",
                         preffs       ="ffs_",
-                        modelSaveName="model.RData" ) {
+                        modelSaveName="model.RData" ,
+                        nrclu = 3) {
   
   # create subset according to pval
   trainIndex<-caret::createDataPartition(trainingDF$ID, p = pVal, list=FALSE)
@@ -313,7 +308,7 @@ trainModel<-function(   trainingDF =NULL,
                               returnResamp = "all")
   # make it paralel
 
-  cl <- makeCluster(3)
+  cl <- makeCluster(nrclu)
   registerDoParallel(cl)  
   ffs_model <- ffs(data_train[,predictors],
                    eval(parse(text=paste("data_train$",response,sep = ""))),
@@ -323,7 +318,7 @@ trainModel<-function(   trainingDF =NULL,
                    withinSE=TRUE, 
                    tuneGrid = expand.grid(mtry = 2)
   )
-  save(ffs_model,file = paste0(path_result,preffs,saveModelName))
+  save(ffs_model,file = paste0(path_output,preffs,saveModelName))
   
   
   predictors <- data_train[,names(ffs_model$trainingData)[-length(names(ffs_model$trainingData))]]

@@ -11,6 +11,7 @@ require(doParallel)
 # switch for using  HaralickTextureExtraction 
 # for a review of a lot of feature extraction algorithms look at:
 # http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf
+# glcm<->haralick c("mean"advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
 # NOTE IT TAKES A LOT OF TIME
 hara=TRUE
 # options are "all" "simple" "advanced"  "higher"
