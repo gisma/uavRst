@@ -17,22 +17,19 @@ link2GI::initProj(projRootDir = projRootDir,
 # set working directory
 setwd(path_run)
 
-# source(paste(path_fu,"trainModel.R",sep=.Platform$file.sep))
-# source(paste(path_fu,"extractTrainData.R",sep=.Platform$file.sep))
-# source(paste(path_fu,"classificationStats.R",sep=.Platform$file.sep))
-# source(paste(path_fu,"classificationStats.R",sep=.Platform$file.sep))
-# source(paste(path_fu,"latticeCombineGrid.R",sep=.Platform$file.sep))
-
-fn<-"/home/solo/temp7/GRASS7/output/trainingtraindat_corrected.RData"
-load(fn)
+# load training data 
+#load(paste0(path_output,runname,"_trainingDF.RData"))
+load(file = "~/temp7/GRASS7/output/trainingtraindat_corrected.RData")
+# split names in predict and all var names 
 na<-names(tr)
 pred<-na[3:length(na)-1]
-result<-  uavRst::trainModel(trainingDF =tr,
+# call training sequence
+result<-  uavRst::trainModel(trainingDF = trainDF,
                              predictors   = pred,
                              response     = "ID",
                              spaceVar     = "FN",
                              names        =  na,
-                             noLoc        = length(unique(tr$FN)),
+                             noLoc        = length(unique(trainDF$FN)),
                              cl_method    = "rf",
                              metric_ffs   = "Kappa",
                              metric_caret = "ROC",
