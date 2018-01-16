@@ -34,12 +34,16 @@ rdataTrainFiles  <- list.files(pattern="bnames", path=paste0(path_data,currentSh
 
 # extract clean and format training data
 
-trainingDF <- uavRst::extractTrainData(rasterStack  = imageTrainStack,
+trainDF <- uavRst::extractTrainData(rasterStack  = imageTrainStack,
                                        trainPlots = geomTrainStack,
-                                       ids=idNumber,
-                                       idLabel= idNames,
                                        trainDataFn = rdataTrainFiles
                                        )
+
+for (i in 1:length(ids)){
+  trainDF$ID[trainDF$ID==i]<-idLabel[i]
+}
+dataSet$ID <- as.factor(dataSet$ID)
+
 
 cat("\n::: extraction...finsihed \n")
 
