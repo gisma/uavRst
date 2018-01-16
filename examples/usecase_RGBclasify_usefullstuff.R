@@ -31,30 +31,12 @@ corrplot(res, type="upper", order="hclust",
 
 
 
-
+#####
 chart.Correlation(tr, histogram=TRUE, pch=19)
 
-res <- cor(tr)
+
 corrplot(res, method="circle")
 corrplot(res,add=TRUE, type="lower", method="number",
          order="AOE", diag=FALSE, tl.pos="n", cl.pos="n")
 
-cor.mtest <- function(mat, ...) {
-  mat <- as.matrix(mat)
-  n <- ncol(mat)
-  p.mat<- matrix(NA, n, n)
-  diag(p.mat) <- 0
-  for (i in 1:(n - 1)) {
-    for (j in (i + 1):n) {
-      tmp <- cor.test(mat[, i], mat[, j], ...)
-      p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
-    }
-  }
-  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
-  p.mat
-}
-
-p.mat <- cor.mtest(res)
-corrplot(res, type="upper", order="hclust", 
-         p.mat = p.mat, sig.level = 0.01)
 
