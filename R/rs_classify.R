@@ -248,19 +248,18 @@ predictRGB <- function(imageFiles=NULL,
 #' @param  in_prefix in frefix  string
 #' @param out_prefix out prefix string
 #' @param bandNames band names 
-#' trainingDF =NULL,
-#' @param predictors   default is \code{c("R","G","B")}
-#' @param response     default is \code{"ID"}
-#' @param spaceVar     default is \code{"FN"}
-#' @param names        default is \code{c("ID","R","G","B","A","FN")}
-#' @param noLoc        default is \code{3}
-#' @param cl_method    default is \code{"rf"}
-#' @param metric_ffs   default is \code{"kappa"}
-#' @param metric_caret default is \code{ "ROC"}
-#' @param pVal         default is \code{ 0.5}
-#' @param prefin       default is \code{"final_"}
-#' @param preffs       default is \code{"ffs_"}
-#' @param modelSaveName default is \code{"model.RData" }
+#' @param predictors   vector of predictor names as given by the header of the training data table
+#' @param response     name of response variable as given by the header of the training data table
+#' @param spaceVar     name of the spcetime splitting vatiable as given by the header of the training data table
+#' @param names        all names of the dataframe header 
+#' @param noLoc        number of locations to leave out usually nuber of dicrete trainings locations/images
+#' @param cl_method    classification method default is \code{"rf"}
+#' @param metric_ffs   accuracy metrics for ffs for classification  default is \code{"kappa"}
+#' @param metric_caret accuracy metrics for optimisation default is \code{ "ROC"}
+#' @param pVal         used part of the training data  default is \code{ 0.5}
+#' @param prefin       name pattern used for model default is \code{"final_"}
+#' @param preffs       name pattern used for ffs default is \code{"ffs_"}
+#' @param modelSaveName name pattern used for saving the model default is \code{"model.RData" }
 #' 
 #' @export trainModel
 #' @examples  
@@ -293,7 +292,7 @@ trainModel<-function(   trainingDF =NULL,
   # create subset according to pval
   trainIndex<-caret::createDataPartition(trainingDF$ID, p = pVal, list=FALSE)
   data_train <- trainingDF[ trainIndex,]
-  data_test <- trainingDF[-trainIndex,]
+  #data_test <- trainingDF[-trainIndex,]
   # create llo 
   spacefolds <- CAST::CreateSpacetimeFolds(x=data_train,
                                            spacevar = spaceVar,

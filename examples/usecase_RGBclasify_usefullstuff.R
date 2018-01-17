@@ -1,11 +1,12 @@
 
-
+load(file = "~/temp7/GRASS7/output/trainingtraindat_corrected.RData")
 library(corrplot)
 library("PerformanceAnalytics")
 drops <- c("alpha","IC1","Haralick_Correlation","Cluster_Prominence","Long_Run_High_Grey-Level_Emphasis","Long_Run_Low_Grey-Level_Emphasis","Run_Percentage","Skewness","Variance","Mean","Cluster_Shade","Inertia","Long_Run_Emphasis")
-tr<-trainingDF
-tr<-tr[ , !(names(tr) %in% drops)]
-save(tr,file = "~/temp7/GRASS7/output/trainingtraindat_corrected.RData")
+keeps <- c("ID","red","green","blue","GLAI","Energy","Correlation","Short_Run_Emphasis","HI","SI","Entropy","Low_Grey-Level_Run_Emphasis","FN")
+trainingDF<-tr
+tr<-tr[ , (names(tr) %in% keeps)]
+save(tr,file = "~/temp7/GRASS7/output/trainingtraindat_corrected2.RData")
 drops <- c("ID","FN")
 tr<-tr[ , !(names(tr) %in% drops)]
 res <- cor(tr, use = "complete.obs")
@@ -39,4 +40,7 @@ corrplot(res, method="circle")
 corrplot(res,add=TRUE, type="lower", method="number",
          order="AOE", diag=FALSE, tl.pos="n", cl.pos="n")
 
+
+tr
+c("red","green","blue","GLAI","Energy","Correlation","Short_Run_Emphasis","HI","SI","Entropy","Low_Grey-Level_Run_Emphasis")
 

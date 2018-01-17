@@ -19,9 +19,10 @@ setwd(path_run)
 
 # load training data 
 #load(paste0(path_output,runname,"_trainingDF.RData"))
-load(file = "~/temp7/GRASS7/output/trainingtraindat_corrected.RData")
+load(file = "~/temp7/GRASS7/output/trainingtraindat_corrected2.RData")
+trainDF<-tr
 # split names in predict and all var names 
-na<-names(tr)
+na<-names(trainDF)
 pred<-na[3:length(na)-1]
 # call training sequence
 result<-  uavRst::trainModel(trainingDF = trainDF,
@@ -33,8 +34,8 @@ result<-  uavRst::trainModel(trainingDF = trainDF,
                              cl_method    = "rf",
                              metric_ffs   = "Kappa",
                              metric_caret = "ROC",
-                             pVal         = 0.4,
-                             nrclu = 6) 
+                             pVal         = 0.5,
+                             nrclu = 4) 
 
 
 # load("model_final.RData")
