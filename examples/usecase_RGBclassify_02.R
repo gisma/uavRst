@@ -12,7 +12,7 @@ runname<-"test1"
 # classes numbers
 idNumber=c(1,2,3,4,5)
 # classes names
-idNames= c("green","nogreen","green","nogreen","nogreen")
+idNames= c("green","nogreen","nogreen","nogreen","nogreen")
 
 # project folder
 projRootDir <- "~/temp7/GRASS7"
@@ -38,12 +38,12 @@ trainDF <- uavRst::extractTrainData(rasterStack  = imageTrainStack,
                                        trainPlots = geomTrainStack,
                                        trainDataFn = rdataTrainFiles
                                        )
-
-for (i in 1:length(ids)){
-  trainDF$ID[trainDF$ID==i]<-idLabel[i]
+load(file = "~/temp7/GRASS7/data/Traddel_trainingtraindat_9files.RData")
+for (i in 1:length(idNumber)){
+  trainingDF$ID[trainingDF$ID==i]<-idNames[i]
 }
-dataSet$ID <- as.factor(dataSet$ID)
-
+trainingDF$ID <- as.factor(trainingDF$ID)
+save(trainingDF,file = "~/temp7/GRASS7/data/Traddel_trainingtraindat_9files_class.RData")
 
 cat("\n::: extraction...finsihed \n")
 

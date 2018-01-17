@@ -25,7 +25,7 @@ load(file = "~/temp7/GRASS7/data/Traddel_trainingtraindat_9files_class.RData")
 na<-names(trainingDF)
 
 # split names in predict and all var names 
-na<-names(trainDF)
+na<-names(trainingDF)
 
 pred<-na[3:length(na)-1]
 # call training sequence

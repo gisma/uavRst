@@ -11,29 +11,29 @@ trainModel(trainingDF = NULL, predictors = c("R", "G", "B"),
   modelSaveName = "model.RData", nrclu = 3)
 }
 \arguments{
-\item{predictors}{default is \code{c("R","G","B")}}
+\item{predictors}{vector of predictor names as given by the header of the training data table}
 
-\item{response}{default is \code{"ID"}}
+\item{response}{name of response variable as given by the header of the training data table}
 
-\item{spaceVar}{default is \code{"FN"}}
+\item{spaceVar}{name of the spcetime splitting vatiable as given by the header of the training data table}
 
-\item{names}{default is \code{c("ID","R","G","B","A","FN")}}
+\item{names}{all names of the dataframe header}
 
-\item{noLoc}{default is \code{3}}
+\item{noLoc}{number of locations to leave out usually nuber of dicrete trainings locations/images}
 
-\item{cl_method}{default is \code{"rf"}}
+\item{cl_method}{classification method default is \code{"rf"}}
 
-\item{metric_ffs}{default is \code{"kappa"}}
+\item{metric_ffs}{accuracy metrics for ffs for classification  default is \code{"kappa"}}
 
-\item{metric_caret}{default is \code{ "ROC"}}
+\item{metric_caret}{accuracy metrics for optimisation default is \code{ "ROC"}}
 
-\item{pVal}{default is \code{ 0.5}}
+\item{pVal}{used part of the training data  default is \code{ 0.5}}
 
-\item{prefin}{default is \code{"final_"}}
+\item{prefin}{name pattern used for model default is \code{"final_"}}
 
-\item{preffs}{default is \code{"ffs_"}}
+\item{preffs}{name pattern used for ffs default is \code{"ffs_"}}
 
-\item{modelSaveName}{default is \code{"model.RData" }}
+\item{modelSaveName}{name pattern used for saving the model default is \code{"model.RData" }}
 
 \item{imageFiles}{imagestacke for classification}
 
@@ -43,8 +43,7 @@ trainModel(trainingDF = NULL, predictors = c("R", "G", "B"),
 
 \item{out_prefix}{out prefix string}
 
-\item{bandNames}{band names 
-trainingDF =NULL,}
+\item{bandNames}{band names}
 }
 \description{
 trains model according to trainingdata and image stacks
