@@ -9,10 +9,7 @@ require(doParallel)
 currentShptrainDir <- "training"
 # prefix for saved dataframe
 runname<-"test1"
-# classes numbers
-idNumber=c(1,2,3,4,5)
-# classes names
-idNames= c("green","nogreen","nogreen","nogreen","nogreen")
+
 
 # project folder
 projRootDir <- "~/temp7/GRASS7"

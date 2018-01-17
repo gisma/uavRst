@@ -6,6 +6,12 @@ require(CAST)
 require(raster)
 require(foreach)
 require(doParallel)
+
+# classes numbers
+idNumber=c(1,2,3,4,5)
+# classes names
+idNames= c("green","nogreen","nogreen","nogreen","nogreen")
+
 runname<-"test1"
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
@@ -21,6 +27,10 @@ setwd(path_run)
 #load(paste0(path_output,runname,"_trainingDF.RData"))
 
 load(file = "~/temp7/GRASS7/data/Traddel_trainingtraindat_9files_class.RData")
+for (i in 1:length(idNumber)){
+  trainingDF$ID[trainingDF$ID==i]<-idNames[i]
+}
+trainingDF$ID <- as.factor(trainingDF$ID)
 # split names in predict and all var names 
 na<-names(trainingDF)
 
