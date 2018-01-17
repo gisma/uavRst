@@ -1,6 +1,6 @@
 # training and prediction 
 #### packages
-rm(list =ls())
+if (!chain) rm(list =ls())
 require(link2GI)
 require(CAST)
 require(raster)
@@ -11,8 +11,9 @@ require(doParallel)
 idNumber=c(1,2,3,4,5)
 # classes names
 idNames= c("green","nogreen","nogreen","nogreen","nogreen")
+# prefix for saved dataframe
+trainFN<-paste0("/home/creu/temp7/GRASS7/output/traddel_traindat_.RData")
 
-runname<-"test1"
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
 currentImgtrainDir <- "training"
@@ -24,9 +25,8 @@ link2GI::initProj(projRootDir = projRootDir,
 setwd(path_run)
 
 # load training data 
-#load(paste0(path_output,runname,"_trainingDF.RData"))
+load(paste0(path_data,currentShptrainDir,"/",prefixrunFN,"_traindat_",".RData"))
 
-load(file = "~/temp7/GRASS7/data/Traddel_trainingtraindat_9files_class.RData")
 for (i in 1:length(idNumber)){
   trainingDF$ID[trainingDF$ID==i]<-idNames[i]
 }

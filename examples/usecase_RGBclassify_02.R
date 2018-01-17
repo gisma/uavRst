@@ -1,5 +1,6 @@
 # extracting training data based on duigitized and classied geometries based on UAV ortho imagery
-rm(list =ls())
+chain<-TRUE
+if (!chain) rm(list =ls())
 require(link2GI)
 require(CAST)
 require(raster)
@@ -8,7 +9,7 @@ require(doParallel)
    # folder containing shapefiles and images files for training purposes
 currentShptrainDir <- "training"
 # prefix for saved dataframe
-runname<-"test1"
+prefixrunFN<-"traddel"
 
 
 # project folder
@@ -26,8 +27,8 @@ setwd(path_run)
 imageTrainFiles <- list.files(pattern="[.]tif$", path=paste0(path_data,currentShptrainDir), full.names=TRUE)
 geomTrainFiles  <- list.files(pattern="[.]shp$", path=paste0(path_data,currentShptrainDir), full.names=TRUE)
 rdataTrainFiles  <- list.files(pattern="bnames", path=paste0(path_data,currentShptrainDir), full.names=TRUE)
- imageTrainStack <- lapply(imageTrainFiles, FUN=raster::stack)
- geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
+imageTrainStack <- lapply(imageTrainFiles, FUN=raster::stack)
+geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
 
 # extract clean and format training data
 
@@ -35,13 +36,9 @@ trainDF <- uavRst::extractTrainData(rasterStack  = imageTrainStack,
                                        trainPlots = geomTrainStack,
                                        trainDataFn = rdataTrainFiles
                                        )
-load(file = "~/temp7/GRASS7/data/Traddel_trainingtraindat_9files.RData")
-for (i in 1:length(idNumber)){
-  trainingDF$ID[trainingDF$ID==i]<-idNames[i]
-}
-trainingDF$ID <- as.factor(trainingDF$ID)
-save(trainingDF,file = "~/temp7/GRASS7/data/Traddel_trainingtraindat_9files_class.RData")
+
+save(trainingDF, file = paste0(path_output,prefixrunFN,"_files_traindat_",".RData"))
 
 cat("\n::: extraction...finsihed \n")
 
-source('~/dev/uavRst/examples/usecase_RGBclassify_03.R')
+

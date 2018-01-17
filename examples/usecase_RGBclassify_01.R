@@ -1,7 +1,8 @@
 # pre-processing of RGB UAV ortho imagery
-# calculates RGB indices. statistics and haralick 
+# calculates RGB indices, statistics and haralick 
 #### packages
-rm(list =ls())
+chain<-TRUE
+if (!chain) rm(list =ls())
 require(link2GI)
 require(CAST)
 require(raster)
@@ -86,9 +87,8 @@ rgb_all<- flist<-list()
       uavRst::otbTexturesHaralick(x = paste0(filterBand,"_",basename(imageFiles[i])),output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),texture = haratype)
     }
     # delete single channel for synthetic channel calculation
-    # file.remove(paste0(filterBand,"_",basename(imageFiles[i])))
-    # get the rest in a list
     file.remove(paste0(filterBand,"_",basename(imageFiles[i])))
+    # get the rest in a list
     flist<-append(flist, Sys.glob(paste0("*","_",basename(imageFiles[i]),"*")))
     
   }

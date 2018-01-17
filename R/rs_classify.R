@@ -132,15 +132,7 @@ extractTrainData<-function(rasterStack  = NULL,
     trainingDF<-rbind(trainingDF, dataSet)
       save(dataSet, file = paste0(path_output,basename(trainDataFn[[j]]),"_",j,".RData"))
   }
- # save(trainingDF, file = trainDataFn)
-  ## reclassify data frame
-  # for (i in 1:length(ids)){
-  #   trainingDF$ID[trainingDF$ID==i]<-idLabel[i]
-  # }
-  # trainingDF$ID <- as.factor(trainingDF$ID)
-  # 
-  ## save dataframe
-  save(trainingDF, file = paste0(dirname(trainDataFn[[1]]),"traindat_",length(rasterStack),"files.RData"))
+ #
   return(trainingDF)
 }
 

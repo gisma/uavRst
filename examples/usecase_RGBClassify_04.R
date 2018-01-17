@@ -1,5 +1,6 @@
 # predicting green leaves from UAV ortho imagery
 # ---- define global parameters -----------------------------------------------
+if (!chain) rm(list =ls())
 #### packages
 require(link2GI)
 require(raster)
