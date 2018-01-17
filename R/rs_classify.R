@@ -309,7 +309,7 @@ trainModel<-function(   trainingDF =NULL,
                    withinSE=TRUE, 
                    tuneGrid = expand.grid(mtry = 2)
   )
-  save(ffs_model,file = paste0(path_output,preffs,saveModelName))
+
   
   
   predictors <- data_train[,names(ffs_model$trainingData)[-length(names(ffs_model$trainingData))]]
@@ -324,9 +324,8 @@ trainModel<-function(   trainingDF =NULL,
                        trControl = ctrl)
   stopCluster(cl)
   
-  save(model_final,file = paste0(path_output,prefin,saveModelName) )
-  
-  return(list(model_ffs,model_final,perf,cstat))
+
+  return(list(ffs_mode,model_final,perf,cstat))
 }
 
 makebNames <- function(rgbi    = c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI"),
