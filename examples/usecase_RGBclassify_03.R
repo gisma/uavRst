@@ -19,9 +19,14 @@ setwd(path_run)
 
 # load training data 
 #load(paste0(path_output,runname,"_trainingDF.RData"))
+
 load(file = "~/temp7/GRASS7/data/Traddel_trainingtraindat_9files_class.RData")
 # split names in predict and all var names 
 na<-names(trainingDF)
+
+# split names in predict and all var names 
+na<-names(trainDF)
+
 pred<-na[3:length(na)-1]
 # call training sequence
 result<-  uavRst::trainModel(trainingDF = trainingDF,
@@ -33,8 +38,9 @@ result<-  uavRst::trainModel(trainingDF = trainingDF,
                              cl_method    = "rf",
                              metric_ffs   = "Kappa",
                              metric_caret = "ROC",
+
                              pVal         = 0.1,
-                             nrclu = 12) 
+                             nrclu = 12)
 
 
 # load("model_final.RData")
