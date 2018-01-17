@@ -47,4 +47,4 @@ dataSet$ID <- as.factor(dataSet$ID)
 
 cat("\n::: extraction...finsihed \n")
 
-
+source('~/dev/uavRst/examples/usecase_RGBclassify_03.R')
