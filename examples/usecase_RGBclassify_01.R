@@ -14,9 +14,9 @@ chain<-TRUE
 
 #### packages
 if (!chain) rm(list =ls())
-devtools::install_github("gisma/uavRst", ref = "master", dependencies = TRUE)
+devtools::install_github("gisma/uavRst", ref = "master")
 require(uavRst)
-devtools::install_github("gisma/link2GI", ref = "master", dependencies = TRUE)
+devtools::install_github("gisma/link2GI", ref = "master")
 require(link2GI)
 require(CAST)
 require(raster)
