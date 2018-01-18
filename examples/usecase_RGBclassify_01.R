@@ -1,13 +1,30 @@
+# The usecaseRGBclassify 1-5 scripts are providing a common workflow for a random forest based classification of visible imagery.
+# They can be used both - independly or in a chain 
+# The worflow is divided in 5 steps:
+# (01) calculation of spectral indices , basic spatial statistics and textures to generate  a set of predictor variables 
+# (02) extracting of training values over all channels according to training data
+# (03) perform training using random forest and the forward feature selection method
+# (04) prediction
+# (05) basic analysis and results extraction
+
 # pre-processing of RGB UAV ortho imagery
 # calculates RGB indices, statistics and haralick 
+# switch to concatenate this script to the next one
+chain<-TRUE 
+
 #### packages
-chain<-TRUE
 if (!chain) rm(list =ls())
+devtools::install_github("gisma/uavRst", ref = "master", dependencies = TRUE)
+require(uavRst)
+devtools::install_github("gisma/link2GI", ref = "master", dependencies = TRUE)
 require(link2GI)
 require(CAST)
 require(raster)
 require(foreach)
 require(doParallel)
+
+# folder containing shapefiles and images files for training purposes
+currentShptrainDir <- "training"
 
 # switch for using  HaralickTextureExtraction 
 # for a review of a lot of feature extraction algorithms look at:
@@ -16,29 +33,22 @@ require(doParallel)
 # NOTE IT TAKES A LOT OF TIME
 hara=TRUE
 # options are "all" "simple" "advanced"  "higher"
-haratype="all"
+haratype="simple"
 # statistic: (mean,variance, curtosis, skewness)
-stat=TRUE
+stat=FALSE
 #channels options "red" "green" "blue"
 channels<-c("green")
 # indices: options are ("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI")
 #c("VARI","NDTI","TGI","GLI","NGRDI","GLAI")
-indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI") 
+indices <- c("GLAI") 
 
 
 # kernelsize
 kernel<- 3
 
-if (hara) {
-  haratype=haratype
-} else {
-  haratype=""
-}
-
-
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
-#predictDir <-"predict"
+
 # create project structure and export global pathes
 link2GI::initProj(projRootDir = projRootDir,
                   projFolders = c("data/","output/","run/","fun","idx") )
@@ -46,15 +56,16 @@ link2GI::initProj(projRootDir = projRootDir,
 # set working directory
 setwd(path_run)
 
-# link GDAL and SAGA
+# link GDAL and OTB
 gdal <- link2GI::linkgdalUtils()
 otb<- link2GI::linkOTB()
-
+if (stat == TRUE || hara == TRUE & otb == "") stop("OTB missing - please check")
 
 ### ----- start preprocessing ---------------------------------------------------
 cat("\n::: preprocess input data...\n")
 
-# create list of image files to be processed
+# create list of image files to be processed 
+# NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
 imageFiles <- list.files(pattern="[.]tif$", path=paste0(path_data,"all"), full.names=TRUE)
 
 # stack the ortho images
@@ -62,28 +73,29 @@ rgb<- lapply(imageFiles, FUN=raster::stack)
 
 
 ### calculate indices and base stat export it to tif
+
+# create list vars
 rgb_all<- flist<-list()
 
-# cl <- makeCluster(detectCores()-1)
-# registerDoParallel(cl)  
-# out <- foreach(i = 1:length(rgb),indices = indices) %dopar% {
-#   library(raster)  
-#   library(uavRst)
-  for (i in 1:length(rgb)){
+# for all images do
+for (i in 1:length(rgb)){
+  # calculates indices
   rgb_rgbi<-raster::stack(rgb[[i]],uavRst::rgbIndices(rgb[[i]][[1]],rgb[[i]][[2]],rgb[[i]][[3]],indices))
-  
+  # assign bandnumber according to name
   for (filterBand in channels){
     if (filterBand=="red") bandNr <- 1
     if (filterBand=="green") bandNr <- 2
     if (filterBand=="blue") bandNr <- 3
     # export single channel for synthetic band calculation
     raster::writeRaster(rgb_rgbi[[bandNr]],paste0(filterBand,"_",basename(imageFiles[i])),overwrite=TRUE)
-    
+    # if calc statistcis 
     if (stat){
+      cat("\n::: processing stats...\n")
       uavRst:::otbLocalStat(fn = paste0(filterBand,"_",basename(imageFiles[i])),param=c(paste0(filterBand,"stat_",basename(imageFiles[i])),"4096", kernel))
     }
-    
+    # if calc haralick
     if (hara){
+      cat("\n::: processing haralick... ",haratype,"\n")
       uavRst::otbTexturesHaralick(x = paste0(filterBand,"_",basename(imageFiles[i])),output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),texture = haratype)
     }
     # delete single channel for synthetic channel calculation
@@ -93,13 +105,26 @@ rgb_all<- flist<-list()
     
   }
   # stack the results
+  cat("\n::: saving results...\n")
   rgb_all<-raster::stack(rgb_rgbi,raster::stack(unlist(flist)))
+  
+  # warning to much bands
   if (raster::nlayers(rgb_all) > 256) stop(paste0("\n", raster::nlayers(rgb_all) ,"calculated...  Geotiffs may have 256... reduce your synthetic channels"))
   
-  # export as geotiff
-  fn<-paste0(path_id,"/index_",basename(imageFiles[i]))
-  bnames<-uavRst:::makebNames(rgbi = indices, haratxt = haratype)
-  save(bnames,file = paste0(path_id,"/bnames_index_",basename(imageFiles[i]),".RData"))
+  # create bandname list
+  bnames  <- uavRst:::makebNames(rgbi = indices, stat = stat, haratxt = haratype)
+  
+  # create exportfilename
+  if (train){
+    fn<-paste0(path_data,currentShptrainDir,"/index_",basename(imageFiles[i]))
+    save(bnames,file = paste0(path_data,currentShptrainDir,"/bnames_index_",basename(imageFiles[i]),".RData"))
+  } else {
+    fn<-paste0(path_id,"/index_",basename(imageFiles[i]))
+    # save bandname list
+    save(bnames,file = paste0(path_id,"/bnames_index_",basename(imageFiles[i]),".RData"))
+  }
+  
+  # save file names
   names(rgb_all)<-bnames
   raster::writeRaster(rgb_all,fn,overwrite=TRUE)
   
@@ -108,6 +133,7 @@ rgb_all<- flist<-list()
   flist<-list()
 }
 
-#stopCluster(cl)
+
 cat("\n::: finished preprocessing RGB data...\n")
 
+if (chain) source('~/dev/R/uavRst/examples/usecase_RGBclassify_02.R', echo=TRUE)

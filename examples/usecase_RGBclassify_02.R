@@ -1,8 +1,9 @@
 # extracting training data based on duigitized and classied geometries based on UAV ortho imagery
-chain<-TRUE
-if (!chain) rm(list =ls())
-require(link2GI)
-require(CAST)
+rm(list =ls())
+devtools::install_github("gisma/uavRst", ref = "master", dependencies = TRUE)
+require(uavRst)
+devtools::install_github("gisma/link2GI", ref = "master", dependencies = TRUE)
+require(link2GI)require(CAST)
 require(raster)
 require(foreach)
 require(doParallel)   

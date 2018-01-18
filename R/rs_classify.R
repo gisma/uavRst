@@ -380,8 +380,21 @@ makebNames <- function(rgbi    = c("VVI","VARI","NDTI","RI","CI","BI","SI","HI",
                 "Long_Run_Low_Grey-Level_Emphasis",
                 "Long_Run_High_Grey-Level_Emphasis")
   }
+  if (stat ==TRUE)  {
+    statname    = c("Mean","Variance", "Skewness", "Kurtosis")
+  } 
   
-  return(append(rgbi,append(stat,bnames)))
+  if (haratxt != "" & stat ==TRUE) { 
+    bnames <- append(rgbi,append(statname,bnames))
+  } else if (haratxt == "" & stat ==TRUE) {
+    bnames <- append(rgbi,statname)  
+  } else if (haratxt != "" & stat ==FALSE) {
+    bnames <- append(rgbi,bnames)
+  } else if (haratxt == "" & stat ==FALSE) {
+    bnames <- rgbi
+  }
+  
+  return(bnames)
   
   
 }
