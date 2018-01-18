@@ -7,10 +7,12 @@
 # (04) prediction
 # (05) basic analysis and results extraction
 
-# pre-processing of RGB UAV ortho imagery
-# calculates RGB indices, statistics and haralick 
+# # pre-processing of RGB UAV ortho imagery (1/2) - calculates RGB indices, statistics and haralick 
 # switch to concatenate this script to the next one
-chain<-TRUE 
+chain <- TRUE 
+# training data or classification data (FALSE) 
+# usually training data will need more/all channels and classification data the necessary ones
+train <- TRUE
 
 #### packages
 if (!chain) rm(list =ls())
@@ -22,9 +24,6 @@ require(CAST)
 require(raster)
 require(foreach)
 require(doParallel)
-
-# folder containing shapefiles and images files for training purposes
-currentShptrainDir <- "training"
 
 # switch for using  HaralickTextureExtraction 
 # for a review of a lot of feature extraction algorithms look at:
@@ -46,15 +45,20 @@ indices <- c("GLAI")
 # kernelsize
 kernel<- 3
 
+#---> define environment and settings
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
-
+# define training data folder
+currentImgtrainDir <- "training"
+# prefix for saved dataframe
+prefixrunFN<-"traddel"
 # create project structure and export global pathes
 link2GI::initProj(projRootDir = projRootDir,
                   projFolders = c("data/","output/","run/","fun","idx") )
 
 # set working directory
 setwd(path_run)
+
 
 # link GDAL and OTB
 gdal <- link2GI::linkgdalUtils()
@@ -98,23 +102,26 @@ for (i in 1:length(rgb)){
       cat("\n::: processing haralick... ",haratype,"\n")
       uavRst::otbTexturesHaralick(x = paste0(filterBand,"_",basename(imageFiles[i])),output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),texture = haratype)
     }
+    
     # delete single channel for synthetic channel calculation
     file.remove(paste0(filterBand,"_",basename(imageFiles[i])))
     # get the rest in a list
     flist<-append(flist, Sys.glob(paste0("*","_",basename(imageFiles[i]),"*")))
-    
-  }
+  } # end of single channnel calculation
+
   # stack the results
-  cat("\n::: saving results...\n")
+  cat("\n::: saving all bands of ",imageFiles[i]," as ", paste0("index_",basename(imageFiles[i]),"\n"))
+  
+  # create an alltogether stack
   rgb_all<-raster::stack(rgb_rgbi,raster::stack(unlist(flist)))
   
-  # warning to much bands
+  # stop if to much bands for geotiff
   if (raster::nlayers(rgb_all) > 256) stop(paste0("\n", raster::nlayers(rgb_all) ,"calculated...  Geotiffs may have 256... reduce your synthetic channels"))
   
-  # create bandname list
+  # create list of bandnames
   bnames  <- uavRst:::makebNames(rgbi = indices, stat = stat, haratxt = haratype)
   
-  # create exportfilename
+  # create exportfilename according to training or classifing needs
   if (train){
     fn<-paste0(path_data,currentShptrainDir,"/index_",basename(imageFiles[i]))
     save(bnames,file = paste0(path_data,currentShptrainDir,"/bnames_index_",basename(imageFiles[i]),".RData"))
@@ -124,11 +131,11 @@ for (i in 1:length(rgb)){
     save(bnames,file = paste0(path_id,"/bnames_index_",basename(imageFiles[i]),".RData"))
   }
   
-  # save file names
+  # write file to geotiff
   names(rgb_all)<-bnames
   raster::writeRaster(rgb_all,fn,overwrite=TRUE)
   
-  # cleanup
+  # cleanup tempfiles lists...
   file.remove(unlist(flist))
   flist<-list()
 }

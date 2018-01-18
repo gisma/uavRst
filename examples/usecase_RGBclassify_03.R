@@ -1,4 +1,6 @@
-# training and prediction 
+# training of classification models based on predictors and response variables 
+# as provided by the dataframe from step2
+
 #### packages
 if (!chain) rm(list =ls())
 require(link2GI)
@@ -7,13 +9,20 @@ require(raster)
 require(foreach)
 require(doParallel)
 
+# below you will find classes names and classes IDs 
+# NOTE ADAPT IT TO YOUR NEEDS
 # classes numbers
 idNumber=c(1,2,3,4,5)
 # classes names
 idNames= c("green","nogreen","nogreen","nogreen","nogreen")
-# prefix for saved dataframe
+
+# prefix for dataframe providing the training data
+if (!chain){
 trainFN<-paste0("/home/creu/temp7/GRASS7/output/traddel_traindat_.RData")
-#load(trainFN)
+load(trainFN)
+}
+
+#---> define environment and settings
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
 currentImgtrainDir <- "training"
@@ -24,7 +33,7 @@ link2GI::initProj(projRootDir = projRootDir,
 # set working directory
 setwd(path_run)
 
-# load training data 
+#---> start processing
 
 
 for (i in 1:length(idNumber)){

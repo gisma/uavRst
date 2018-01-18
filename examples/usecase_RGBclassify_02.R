@@ -1,4 +1,6 @@
-# extracting training data based on duigitized and classied geometries based on UAV ortho imagery
+# pre-processing of RGB UAV ortho imagery (2/2) -  extract pixel values as training data
+# step to is only needed for extracting training data based 
+# on digitized and classified training geometry data 
 if (!chain){rm(list =ls())}
 devtools::install_github("gisma/uavRst", ref = "master")
 require(uavRst)
@@ -9,20 +11,21 @@ require(raster)
 require(foreach)
 require(doParallel)   
 
-
+#---> define environment and settings
+# define project folder
+projRootDir <- "~/temp7/GRASS7"
+# define training data folder
+currentImgtrainDir <- "training"
 # prefix for saved dataframe
 prefixrunFN<-"traddel"
-
-
-# project folder
-projRootDir <- "~/temp7/GRASS7"
-
-# create project structure and export pathes as global variables
+# create project structure and export global pathes
 link2GI::initProj(projRootDir = projRootDir,
                   projFolders = c("data/","output/","run/","fun","idx") )
 
 # set working directory
 setwd(path_run)
+
+#---> start processing
 
 # ----- start extraction ---------------------------------------------------
 # get image and geometry data for training purposes
