@@ -1,12 +1,14 @@
 # extracting training data based on duigitized and classied geometries based on UAV ortho imagery
-if (!train){rm(list =ls())}
+if (!chain){rm(list =ls())}
 devtools::install_github("gisma/uavRst", ref = "master")
 require(uavRst)
 devtools::install_github("gisma/link2GI", ref = "master")
-require(link2GI)require(CAST)
+require(link2GI)
+require(CAST)
 require(raster)
 require(foreach)
 require(doParallel)   
+
 
 # prefix for saved dataframe
 prefixrunFN<-"traddel"
