@@ -1,4 +1,4 @@
-# Unmanned Aerial Vehicle R tools
+# Unmanned Aerial Vehicle Remote Sensing Toolbox
 The [uavR](https://github.com/gisma/uavR) "package family" is divided in in two packages:
 
   * mission planning ```uavRmp``` (already on [CRAN](https://cran.r-project.org/web/packages/uavRmp/index.html))
