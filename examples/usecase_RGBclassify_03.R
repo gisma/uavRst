@@ -13,7 +13,7 @@ idNumber=c(1,2,3,4,5)
 idNames= c("green","nogreen","nogreen","nogreen","nogreen")
 # prefix for saved dataframe
 trainFN<-paste0("/home/creu/temp7/GRASS7/output/traddel_traindat_.RData")
-
+#load(trainFN)
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
 currentImgtrainDir <- "training"
@@ -25,7 +25,7 @@ link2GI::initProj(projRootDir = projRootDir,
 setwd(path_run)
 
 # load training data 
-load(paste0(path_data,currentShptrainDir,"/",prefixrunFN,"_traindat_",".RData"))
+
 
 for (i in 1:length(idNumber)){
   trainingDF$ID[trainingDF$ID==i]<-idNames[i]
@@ -49,7 +49,7 @@ result<-  uavRst::trainModel(trainingDF = trainingDF,
                              metric_ffs   = "Kappa",
                              metric_caret = "ROC",
 
-                             pVal         = 0.1,
+                             pVal         = 0.05,
                              nrclu = 12)
 
 
