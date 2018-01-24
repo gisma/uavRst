@@ -5,7 +5,7 @@
 # the R capabilities of paralell tasking 
 # 
 # 
-#' @note for the use textureVariables a glcm wrapper function 
+#' @note for the use of textureVariables a glcm wrapper function 
 #'       a raster* object is required
 #' @param x rasterLayer or a rasterStack containing different channels
 #' @param nrasters vector of channels to use from x. Default =nlayers(x)
@@ -33,7 +33,7 @@
 #' GLCM Correlation shows  r<0.5 with any other measure.
 #' @export textureVariables
 #' @examples 
-#' 
+#' #' \dontrun{
 #' ## example on how to calculate texture from a list of channels
 #' 
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
@@ -47,7 +47,7 @@
 #' 
 #' #plot the results from VIS0.6 channel:
 #' raster::plot(unlist(unlist(glcm$size_3$X4490600_5321400.1)))
-#' 
+#' }
 #' @seealso \code{\link{glcm}}
 
 textureVariables <- function(x,
@@ -60,11 +60,10 @@ textureVariables <- function(x,
                              n_grey = 8,
                              min_x=NULL,
                              max_x=NULL){
-  require(glcm) 
-  require(raster)
+  
+  
   if (parallel){
-    require(doParallel)
-    registerDoParallel(detectCores()-1)
+    doParallel::registerDoParallel(parallel::detectCores()-1)
   }
   
   
@@ -87,7 +86,7 @@ textureVariables <- function(x,
   for (j in 1:length(kernelSize)){
     if (class (x)=="RasterStack"||class (x)=="RasterBrick"){  
       if (parallel){
-        glcm_filter[[j]]<-foreach(i=nrasters,
+        glcm_filter[[j]]<-foreach::foreach(i=nrasters,
                                   .packages= c("glcm","raster"))%dopar%{
                                     glcm(x[[i]], 
                                          window = c(kernelSize[j], kernelSize[j]), 
@@ -97,9 +96,9 @@ textureVariables <- function(x,
                                          na_opt="center")
                                   } 
       } else {
-        glcm_filter[[j]]<-foreach(i=nrasters,
+        glcm_filter[[j]]<-foreach::foreach(i=nrasters,
                                   .packages= c("glcm","raster"))%do%{
-                                    mask(glcm(x[[i]], 
+                                    raster::mask(glcm(x[[i]], 
                                               window = c(kernelSize[j], kernelSize[j]), 
                                               shift=shift,
                                               statistics=stats,n_grey=n_grey,
@@ -109,13 +108,14 @@ textureVariables <- function(x,
       }
       names(glcm_filter[[j]])<-names(x)[nrasters]
     } else {
-      glcm_filter[[j]]<-mask(glcm(x, window = c(kernelSize[j], kernelSize[j]), 
+      glcm_filter[[j]]<-raster::mask(glcm(x, window = c(kernelSize[j], kernelSize[j]), 
                                   shift=shift,
                                   statistics=stats,n_grey=n_grey,
                                   min_x=min_x,max_x=max_x,
                                   na_opt="center"), x)
     }   
   }
+  doParallel::stopImplicitCluster()
   names(glcm_filter)<-paste0("size_",kernelSize)
   return(glcm_filter)
 }
@@ -128,7 +128,7 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 
 #' OTB wrapper for Haralick's simple, advanced and higher order texture features
 #'@description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image.
-#' @param x A \code{\link{Raster*}} object or a \code{\href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff}} containing one or more gray  value bands
+#' @param x A \code{\link{Raster*}} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands
 #' @param output_name string pattern vor individual naming of the output file(s)
 #' @param parameters.xyrad list with the x and y radius in pixel indicating the kernel sizes for which the textures are calculated
 #' @param parameters.xyoff  vector containg the directional offsets. Valid combinations are: list(c(1,1),c(1,0),c(0,1),c(1,-1))
@@ -191,16 +191,6 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 #' @note 
 #' The following Haralick textures are largely comparable to the results as derived by the \code{\link{glcm}} package. Find more information about the these common texture indices at the tutorial site of
 #' \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Mryka Hall-Beyer}\cr
-#' Keep further in mind that this texture features are highly correlated:\cr
-#' Homogeneity  with Contrast,  r = -0.80\cr
-#' Homogeneity  with Dissimilarity, r = -0.95\cr
-#' GLCM Variance  with Contrast,  r= 0.89\cr
-#' GLCM Variance with Dissimilarity,  r= 0.91\cr
-#' GLCM Variance  with Homogeneity,  r= -0.83\cr
-#' Entropy  with ASM,  r= -0.87\cr
-#' GLCM Mean and Correlation are more independent. For the same image:\cr
-#' GLCM Mean shows  r< 0.1 with any of the other texture measures.\cr
-#' GLCM Correlation shows  r<0.5 with any other measure.
 #' 
 #' @name otbTexturesHaralick
 #' @export otbTexturesHaralick
@@ -210,13 +200,19 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 #' # get some typical authority generated data
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
-#' unzip(res,files = grep(".tif", unzip(res,list = TRUE)$Name,value = TRUE),junkpaths = TRUE,overwrite = TRUE)
+#' unzip(res,
+#'       files = grep(".tif", unzip(res,list = TRUE)$Name,value = TRUE),
+#'       junkpaths = TRUE,
+#'       overwrite = TRUE)
 #' 
 #' # first initialisation of the OTB environment
 #' link2GI::linkOTB()
 #' 
 #' # calculate all Haralick-textures
-#' otbTexturesHaralick(x=file.path(getwd(),basename(grep(".tif", unzip(res,list = TRUE)$Name,value = TRUE))))
+#' otbTexturesHaralick(x=file.path(getwd(),
+#'                     basename(grep(".tif", 
+#'                     unzip(res,list = TRUE)$Name,
+#'                     value = TRUE))))
 #' }
 NULL
 
@@ -258,7 +254,7 @@ setMethod("otbTexturesHaralick",
                                                 ram = ram)
             file.remove(x)
             tmpfiles <- list.files(path_output, 
-                                   pattern = glob2rx(paste0("*", tempout, "*")),
+                                   pattern = utils::glob2rx(paste0("*", tempout, "*")),
                                    full.names = TRUE)
             file.remove(tmpfiles)
             return(ret_textures)
@@ -471,10 +467,12 @@ setMethod("otbTexturesHaralick",
 #' @author Chris Reudenbach
 #' @export otblocalStat
 #' @examples 
+#' #' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
 #' otblocalStat(input=paste0(getwd(),"4490600_5321400.tif"),radius=5)
+#' }
 
 otblocalStat<- function(input=NULL,
                         out="localStat",
@@ -533,10 +531,12 @@ otblocalStat<- function(input=NULL,
 #' @author Chris Reudenbach
 #' @export otbEdge
 #' @examples 
+#' #' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
 #' otbedge(input=paste0(getwd(),"4490600_5321400.tif"),filter = "sobel")
+#' }
 
 
 otbEdge<- function(input=NULL,
@@ -601,11 +601,13 @@ otbEdge<- function(input=NULL,
 #' @author Chris Reudenbach
 #' @export otbGrayMorpho
 #' @examples 
+#' #' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
 #' gm<-otbGrayMorpho(input=paste0(getwd(),"4490600_5321400.tif"),retRaster = TRUE)
 #' raster::plot(gm[[1]])
+#' }
 
 otbGrayMorpho<- function(input=NULL,
                          out="edge",

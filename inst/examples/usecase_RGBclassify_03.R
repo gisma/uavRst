@@ -65,6 +65,8 @@ result<-  uavRst::trainModel(trainingDF = trainingDF,
 # load("model_final.RData")
 model_final<-result[[2]]
 
+save(model_final, file = paste0(path_output,prefixrunFN,"_model_final",".RData"))
+
 perf <- model_final$pred[model_final$pred$mtry==model_final$bestTune$mtry,]
 #cstat<-classificationStats(perf$pred,perf$obs,plot = T) 
 #summary(lm(as.numeric(as.character(perf$pred))~as.numeric(as.character(perf$obs))))

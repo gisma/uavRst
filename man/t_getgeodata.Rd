@@ -4,8 +4,7 @@
 \alias{t_getgeodata}
 \title{Retrieves online geodata and converts it to raster/sp objects}
 \usage{
-t_getgeodata(name, download=TRUE, path='', ...)
-ccodes()
+t_getgeodata(name = "GADM", download = TRUE, path = "", ...)
 }
 \arguments{
 \item{name}{Data set name, currently supported are:
@@ -146,19 +145,23 @@ The list of allowd items is (long): \cr
 }
 
 \subsection{Harry's Peaks}{
-\code{harrylist} is a list of world wide about 60.000 coordinates altitudes and names of summits \link{PeakList}\cr
+\code{harrylist} is a list of world wide about 60.000 coordinates altitudes and names of summits. 
 If  \code{name=}'harrylist' you will download and clean the complete list\cr
    \code{t_getgeodata('harrylist')}\cr \cr
 }
 \subsection{OSM Point Data}{
 \code{OSMp} is the OSM Point Data from the current OSM database\cr
 If  \code{name}='OSMp' you must provide lat_min,lat_max,lon_min,lon_max for the boundig box. Additionally you must set  the switch 'all' to \code{FALSE} if you just want to download a specified item. Then you have to  provide the content of the desired items in the 'key' and 'val' argument. According to this combination you have to provide a tag list containing the Tags of the element c('name','ele').\cr\cr
-   \code{t_getgeodata('OSMp', extent=c(11.35547,11.40009,47.10114,47.13512), key='natural',val='peak',taglist=c('name','ele'))}\cr \cr
+   \code{t_getgeodata('OSMp', 
+                      extent=c(11.35547,11.40009,47.10114,47.13512), 
+                      key='natural',
+                      val='peak',
+                      taglist=c('name','ele'))}\cr \cr
 }
 
 \subsection{Digital Elevation Model of Tyrolia}{
 
-\code{tiroldem} refers to the 10 m Lidar based DEM as provided by the Authorithy of Tirol. For Copyright and further information  see: \link{DEM}\cr \cr
+\code{tiroldem} refers to the 10 m Lidar based DEM as provided by the Authorithy of Tirol. \cr \cr
 If  \code{name}='tiroldem' you must set the switch 'all' to \code{FALSE} if you just want to download a specified item you have to set data=item.
 The list of allowd items is:
 \itemize{
@@ -179,34 +182,50 @@ For use in ArcGIS the data is correctly georeferenced. However for R you MUST us
 }
 
 \examples{
-#### Examples t_getgeodata
-
 \dontrun{
 ## get SRTM data at a position
 r<-t_getgeodata(name="SRTM",xtent = extent(11.,11.,50.,50.))
 ## get SRTM data for an area
 r<-t_getgeodata(name="SRTM",xtent = extent(11.,17.,50.,56.))
-## get SRTM data for an area with a buffer zone (e.g. for a cost or watershed analysis) zone is in degree
+## get SRTM data for an area with a buffer zone 
+## (e.g. for a cost or watershed analysis) zone is in degree
 r<-t_getgeodata(name="SRTM",xtent = extent(11.,17.,50.,56.), zone = 3.0)
 ## get SRTM Tile names
-t<-t_getgeodata(name="SRTM",xtent = extent(11.,17.,50.,56.), zone = 3.0, download = FALSE)
+t<-t_getgeodata(name="SRTM",
+                xtent = extent(11.,17.,50.,56.), 
+                zone = 3.0, download = FALSE)
 ## get SRTM data for an area with a buffer and merge it
-r<-t_getgeodata(name="SRTM",xtent = extent(11.,17.,50.,56.), zone = 3.0, merge = TRUE)
+r<-t_getgeodata(name="SRTM",
+                xtent = extent(11.,17.,50.,56.), 
+                zone = 3.0, merge = TRUE)
 
 ## get Schmatz et al. data please have a look at details
-r<- t_getgeodata('schmatzPangea', item='tasmin_A_MO_pmip2_21k_oa_CNRM_eu_30s',endTime=12)
-r<- t_getgeodata('schmatzPangea', item="bioclim_A_MO_pmip2_21k_oa_CCSM_eu_30s", layer="bio_1")
+r<- t_getgeodata('schmatzPangea', 
+                  item='tasmin_A_MO_pmip2_21k_oa_CNRM_eu_30s',
+                  endTime=12)
+r<- t_getgeodata('schmatzPangea', 
+                  item="bioclim_A_MO_pmip2_21k_oa_CCSM_eu_30s", 
+                  layer="bio_1")
 
 ## get a single tile of the Tirolean DEM
-r<- t_getgeodata('tiroldem', items='IBK_DGM10')
+r<- t_getgeodata('tiroldem', 
+                  items='IBK_DGM10')
+                  
 ## get a single 3 tiles of the Tirolean DEM as a merged raster
-r<- t_getgeodata('tiroldem', item=c('IBK_DGM10','IL_DGM10','IM_DGM10'), merge =TRUE)
+r<- t_getgeodata('tiroldem', 
+                  item=c('IBK_DGM10','IL_DGM10','IM_DGM10'), 
+                  merge =TRUE)
 
 # get arbitrary OSM point data
-r<- t_getgeodata('OSMp', extent=c(11.35547,11.40009,47.10114,47.13512), key='natural',val='saddle',taglist=c('name','ele','direction'))
+r<- t_getgeodata('OSMp', 
+                  extent=c(11.35547,11.40009,47.10114,47.13512), 
+                  key='natural',
+                  val='saddle',
+                  taglist=c('name','ele','direction'))
 
 # get Harald Breitkreutz' summit list
-r<- t_getgeodata('harrylist', extent=c(11.35547,11.40009,47.10114,47.13512))
+r<- t_getgeodata('harrylist', 
+                  extent=c(11.35547,11.40009,47.10114,47.13512))
 
 ### the following datasets are retrieved according to Hijmans \\code{getData}
 r<- t_getgeodata('worldclim', var='tmin', res=0.5, lon=5, lat=45)

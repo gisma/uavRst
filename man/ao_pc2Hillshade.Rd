@@ -35,7 +35,7 @@ f Do not perform histogram equalization on the color table}
 
 \item{gisdbase_exist}{switch if gisdbase is created or  linked only}
 
-\item{type_smooth}{default is \code{otb_gauss} alternatives is \code{saga_spline}}
+\item{path_lastools}{directory for the windows lastools}
 }
 \value{
 ao_pc2Hillshade basically returns a  DSM

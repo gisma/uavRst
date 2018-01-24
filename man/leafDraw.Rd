@@ -45,7 +45,7 @@ leafDraw is based on the leaflet draw plugin. It provides a bunch of leaflet map
 Yu can either save the digitized object to a json file or you ma grab the json string via the clipboard
 }
 \examples{
-
+#' \dontrun{
 # all features
 leafDraw()
 
@@ -58,5 +58,5 @@ uavRst::leafDraw(overlay = me, preset = "uav")
   
 # preset for digitizing extents
 leafDraw(preset="ext",overlay = me)
-
+}
 }

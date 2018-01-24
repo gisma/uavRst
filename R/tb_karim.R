@@ -58,16 +58,22 @@ if (!isGeneric('h_xyz2tif')) {
 
 #' @examples
 
-#' 
+#'#' \dontrun{
 #' # get some typical data as provided by the authority
 #' url<-"http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
-#' unzip(res,files = grep(".tif", unzip(res,list = TRUE)$Name,value = TRUE),junkpaths = TRUE,overwrite = TRUE)
+#' unzip(res,
+#'       files = grep(".tif", unzip(res,list = TRUE)$Name,value = TRUE),
+#'       junkpaths = TRUE,
+#'       overwrite = TRUE)
 #' 
-#' h_xyz2tif(file.path(getwd(),basename(grep(".g01dgm", unzip(res,list = TRUE)$Name,value = TRUE))))
+#' h_xyz2tif(file.path(getwd(),
+#'           basename(grep(".g01dgm", 
+#'           unzip(res,list = TRUE)$Name,value = TRUE))))
 #' 
-#' plot(raster(paste0(getwd(),"/",tools::file_path_sans_ext(basename(file.path(getwd(),basename(grep(".g01dgm", unzip(res,list = TRUE)$Name,value = TRUE))))),".tif")))
-#' 
+#' plot(raster(paste0(getwd(),"/",file_path_sans_ext(basename(file.path(getwd(),
+#' basename(grep(".g01dgm", unzip(res,list = TRUE)$Name,value = TRUE))))),".tif")))
+#' }
 #' @export h_xyz2tif
 #' 
 
@@ -369,69 +375,7 @@ h_grass2shape <- function(runDir = NULL, layer = NULL){
   )
 }
 
-#' Build package manually
-#' 
-#' @description 
-#' This function was specifically designed to build a package from local source 
-#' files manually, i.e., without using the package building functionality 
-#' offered e.g. by RStudio. 
-#' @details NOTE the default setting are focussing HRZ environment at Marburg University
-#' 
-#' 
-#' @param dsn 'character'. Target folder containing source files; defaults to 
-#' the current working directory.
-#' @param pkgDir 'character'. Target folder containing the result ing package of the invoked build process. According to Marburg University pools the default is set to pkgDir="H:/Dokumente". If you want to use it in a different setting you may set pkgDir to whatever you want.
-#' @param document 'logical'. Determines whether or not to invoke 
-#' \code{\link{roxygenize}} with default roclets for documentation purposes.  
-#' @param ... Further arguments passed on to \code{\link[devtools]{build}}. 
-#' 
-#' @seealso 
-#' \code{\link{roxygenize}}, \code{\link[devtools]{build}},\code{\link{install.packages}}.
-#' 
-#' @author 
-#' Florian Detsch, Chris Reudenbach
-#' 
-#' 
-#' @examples
-#' \dontrun{
-#' ## when in a package directory, e.g. '~/satellite' 
-#' h_umr_build()
-#' }
-#' 
-#' @export h_umr_build
-#' @name h_umr_build
-h_umr_build <- function(dsn = getwd(), pkgDir="H:/Dokumente",document = TRUE, ...) {
-  
-  ## reset 'dsn' to 'H:/...'  
-  if (length(grep("students_smb", dsn)) > 0) {
-    lst_dsn <- strsplit(dsn, "/")
-    chr_dsn <- unlist(lst_dsn)[3:5]
-    dsn <- paste0("H:/", paste(chr_dsn, collapse = "/"))
-  }
-  
-  ## if 'document = TRUE', create documentation 
-  if (document) {
-    cat("\nCreating package documentation...\n")
-    roxygen2::roxygenize(package.dir = dsn, 
-                         roclets = c('rd', 'collate', 'namespace'))
-  }
-  
-  ## build package
-  cat("\nBuilding package...\n")
-  
-  devtools::build(pkg = dsn, path = dirname(dsn), ...)
-  
-  
-  ## install package
-  cat("Installing package...\n")
-  pkg <- list.files(dirname(pkgDir), full.names = TRUE,
-                    pattern = paste0(basename(dsn), ".*.tar.gz$"))
-  pkg <- pkg[length(pkg)]
-  
-  install.packages(pkg, repos = NULL)
-  
-  return(invisible(NULL))
-}
+
 
 #' converts SAGA raster to R raster object
 #' @description converts SAGA raster to R raster object

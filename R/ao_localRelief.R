@@ -12,11 +12,11 @@ if (!isGeneric('ao_pc2Hillshade')) {
 #'@author Chris Reudenbach
 #'
 #'@param lasDir  default is \code{NULL} path  to the laz/las file(s)
+#'@param path_lastools directory for the windows lastools
 #'@param gisdbase_path gisdbase will be linked or created depending on \code{gisdbase_exist}
 #'@param GRASSlocation location will be linked or created depending on \code{gisdbase_exist}
 #'@param projFolder subfolders in gisdbase for R related processing 
 #'@param grid_size resolution for raster operations 
-#'@param type_smooth  default is \code{otb_gauss} alternatives is \code{saga_spline}
 #'@param spline_level_max default is 9 number ob spline iterations
 #'@param proj4  default is EPSG 32632 any valid proj4 string that is assumingly the correct one
 #'@param gisdbase_exist switch if gisdbase is created or  linked only
@@ -104,7 +104,7 @@ ao_pc2Hillshade <- function(lasDir = NULL,
                 ignore.stderr = TRUE
   )
   # get extent of merged file  
-  sp_param <- uavRst:::getSpatialLASInfo(lasinfo,paste0(path_run,"full_point_cloud.las"))
+  sp_param <- getSpatialLASInfo(lasinfo,paste0(path_run,"full_point_cloud.las"))
   
   # add proj4 string manually
   sp_param[5] <- proj4
@@ -148,7 +148,7 @@ ao_pc2Hillshade <- function(lasDir = NULL,
   
   
   cat(":: convert raw DSM  geotiff \n")
-  hillshade <- uavRst:::h_grass2tif(runDir = path_output, layer = "hillshade",returnRaster = TRUE)
+  hillshade <- h_grass2tif(runDir = path_output, layer = "hillshade",returnRaster = TRUE)
   
   return(hillshade)  
 }

@@ -14,7 +14,6 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 #'
 #'
 #'@param crownFn filname of OGR comliant vector file
-#'@param funNames morphological parameters to be calculated
 #'@param minTreeAlt minimum height in meter that will be regarded as tree
 #'@param crownMinArea minimum area of crowns that is accepted
 #'@param crownMaxArea maximum area of crowns that is accepted
@@ -25,10 +24,8 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 #'
 #'
 #'@export fa_basicTreeCrownFilter
-#'@examples
-#'#' \dontrun{
-                            
-#'
+
+
 fa_basicTreeCrownFilter<- function(crownFn,
                               minTreeAlt = 5, 
                               crownMinArea = 3, 

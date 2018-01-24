@@ -19,7 +19,7 @@
 #' 
 #'
 #' @examples
-#' 
+#' #' \dontrun{
 #' # all features
 #' leafDraw()
 #' 
@@ -32,7 +32,7 @@
 #'   
 #' # preset for digitizing extents
 #' leafDraw(preset="ext",overlay = me)
-#' 
+#' }
 #' @export leafDraw
 
 leafDraw <- function(mapCenter=NULL,

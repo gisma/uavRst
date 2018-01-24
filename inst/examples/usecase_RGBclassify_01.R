@@ -7,6 +7,15 @@
 # (04) prediction
 # (05) basic analysis and results extraction
 
+devtools::install_github("gisma/uavRst", ref = "master")
+require(uavRst)
+devtools::install_github("gisma/link2GI", ref = "master")
+require(link2GI)
+require(CAST)
+require(raster)
+require(foreach)
+require(doParallel)
+
 # # pre-processing of RGB UAV ortho imagery (1/2) - calculates RGB indices, statistics and haralick 
 # switch to concatenate this script to the next one
 chain <- TRUE 
@@ -16,14 +25,6 @@ train <- TRUE
 
 #### packages
 if (!chain) rm(list =ls())
-devtools::install_github("gisma/uavRst", ref = "master")
-require(uavRst)
-devtools::install_github("gisma/link2GI", ref = "master")
-require(link2GI)
-require(CAST)
-require(raster)
-require(foreach)
-require(doParallel)
 
 # switch for using  HaralickTextureExtraction 
 # for a review of a lot of feature extraction algorithms look at:
@@ -95,7 +96,7 @@ for (i in 1:length(rgb)){
     # if calc statistcis 
     if (stat){
       cat("\n::: processing stats...\n")
-      uavRst:::otbLocalStat(fn = paste0(filterBand,"_",basename(imageFiles[i])),param=c(paste0(filterBand,"stat_",basename(imageFiles[i])),"4096", kernel))
+      otbLocalStat(fn = paste0(filterBand,"_",basename(imageFiles[i])),param=c(paste0(filterBand,"stat_",basename(imageFiles[i])),"4096", kernel))
     }
     # if calc haralick
     if (hara){
@@ -119,7 +120,7 @@ for (i in 1:length(rgb)){
   if (raster::nlayers(rgb_all) > 256) stop(paste0("\n", raster::nlayers(rgb_all) ,"calculated...  Geotiffs may have 256... reduce your synthetic channels"))
   
   # create list of bandnames
-  bnames  <- uavRst:::makebNames(rgbi = indices, stat = stat, haratxt = haratype)
+  bnames  <- makebNames(rgbi = indices, stat = stat, haratxt = haratype)
   
   # create exportfilename according to training or classifing needs
   if (train){

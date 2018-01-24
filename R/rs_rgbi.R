@@ -39,10 +39,10 @@
 #' @seealso 
 #' For a comprehensive overview of remote sensing indices have a look at: \url{http://www.indexdatabase.de/db/i.php}(A database for remote sensing indices)\cr
 #' Wavelength ranges for overlapping digital camera bands are: red 580-670 nm, green 480-610 nm, and blue 400-520 nm (Hunt et al., 2005)
-#' http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=2161&context=usdaarsfacpub
+#' \url{http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=2161&context=usdaarsfacpub}
 #' 
 #' @examples
-#' \notrun{
+#' \dontrun{
 #' library(raster)
 #' url <- "https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg"
 #' dFile <- download.file(url, "Image.jpg")

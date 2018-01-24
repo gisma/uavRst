@@ -34,7 +34,7 @@ rs_basicClassify<-function(rasterLayer=c("b1","b2","b3","RI","CI","BI"),training
   testing  <- dfAll[-inTraining,]
   
   nsamples <- 10000
-  sdfAll <- subset(taining[sample(1:nrow(training), nsamples), ])
+  sdfAll <- subset(training[sample(1:nrow(training), nsamples), ])
   
   # model training  
   modFit_rf <- train(as.factor(class) ~ b1 + b2 + b3 + RI + CI + BI , 
@@ -90,8 +90,6 @@ if (!isGeneric('extractTrainData')) {
 #'
 #'@param rasterStack  default is \code{NULL} rasterstack wcontaining all image data
 #'@param trainPlots default is \code{NULL}  sp object providing training geometries
-#'@param ids default is \code{c(1,2)} classification ids 
-#'@param idLabel default is \code{c("yes","no")} names of ids
 #'@param trainDataFn default is \code{filepath(temp(),"trainingDF.RData")} Name of the extracted training data file
 #'
 
@@ -127,7 +125,7 @@ extractTrainData<-function(rasterStack  = NULL,
     dataSet$FN= substr(names(rasterStack[[j]][[1]]),1,nchar(names(rasterStack[[j]][[1]]))-2)
     #names(dataSet)<- names
     dataSet[is.na(dataSet)] <- 0
-    dataSet=dataSet[complete.cases(dataSet),]
+    dataSet=dataSet[stats::complete.cases(dataSet),]
   
     trainingDF<-rbind(trainingDF, dataSet)
       save(dataSet, file = paste0(path_output,basename(trainDataFn[[j]]),"_",j,".RData"))
@@ -148,11 +146,13 @@ extractTrainData<-function(rasterStack  = NULL,
 #' 
 #' @export getCounts
 #' @examples  
-#' df1<-getCounts(position = position
-#' imageFiles = imageFiles
-#' dropChars = 8
-#' pre=pre
-#' ext=".tif")
+#' #' \dontrun{
+#' df1<-getCounts(position = position,
+#'               imageFiles = imageFiles,
+#'               dropChars = 8,
+#'               pre=pre,
+#'               ext=".tif")
+#'}
 
 getCounts<- function(ids=c(1,2),
                      position=NULL,
@@ -197,12 +197,12 @@ getCounts<- function(ids=c(1,2),
 #' @param bandNames band names 
 #' 
 #' @export predictRGB 
-#' 
+#' @examples
 # predictRGB(imageFiles=imagestack,
 #             model = model_final,
 #             in_prefix = "index_",
 #             out_prefix = "classified_",
-#             bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis")) 
+#             bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI")) 
 
 predictRGB <- function(imageFiles=NULL,
                        model = NULL,
@@ -211,13 +211,14 @@ predictRGB <- function(imageFiles=NULL,
                        bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis")) {
   
   cat("\n::: start prediction aka classifikation...\n")
-  cl <- makeCluster(detectCores())
-  registerDoParallel(cl)
+  cl <- makeCluster(parallel::detectCores())
+  doParallel::registerDoParallel	(cl)
   foreach(i = 1:length(imageFiles)) %dopar% {
     #for (i in 1:length(imageFiles)) {
-    library(raster)  
-    library(randomForest)
-    library(caret)
+    require(raster)  
+    require(randomForest)
+    require(caret)
+    #TODO rasterstack
     load(paste0(path_id,"/bnames_",basename(rasterStack[[j]][[1]]@file@name),".RData"))
     fn<-basename(imageFiles[i])
     path_out<-substr(dirname(imageFiles[i]),1,nchar(dirname(imageFiles[i]))-3)
@@ -255,16 +256,18 @@ predictRGB <- function(imageFiles=NULL,
 #' 
 #' @export trainModel
 #' @examples  
+#' #' \dontrun{
 #' result<-  trainModel(trainingDF =trainingDF,
-#'                      predictors   = c("R","G","B","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis"),
+#'                      predictors   = c("R","G","B","VARI","NDTI","TGI","GLI","GLAI"),
 #'                      response     = "ID",
 #'                      spaceVar     = "FN",
-#'                      names = c("ID","R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis","FN"),
+#'                      names = c("ID","R","G","B","A","VARI","NDTI","TGI","GLI","GLAI","FN"),
 #'                      noLoc        = length(imageTrainFiles),
 #'                      cl_method    = "rf",
 #'                      metric_ffs   = "kappa",
 #'                      metric_caret = "ROC",
 #'                      pVal         = 0.5) 
+#'                  }
 
 trainModel<-function(   trainingDF =NULL,
                         predictors   = c("R","G","B"),
@@ -299,8 +302,8 @@ trainModel<-function(   trainingDF =NULL,
                               returnResamp = "all")
   # make it paralel
 
-  cl <- makeCluster(nrclu)
-  registerDoParallel(cl)  
+  cl <- parallel::makeCluster(nrclu)
+  doParallel::registerDoParallel(cl)  
   ffs_model <- ffs(data_train[,predictors],
                    eval(parse(text=paste("data_train$",response,sep = ""))),
                    method=cl_method,
@@ -322,10 +325,10 @@ trainModel<-function(   trainingDF =NULL,
                        importance =TRUE,
                        tuneLength = length(predictors),
                        trControl = ctrl)
-  stopCluster(cl)
+  parallel::stopCluster(cl)
   
 
-  return(list(ffs_mode,model_final,perf,cstat))
+  return(list(ffs_model,model_final))
 }
 
 makebNames <- function(rgbi    = c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI"),

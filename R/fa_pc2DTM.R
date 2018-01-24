@@ -92,7 +92,7 @@ fa_pc2DTM <- function(lasDir = NULL,
   else if (length(lasFileNames) > 0) extFN <- substr(extension(basename(lasFileNames[1])),2,4)
   else stop("no valid las or laz files found...\n")
   
-  #sp_param <- uavRst:::getSpatialLASInfo(lasDir)
+  
   
   # map the code words
   if (step_size == "city") step <- "25"

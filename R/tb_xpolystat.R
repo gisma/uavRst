@@ -12,8 +12,17 @@ if (!isGeneric('xpolystat')) {
 #'@author Chris Reudenbach
 #'
 #'@param x  spatial raster object
-#'@param minTreealt default is 5 
-
+#'@param spdf   spatial point dataframe
+#'@param count  0 1 switch
+#'@param min    0 1 switch
+#'@param max    0 1 switch
+#'@param sum    0 1 switch
+#'@param range  0 1 switch
+#'@param mean   0 1 switch
+#'@param var    0 1 switch 
+#'@param stddev 0 1 switch
+#'@param quantile number of quantile
+#'
 #'@return returns a spatialpolygon dataframe containing decriptive statistics
 #'
 #'

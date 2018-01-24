@@ -50,14 +50,16 @@ trains model according to trainingdata and image stacks
 }
 \examples{
  
+#' \dontrun{
 result<-  trainModel(trainingDF =trainingDF,
-                     predictors   = c("R","G","B","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis"),
+                     predictors   = c("R","G","B","VARI","NDTI","TGI","GLI","GLAI"),
                      response     = "ID",
                      spaceVar     = "FN",
-                     names = c("ID","R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis","FN"),
+                     names = c("ID","R","G","B","A","VARI","NDTI","TGI","GLI","GLAI","FN"),
                      noLoc        = length(imageTrainFiles),
                      cl_method    = "rf",
                      metric_ffs   = "kappa",
                      metric_caret = "ROC",
                      pVal         = 0.5) 
+                 }
 }

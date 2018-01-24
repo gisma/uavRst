@@ -10,7 +10,25 @@ xpolystat(x = NULL, spdf = NULL, count = 1, min = 1, max = 1,
 \arguments{
 \item{x}{spatial raster object}
 
-\item{minTreealt}{default is 5}
+\item{spdf}{spatial point dataframe}
+
+\item{count}{0 1 switch}
+
+\item{min}{0 1 switch}
+
+\item{max}{0 1 switch}
+
+\item{sum}{0 1 switch}
+
+\item{range}{0 1 switch}
+
+\item{mean}{0 1 switch}
+
+\item{var}{0 1 switch}
+
+\item{stddev}{0 1 switch}
+
+\item{quantile}{number of quantile}
 }
 \value{
 returns a spatialpolygon dataframe containing decriptive statistics

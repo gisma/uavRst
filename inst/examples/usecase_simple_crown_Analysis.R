@@ -103,7 +103,7 @@ if (calculate_chm) {
   i <- 1
   for (index in indices) {
     cat("convert ",index,"\n")
-    uavRst:::h_r2saga(rgbI[[i]],index)
+    h_r2saga(rgbI[[i]],index)
     i <- i + 1
   }
 

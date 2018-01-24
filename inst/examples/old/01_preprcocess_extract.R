@@ -90,7 +90,7 @@ rgb_all<- flist<-list()
     raster::writeRaster(rgb_rgbi[[bandNr]],paste0(filterBand,"_",basename(imageFiles[i])),overwrite=TRUE)
     
     if (stat){
-      uavRst:::otbLocalStat(fn = paste0(filterBand,"_",basename(imageFiles[i])),param=c(paste0(filterBand,"stat_",basename(imageFiles[i])),"4096", kernel))
+      otbLocalStat(fn = paste0(filterBand,"_",basename(imageFiles[i])),param=c(paste0(filterBand,"stat_",basename(imageFiles[i])),"4096", kernel))
     }
     
     if (hara){
@@ -109,7 +109,7 @@ rgb_all<- flist<-list()
   
   # export as geotiff
   fn<-paste0(path_id,"/index_",basename(imageFiles[i]))
-  bnames<-uavRst:::makebNames(rgbi = indices, haratxt = haratype)
+  bnames<-makebNames(rgbi = indices, haratxt = haratype)
   save(bnames,file = paste0(path_id,"/bnames_index_",basename(imageFiles[i]),".RData"))
   names(rgb_all)<-bnames
   raster::writeRaster(rgb_all,fn,overwrite=TRUE)

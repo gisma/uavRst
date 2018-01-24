@@ -15,8 +15,6 @@ fa_basicTreeCrownFilter(crownFn, minTreeAlt = 5, crownMinArea = 3,
 \item{crownMinArea}{minimum area of crowns that is accepted}
 
 \item{crownMaxArea}{maximum area of crowns that is accepted}
-
-\item{funNames}{morphological parameters to be calculated}
 }
 \value{
 fa_basicTreeCrownFilterbasically returns SPDF  with the crown polygons and all calculated parameters

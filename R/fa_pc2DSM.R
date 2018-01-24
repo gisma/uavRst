@@ -113,7 +113,7 @@ fa_pc2DSM <- function(lasDir = NULL,
                 ignore.stderr = TRUE
   )
   # get extent of merged file  
-  sp_param <- uavRst:::getSpatialLASInfo(lasinfo,paste0(path_run,"full_point_cloud.las"))
+  sp_param <- getSpatialLASInfo(lasinfo,paste0(path_run,"full_point_cloud.las"))
   
   # add proj4 string manually
   sp_param[5] <- proj4
@@ -145,7 +145,7 @@ fa_pc2DSM <- function(lasDir = NULL,
   
   
   cat(":: convert raw DSM to GeoTiff \n")
-  uavRst:::h_grass2tif(runDir = path_output, layer = "point_cloud_dsm")
+  h_grass2tif(runDir = path_output, layer = "point_cloud_dsm")
 
   cat(":: preliminary fill of gaps... \n")
   ret <- system(paste0("gdal_fillnodata.py ",

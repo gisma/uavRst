@@ -10,8 +10,6 @@ if (!isGeneric('t_getgeodata')) {
 #' The main issue of the functionis to offer an easy to use access to a wider range of free to access data sets that may improve significantly the quality of typical ecological and other spatial analysis approaches by an straightforward utilization of data.
 #' You may download the data individually but by default all data will be downloaded georeferenced and converted in \link{raster} or \link{sp} objects.
 #'
-#'@usage t_getgeodata(name, download=TRUE, path='', ...)
-#' ccodes()
 #'
 #'@param name Data set name, currently supported are:
 #'\code{GADM}, \cr
@@ -141,19 +139,23 @@ if (!isGeneric('t_getgeodata')) {
 #'}
 #'
 #'\subsection{Harry's Peaks}{
-#' \code{harrylist} is a list of world wide about 60.000 coordinates altitudes and names of summits \link{PeakList}\cr
+#' \code{harrylist} is a list of world wide about 60.000 coordinates altitudes and names of summits. 
 #'If  \code{name=}'harrylist' you will download and clean the complete list\cr
 #'    \code{t_getgeodata('harrylist')}\cr \cr
 #'}
 #'\subsection{OSM Point Data}{
 #' \code{OSMp} is the OSM Point Data from the current OSM database\cr
 #'If  \code{name}='OSMp' you must provide lat_min,lat_max,lon_min,lon_max for the boundig box. Additionally you must set  the switch 'all' to \code{FALSE} if you just want to download a specified item. Then you have to  provide the content of the desired items in the 'key' and 'val' argument. According to this combination you have to provide a tag list containing the Tags of the element c('name','ele').\cr\cr
-#'    \code{t_getgeodata('OSMp', extent=c(11.35547,11.40009,47.10114,47.13512), key='natural',val='peak',taglist=c('name','ele'))}\cr \cr
+#'    \code{t_getgeodata('OSMp', 
+#'                       extent=c(11.35547,11.40009,47.10114,47.13512), 
+#'                       key='natural',
+#'                       val='peak',
+#'                       taglist=c('name','ele'))}\cr \cr
 #'}
 #'
 #'\subsection{Digital Elevation Model of Tyrolia}{
 #'
-#' \code{tiroldem} refers to the 10 m Lidar based DEM as provided by the Authorithy of Tirol. For Copyright and further information  see: \link{DEM}\cr \cr
+#' \code{tiroldem} refers to the 10 m Lidar based DEM as provided by the Authorithy of Tirol. \cr \cr
 #'If  \code{name}='tiroldem' you must set the switch 'all' to \code{FALSE} if you just want to download a specified item you have to set data=item.
 #'The list of allowd items is:
 #'\itemize{
@@ -187,34 +189,50 @@ if (!isGeneric('t_getgeodata')) {
 #'@export t_getgeodata
 #'
 #'@examples
-#'#### Examples t_getgeodata
-#'
 #' \dontrun{
 #' ## get SRTM data at a position
 #' r<-t_getgeodata(name="SRTM",xtent = extent(11.,11.,50.,50.))
 #' ## get SRTM data for an area
 #' r<-t_getgeodata(name="SRTM",xtent = extent(11.,17.,50.,56.))
-#' ## get SRTM data for an area with a buffer zone (e.g. for a cost or watershed analysis) zone is in degree
+#' ## get SRTM data for an area with a buffer zone 
+#' ## (e.g. for a cost or watershed analysis) zone is in degree
 #' r<-t_getgeodata(name="SRTM",xtent = extent(11.,17.,50.,56.), zone = 3.0)
 #' ## get SRTM Tile names
-#' t<-t_getgeodata(name="SRTM",xtent = extent(11.,17.,50.,56.), zone = 3.0, download = FALSE)
+#' t<-t_getgeodata(name="SRTM",
+#'                 xtent = extent(11.,17.,50.,56.), 
+#'                 zone = 3.0, download = FALSE)
 #' ## get SRTM data for an area with a buffer and merge it
-#' r<-t_getgeodata(name="SRTM",xtent = extent(11.,17.,50.,56.), zone = 3.0, merge = TRUE)
+#' r<-t_getgeodata(name="SRTM",
+#'                 xtent = extent(11.,17.,50.,56.), 
+#'                 zone = 3.0, merge = TRUE)
 #'
 #' ## get Schmatz et al. data please have a look at details
-#' r<- t_getgeodata('schmatzPangea', item='tasmin_A_MO_pmip2_21k_oa_CNRM_eu_30s',endTime=12)
-#' r<- t_getgeodata('schmatzPangea', item="bioclim_A_MO_pmip2_21k_oa_CCSM_eu_30s", layer="bio_1")
+#' r<- t_getgeodata('schmatzPangea', 
+#'                   item='tasmin_A_MO_pmip2_21k_oa_CNRM_eu_30s',
+#'                   endTime=12)
+#' r<- t_getgeodata('schmatzPangea', 
+#'                   item="bioclim_A_MO_pmip2_21k_oa_CCSM_eu_30s", 
+#'                   layer="bio_1")
 #'
 #' ## get a single tile of the Tirolean DEM
-#' r<- t_getgeodata('tiroldem', items='IBK_DGM10')
+#' r<- t_getgeodata('tiroldem', 
+#'                   items='IBK_DGM10')
+#'                   
 #' ## get a single 3 tiles of the Tirolean DEM as a merged raster
-#' r<- t_getgeodata('tiroldem', item=c('IBK_DGM10','IL_DGM10','IM_DGM10'), merge =TRUE)
+#' r<- t_getgeodata('tiroldem', 
+#'                   item=c('IBK_DGM10','IL_DGM10','IM_DGM10'), 
+#'                   merge =TRUE)
 #'
 #' # get arbitrary OSM point data
-#' r<- t_getgeodata('OSMp', extent=c(11.35547,11.40009,47.10114,47.13512), key='natural',val='saddle',taglist=c('name','ele','direction'))
+#' r<- t_getgeodata('OSMp', 
+#'                   extent=c(11.35547,11.40009,47.10114,47.13512), 
+#'                   key='natural',
+#'                   val='saddle',
+#'                   taglist=c('name','ele','direction'))
 #'
 #' # get Harald Breitkreutz' summit list
-#' r<- t_getgeodata('harrylist', extent=c(11.35547,11.40009,47.10114,47.13512))
+#' r<- t_getgeodata('harrylist', 
+#'                   extent=c(11.35547,11.40009,47.10114,47.13512))
 #'
 #' ### the following datasets are retrieved according to Hijmans \code{getData}
 #' r<- t_getgeodata('worldclim', var='tmin', res=0.5, lon=5, lat=45)
@@ -227,14 +245,14 @@ if (!isGeneric('t_getgeodata')) {
 
 
 t_getgeodata <- function(name='GADM', download=TRUE, path='', ...) {
-  library(raster)
-  library(osmar)
-  library(sp)
-  library(maptools)
-  library(curl)
-  library(doParallel)
-  library(foreach)
-  library(gdalUtils)
+  require(raster)
+  require(osmar)
+  require(sp)
+  require(maptools)
+  require(curl)
+  require(doParallel)
+  require(foreach)
+  require(gdalUtils)
   path <- .getDataPath(path)
   if (name=='GADM') {
     .GADM(..., download=download, path=path)
@@ -266,8 +284,8 @@ t_getgeodata <- function(name='GADM', download=TRUE, path='', ...) {
 
 .download <- function(aurl, filename) {
   fn <- paste(tempfile(), '.download', sep='')
-  res <- curl_download(url=aurl, destfile=fn,  quiet = TRUE, mode = "wb")
-  #res <- curl_download(url=aurl, destfile=filename,  quiet = FALSE, mode = "wb")
+  res <- curl::curl_download(url=aurl, destfile=fn,  quiet = TRUE, mode = "wb")
+  #res <- curl::curl_download(url=aurl, destfile=filename,  quiet = FALSE, mode = "wb")
   if (basename(res) != basename(filename)) {
     w <- getOption('warn')
     on.exit(options('warn' = w))
@@ -291,7 +309,7 @@ t_getgeodata <- function(name='GADM', download=TRUE, path='', ...) {
 
 ccodes <- function() {
   path <- paste(system.file(package="raster"), "/external", sep='')
-  d <- read.csv(paste(path, "/countries.csv", sep=""), stringsAsFactors=FALSE, encoding="UTF-8")
+  d <- utils::read.csv(paste(path, "/countries.csv", sep=""), stringsAsFactors=FALSE, encoding="UTF-8")
   return(as.matrix(d))
 }
 
@@ -448,7 +466,7 @@ ccodes <- function() {
         cat("\nFile not available locally. Use 'download = TRUE'\n")
       }
     }
-    unzip(zipfile, exdir=dirname(zipfile))
+    utils::unzip(zipfile, exdir=dirname(zipfile))
   }
   stack(paste(path, tifs, sep=''))
 }
@@ -513,7 +531,7 @@ ccodes <- function() {
         cat("\nFile not available locally. Use 'download = TRUE'\n")
       }
     }
-    unzip(zipfile, exdir=dirname(zipfile))
+    utils::unzip(zipfile, exdir=dirname(zipfile))
     for (h in paste(path, hdrfiles, sep='')) {
       x <- readLines(h)
       x <- c(x[1:14], 'PIXELTYPE     SIGNEDINT', x[15:length(x)])
@@ -557,7 +575,7 @@ ccodes <- function() {
         cat("\nFile not available locally. Use 'download = TRUE'\n")
       }
     }
-    ff <- unzip(zipfilename, exdir=dirname(zipfilename))
+    ff <- utils::unzip(zipfilename, exdir=dirname(zipfilename))
     if (!keepzip) {
       file.remove(zipfilename)
     }
@@ -624,10 +642,10 @@ ccodes <- function() {
     return(.getSRTMfn(xtent,zone))
   }
 
-  x<-extent(xtent)
-  lon<- floor(x@xmin)
-  lat<-floor(x@ymin)
-  lonFac<-floor(((floor(x@xmax+zone))-lon)/5)
+  x <- raster::extent(xtent)
+  lon <- floor(x@xmin)
+  lat <-floor(x@ymin)
+  lonFac <- floor(((floor(x@xmax+zone))-lon)/5)
   if (lonFac == 0){lonFac<-1}
   latFac<-floor(((floor(x@ymax+zone))-lat)/5)
   if (latFac == 0){latFac<-1}
@@ -643,9 +661,9 @@ ccodes <- function() {
       if (lat < -60) {lat<- -60}
       if (lat > 60) {lat<- 60}
 
-      rs <- raster(nrows=24, ncols=72, xmn=-180, xmx=180, ymn=-60, ymx=60 )
-      rowTile <- rowFromY(rs, lat)
-      colTile <- colFromX(rs, lon)
+      rs <- raster::raster(nrows=24, ncols=72, xmn=-180, xmx=180, ymn=-60, ymx=60 )
+      rowTile <- raster::rowFromY(rs, lat)
+      colTile <- raster::colFromX(rs, lon)
       if (rowTile < 10) { rowTile <- paste('0', rowTile, sep='') }
       if (colTile < 10) { colTile <- paste('0', colTile, sep='') }
 
@@ -669,7 +687,7 @@ ccodes <- function() {
           } else {cat('file not available locally, use download=TRUE\n') }
         }
         if (file.exists(zipfilename)) {
-          unzip(zipfilename, exdir=dirname(zipfilename))
+          utils::unzip(zipfilename, exdir=dirname(zipfilename))
           file.remove(zipfilename)
         }
       }
@@ -681,7 +699,7 @@ ccodes <- function() {
   }
 
   if (merge){
-    listTif<-list.files(paste0(path.expand(path)), pattern = glob2rx("srtm*.tif"),
+    listTif<-list.files(paste0(path.expand(path)), pattern = utils::glob2rx("srtm*.tif"),
                         full.names = TRUE, recursive = FALSE)
     cat ("merging:\n",paste(listTif,'\n'))
     mosaicSRTM<-mosaic_rasters(gdalfile=listTif,
@@ -734,7 +752,7 @@ ccodes <- function() {
       } else {cat('file not available locally, use download=TRUE\n') }
     }
     if (file.exists(zipfilename)) {
-      unzip(zipfilename,junkpath=TRUE, exdir=dirname(zipfilename))
+      utils::unzip(zipfilename,junkpath=TRUE, exdir=dirname(zipfilename))
       #file.remove(zipfilename)
     }
   }
@@ -763,7 +781,7 @@ ccodes <- function() {
     } else {cat('file not available locally, use download=TRUE\n') }
   }
   if (file.exists(zipFn)) {
-    unzip(zipFn,junkpath=TRUE, exdir=dirname(zipFn))
+    utils::unzip(zipFn,junkpath=TRUE, exdir=dirname(zipFn))
     file.remove(zipfn)
   }
 
@@ -773,7 +791,7 @@ ccodes <- function() {
     system("gpsbabel -i kml -f bergliste-komplett.kml -o unicsv -F bergliste-komplett.csv")
 
     # read into data.frame
-    df=read.csv("bergliste-komplett.csv",  header = TRUE, sep = ",", dec='.')
+    df=utils::read.csv("bergliste-komplett.csv",  header = TRUE, sep = ",", dec='.')
 
     # extract altitude out of Description column that is full of  html garbage
     altitude<-as.numeric(substring(df$Description, regexpr('H&ouml;he:</td><td>', df$Description)+19,regexpr("</td></tr>", df$Description)-1))
@@ -803,17 +821,17 @@ ccodes <- function() {
   # we also pass the .php extension of the download address
 
   # define the spatial extend of the OSM data we want to retrieve
-  osm.extend <- corner_bbox(extent[1],extent[3],extent[2],extent[4])
+  osm.extend <- osmar::corner_bbox(extent[1],extent[3],extent[2],extent[4])
 
   # download all osm data inside this area, note we have to declare the api interface with source
   cat('Retrieving OSM data. Be patient...')
-  osm <- get_osm(osm.extend, source = osmsource_api())
+  osm <- osmar::get_osm(osm.extend, source = osmar::osmsource_api())
   # find the first attribute key&val
-  node.id <- find(osm, node(tags(k == key & v == val)))
+  node.id <- osmar::find(osm, osmar::node(osmar::tags(k == key & v == val)))
 
   # find downwards (according to the osmar object level hierarchy)
   # all other items that have the same attributes
-  all.nodes <- find_down(osm, node(node.id))
+  all.nodes <- osmar::find_down(osm, osmar::node(node.id))
 
   ### to keep it clear and light we make subsets corresponding to the identified objects of all  data
   .sub <- subset(osm, node_ids = all.nodes$node_ids)
@@ -893,7 +911,7 @@ ccodes <- function() {
   }
   if (file.exists(ncfilename)) {
     # register number of cores for parallel operations
-    registerDoParallel(cores=detectCores())
+    doParallel::registerDoParallel(cores= parallel::detectCores())
     # necessary because of nc file see configuration options http://www.gdal.org/frmt_netcdf.html
     Sys.setenv(GDAL_NETCDF_BOTTOMUP="NO")
 
@@ -918,7 +936,7 @@ ccodes <- function() {
   }
 
   # create list of tiffiles
-  tiffFiles <- list.files(dirname(ncfilename), pattern = glob2rx(paste0(var,"*.tif")),
+  tiffFiles <- list.files(dirname(ncfilename), pattern = utils::glob2rx(paste0(var,"*.tif")),
                           full.names = TRUE, recursive = TRUE)
 
   if (length(tiffFiles) > 0) {
@@ -957,4 +975,4 @@ ccodes <- function() {
   y <- raster(x)
   projection(y) <- CRS(z)
   return(y)
-ii}
+}

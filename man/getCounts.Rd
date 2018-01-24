@@ -28,9 +28,11 @@ trains model according to trainingdata and image stacks
 }
 \examples{
  
-df1<-getCounts(position = position
-imageFiles = imageFiles
-dropChars = 8
-pre=pre
-ext=".tif")
+#' \dontrun{
+df1<-getCounts(position = position,
+              imageFiles = imageFiles,
+              dropChars = 8,
+              pre=pre,
+              ext=".tif")
+}
 }

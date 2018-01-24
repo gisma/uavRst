@@ -6,7 +6,7 @@ dem_grass_lidar <- function(path,
                             grass_lidar_method,
                             res){
   
-  ground_raster <- execGRASS("r.in.lidar",
+  ground_raster <- rgrass7::execGRASS("r.in.lidar",
                              input = paste0(path, inFN),
                              output = outFN,
                              flags = c("e", "n", "v", "overwrite","o"),

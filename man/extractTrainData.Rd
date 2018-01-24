@@ -13,10 +13,6 @@ extractTrainData(rasterStack = NULL, trainPlots = NULL,
 \item{trainPlots}{default is \code{NULL}  sp object providing training geometries}
 
 \item{trainDataFn}{default is \code{filepath(temp(),"trainingDF.RData")} Name of the extracted training data file}
-
-\item{ids}{default is \code{c(1,2)} classification ids}
-
-\item{idLabel}{default is \code{c("yes","no")} names of ids}
 }
 \value{
 extractTrainData returns a dataframe with all training data
