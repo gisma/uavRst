@@ -25,7 +25,7 @@ load(trainFN)
 #---> define environment and settings
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
-currentImgtrainDir <- "training"
+trainDir <- "training"
 # create project structure and export global pathes
 link2GI::initProj(projRootDir = projRootDir,
                   projFolders = c("data/","output/","run/","fun","idx") )

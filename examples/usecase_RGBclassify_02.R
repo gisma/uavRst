@@ -15,7 +15,7 @@ require(doParallel)
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
 # define training data folder
-currentImgtrainDir <- "training"
+trainDir <- "training"
 # prefix for saved dataframe
 prefixrunFN<-"traddel"
 # create project structure and export global pathes
@@ -29,9 +29,9 @@ setwd(path_run)
 
 # ----- start extraction ---------------------------------------------------
 # get image and geometry data for training purposes
-imageTrainFiles <- list.files(pattern="[.]tif$", path=paste0(path_data,currentShptrainDir), full.names=TRUE)
-geomTrainFiles  <- list.files(pattern="[.]shp$", path=paste0(path_data,currentShptrainDir), full.names=TRUE)
-rdataTrainFiles  <- list.files(pattern="bnames", path=paste0(path_data,currentShptrainDir), full.names=TRUE)
+imageTrainFiles <- list.files(pattern="[.]tif$", path=paste0(path_data,trainDir), full.names=TRUE)
+geomTrainFiles  <- list.files(pattern="[.]shp$", path=paste0(path_data,trainDir), full.names=TRUE)
+rdataTrainFiles  <- list.files(pattern="bnames", path=paste0(path_data,trainDir), full.names=TRUE)
 imageTrainStack <- lapply(imageTrainFiles, FUN=raster::stack)
 geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
 

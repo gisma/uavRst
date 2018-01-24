@@ -49,7 +49,7 @@ kernel<- 3
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
 # define training data folder
-currentImgtrainDir <- "training"
+trainDir <- "training"
 # prefix for saved dataframe
 prefixrunFN<-"traddel"
 # create project structure and export global pathes
@@ -123,8 +123,8 @@ for (i in 1:length(rgb)){
   
   # create exportfilename according to training or classifing needs
   if (train){
-    fn<-paste0(path_data,currentShptrainDir,"/index_",basename(imageFiles[i]))
-    save(bnames,file = paste0(path_data,currentShptrainDir,"/bnames_index_",basename(imageFiles[i]),".RData"))
+    fn<-paste0(path_data,trainDir,"/index_",basename(imageFiles[i]))
+    save(bnames,file = paste0(path_data,trainDir,"/bnames_index_",basename(imageFiles[i]),".RData"))
   } else {
     fn<-paste0(path_id,"/index_",basename(imageFiles[i]))
     # save bandname list
