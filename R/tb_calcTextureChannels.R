@@ -531,7 +531,7 @@ otblocalStat<- function(input=NULL,
 #' @param verbose switch for system messages default is FALSE
 #' @return list of geotiffs containing thelocal statistics for each channel 
 #' @author Chris Reudenbach
-#' @export otbedge
+#' @export otbEdge
 #' @examples 
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
@@ -599,7 +599,7 @@ otbEdge<- function(input=NULL,
 #' @param verbose switch for system messages default is FALSE
 #' @return list of geotiffs containing thelocal statistics for each channel 
 #' @author Chris Reudenbach
-#' @export otbgraymorpho
+#' @export otbGrayMorpho
 #' @examples 
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")

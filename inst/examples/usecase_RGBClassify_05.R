@@ -34,7 +34,7 @@ df1<-getCounts(position = position,
                imageFiles = imageFiles,
                dropChars = 8,
                pre=pre,
-               ext="..tif")
+               ext=".tif")
 
 ### basic cleanup and  postprocessing
 df2<-as.data.frame(df1,na.rm=TRUE)

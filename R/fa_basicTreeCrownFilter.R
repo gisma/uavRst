@@ -9,8 +9,7 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 #'@description
 #' applies minnimum height and min/max area thresholds on the raw tree crown geometries crowns
 #'
-#'@usage fa_basicTreeCrownFilter(runDir,currentP,allP)
-#'
+
 #'@author Chris Reudenbach
 #'
 #'
@@ -27,14 +26,8 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 #'
 #'@export fa_basicTreeCrownFilter
 #'@examples
-#'#### Example to use fa_basicTreeCrownFilterfor a common analysis of the
-#'     estimated spreading distances of an specifified area
-#'
-#' #
-#'   trees_crowns <- fa_basicTreeCrownFilter(crownFn = paste0(pd_gi_run,"crownsHeight.shp"),segType = 1,
-#'                                       minTreeAlt = 5, 
-#'                                       crownMinArea = 3, 
-#'                                       crownMaxArea = 300)
+#'#' \dontrun{
+                            
 #'
 fa_basicTreeCrownFilter<- function(crownFn,
                               minTreeAlt = 5, 

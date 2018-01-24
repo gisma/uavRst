@@ -4,7 +4,8 @@
 \alias{fa_basicTreeCrownFilter}
 \title{applies minnimum height and min/max area thresholds on the raw tree crown geometries}
 \usage{
-fa_basicTreeCrownFilter(runDir,currentP,allP)
+fa_basicTreeCrownFilter(crownFn, minTreeAlt = 5, crownMinArea = 3,
+  crownMaxArea = 150)
 }
 \arguments{
 \item{crownFn}{filname of OGR comliant vector file}
@@ -22,17 +23,6 @@ fa_basicTreeCrownFilterbasically returns SPDF  with the crown polygons and all c
 }
 \description{
 applies minnimum height and min/max area thresholds on the raw tree crown geometries crowns
-}
-\examples{
-#### Example to use fa_basicTreeCrownFilterfor a common analysis of the
-    estimated spreading distances of an specifified area
-
-#
-  trees_crowns <- fa_basicTreeCrownFilter(crownFn = paste0(pd_gi_run,"crownsHeight.shp"),segType = 1,
-                                      minTreeAlt = 5, 
-                                      crownMinArea = 3, 
-                                      crownMaxArea = 300)
-
 }
 \author{
 Chris Reudenbach

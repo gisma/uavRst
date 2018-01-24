@@ -2,10 +2,10 @@
 # calculates RGB indices. stitstics and haralick 
 # ---- define global parameters -----------------------------------------------
 #### packages
-require(link2GI)
-require(CAST)
-require(raster)
-require(foreach)
+# require(link2GI)
+# require(CAST)
+# require(raster)
+# require(foreach)
 require(doParallel)
 
 # switch for using  HaralickTextureExtraction performs very well for all kind of image data
@@ -14,6 +14,8 @@ require(doParallel)
 # options are "all" "simple" "advanced"  "higher"
 # NOTE IT TAKES A LOT OF TIME
 hara=TRUE
+
+haratype="simple"
 
 # switch if standard statistic is calculated (mean,variance, curtosis, skewness)
 stat=TRUE
@@ -27,15 +29,6 @@ channels<-c("green")
 #c("VARI","NDTI","TGI","GLI","NGRDI","GLAI")
 indices <- c("VARI","NDTI","TGI","GLI","NGRDI","GLAI") 
 
-# folder containing training  data
-currentShptrainDir <- "training"
-# project prefix
-trainRunName<-"test1"
-# classification ids and corresponding names
-idNumber=c(1,2,3,4,5)
-idNames= c("green","nogreen","green","nogreen","nogreen")
-
-# kernelsize
 kernel<- 3
 
 if (hara) {
@@ -90,7 +83,7 @@ rgb_all<- flist<-list()
     raster::writeRaster(rgb_rgbi[[bandNr]],paste0(filterBand,"_",basename(imageFiles[i])),overwrite=TRUE)
     
     if (stat){
-      uavRst:::otbLocalStat(fn = paste0(filterBand,"_",basename(imageFiles[i])),param=c(paste0(filterBand,"stat_",basename(imageFiles[i])),"4096", kernel))
+      uavRst:::otbLocalStat(fn = paste0(filterBand,"_",basename(imageFiles[i])),param=c(paste0(filterBand,"stat_",basename(imageFiles[i])),"4096",kernel))
     }
     
     if (hara){
@@ -132,7 +125,7 @@ for (i in 1:length(imageTrainFiles)) trainStack[[i]]<- raster::brick(imageTrainF
 
 
 # get training data
-trainingFiles <- list.files(pattern="[.]shp$", path=paste0(path_data,currentShptrainDir), full.names=TRUE)
+trainingFiles <- list.files(pattern="[.]shp$", path=paste0(path_data,trainDir), full.names=TRUE)
 training <- lapply(trainingFiles, FUN=raster::shapefile)
 
 # start training process
@@ -140,10 +133,10 @@ trainingDF <- uavRst::extractTrainData(rasterStack  = trainStack,
                                        trainPlots = training,
                                        ids=idNumber,
                                        idLabel= idNames,
-                                       trainDataFn = paste0(path_output,trainRunName,"_trainingDF.RData")
+                                       trainDataFn = paste0(path_output,runname,"_trainingDF.RData")
 ) 
 
-#saveRDS(trainingDF,path=paste0(path_output,trainRunName,"_trainingDF.RData"))
+#saveRDS(trainingDF,path=paste0(path_output,runname,"_trainingDF.RData"))
 
 cat(":: extraction...finsihed \n")
 

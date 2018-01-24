@@ -15,11 +15,13 @@ if (!isGeneric('h_read_gpx ')) {
 #' @note cloned from tmap
 #' 
 
-h_read_gpx <- function(file, layers=c("waypoints", "tracks", "routes", "track_points", "route_points")) {
+h_read_gpx <- function(file, 
+                       layers=c("waypoints", "tracks", "routes", "track_points", "route_points")
+                       ) {
   if (!all(layers %in% c("waypoints", "tracks", "routes", "track_points", "route_points"))) stop("Incorrect layer(s)", call. = FALSE)
   
   # check if features exist per layer
-  suppressWarnings(hasF <- sapply(layers, function(l) {
+  suppressWarnings(hasF <- sapply(layers, function(file,l) {
     ogrInfo(dsn = file, layer=l)$have_features
   }))
   

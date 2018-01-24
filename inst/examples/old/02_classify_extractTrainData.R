@@ -2,7 +2,7 @@
 # ---- define global parameters -----------------------------------------------
 #### packages
 
-currentShptrainDir <- "training"
+trainDir <- "training"
 runname<-"test1"
 idNumber=c(1,2,3,4,5)
 idNames= c("green","nogreen","green","nogreen","nogreen")
@@ -19,13 +19,13 @@ setwd(path_run)
 
 # ----- start extraction ---------------------------------------------------
 # get image data
-imageTrainFiles <- list.files(pattern="[.]tif$", path=paste0(path_data,currentShptrainDir,"/"), full.names=TRUE)
+imageTrainFiles <- list.files(pattern="[.]tif$", path=paste0(path_data,trainDir,"/"), full.names=TRUE)
 trainStack<-list()
 for (i in 1:length(imageTrainFiles)) trainStack[[i]]<- raster::brick(imageTrainFiles[i])
 
 
 # get training data
-trainingFiles <- list.files(pattern="[.]shp$", path=paste0(path_data,currentShptrainDir), full.names=TRUE)
+trainingFiles <- list.files(pattern="[.]shp$", path=paste0(path_data,trainDir), full.names=TRUE)
 training <- lapply(trainingFiles, FUN=raster::shapefile)
 
 # start training process
