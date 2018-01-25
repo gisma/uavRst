@@ -198,7 +198,7 @@ if (extractTrain){
                                          bnames,
                                          rasFN
   )
-  assign(paste0(prefixrunFN,"_trainDF"), trainingDF)
+  assign(paste0(prefixrunFN,"_trainDF"), trainDF)
   save(eval(parse(text=paste0(prefixrunFN,"_trainDF"))), file = paste0(currentIdxFolder,prefixrunFN,"_trainDF",".RData"))
   
   cat(":::: extraction...finsihed \n")
