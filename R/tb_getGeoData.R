@@ -21,10 +21,10 @@ if (!isGeneric('t_getgeodata')) {
 #'\code{harrylist}, \cr
 #'\code{OSM}, \cr
 #'\code{tiroldem}.\cr
-#'See Details for more info
+
 #'@param download Logical \code{TRUE} data will be downloaded if not locally available
 #'@param path Character Path name indicating where to store the data. Default is the current working directory
-#'@param ... Additional required (!) parameters. These are data set specific. See Details
+#'@param ... Additional required (!) parameters. These are data set specific. 
 #'@author Robert J. Hijmans, Chris Reudenbach \email{giswerk@@gis-ma.org}
 #'
 #'@return A spatial object (Raster* or Spatial*)

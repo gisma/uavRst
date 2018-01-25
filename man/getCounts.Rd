@@ -28,7 +28,7 @@ trains model according to trainingdata and image stacks
 }
 \examples{
  
-#' \dontrun{
+\dontrun{
 df1<-getCounts(position = position,
               imageFiles = imageFiles,
               dropChars = 8,

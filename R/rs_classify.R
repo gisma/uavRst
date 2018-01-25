@@ -90,7 +90,7 @@ if (!isGeneric('extractTrainData')) {
 #'
 #'@param rasterStack  default is \code{NULL} rasterstack wcontaining all image data
 #'@param trainPlots default is \code{NULL}  sp object providing training geometries
-#'@param trainDataFn default is \code{filepath(temp(),"trainingDF.RData")} Name of the extracted training data file
+#'@param trainDataFn default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file
 #'
 
 #'@return extractTrainData returns a dataframe with all training data
@@ -109,28 +109,28 @@ if (!isGeneric('extractTrainData')) {
 
 extractTrainData<-function(rasterStack  = NULL,
                            trainPlots     = NULL,
-                           trainDataFn=filepath(temp(),"trainingDF.RData")) {
+                           bnames = NULL) {
   
-  cat("\n::: extract trainPlots data...\n")
+  cat("\n:::: extract trainPlots data...\n")
   trainingDF =  data.frame()
-  #extract trainPlots Area pixel values
-  #https://gis.stackexchange.com/questions/253618/r-multicore-approach-to-extract-raster-values-using-spatial-points
+  # extract trainPlots Area pixel values
+  # TODO https://gis.stackexchange.com/questions/253618/r-multicore-approach-to-extract-raster-values-using-spatial-points
   for (j in 1:length(rasterStack)) {
-    cat("\n  :: extracting trainPlots data from image ",j," of ... ",length(rasterStack))
-    load(trainDataFn[[j]])
+    cat("\n    extracting trainPlots data from image ",j," of ... ",length(rasterStack))
+
     categorymap<-rgeos::gUnionCascaded(trainPlots[[j]],id=trainPlots[[j]]@data$id)
     dataSet <- raster::extract(rasterStack[[j]], categorymap,df=TRUE)
     names(dataSet)<-append(c("ID"),bnames)
-    ## add filename as category
-    dataSet$FN= substr(names(rasterStack[[j]][[1]]),1,nchar(names(rasterStack[[j]][[1]]))-2)
-    #names(dataSet)<- names
+    ## add filename as lloc category
+    FNname<-substr(names(rasterStack[[j]][[1]]),1,nchar(names(rasterStack[[j]][[1]]))-2)
+    dataSet$FN= FNname
     dataSet[is.na(dataSet)] <- 0
     dataSet=dataSet[stats::complete.cases(dataSet),]
   
     trainingDF<-rbind(trainingDF, dataSet)
-      save(dataSet, file = paste0(path_output,basename(trainDataFn[[j]]),"_",j,".RData"))
+    save(dataSet, file = paste0(path_output,basename(FNname),"_",j,".RData"))
   }
- #
+ 
   return(trainingDF)
 }
 
@@ -146,7 +146,7 @@ extractTrainData<-function(rasterStack  = NULL,
 #' 
 #' @export getCounts
 #' @examples  
-#' #' \dontrun{
+#' \dontrun{
 #' df1<-getCounts(position = position,
 #'               imageFiles = imageFiles,
 #'               dropChars = 8,
@@ -198,6 +198,7 @@ getCounts<- function(ids=c(1,2),
 #' 
 #' @export predictRGB 
 #' @examples
+#' 
 # predictRGB(imageFiles=imagestack,
 #             model = model_final,
 #             in_prefix = "index_",
@@ -299,7 +300,8 @@ trainModel<-function(   trainingDF =NULL,
                               verbose=TRUE,
                               index=spacefolds$index,
                               indexOut=spacefolds$indexOut,
-                              returnResamp = "all")
+                              returnResamp = "all",
+                              classProbs = TRUE)
   # make it paralel
 
   cl <- parallel::makeCluster(nrclu)
@@ -331,10 +333,24 @@ trainModel<-function(   trainingDF =NULL,
   return(list(ffs_model,model_final))
 }
 
-makebNames <- function(rgbi    = c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI"),
-                       haratxt = "simple",
-                       stat    = c("Mean","Variance", "Skewness", "Kurtosis")){
-  rgbi<-append(c("red","green","blue","alpha"),rgbi)
+#' creates a parameter list from the input files
+#' 
+#' @param rgbi band names 
+#' @param haratxt band names 
+#' @param  stat band names 
+#' @param morpho band names 
+#' @param edge band names 
+#' 
+#' @export makebNames 
+
+makebNames <- function(rgbi    = "",
+                       haratxt = "",
+                       stat    = FALSE,
+                       morpho  ="",
+                       edge= "" ){
+  
+  if (rgbi!="") bnames <- append(c("red","green","blue","alpha"),rgbi)
+  
   if(haratxt == "simple"){
     bnames <- c("Energy", "Entropy", "Correlation", 
                 "Inverse_Difference_Moment", "Inertia", 
@@ -383,18 +399,25 @@ makebNames <- function(rgbi    = c("VVI","VARI","NDTI","RI","CI","BI","SI","HI",
                 "Long_Run_High_Grey-Level_Emphasis")
   }
   if (stat ==TRUE)  {
-    statname    = c("Mean","Variance", "Skewness", "Kurtosis")
+    bnames    = c("Mean","Variance", "Skewness", "Kurtosis")
   } 
   
-  if (haratxt != "" & stat ==TRUE) { 
-    bnames <- append(rgbi,append(statname,bnames))
-  } else if (haratxt == "" & stat ==TRUE) {
-    bnames <- append(rgbi,statname)  
-  } else if (haratxt != "" & stat ==FALSE) {
-    bnames <- append(rgbi,bnames)
-  } else if (haratxt == "" & stat ==FALSE) {
-    bnames <- rgbi
-  }
+  if (morpho != "")  {
+    bnames    =  morpho
+  } 
+  
+  if (edge != "")  {
+    bnames    =  edge
+  } 
+  # if (haratxt != "" & stat ==TRUE) { 
+  #   bnames <- append(rgbi,append(statname,bnames))
+  # } else if (haratxt == "" & stat ==TRUE) {
+  #   bnames <- append(rgbi,statname)  
+  # } else if (haratxt != "" & stat ==FALSE) {
+  #   bnames <- append(rgbi,bnames)
+  # } else if (haratxt == "" & stat ==FALSE) {
+  #   bnames <- rgbi
+  # }
   
   return(bnames)
   

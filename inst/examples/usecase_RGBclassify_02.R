@@ -13,7 +13,7 @@ require(doParallel)
 
 #---> define environment and settings
 # define project folder
-projRootDir <- "~/temp9/Projekt1"
+projRootDir <- "~/temp7/GRASS7"
 # define training data folder
 trainDir <- "training"
 # prefix for saved dataframe

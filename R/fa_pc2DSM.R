@@ -200,7 +200,7 @@ fa_pc2DSM <- function(lasDir = NULL,
     dsmA <- as(e, 'SpatialPolygons')  
     if (dsm_area) {
       dsm2 <- dsm > -Inf
-      tmp <- raster::aggregate(dsm2,fact = 1 / gridsize)
+      tmp <- raster::aggregate(dsm2,fact = 1 / grid_size)
       dsmdA  <- rasterToPolygons(tmp)
       dsmdA  <- rgeos::gUnaryUnion(dsmdA)
       #dsmdA <- rasterToPolygons(dsm2, dissolve=TRUE)

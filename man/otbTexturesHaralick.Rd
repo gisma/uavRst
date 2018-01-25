@@ -72,7 +72,35 @@ OTB wrapper for calculating Haralick's simple, advanced and higher order texture
 
 OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel
 }
-\details{
+\note{
+The following Haralick textures are largely comparable to the results as derived by the \code{\link{glcm}} package. Find more information about the these common texture indices at the tutorial site of
+\href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Mryka Hall-Beyer}\cr
+}
+\examples{
+\dontrun{
+http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip
+# get some typical authority generated data
+url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
+res <- curl::curl_download(url, "testdata.zip")
+unzip(res,
+      files = grep(".tif", unzip(res,list = TRUE)$Name,value = TRUE),
+      junkpaths = TRUE,
+      overwrite = TRUE)
+
+# first initialisation of the OTB environment
+link2GI::linkOTB()
+
+# calculate all Haralick-textures
+otbTexturesHaralick(x=file.path(getwd(),
+                    basename(grep(".tif", 
+                    unzip(res,list = TRUE)$Name,
+                    value = TRUE))))
+}
+}
+\references{
+Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.
+IEEE Transactions on Systems, Man and Cybernetics. SMC-3(6):610-620.\cr
+\href{https://www.orfeo-toolbox.org/packages/OTBSoftwareGuide.pdf}{Orfeo Toolbox Sofware Guide, 2016}\cr
 \href{https://www.orfeo-toolbox.org//doxygen/classotb_1_1ScalarImageToTexturesFilter.html}{"simple"}:\cr
 computes the following 8 local Haralick textures features: Energy, Entropy, Correlation, Inverse Difference Moment, Inertia, Cluster Shade, Cluster Prominence and Haralick Correlation. They are provided in this exact order in the output image. Thus, this application computes the following Haralick textures over a neighborhood with user defined radius.\cr
 To improve the speed of computation, a variant of Grey Level Co-occurrence Matrix(GLCM) called Grey Level Co-occurrence Indexed List (GLCIL) is used. Given below is the mathematical explanation on the computation of each textures. Here \code{g( i,j)} is the frequency of element in the GLCIL whose index is \code{i,j}. GLCIL stores a pair of frequency of two pixels from the given offset and the cell index \code{(i,j)} of the pixel in the neighborhood window. Where each element in GLCIL is a pair of pixel index and it's frequency, \code{g(i,j)} is the frequency value of the pair having index is \code{i,j}.\cr\cr
@@ -112,36 +140,6 @@ Short Run Low Grey-Level Emphasis \if{html}{\figure{form_Short_Run_Low_Grey_Leve
 Short Run High Grey-Level Emphasis \if{html}{\figure{form_Short_Run_High_Grey_Level_Emphasis.png}{options:alt="Short Run High Grey-Level Emphasis"}}\cr
 Long Run Low Grey-Level Emphasis \if{html}{\figure{form_Long_Run_Low_Grey_Level_Emphasis.png}{options:alt="Long Run Low Grey-Level Emphasis"}}\cr
 Long Run High Grey-Level Emphasis \if{html}{\figure{form_Long_Run_High_Grey_Level_Emphasis.png}{options:alt="Long Run High Grey-Level Emphasis"}}\cr
-}
-\note{
-The following Haralick textures are largely comparable to the results as derived by the \code{\link{glcm}} package. Find more information about the these common texture indices at the tutorial site of
-\href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Mryka Hall-Beyer}\cr
-}
-\examples{
-\dontrun{
-http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip
-# get some typical authority generated data
-url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
-res <- curl::curl_download(url, "testdata.zip")
-unzip(res,
-      files = grep(".tif", unzip(res,list = TRUE)$Name,value = TRUE),
-      junkpaths = TRUE,
-      overwrite = TRUE)
-
-# first initialisation of the OTB environment
-link2GI::linkOTB()
-
-# calculate all Haralick-textures
-otbTexturesHaralick(x=file.path(getwd(),
-                    basename(grep(".tif", 
-                    unzip(res,list = TRUE)$Name,
-                    value = TRUE))))
-}
-}
-\references{
-Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.
-IEEE Transactions on Systems, Man and Cybernetics. SMC-3(6):610-620.\cr
-\href{https://www.orfeo-toolbox.org/packages/OTBSoftwareGuide.pdf}{Orfeo Toolbox Sofware Guide, 2016}
 }
 \author{
 Chris Reudenbach, Thomas Nauss

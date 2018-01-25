@@ -232,8 +232,9 @@ fa_pc2DTM <- function(lasDir = NULL,
   dtm[dtm <= dtm_minalt] <- NA
   dtm[dtm > dtm_maxalt] <- NA
   raster::writeRaster(dtm, paste0(path_output, "/dtm.tif"),overwrite = TRUE)
-  e <- extent(dtm)
-  dtmA <- as(e, 'SpatialPolygons')  
+  #e <- extent(dtm)
+  #dtmA <- as(e, 'SpatialPolygons')  
+  dtmA <- methods::as(raster::extent(dtm), "SpatialPolygons")
   if (dtm_area) {
     dtm2 <- dtm > -Inf
     tmp <- raster::aggregate(dtm2,fact = 1 / gridsize)

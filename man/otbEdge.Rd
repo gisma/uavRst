@@ -41,7 +41,7 @@ the otb is used for filtering. please provide a GeoTiff file
 url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
 res <- curl::curl_download(url, "testdata.zip")
 unzip(res,junkpaths = TRUE,overwrite = TRUE)
-otbedge(input=paste0(getwd(),"4490600_5321400.tif"),filter = "sobel")
+otbEdge(input=paste0(getwd(),"4490600_5321400.tif"),filter = "sobel")
 }
 }
 \author{

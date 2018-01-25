@@ -23,3 +23,6 @@ predictRGB(imageFiles = NULL, model = NULL, in_prefix = "index_",
 \description{
 classify images using raster predict
 }
+\examples{
+
+}

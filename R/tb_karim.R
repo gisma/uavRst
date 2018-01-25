@@ -333,19 +333,6 @@ h_grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
   if (returnRaster) return(raster::raster(paste0(runDir,"/",layer,".tif")))
 }
 
-#' converts geotiff to GRASS raster 
-#' @description converts geotiff to GRASS raster 
-#' @param runDir path of working directory
-#' @param layer name GRASS raster
-#' @export
-h_grass2tif <- function(runDir = NULL, layer = NULL) {
-  rgrass7::execGRASS('r.external',
-                     flags  = c('o',"overwrite","quiet"),
-                     input  = paste0(layer,".tif"),
-                     output = layer,
-                     band   = 1
-  )
-}
 
 #' converts OGR to GRASS vector 
 #' @description converts OGR to GRASS vector 

@@ -16,14 +16,13 @@ t_getgeodata(name = "GADM", download = TRUE, path = "", ...)
 \code{schmatzPangea},\cr
 \code{harrylist}, \cr
 \code{OSM}, \cr
-\code{tiroldem}.\cr
-See Details for more info}
+\code{tiroldem}.\cr}
 
 \item{download}{Logical \code{TRUE} data will be downloaded if not locally available}
 
 \item{path}{Character Path name indicating where to store the data. Default is the current working directory}
 
-\item{...}{Additional required (!) parameters. These are data set specific. See Details}
+\item{...}{Additional required (!) parameters. These are data set specific.}
 }
 \value{
 A spatial object (Raster* or Spatial*)

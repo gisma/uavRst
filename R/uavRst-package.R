@@ -20,18 +20,13 @@
 #' @import log4r
 #' @import caret
 #' @importFrom utils write.table
-#'  
 #'
 #' @useDynLib uavRst
 #' @keywords package
-#' 
-
 NULL
-#'
 #' @docType data
 #' @name mrbiko
 #' @title DEM data set of Marburg-Biedenkopf
 #' @description DEM data set resampled to 20 m resolution
 #' @format \code{"raster::raster"}
-
 NULL

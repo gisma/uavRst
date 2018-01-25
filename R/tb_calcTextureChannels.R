@@ -4,7 +4,7 @@
 # textureVariables provides a good practice example for using 
 # the R capabilities of paralell tasking 
 # 
-# 
+#' This functions calls the glcm package with standard settings 
 #' @note for the use of textureVariables a glcm wrapper function 
 #'       a raster* object is required
 #' @param x rasterLayer or a rasterStack containing different channels
@@ -15,8 +15,8 @@
 #' @param parallel logical value indicating whether parameters are calculated parallel or not
 #' @param min_x for each channel the minimum value which can occur. If NULL then the minimum value from the rasterLayer is used.
 #' @param max_x for each channel the maximum value which can occur. If NULL then the maximum value from the rasterLayer is used.
-#' @return list of RasterStacks containing the texture parameters for each combination of channel and kernelSize  
-#' @details This functions calls the glcm function from \link{glcm} with standard settings
+#' This functions calls the glcm function from \link{glcm} with standard settings
+#' and returns list of RasterStacks containing the texture parameters for each combination of channel and kernelSize  
 #' @author Hanna Meyer
 #' 
 #' @note More information at the texture tutorial site of
@@ -145,8 +145,7 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 #' combination of channel and filter  
 #' @references Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.
 #' IEEE Transactions on Systems, Man and Cybernetics. SMC-3(6):610-620.\cr
-#' \href{https://www.orfeo-toolbox.org/packages/OTBSoftwareGuide.pdf}{Orfeo Toolbox Sofware Guide, 2016}
-#' @details 
+#' \href{https://www.orfeo-toolbox.org/packages/OTBSoftwareGuide.pdf}{Orfeo Toolbox Sofware Guide, 2016}\cr
 #' \href{https://www.orfeo-toolbox.org//doxygen/classotb_1_1ScalarImageToTexturesFilter.html}{"simple"}:\cr
 #' computes the following 8 local Haralick textures features: Energy, Entropy, Correlation, Inverse Difference Moment, Inertia, Cluster Shade, Cluster Prominence and Haralick Correlation. They are provided in this exact order in the output image. Thus, this application computes the following Haralick textures over a neighborhood with user defined radius.\cr
 #' To improve the speed of computation, a variant of Grey Level Co-occurrence Matrix(GLCM) called Grey Level Co-occurrence Indexed List (GLCIL) is used. Given below is the mathematical explanation on the computation of each textures. Here \code{g( i,j)} is the frequency of element in the GLCIL whose index is \code{i,j}. GLCIL stores a pair of frequency of two pixels from the given offset and the cell index \code{(i,j)} of the pixel in the neighborhood window. Where each element in GLCIL is a pair of pixel index and it's frequency, \code{g(i,j)} is the frequency value of the pair having index is \code{i,j}.\cr\cr
@@ -465,7 +464,7 @@ setMethod("otbTexturesHaralick",
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
 #' @author Chris Reudenbach
-#' @export otblocalStat
+#' @export otbLocalStat
 #' @examples 
 #' #' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
@@ -474,7 +473,7 @@ setMethod("otbTexturesHaralick",
 #' otblocalStat(input=paste0(getwd(),"4490600_5321400.tif"),radius=5)
 #' }
 
-otblocalStat<- function(input=NULL,
+otbLocalStat<- function(input=NULL,
                         out="localStat",
                         ram="8192",
                         radius=3,
@@ -483,13 +482,12 @@ otblocalStat<- function(input=NULL,
                         outDir=NULL,
                         verbose=FALSE){
   
-  directory<-getOutputDir(outDir)
+  
   retStack<-list()
   if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
   for (band in channel) {
     
-    outName<-paste0(directory,
-                    "band_",
+    outName<-paste0("band_",
                     band,
                     "_",
                     out,
@@ -497,7 +495,7 @@ otblocalStat<- function(input=NULL,
                     radius,
                     ".tif")
     
-    command<-paste0(otbPath,"otbcli_LocalStatisticExtraction")
+    command<-paste0(path_OTB,"otbcli_LocalStatisticExtraction")
     command<-paste(command, " -in ", input)
     command<-paste(command, " -channel ", channel)
     command<-paste(command, " -out ", outName)
@@ -535,7 +533,7 @@ otblocalStat<- function(input=NULL,
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
-#' otbedge(input=paste0(getwd(),"4490600_5321400.tif"),filter = "sobel")
+#' otbEdge(input=paste0(getwd(),"4490600_5321400.tif"),filter = "sobel")
 #' }
 
 
@@ -550,20 +548,19 @@ otbEdge<- function(input=NULL,
                    outDir=NULL,
                    verbose=FALSE){
   
-  directory<-getOutputDir(outDir)
+  
   retStack<-list()
   if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
   for (band in channel) {
-    outName<-paste0(directory,
-                    "band_",
+    outName<-paste0("band_",
                     band,
                     "_",
-                    filter,
-                    "_",
                     out,
+                    "_",
+                    filter,
                     ".tif")
     
-    command<-paste0(otbPath,"otbcli_EdgeExtraction")
+    command<-paste0(path_OTB,"otbcli_EdgeExtraction")
     command<-paste(command, " -in ", input)
     command<-paste(command, " -channel ", channel)
     command<-paste(command, " -filter ", filter)
@@ -610,7 +607,7 @@ otbEdge<- function(input=NULL,
 #' }
 
 otbGrayMorpho<- function(input=NULL,
-                         out="edge",
+                         out="morpho",
                          ram="8192",
                          filter="dilate",
                          structype="ball",
@@ -621,23 +618,22 @@ otbGrayMorpho<- function(input=NULL,
                          outDir=NULL,
                          verbose=FALSE){
   
-  directory<-getOutputDir(outDir)
+  
   retStack<-list()
   
   if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
   for (band in channel) {
-    outName<-paste0(directory,
-                    "band_",
+    outName<-paste0("band_",
                     band,
+                    "_",
+                    out,
                     "_",
                     filter,
                     "_",
                     structype,
-                    "_",
-                    out,
                     ".tif")
     
-    command<-paste0(otbPath,"otbcli_GrayScaleMorphologicalOperation")
+    command<-paste0(path_OTB,"otbcli_GrayScaleMorphologicalOperation")
     command<-paste(command, " -in ", input)
     command<-paste(command, " -channel ", channel)
     command<-paste(command, " -filter ", filter)

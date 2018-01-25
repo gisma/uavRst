@@ -2,12 +2,9 @@
 % Please edit documentation in R/tb_karim.R
 \name{h_grass2tif}
 \alias{h_grass2tif}
-\alias{h_grass2tif}
 \title{converts GRASS raster to geotiff}
 \usage{
-h_grass2tif(runDir = NULL, layer = NULL)
-
-h_grass2tif(runDir = NULL, layer = NULL)
+h_grass2tif(runDir = NULL, layer = NULL, returnRaster = FALSE)
 }
 \arguments{
 \item{runDir}{path of working directory}
@@ -15,13 +12,7 @@ h_grass2tif(runDir = NULL, layer = NULL)
 \item{layer}{name GRASS raster}
 
 \item{returnRaster}{return GRASS raster as an R raster object default = FALSE}
-
-\item{runDir}{path of working directory}
-
-\item{layer}{name GRASS raster}
 }
 \description{
 converts GRASS raster to geotiff
-
-converts geotiff to GRASS raster
 }

@@ -23,10 +23,11 @@ rm(list =ls())
 # usually training data will need more/all channels and classification data the necessary ones
 train <- TRUE
 extractTrain <- TRUE
-
+tifsave=TRUE
 # prefix for saved dataframe
 prefixrunFN<-"traddel"
-
+suffixTrainGeom <-"TrainingArea"
+prefixTrainGeom <- "index_"
 #channels options "red" "green" "blue"
 channels<-c("green")
 
@@ -35,9 +36,9 @@ channels<-c("green")
 # http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf
 # glcm<->haralick c("mean"advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
 # NOTE IT TAKES A LOT OF TIME
-hara=TRUE
+hara=FALSE
 # options are "all" "simple" "advanced"  "higher"
-haratype="simple"
+haratype=""
 # statistic: (mean,variance, curtosis, skewness)
 stat=TRUE
 # Edge filtering
@@ -69,7 +70,7 @@ setwd(path_run)
 if (train) {
   currentDataFolder<- paste0(path_data_training)
   currentIdxFolder<- paste0(path_data_training_idx)
-  }
+}
 if (!train) {
   currentDataFolder<- paste0(path_data)
   currentIdxFolder<- paste0(path_data_idx)
@@ -109,9 +110,9 @@ for (i in 1:length(rgb)){
     if (filterBand=="blue") bandNr <- 3
     # export single channel for synthetic band calculation
     if (filterBand!="") {
-    raster::writeRaster(rgb_rgbi[[bandNr]],paste0(filterBand,"_",basename(imageFiles[i])),overwrite=TRUE)
+      raster::writeRaster(rgb_rgbi[[bandNr]],paste0(filterBand,"_",basename(imageFiles[i])),overwrite=TRUE)
       fbFN<-paste0(filterBand,"_",basename(imageFiles[i]))
-      } 
+    } 
     # if calc statistcis 
     if (stat){
       cat("\n:::: processing stats...\n")
@@ -150,49 +151,54 @@ for (i in 1:length(rgb)){
     # get the rest in a list
     flist<-append(flist, Sys.glob(paste0("*",basename(imageFiles[i]),"*")))
   } # end of single channnel calculation
-
-  # stack the results
-  cat("      saving all bands as: ", paste0("index_",basename(imageFiles[i]),"\n"))
   
   # create an alltogether stack
-  rgb_all<-raster::stack(rgb_rgbi,raster::stack(unlist(flist)))
+  rgb_all[[i]]<-raster::stack(rgb_rgbi,raster::stack(unlist(flist)))
+  names(rgb_all[[i]])<-bnames
   
-  # stop if too much bands for geotiff format
-  if (raster::nlayers(rgb_all) > 256) stop(paste0("\n", raster::nlayers(rgb_all) ,"calculated...  Geotiffs may have 256... reduce your synthetic channels"))
-  
-    # write file to geotiff
-  names(rgb_all)<-bnames
-  raster::writeRaster(rgb_all,
-                      paste0(currentIdxFolder,"/index_",basename(imageFiles[i])), 
-                      overwrite=TRUE)
+    rasFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
+    cat("      saving all bands as: ", rasFN,"\n")
+    # stop if too much bands for geotiff format
+    #if (raster::nlayers(rgb_all[[i]]) > 256) stop(paste0("\n", raster::nlayers(rgb_all) ,"calculated...  Geotiffs may have 256... reduce your synthetic channels"))
+    # write file to envi
+    
+    raster::writeRaster(rgb_all[[i]],
+                        paste0(currentIdxFolder,"/", prefixTrainGeom,"rasFN"),
+                        format="ENVI",
+                        overwrite=TRUE)
+
 
   
-  # cleanup tempfiles lists...
+  # cleanup runtime files lists...
   file.remove(unlist(flist))
   flist<-list()
 }
 
-# save bandname list
+# save bandname list we need it only once
 save(bnames,file = paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
 
 cat(":::: finished preprocessing RGB data...\n")
-cat(":::: start extraction... \n")
-# ----- start extraction ---------------------------------------------------
-# get image and geometry data for training purposes
-imageTrainFiles <- list.files(pattern="[.]tif$", path=currentIdxFolder, full.names=TRUE)
-geomTrainFiles  <- list.files(pattern="[.]shp$", path=currentDataFolder, full.names=TRUE)
-#rdataTrainFiles  <- list.files(pattern="bnames", path=paste0(), full.names=TRUE)
-load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
-imageTrainStack <- lapply(imageTrainFiles, FUN=raster::stack)
-geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
 
-# extract clean and format training data
-
-trainingDF <- uavRst::extractTrainData(rasterStack  = imageTrainStack,
-                                       trainPlots = geomTrainStack,
-                                       bnames = bnames
-)
-assign(paste0(prefixrunFN,"_trainDF"), trainingDF)
-save(paste0(prefixrunFN,"_trainDF"), file = paste0(currentIdxFolder,prefixrunFN,"_traindat_",".RData"))
-
-cat(":::: extraction...finsihed \n")
+if (extractTrain){
+  cat(":::: start extraction... \n")
+  # ----- start extraction ---------------------------------------------------
+  # get image and geometry data for training purposes
+  imageTrainFiles <- list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE)
+  tmp  <- basename(list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE))
+  geomTrainFiles<-paste0(currentDataFolder,substr(tmp,nchar(prefixTrainGeom)+1,nchar(tmp)-(nchar(suffixTrainGeom)+4)),suffixTrainGeom,".shp")
+  load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
+  #imageTrainStack <- lapply(imageTrainFiles, FUN=raster::stack)
+  imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
+  geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
+  
+  # extract clean and format training data
+  
+  trainingDF <- uavRst::extractTrainData(rasterStack  = imageTrainStack,
+                                         trainPlots = geomTrainStack,
+                                         bnames 
+  )
+  assign(paste0(prefixrunFN,"_trainDF"), trainingDF)
+  save(paste0(prefixrunFN,"_trainDF"), file = paste0(currentIdxFolder,prefixrunFN,"_traindat_",".RData"))
+  
+  cat(":::: extraction...finsihed \n")
+}

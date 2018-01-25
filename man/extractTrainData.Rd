@@ -4,15 +4,14 @@
 \alias{extractTrainData}
 \title{extracts training data from a raster stack}
 \usage{
-extractTrainData(rasterStack = NULL, trainPlots = NULL,
-  trainDataFn = filepath(temp(), "trainingDF.RData"))
+extractTrainData(rasterStack = NULL, trainPlots = NULL, bnames = NULL)
 }
 \arguments{
 \item{rasterStack}{default is \code{NULL} rasterstack wcontaining all image data}
 
 \item{trainPlots}{default is \code{NULL}  sp object providing training geometries}
 
-\item{trainDataFn}{default is \code{filepath(temp(),"trainingDF.RData")} Name of the extracted training data file}
+\item{trainDataFn}{default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file}
 }
 \value{
 extractTrainData returns a dataframe with all training data

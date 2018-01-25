@@ -4,7 +4,7 @@
 \alias{otbGrayMorpho}
 \title{Calculates Gray scale morphological operations for a given kernel size}
 \usage{
-otbGrayMorpho(input = NULL, out = "edge", ram = "8192",
+otbGrayMorpho(input = NULL, out = "morpho", ram = "8192",
   filter = "dilate", structype = "ball", structype.ball.xradius = 5,
   structype.ball.yradius = 5, channel = NULL, retRaster = FALSE,
   outDir = NULL, verbose = FALSE)
