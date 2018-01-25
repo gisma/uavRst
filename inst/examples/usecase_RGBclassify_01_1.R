@@ -23,7 +23,7 @@ rm(list =ls())
 # usually training data will need more/all channels and classification data the necessary ones
 train <- TRUE
 extractTrain <- TRUE
-tifsave=TRUE
+
 # prefix for saved dataframe
 prefixrunFN<-"traddel"
 suffixTrainGeom <-"TrainingArea"
@@ -95,7 +95,7 @@ rgb<- lapply(imageFiles, FUN=raster::stack)
 
 ### calculate indices and base stat export it to tif
 # create list vars
-rgb_all<- flist<-list()
+rgb_all<- flist<-rasFN<-list()
 
 # for all images do
 for (i in 1:length(rgb)){
@@ -156,14 +156,14 @@ for (i in 1:length(rgb)){
   rgb_all[[i]]<-raster::stack(rgb_rgbi,raster::stack(unlist(flist)))
   names(rgb_all[[i]])<-bnames
   
-    rasFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
-    cat("      saving all bands as: ", rasFN,"\n")
+    rasFN[[i]]<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
+    cat("      saving all bands as: ", rasFN[[i]],"\n")
     # stop if too much bands for geotiff format
     #if (raster::nlayers(rgb_all[[i]]) > 256) stop(paste0("\n", raster::nlayers(rgb_all) ,"calculated...  Geotiffs may have 256... reduce your synthetic channels"))
     # write file to envi
     
     raster::writeRaster(rgb_all[[i]],
-                        paste0(currentIdxFolder,"/", prefixTrainGeom,"rasFN"),
+                        paste0(currentIdxFolder,"/", prefixTrainGeom,rasFN[[i]]),
                         format="ENVI",
                         overwrite=TRUE)
 
@@ -195,10 +195,11 @@ if (extractTrain){
   
   trainingDF <- uavRst::extractTrainData(rasterStack  = imageTrainStack,
                                          trainPlots = geomTrainStack,
-                                         bnames 
+                                         bnames,
+                                         rasFN
   )
   assign(paste0(prefixrunFN,"_trainDF"), trainingDF)
-  save(paste0(prefixrunFN,"_trainDF"), file = paste0(currentIdxFolder,prefixrunFN,"_traindat_",".RData"))
+  save(eval(parse(text=paste0(prefixrunFN,"_trainDF"))), file = paste0(currentIdxFolder,prefixrunFN,"_trainDF",".RData"))
   
   cat(":::: extraction...finsihed \n")
 }

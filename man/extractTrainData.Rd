@@ -4,7 +4,8 @@
 \alias{extractTrainData}
 \title{extracts training data from a raster stack}
 \usage{
-extractTrainData(rasterStack = NULL, trainPlots = NULL, bnames = NULL)
+extractTrainData(rasterStack = NULL, trainPlots = NULL, bnames = NULL,
+  imgFN)
 }
 \arguments{
 \item{rasterStack}{default is \code{NULL} rasterstack wcontaining all image data}

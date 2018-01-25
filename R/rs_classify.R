@@ -109,7 +109,8 @@ if (!isGeneric('extractTrainData')) {
 
 extractTrainData<-function(rasterStack  = NULL,
                            trainPlots     = NULL,
-                           bnames = NULL) {
+                           bnames = NULL,
+                           imgFN) {
   
   cat("\n:::: extract trainPlots data...\n")
   trainingDF =  data.frame()
@@ -122,13 +123,13 @@ extractTrainData<-function(rasterStack  = NULL,
     dataSet <- raster::extract(rasterStack[[j]], categorymap,df=TRUE)
     names(dataSet)<-append(c("ID"),bnames)
     ## add filename as lloc category
-    FNname<-substr(names(rasterStack[[j]][[1]]),1,nchar(names(rasterStack[[j]][[1]]))-2)
-    dataSet$FN= FNname
+    #FNname<-substr(names(rasterStack[[j]][[1]]),1,nchar(names(rasterStack[[j]][[1]]))-2)
+    dataSet$FN= imgFN[[j]]
     dataSet[is.na(dataSet)] <- 0
     dataSet=dataSet[stats::complete.cases(dataSet),]
   
     trainingDF<-rbind(trainingDF, dataSet)
-    save(dataSet, file = paste0(path_output,basename(FNname),"_",j,".RData"))
+    save(dataSet, file = paste0(path_output,imgFN[[j]],"_",j,".RData"))
   }
  
   return(trainingDF)
