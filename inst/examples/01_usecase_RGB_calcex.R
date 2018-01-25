@@ -193,7 +193,7 @@ if (extractTrain){
   
   # extract clean and format training data
   
-  trainingDF <- uavRst::extractTrainData(rasterStack  = imageTrainStack,
+  trainDF <- uavRst::extractTrainData(rasterStack  = imageTrainStack,
                                          trainPlots = geomTrainStack,
                                          bnames,
                                          rasFN
