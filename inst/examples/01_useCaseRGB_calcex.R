@@ -42,7 +42,7 @@ suffixTrainGeom <-"TrainingArea"
 prefixTrainGeom <- "index_"
 
 #channels options c("red", "green", "blue")
-channels<-c("red", "green", "blue")
+channels<-c("red")
 
 # switch for using  HaralickTextureExtraction 
 # for a review of a lot of feature extraction algorithms look at:
@@ -51,7 +51,7 @@ channels<-c("red", "green", "blue")
 # NOTE IT TAKES A LOT OF TIME
 hara=TRUE
 # options are "all" "simple" "advanced"  "higher"
-haratype="all"
+haratype="advanced"
 # statistic: (mean,variance, curtosis, skewness)
 stat=TRUE
 # Edge filtering

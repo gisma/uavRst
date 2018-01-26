@@ -358,7 +358,7 @@ makebNames <- function(rgbi    = "",
                 "Cluster_Shade", "Cluster_Prominence",
                 "Haralick_Correlation")
   } else if(haratxt == "advanced"){
-    bnames <- c("Mean", "Variance", "Dissimilarity",
+    bnames <- c("Hara_Mean", "Hara_Variance", "Dissimilarity",
                 "Sum_Average", 
                 "Sum_Variance", "Sum_Entropy", 
                 "Difference_of_Variances", 
@@ -381,7 +381,7 @@ makebNames <- function(rgbi    = "",
                 "Inverse_Difference_Moment", "Inertia", 
                 "Cluster_Shade", "Cluster_Prominence",
                 "Haralick_Correlation",
-                "Mean", "Variance", "Dissimilarity",
+                "Hara_Mean", "Hara_Variance", "Dissimilarity",
                 "Sum_Average", 
                 "Sum_Variance", "Sum_Entropy", 
                 "Difference_of_Variances", 
@@ -400,7 +400,7 @@ makebNames <- function(rgbi    = "",
                 "Long_Run_High_Grey-Level_Emphasis")
   }
   if (stat ==TRUE)  {
-    bnames    = c("Mean","Variance", "Skewness", "Kurtosis")
+    bnames    = c("Stat_Mean","Stat_Variance", "Skewness", "Kurtosis")
   } 
   
   if (morpho != "")  {
