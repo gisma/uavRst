@@ -47,11 +47,13 @@ channels<-c("red")
 # switch for using  HaralickTextureExtraction 
 # for a review of a lot of feature extraction algorithms look at:
 # http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf
-# glcm<->haralick c("mean"advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
+# glcm<->haralick c("mean"  advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
+# using stats will cover mean and variance while dissimilarity is highly correllated to  Homogeneity
+# as a fisrst guess using simple and stat will cover glcm needs 
 # NOTE IT TAKES A LOT OF TIME
 hara=TRUE
 # options are "all" "simple" "advanced"  "higher"
-haratype="advanced"
+haratype="simple"
 # statistic: (mean,variance, curtosis, skewness)
 stat=TRUE
 # Edge filtering
@@ -60,8 +62,8 @@ edge=TRUE
 edgeType="touzi"
 # morpho filtering
 morpho=TRUE
-# options are (dilate/erode/opening/closing)
-morphoType="opening"
+# options are ("dilate"/"erode"/"opening"/"closing")
+morphoType="erode"
 # indices: options are ("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI")
 #c("VARI","NDTI","TGI","GLI","NGRDI","GLAI")
 indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI") 
@@ -174,6 +176,7 @@ for (i in 1:length(rgb)){
   
   # create an alltogether stack
   rgb_all[[i]]<-raster::stack(rgb_rgbi,raster::stack(unlist(flist)))
+  if (raster::nlayers(rgb_all[[i]])!=length(bnames)) stop("\n Number of names and layers differ...\n most common case is a broken cleanup of the runtime directory!")
   names(rgb_all[[i]])<-bnames
   
   rasFN[[i]]<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))

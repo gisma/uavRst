@@ -350,7 +350,7 @@ makebNames <- function(rgbi    = "",
                        morpho  ="",
                        edge= "" ){
   
-  if (rgbi!="") bnames <- append(c("red","green","blue","alpha"),rgbi)
+  if (rgbi[1]!="") bnames <- append(c("red","green","blue","alpha"),rgbi)
   
   if(haratxt == "simple"){
     bnames <- c("Energy", "Entropy", "Correlation", 
