@@ -1,14 +1,19 @@
-# The usecaseRGBclassify 1-5 scripts are providing a common workflow for a random forest based classification of visible imagery.
-# They can be used both - independly or in a chain 
-# The worflow is divided in 5 steps:
-# (01) calculation of spectral indices , basic spatial statistics and textures to generate  a set of predictor variables 
-# (02) extracting of training values over all channels according to training data
-# (03) perform training using random forest and the forward feature selection method
-# (04) prediction
-# (05) basic analysis and results extraction
+# 01_useCaseRGB_calcex.R
+#
+# The usecaseRGB 01-04 scripts are providing a common workflow for a random forest based classification of visible imagery.
+# The worflow is divided in 4 steps:
+# (01) calculation of spectral indices, basic spatial statistics and textures and
+#      extracting of training values over all channels according to training data
+#      (01_useCaseRGB_calcex.R)
+# (02) model training using random forest and the forward feature selection method
+#      (02_useCaseRGB_train.R)
+# (03) calculation spectral indices, basic spatial statistics and textures for 
+#      all rgb data according to the model requests (01_useCaseRGB_calcex.R)
+# (04) prediction (02_useCaseRGB_predict.R)
+# (05) basic analysis and results extraction (04_useCaseRGB_analyze.R)
 
 #devtools::install_github("gisma/uavRst", ref = "master")
-# require(uavRst)
+require(uavRst)
 devtools::install_github("gisma/link2GI", ref = "master")
 # require(link2GI)
 # require(CAST)
@@ -19,26 +24,34 @@ devtools::install_github("gisma/link2GI", ref = "master")
 rm(list =ls())
 #.rs.restartR()
 
-# training data or classification data (FALSE) 
+# useTrainData switch to decide if using training images or classification data (FALSE) 
 # usually training data will need more/all channels and classification data the necessary ones
-train <- TRUE
+useTrainData <- TRUE
+# calculate syntheic bands and indices
+calculateBands <- TRUE
+# extract training data according to training geometries
 extractTrain <- TRUE
 
-# prefix for saved dataframe
+# prefix of current run
 prefixrunFN<-"traddel"
+
+# suffix of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp
 suffixTrainGeom <-"TrainingArea"
+
+# suffix of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif
 prefixTrainGeom <- "index_"
-#channels options "red" "green" "blue"
-channels<-c("green")
+
+#channels options c("red", "green", "blue")
+channels<-c("red", "green", "blue")
 
 # switch for using  HaralickTextureExtraction 
 # for a review of a lot of feature extraction algorithms look at:
 # http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf
 # glcm<->haralick c("mean"advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
 # NOTE IT TAKES A LOT OF TIME
-hara=FALSE
+hara=TRUE
 # options are "all" "simple" "advanced"  "higher"
-haratype=""
+haratype="all"
 # statistic: (mean,variance, curtosis, skewness)
 stat=TRUE
 # Edge filtering
@@ -48,10 +61,10 @@ edgeType="touzi"
 # morpho filtering
 morpho=TRUE
 # options are (dilate/erode/opening/closing)
-morphoType="dilate"
+morphoType="opening"
 # indices: options are ("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI")
 #c("VARI","NDTI","TGI","GLI","NGRDI","GLAI")
-indices <- c("GLAI") 
+indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI") 
 
 # kernelsize
 kernel<- 3
@@ -67,11 +80,11 @@ link2GI::initProj(projRootDir = projRootDir,
 # set working directory
 setwd(path_run)
 
-if (train) {
+if (useTrainData) {
   currentDataFolder<- paste0(path_data_training)
   currentIdxFolder<- paste0(path_data_training_idx)
 }
-if (!train) {
+if (!useTrainData) {
   currentDataFolder<- paste0(path_data)
   currentIdxFolder<- paste0(path_data_idx)
 }
@@ -83,7 +96,8 @@ link2GI::linkOTB()
 if ((stat == TRUE || hara == TRUE || edge == TRUE || morpho == TRUE) & path_OTB == "") stop("OTB missing - please check")
 
 ### ----- start preprocessing ---------------------------------------------------
-cat("\n::: preprocess input data...\n")
+if (calculateBands) {
+  cat("\n::: preprocess input data...\n")
 
 # create list of image files to be processed 
 # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
@@ -99,23 +113,27 @@ rgb_all<- flist<-rasFN<-list()
 
 # for all images do
 for (i in 1:length(rgb)){
-  cat(":::: processing indices of...",basename(imageFiles[i]))
+  cat(":::: processing indices of...",basename(imageFiles[i]),"\n")
   # calculates indices
   rgb_rgbi<-raster::stack(rgb[[i]],uavRst::rgbIndices(rgb[[i]][[1]],rgb[[i]][[2]],rgb[[i]][[3]],indices))
   bnames <-makebNames(rgbi = indices)
   # assign bandnumber according to name
+  cat("\n")
   for (filterBand in channels){
     if (filterBand=="red") bandNr <- 1
     if (filterBand=="green") bandNr <- 2
     if (filterBand=="blue") bandNr <- 3
     # export single channel for synthetic band calculation
-    if (filterBand!="") {
-      raster::writeRaster(rgb_rgbi[[bandNr]],paste0(filterBand,"_",basename(imageFiles[i])),overwrite=TRUE)
-      fbFN<-paste0(filterBand,"_",basename(imageFiles[i]))
-    } 
+    # if (filterBand!="") {
+       raster::writeRaster(rgb_rgbi[[bandNr]],paste0(filterBand,"_",basename(imageFiles[i])),overwrite=TRUE)
+       fbFN<-paste0(filterBand,"_",basename(imageFiles[i]))
+    # } else {
+    #   fbFN<- imageFiles[i]
+    #   filterBand<-list("red","green","blue")
+    # }
     # if calc statistcis 
     if (stat){
-      cat("\n:::: processing stats...\n")
+      cat(":::: processing stats...",fbFN,"\n")
       otbLocalStat(input = fbFN,
                    out = paste0(filterBand,"stat_",basename(imageFiles[i])),
                    ram = "4096",
@@ -124,7 +142,7 @@ for (i in 1:length(rgb)){
     }
     # if calc edge
     if (edge){
-      cat(":::: processing edge... ",edgeType,"\n")
+      cat(":::: processing edge... ",edgeType," ",fbFN,"\n")
       uavRst::otbEdge(input = fbFN,
                       out = paste0(filterBand,edgeType,basename(imageFiles[i])),
                       filter = edgeType)
@@ -146,28 +164,30 @@ for (i in 1:length(rgb)){
                                   texture = haratype)
       bnames <-append(bnames,paste0(makebNames(hara = haratype),"_",filterBand))
     }
+  
     # delete single channel for synthetic channel calculation
     file.remove(paste0(filterBand,"_",basename(imageFiles[i])))
+  }
     # get the rest in a list
     flist<-append(flist, Sys.glob(paste0("*",basename(imageFiles[i]),"*")))
-  } # end of single channnel calculation
+   # end of single channnel calculation
   
   # create an alltogether stack
   rgb_all[[i]]<-raster::stack(rgb_rgbi,raster::stack(unlist(flist)))
   names(rgb_all[[i]])<-bnames
   
-    rasFN[[i]]<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
-    cat("      saving all bands as: ", rasFN[[i]],"\n")
-    # stop if too much bands for geotiff format
-    #if (raster::nlayers(rgb_all[[i]]) > 256) stop(paste0("\n", raster::nlayers(rgb_all) ,"calculated...  Geotiffs may have 256... reduce your synthetic channels"))
-    # write file to envi
-    
-    raster::writeRaster(rgb_all[[i]],
-                        paste0(currentIdxFolder,"/", prefixTrainGeom,rasFN[[i]]),
-                        format="ENVI",
-                        overwrite=TRUE)
-
-
+  rasFN[[i]]<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
+  cat("      saving all bands as: ",prefixTrainGeom, rasFN[[i]],"\n")
+  # stop if too much bands for geotiff format
+  #if (raster::nlayers(rgb_all[[i]]) > 256) stop(paste0("\n", raster::nlayers(rgb_all) ,"calculated...  Geotiffs may have 256... reduce your synthetic channels"))
+  # write file to envi
+  
+  raster::writeRaster(rgb_all[[i]],
+                      paste0(currentIdxFolder,"/", prefixTrainGeom,rasFN[[i]]),
+                      format="ENVI",
+                      overwrite=TRUE)
+  
+  
   
   # cleanup runtime files lists...
   file.remove(unlist(flist))
@@ -178,10 +198,9 @@ for (i in 1:length(rgb)){
 save(bnames,file = paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
 
 cat(":::: finished preprocessing RGB data...\n")
-
+}
+# ----- start extraction ---------------------------------------------------
 if (extractTrain){
-  cat(":::: start extraction... \n")
-  # ----- start extraction ---------------------------------------------------
   # get image and geometry data for training purposes
   imageTrainFiles <- list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE)
   tmp  <- basename(list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE))
@@ -194,12 +213,15 @@ if (extractTrain){
   # extract clean and format training data
   
   trainDF <- uavRst::extractTrainData(rasterStack  = imageTrainStack,
-                                         trainPlots = geomTrainStack,
-                                         bnames,
-                                         rasFN
+                                      trainPlots = geomTrainStack,
+                                      bnames,
+                                      rasFN
   )
-  assign(paste0(prefixrunFN,"_trainDF"), trainDF)
-  save(eval(parse(text=paste0(prefixrunFN,"_trainDF"))), file = paste0(currentIdxFolder,prefixrunFN,"_trainDF",".RData"))
-  
+  # create a new dataframe with prefixrunFN
+  assign(paste0(prefixrunFN,"_trainDF"), trainDF,envir = )
+  # save it 
+  saveRDS(eval(parse(text=paste0(prefixrunFN,"_trainDF"))), paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))
+  #read it into another name 
+  DF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))  
   cat(":::: extraction...finsihed \n")
 }
