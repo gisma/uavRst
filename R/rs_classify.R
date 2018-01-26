@@ -213,27 +213,25 @@ predictRGB <- function(imageFiles=NULL,
                        bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis")) {
   
   cat("\n::: start prediction aka classifikation...\n")
-  cl <- makeCluster(parallel::detectCores())
+  cl <- parallel::makeCluster(parallel::detectCores())
   doParallel::registerDoParallel	(cl)
-  foreach(i = 1:length(imageFiles)) %dopar% {
+  foreach::foreach(i = 1:length(imageFiles),po =path_output) %dopar% {
     #for (i in 1:length(imageFiles)) {
     require(raster)  
     require(randomForest)
     require(caret)
     #TODO rasterstack
-    load(paste0(path_id,"/bnames_",basename(rasterStack[[j]][[1]]@file@name),".RData"))
     fn<-basename(imageFiles[i])
-    path_out<-substr(dirname(imageFiles[i]),1,nchar(dirname(imageFiles[i]))-3)
-    fnOut <- paste0(path_out,"output/",out_prefix,fn)
+    fnOut <- paste0(po,out_prefix,fn)
     
     img2predict<-raster::stack(imageFiles[i])
-    names(img2predict)<-bnames
+    names(img2predict)<-bandNames
     predictImg<- raster::predict(img2predict,
                                  model,
                                  progress= "text")
     raster::writeRaster(predictImg, filename = fnOut, overwrite = TRUE)
   }
-  stopCluster(cl)
+  parallel::stopCluster(cl)
 }
 
 #' trains model according to trainingdata and image stacks
