@@ -249,8 +249,7 @@ predictRGB <- function(imageFiles=NULL,
 #' @param names        all names of the dataframe header 
 #' @param noLoc        number of locations to leave out usually nuber of dicrete trainings locations/images
 #' @param cl_method    classification method default is \code{"rf"}
-#' @param metric_ffs   accuracy metrics for ffs for classification  default is \code{"kappa"}
-#' @param metric_caret accuracy metrics for optimisation default is \code{ "ROC"}
+#' @param metric   accuracy metrics for ffs for classification  default is \code{"kappa"}
 #' @param pVal         used part of the training data  default is \code{ 0.5}
 #' @param prefin       name pattern used for model default is \code{"final_"}
 #' @param preffs       name pattern used for ffs default is \code{"ffs_"}
@@ -267,7 +266,6 @@ predictRGB <- function(imageFiles=NULL,
 #'                      noLoc        = length(imageTrainFiles),
 #'                      cl_method    = "rf",
 #'                      metric_ffs   = "kappa",
-#'                      metric_caret = "ROC",
 #'                      pVal         = 0.5) 
 #'                  }
 
@@ -278,13 +276,17 @@ trainModel<-function(   trainingDF =NULL,
                         names        = c("ID","R","G","B","A","FN"),
                         noLoc        = 3,
                         cl_method    = "rf",
-                        metric_ffs   = "Kappa",
-                        metric_caret = "ROC",
+                        metric   = "Kappa",
+                        summaryFunction = "twoClassSummary",
                         pVal         = 0.5,
                         prefin       ="final_",
                         preffs       ="ffs_",
                         modelSaveName="model.RData" ,
                         nrclu = 3) {
+  
+  # if (tuneThreshold) summaryFunction = "fourStats"
+  # if (!tuneThreshold) summaryFunction = "twoClassSummary"
+  # if (type=="regression")summaryFunction ="defaultSummary"
   
   # create subset according to pval
   trainIndex<-caret::createDataPartition(trainingDF$ID, p = pVal, list=FALSE)
@@ -296,13 +298,24 @@ trainModel<-function(   trainingDF =NULL,
                                            k=noLoc, # of CV
                                            seed=100)
   # define control values  
+  if (metric=="ROC")
   ctrl <- caret::trainControl(method="cv",
                               savePredictions = TRUE,
                               verbose=TRUE,
                               index=spacefolds$index,
                               indexOut=spacefolds$indexOut,
                               returnResamp = "all",
-                              classProbs = TRUE)
+                              classProbs = TRUE,
+                              summaryFunction = eval(parse(text=summaryFunction)))
+  if (metric=="Kappa")
+    ctrl <- caret::trainControl(method="cv",
+                                savePredictions = TRUE,
+                                verbose=TRUE,
+                                index=spacefolds$index,
+                                indexOut=spacefolds$indexOut,
+                                returnResamp = "all",
+                                classProbs = TRUE)
+  
   # make it paralel
 
   cl <- parallel::makeCluster(nrclu)
@@ -310,7 +323,7 @@ trainModel<-function(   trainingDF =NULL,
   ffs_model <- ffs(data_train[,predictors],
                    eval(parse(text=paste("data_train$",response,sep = ""))),
                    method=cl_method,
-                   metric=metric_ffs,
+                   metric=metric,
                    trControl = ctrl,
                    withinSE=TRUE, 
                    tuneGrid = expand.grid(mtry = 2)
@@ -323,7 +336,7 @@ trainModel<-function(   trainingDF =NULL,
   model_final <- train(predictors,
                        data_train[,response],
                        method = cl_method,
-                       metric=metric_caret,
+                       metric=metric,
                        returnResamp = "all",
                        importance =TRUE,
                        tuneLength = length(predictors),

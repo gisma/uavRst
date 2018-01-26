@@ -32,6 +32,10 @@ setwd(path_run)
 #---> start processing
 # prefix for dataframe providing the training data
 trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))  
+load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
+names(trainDF)<-append("ID",append(bnames,"FN"))
+drops <- c("alpha")
+trainDF<-trainDF[ , !(names(trainDF) %in% drops)]
 # define classes
 for (i in 1:length(idNumber)){
   trainDF$ID[trainDF$ID==i]<-idNames[i]
@@ -50,12 +54,11 @@ result<-  uavRst::trainModel(trainingDF = trainDF,
                              response     = "ID",
                              spaceVar     = "FN",
                              names        =  na,
-                             noLoc        = length(unique(trainDF$FN)),
+                             noLoc        =  5,
                              cl_method    = "rf",
-                             metric_ffs   = "Kappa",
-                             metric_caret = "ROC",
+                             metric   = "ROC",
                              pVal         = 0.01,
-                             nrclu = 12)
+                             nrclu = 4)
 
 
 model_final<-result[[2]]

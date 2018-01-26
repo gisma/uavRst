@@ -6,9 +6,9 @@
 \usage{
 trainModel(trainingDF = NULL, predictors = c("R", "G", "B"),
   response = "ID", spaceVar = "FN", names = c("ID", "R", "G", "B", "A",
-  "FN"), noLoc = 3, cl_method = "rf", metric_ffs = "Kappa",
-  metric_caret = "ROC", pVal = 0.5, prefin = "final_", preffs = "ffs_",
-  modelSaveName = "model.RData", nrclu = 3)
+  "FN"), noLoc = 3, cl_method = "rf", metric = "Kappa",
+  summaryFunction = "twoClassSummary", pVal = 0.5, prefin = "final_",
+  preffs = "ffs_", modelSaveName = "model.RData", nrclu = 3)
 }
 \arguments{
 \item{predictors}{vector of predictor names as given by the header of the training data table}
@@ -23,9 +23,7 @@ trainModel(trainingDF = NULL, predictors = c("R", "G", "B"),
 
 \item{cl_method}{classification method default is \code{"rf"}}
 
-\item{metric_ffs}{accuracy metrics for ffs for classification  default is \code{"kappa"}}
-
-\item{metric_caret}{accuracy metrics for optimisation default is \code{ "ROC"}}
+\item{metric}{accuracy metrics for ffs for classification  default is \code{"kappa"}}
 
 \item{pVal}{used part of the training data  default is \code{ 0.5}}
 
@@ -59,7 +57,6 @@ result<-  trainModel(trainingDF =trainingDF,
                      noLoc        = length(imageTrainFiles),
                      cl_method    = "rf",
                      metric_ffs   = "kappa",
-                     metric_caret = "ROC",
                      pVal         = 0.5) 
                  }
 }
