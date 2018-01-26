@@ -142,7 +142,7 @@ for (i in 1:length(rgb)){
     }
     # if calc edge
     if (edge){
-      cat(":::: processing edge... ",edgeType," ",fbFN,"\n")
+      cat(":::: processing edge... ",edgeType,"\n")
       uavRst::otbEdge(input = fbFN,
                       out = paste0(filterBand,edgeType,basename(imageFiles[i])),
                       filter = edgeType)
@@ -184,7 +184,8 @@ for (i in 1:length(rgb)){
   
   raster::writeRaster(rgb_all[[i]],
                       paste0(currentIdxFolder,"/", prefixTrainGeom,rasFN[[i]]),
-                      format="ENVI",
+                      format="ENVI", 
+                      progress ="text",
                       overwrite=TRUE)
   
   
