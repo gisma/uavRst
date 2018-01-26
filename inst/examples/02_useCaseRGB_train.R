@@ -1,3 +1,5 @@
+# 02_useCaseRGB_train.R
+
 # training of classification models based on predictors and response variables 
 # as provided by the dataframe from step2
 
