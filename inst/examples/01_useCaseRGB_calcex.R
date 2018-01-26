@@ -49,21 +49,22 @@ channels<-c("red")
 # http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf
 # glcm<->haralick c("mean"  advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
 # using stats will cover mean and variance while dissimilarity is highly correllated to  Homogeneity
-# as a fisrst guess using simple and stat will cover glcm needs 
-# NOTE IT TAKES A LOT OF TIME
+# => stat + simple ~ glcm 
+# good overview at: http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm
 hara=TRUE
 # options are "all" "simple" "advanced"  "higher"
-haratype="simple"
+# "higher" takes a LOT of time
+haraType=c("simple","higher")
 # statistic: (mean,variance, curtosis, skewness)
 stat=TRUE
 # Edge filtering
 edge=TRUE
-# options are "gradient" "sobel" "touzi"  
-edgeType="touzi"
+# options are c("gradient","sobel","touzi")
+edgeType=c("gradient","sobel","touzi")
 # morpho filtering
 morpho=TRUE
-# options are ("dilate"/"erode"/"opening"/"closing")
-morphoType="erode"
+# options are ("dilate","erode","opening","closing")
+morphoType=c("dilate","erode","opening","closing")
 # indices: options are ("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI")
 #c("VARI","NDTI","TGI","GLI","NGRDI","GLAI")
 indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI") 
@@ -144,29 +145,34 @@ for (i in 1:length(rgb)){
     }
     # if calc edge
     if (edge){
-      cat(":::: processing edge... ",edgeType,"\n")
+      for (edges in edgeType){
+      cat(":::: processing edge... ",edges,"\n")
       uavRst::otbEdge(input = fbFN,
-                      out = paste0(filterBand,edgeType,basename(imageFiles[i])),
-                      filter = edgeType)
-      bnames <-append(bnames,makebNames(edge = paste0(edgeType,"_",filterBand)))
+                      out = paste0(filterBand,edges,basename(imageFiles[i])),
+                      filter = edges)
+      bnames <-append(bnames,makebNames(edge = paste0(edges,"_",filterBand)))
+      }
     }    
     # if calc morpho
     if (morpho){
-      cat(":::: processing morpho... ",morphoType,"\n")
+      for (morphos in morphoType){
+      cat(":::: processing morpho... ",morphos,"\n")
       uavRst::otbGrayMorpho(input = fbFN,
-                            out = paste0(filterBand,morphoType,basename(imageFiles[i])),
-                            filter = morphoType)
-      bnames <-append(bnames,makebNames(edge = paste0(morphoType,"_",filterBand)))
-    }    
+                            out = paste0(filterBand,morphos,basename(imageFiles[i])),
+                            filter = morphos)
+      bnames <-append(bnames,makebNames(edge = paste0(morphos,"_",filterBand)))
+      }    
+    }
     # if calc haralick
     if (hara){
-      cat(":::: processing haralick... ",haratype,"\n")
+      for (haras in haraType){
+      cat(":::: processing haralick... ",haras,"\n")
       uavRst::otbTexturesHaralick(x = fbFN,
                                   output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),
-                                  texture = haratype)
-      bnames <-append(bnames,paste0(makebNames(hara = haratype),"_",filterBand))
+                                  texture = haras)
+      bnames <-append(bnames,paste0(makebNames(hara = haras),"_",filterBand))
     }
-  
+    }
     # delete single channel for synthetic channel calculation
     file.remove(paste0(filterBand,"_",basename(imageFiles[i])))
   }
@@ -177,7 +183,7 @@ for (i in 1:length(rgb)){
   # create an alltogether stack
   rgb_all[[i]]<-raster::stack(rgb_rgbi,raster::stack(unlist(flist)))
   if (raster::nlayers(rgb_all[[i]])!=length(bnames)) stop("\n Number of names and layers differ...\n most common case is a broken cleanup of the runtime directory!")
-  names(rgb_all[[i]])<-bnames
+  #names(rgb_all[[i]])<-bnames
   
   rasFN[[i]]<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
   cat("      saving all bands as: ",prefixTrainGeom, rasFN[[i]],"\n")
