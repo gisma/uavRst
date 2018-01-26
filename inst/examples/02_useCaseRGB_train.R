@@ -2,12 +2,8 @@
 # as provided by the dataframe from step2
 
 #### packages
-if (!chain) rm(list =ls())
-require(link2GI)
-require(CAST)
-require(raster)
-require(foreach)
-require(doParallel)
+rm(list =ls())
+require(uavRst)
 
 # below you will find classes names and classes IDs 
 # NOTE ADAPT IT TO YOUR NEEDS
@@ -15,54 +11,51 @@ require(doParallel)
 idNumber=c(1,2,3,4,5)
 # classes names
 idNames= c("green","nogreen","nogreen","nogreen","nogreen")
-
-# prefix for dataframe providing the training data
-if (!chain){
-trainFN<-paste0("/home/creu/temp7/GRASS7/output/traddel_traindat_.RData")
-load(trainFN)
-}
+# prefix of current run
+prefixrunFN<-"traddel"
 
 #---> define environment and settings
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
-trainDir <- "training"
+
 # create project structure and export global pathes
 link2GI::initProj(projRootDir = projRootDir,
-                  projFolders = c("data/","output/","run/","fun","idx") )
+                  projFolders = c("data/","data/training/","data/training/idx/","data/training/idx/","output/","output/index/","run/","fun/") )
+
+currentIdxFolder<- path_data_training_idx
 
 # set working directory
 setwd(path_run)
 
 #---> start processing
-
-
+# prefix for dataframe providing the training data
+trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))  
+# define classes
 for (i in 1:length(idNumber)){
-  trainingDF$ID[trainingDF$ID==i]<-idNames[i]
+  trainDF$ID[trainDF$ID==i]<-idNames[i]
 }
-trainingDF$ID <- as.factor(trainingDF$ID)
+trainDF$ID <- as.factor(trainDF$ID)
 # split names in predict and all var names 
-na<-names(trainingDF)
+na<-names(trainDF)
 
 # split names in predict and all var names 
-na<-names(trainingDF)
+na<-names(trainDF)
 
 pred<-na[3:length(na)-1]
 # call training sequence
-result<-  uavRst::trainModel(trainingDF = trainingDF,
+result<-  uavRst::trainModel(trainingDF = trainDF,
                              predictors   = pred,
                              response     = "ID",
                              spaceVar     = "FN",
                              names        =  na,
-                             noLoc        = length(unique(trainingDF$FN)),
+                             noLoc        = length(unique(trainDF$FN)),
                              cl_method    = "rf",
                              metric_ffs   = "Kappa",
                              metric_caret = "ROC",
-
-                             pVal         = 0.05,
+                             pVal         = 0.01,
                              nrclu = 12)
 
 
-# load("model_final.RData")
 model_final<-result[[2]]
 
 save(model_final, file = paste0(path_output,prefixrunFN,"_model_final",".RData"))
