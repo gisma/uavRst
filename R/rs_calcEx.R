@@ -45,7 +45,12 @@
 #'
 #'# create project structure and export global pathes
 #'link2GI::initProj(projRootDir = projRootDir,
-#'                  projFolders = c("data/","data/training/","data/training/idx/","data/training/idx/","output/","output/index/","run/","fun/") )
+#'                  projFolders = c("data/",
+#'                                  "data/training/",
+#'                                  "data/training/idx/",
+#'                                  "output/",
+#'                                  "run/",
+#'                                  "fun/") )
 #'# set working directory
 #'setwd(path_run)
 #'res <- calcex( useTrainData      = TRUE, 
@@ -251,7 +256,7 @@ if (extractTrain){
   saveRDS(eval(parse(text=paste0(prefixrunFN,"_trainDF"))), paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))
   #read it into another name 
   #DF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))  
-  cat(":::: extraction...finsihed \n")
+  cat("\n:::: extraction...finsihed \n")
   return(trainDF)
 }
 }

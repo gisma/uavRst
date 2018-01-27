@@ -79,7 +79,12 @@ projRootDir <- "~/temp7/GRASS7"
 
 # create project structure and export global pathes
 link2GI::initProj(projRootDir = projRootDir,
-                 projFolders = c("data/","data/training/","data/training/idx/","data/training/idx/","output/","output/index/","run/","fun/") )
+                 projFolders = c("data/",
+                                 "data/training/",
+                                 "data/training/idx/",
+                                 "output/",
+                                 "run/",
+                                 "fun/") )
 # set working directory
 setwd(path_run)
 res <- calcex( useTrainData      = TRUE, 

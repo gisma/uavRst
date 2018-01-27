@@ -28,16 +28,25 @@ devtools::install_github("gisma/link2GI", ref = "master")
 rm(list =ls())
 
 # set processing switches
-startCalcex  = TRUE
-startTrain   = FALSE
+startCalcex  = FALSE
+startTrain   = TRUE
 startPredict = FALSE
+
+# simple and maybe sufficient give your training run  a unique name 
+# to be integrated in results DF and file 
+prefixrunFN       = "traddel"
 
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
 
 # create project structure and export global pathes
 link2GI::initProj(projRootDir = projRootDir,
-                  projFolders = c("data/","data/training/","data/training/idx/","data/training/idx/","output/","output/index/","run/","fun/") )
+                  projFolders = c("data/",
+                                  "data/training/",
+                                  "data/training/idx/",
+                                  "output/",
+                                  "run/",
+                                  "fun/") )
 
 # set current data and results path default is training 
 currentDataFolder = path_data_training
@@ -50,7 +59,7 @@ if (startCalcex){
   res <- calcex( useTrainData      = TRUE, 
                  calculateBands    = FALSE, 
                  extractTrain      = TRUE, 
-                 prefixrunFN       = "traddel",
+                 prefixrunFN       = prefixrunFN,
                  suffixTrainGeom   = "TrainingArea",
                  prefixTrainGeom   = "index_", 
                  indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") , 
@@ -78,14 +87,10 @@ if (startTrain){
   # rename them 
   idNames= c("green","greenish","bud","nogreen","nogreen")
   
-  # simple and maybe sufficient give your training run  a unique name 
-  # to be integrated in results DF and file 
-  prefixrunFN<-"traddel"
-  
   # load raw training dataframe
-  if (!exists)("trainDF")
+  if (!(exists)("trainDF"))
   trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))  
-  if (!exists)("bnames")
+  if (!(exists)("bnames"))
   load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
   # add leading Title "ID" and tailing title "FN"
   names(trainDF)<-append("ID",append(bnames,"FN"))
