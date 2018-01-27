@@ -50,7 +50,7 @@ pred<-na[3:length(na)-1]
 # call training sequence
 
 # call training function
-result<-  uavRst::trainModel(trainingDF = trainDF,
+result<-  uavRst::ffsTrainModel(trainingDF = trainDF,
                              predictors   = pred,
                              response     = "ID",
                              spaceVar     = "FN",

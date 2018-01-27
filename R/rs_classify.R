@@ -231,7 +231,7 @@ predictRGB <- function(imageFiles=NULL,
 }
 
 #' forward feature selection based random forest model training 
-#' @description trainModel is a wrapper function for a simple use of the forwatrd feature sselection approach 
+#' @description ffsTrainModel is a wrapper function for a simple use of the forwatrd feature sselection approach 
 #' of training random forest classification models. This validation is particulary suitable for
 #' leave-location-out cross validations where variable selection
 #' MUST be based on the performance of the model on the hold out station.
@@ -254,10 +254,10 @@ predictRGB <- function(imageFiles=NULL,
 #' @param modelSaveName name pattern used for saving the model default is \code{"model.RData" }
 #' @param nrclu         number of cluster to be used
 #' 
-#' @export trainModel
+#' @export ffsTrainModel
 #' @examples  
 #' #' \dontrun{
-#' result<-  trainModel(trainingDF =trainingDF,
+#' result<-  ffsTrainModel(trainingDF =trainingDF,
 #'                      predictors   = c("R","G","B"),
 #'                      response     = "ID",
 #'                      spaceVar     = "FN",
@@ -267,7 +267,7 @@ predictRGB <- function(imageFiles=NULL,
 #'                      pVal         = 0.5) 
 #'                  }
 
-trainModel<-function(   trainingDF   = NULL,
+ffsTrainModel<-function(   trainingDF   = NULL,
                         predictors   = c("R","G","B"),
                         response     = "ID",
                         spaceVar     = "FN",
