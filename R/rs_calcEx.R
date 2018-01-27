@@ -228,6 +228,7 @@ if (calculateBands) {
 }
 # ----- start extraction ---------------------------------------------------
 if (extractTrain){
+  load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
   # get image and geometry data for training purposes
   imageTrainFiles <- list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE)
   tmp  <- basename(list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE))
@@ -240,8 +241,9 @@ if (extractTrain){
   
   trainDF <- uavRst::extractTrainData(rasterStack  = imageTrainStack,
                                       trainPlots = geomTrainStack,
-                                      load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData")),
-                                      rasFN
+                                      bnames = bnames,
+                                      imageTrainFiles
+                                      
   )
   # create a new dataframe with prefixrunFN
   assign(paste0(prefixrunFN,"_trainDF"), trainDF,envir = )

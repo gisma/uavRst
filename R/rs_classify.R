@@ -125,7 +125,7 @@ extractTrainData<-function(rasterStack  = NULL,
     dataSet=dataSet[stats::complete.cases(dataSet),]
     
     trainingDF<-rbind(trainingDF, dataSet)
-    save(dataSet, file = paste0(path_output,imgFN[[j]],"_",j,".RData"))
+    save(dataSet, file = paste0(path_output,"tmptrain_",j,".RData"))
   }
   
   return(trainingDF)

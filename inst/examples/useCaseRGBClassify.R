@@ -48,7 +48,7 @@ setwd(path_run)
 if (startCalcex){
   # start calculation of synthetic bands and extraction of the training data
   res <- calcex( useTrainData      = TRUE, 
-                 calculateBands    = TRUE, 
+                 calculateBands    = FALSE, 
                  extractTrain      = TRUE, 
                  prefixrunFN       = "traddel",
                  suffixTrainGeom   = "TrainingArea",
