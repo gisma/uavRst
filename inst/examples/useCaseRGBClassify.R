@@ -1,7 +1,8 @@
-# useCaseRGB.R
-# Basic script to set up the environment for a typical classification project
-# The usecaseRGB 01-04 scripts are providing a common workflow for a random forest based classification of visible imagery.
-# The worflow is divided in 4 steps:
+# useCaseRGBClassify.R
+# -------------------------------------------------------------------------------------------------
+#  Basic script to set up the environment for a typical classification project and
+#  a common workflow for a random forest based classification of visible imagery.
+#  The worflow can be stripped in 5 steps:
 
 # (01) calcex() calculation of spectral indices, basic spatial statistics and textures and
 #               extracting of training values over all channels according to training data
@@ -14,19 +15,23 @@
 
 # (04) prediction startPredict=TRUE
 
-# (05) basic analysis and results extraction (useCaseRGB_analyze.R)
+# (05) basic analysis and results extraction very preliminary have a look at useCaseRGB_analyze.R
 
+# -------------------------------------------------------------------------------------------------
+# get the last version if not done so far
 #devtools::install_github("gisma/uavRst", ref = "master")
 require(uavRst)
+# same with link2GI
 devtools::install_github("gisma/link2GI", ref = "master")
 
+# clean everything
 rm(list =ls())
-#.rs.restartR()
 
-startTrain=FALSE
-startPredict=FALSE
+# set processing switches
+startCalcex  = TRUE
+startTrain   = FALSE
+startPredict = FALSE
 
-#---> define environment and settings
 # define project folder
 projRootDir <- "~/temp7/GRASS7"
 
@@ -34,28 +39,33 @@ projRootDir <- "~/temp7/GRASS7"
 link2GI::initProj(projRootDir = projRootDir,
                   projFolders = c("data/","data/training/","data/training/idx/","data/training/idx/","output/","output/index/","run/","fun/") )
 
-# set working directory
+# set current data and results path default is training 
+currentDataFolder = path_data_training
+currentIdxFolder  = path_data_training_idx
+
+# set working directory dirty but helpful
 setwd(path_run)
-
-res <- calcex( useTrainData      = TRUE, 
-               calculateBands    = TRUE, 
-               extractTrain      = TRUE, 
-               prefixrunFN       = "traddel",
-               suffixTrainGeom   = "TrainingArea",
-               prefixTrainGeom   = "index_", 
-               indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") , 
-               channels          = c("red", "green", "blue"),  
-               hara              = FALSE,
-               haraType          = c("simple"),   
-               stat              = TRUE, 
-               edge              = TRUE, 
-               edgeType          = c("gradient","sobel","touzi"), 
-               morpho            = TRUE, 
-               morphoType        = c("dilate","erode","opening","closing"), 
-               kernel            = 3, 
-               currentDataFolder = path_data_training,
-               currentIdxFolder  = path_data_training_idx)
-
+if (startCalcex){
+  # start calculation of synthetic bands and extraction of the training data
+  res <- calcex( useTrainData      = TRUE, 
+                 calculateBands    = TRUE, 
+                 extractTrain      = TRUE, 
+                 prefixrunFN       = "traddel",
+                 suffixTrainGeom   = "TrainingArea",
+                 prefixTrainGeom   = "index_", 
+                 indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") , 
+                 channels          = c("red", "green", "blue"),  
+                 hara              = FALSE,
+                 haraType          = c("simple"),   
+                 stat              = TRUE, 
+                 edge              = TRUE, 
+                 edgeType          = c("gradient","sobel","touzi"), 
+                 morpho            = TRUE, 
+                 morphoType        = c("dilate","erode","opening","closing"), 
+                 kernel            = 3, 
+                 currentDataFolder = currentDataFolder,
+                 currentIdxFolder  = currentIdxFolder)
+}
 # ------------------  TRAIN
 
 if (startTrain){
@@ -114,7 +124,7 @@ if (startTrain){
   perf <- model_final$pred[model_final$pred$mtry==model_final$bestTune$mtry,]
   # scores for categorical 
   skills <- classificationStats(perf$pred,perf$obs, plot = T) 
-  
+  #plot(skills)
   # linear model for numeric
   # summary(lm(as.numeric(as.character(perf$pred))~as.numeric(as.character(perf$obs))))
   # plot(as.numeric(as.character(perf$pred))~as.numeric(as.character(perf$obs)))
@@ -123,13 +133,13 @@ if (startTrain){
 }
 
 if (startPredict){
-  # set vars
-  imageFiles <- list.files(pattern="[.]tif$", path=path_data_training, full.names=TRUE)
-  bnameList <-  list.files(pattern="[.]RData$", path=path_data_training_idx, full.names=TRUE)
+  # get images and bandnames
+  imageFiles <- list.files(pattern="[.]tif$", path=currentDataFolder, full.names=TRUE)
+  bnameList <-  list.files(pattern="[.]RData$", path=currentIdxFolder, full.names=TRUE)
   load(bnameList)
   load(file = paste0(path_output,prefixrunFN,"_model_final",".RData"))
-  # TODO https://stackoverflow.com/questions/25388139/r-parallel-computing-and-zombie-processes
   
+  # start prediction
   predictRGB(imageFiles=imageFiles,
              model = model_final,
              in_prefix = "index_",
