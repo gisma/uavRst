@@ -336,7 +336,7 @@ trainModel<-function(   trainingDF   = NULL,
   # and run final tuning 
   model_final <- train(predictors,
                        data_train[,response],
-                       method = cl_method,
+                       method = "rf",
                        metric=metric,
                        returnResamp = "all",
                        importance =TRUE,
