@@ -2,15 +2,17 @@
 % Please edit documentation in R/rs_classify.R
 \name{trainModel}
 \alias{trainModel}
-\title{trains model according to trainingdata and image stacks}
+\title{forward feature selection based random forest model training}
 \usage{
 trainModel(trainingDF = NULL, predictors = c("R", "G", "B"),
   response = "ID", spaceVar = "FN", names = c("ID", "R", "G", "B", "A",
-  "FN"), noLoc = 3, cl_method = "rf", metric = "Kappa",
-  summaryFunction = "twoClassSummary", pVal = 0.5, prefin = "final_",
-  preffs = "ffs_", modelSaveName = "model.RData", nrclu = 3)
+  "FN"), noLoc = 3, sumFunction = "twoClassSummary", pVal = 0.5,
+  prefin = "final_", preffs = "ffs_", modelSaveName = "model.RData",
+  runtest = FALSE, noClu = 3)
 }
 \arguments{
+\item{trainingDF}{dataframe containing training data}
+
 \item{predictors}{vector of predictor names as given by the header of the training data table}
 
 \item{response}{name of response variable as given by the header of the training data table}
@@ -21,10 +23,6 @@ trainModel(trainingDF = NULL, predictors = c("R", "G", "B"),
 
 \item{noLoc}{number of locations to leave out usually nuber of dicrete trainings locations/images}
 
-\item{cl_method}{classification method default is \code{"rf"}}
-
-\item{metric}{accuracy metrics for ffs for classification  default is \code{"kappa"}}
-
 \item{pVal}{used part of the training data  default is \code{ 0.5}}
 
 \item{prefin}{name pattern used for model default is \code{"final_"}}
@@ -33,29 +31,31 @@ trainModel(trainingDF = NULL, predictors = c("R", "G", "B"),
 
 \item{modelSaveName}{name pattern used for saving the model default is \code{"model.RData" }}
 
-\item{imageFiles}{imagestacke for classification}
+\item{runtest}{logical default is false, if set a external validation will be performed}
 
-\item{model}{classification model}
+\item{metric}{accuracy metrics for ffs for classification  default is \code{"kappa"}}
 
-\item{in_prefix}{in frefix  string}
-
-\item{out_prefix}{out prefix string}
-
-\item{bandNames}{band names}
+\item{nrclu}{number of cluster to be used}
 }
 \description{
-trains model according to trainingdata and image stacks
+trainModel is a wrapper function for a simple use of the forwatrd feature sselection approach 
+of training random forest classification models. This validation is particulary suitable for
+leave-location-out cross validations where variable selection
+MUST be based on the performance of the model on the hold out station.
+See \href{https://doi.org/10.1016/j.envsoft.2017.12.001}{Meyer et al. (2018)}
+for further details.
+This is in fact the case while using time space variable vegetation patterns for classification purposes. 
+For the uav based RGB/NIR imagery it provides an optimized preconfiguration for the classification goals.
 }
 \examples{
  
 #' \dontrun{
 result<-  trainModel(trainingDF =trainingDF,
-                     predictors   = c("R","G","B","VARI","NDTI","TGI","GLI","GLAI"),
+                     predictors   = c("R","G","B"),
                      response     = "ID",
                      spaceVar     = "FN",
-                     names = c("ID","R","G","B","A","VARI","NDTI","TGI","GLI","GLAI","FN"),
+                     names        = c("ID","R","G","B","A","FN"), 
                      noLoc        = length(imageTrainFiles),
-                     cl_method    = "rf",
                      metric_ffs   = "kappa",
                      pVal         = 0.5) 
                  }

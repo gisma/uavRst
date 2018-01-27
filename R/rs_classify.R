@@ -1,7 +1,3 @@
-if (!isGeneric('rs_basicClassify')) {
-  setGeneric('rs_basicClassify', function(x, ...)
-    standardGeneric('rs_basicClassify'))
-}
 
 rs_basicClassify<-function(rasterLayer=c("b1","b2","b3","RI","CI","BI"),trainingfN){
   
@@ -118,7 +114,7 @@ extractTrainData<-function(rasterStack  = NULL,
   # TODO https://gis.stackexchange.com/questions/253618/r-multicore-approach-to-extract-raster-values-using-spatial-points
   for (j in 1:length(rasterStack)) {
     cat("\n    extracting trainPlots data from image ",j," of ... ",length(rasterStack))
-
+    
     categorymap<-rgeos::gUnionCascaded(trainPlots[[j]],id=trainPlots[[j]]@data$id)
     dataSet <- raster::extract(rasterStack[[j]], categorymap,df=TRUE)
     names(dataSet)<-append(c("ID"),bnames)
@@ -127,11 +123,11 @@ extractTrainData<-function(rasterStack  = NULL,
     dataSet$FN= imgFN[[j]]
     dataSet[is.na(dataSet)] <- 0
     dataSet=dataSet[stats::complete.cases(dataSet),]
-  
+    
     trainingDF<-rbind(trainingDF, dataSet)
     save(dataSet, file = paste0(path_output,imgFN[[j]],"_",j,".RData"))
   }
- 
+  
   return(trainingDF)
 }
 
@@ -234,53 +230,56 @@ predictRGB <- function(imageFiles=NULL,
   parallel::stopCluster(cl)
 }
 
-#' trains model according to trainingdata and image stacks
+#' forward feature selection based random forest model training 
+#' @description trainModel is a wrapper function for a simple use of the forwatrd feature sselection approach 
+#' of training random forest classification models. This validation is particulary suitable for
+#' leave-location-out cross validations where variable selection
+#' MUST be based on the performance of the model on the hold out station.
+#' See \href{https://doi.org/10.1016/j.envsoft.2017.12.001}{Meyer et al. (2018)}
+#' for further details.
+#' This is in fact the case while using time space variable vegetation patterns for classification purposes. 
+#' For the uav based RGB/NIR imagery it provides an optimized preconfiguration for the classification goals.
 #' 
-#' @param imageFiles imagestacke for classification
-#' @param model classification model
-#' @param  in_prefix in frefix  string
-#' @param out_prefix out prefix string
-#' @param bandNames band names 
-#' @param predictors   vector of predictor names as given by the header of the training data table
-#' @param response     name of response variable as given by the header of the training data table
-#' @param spaceVar     name of the spcetime splitting vatiable as given by the header of the training data table
-#' @param names        all names of the dataframe header 
-#' @param noLoc        number of locations to leave out usually nuber of dicrete trainings locations/images
-#' @param cl_method    classification method default is \code{"rf"}
-#' @param metric   accuracy metrics for ffs for classification  default is \code{"kappa"}
-#' @param pVal         used part of the training data  default is \code{ 0.5}
-#' @param prefin       name pattern used for model default is \code{"final_"}
-#' @param preffs       name pattern used for ffs default is \code{"ffs_"}
+#' @param trainingDF    dataframe containing training data
+#' @param runtest       logical default is false, if set a external validation will be performed
+#' @param predictors    vector of predictor names as given by the header of the training data table
+#' @param response      name of response variable as given by the header of the training data table
+#' @param spaceVar      name of the spcetime splitting vatiable as given by the header of the training data table
+#' @param names         all names of the dataframe header 
+#' @param noLoc         number of locations to leave out usually nuber of dicrete trainings locations/images
+#' @param metric        accuracy metrics for ffs for classification  default is \code{"kappa"}
+#' @param pVal          used part of the training data  default is \code{ 0.5}
+#' @param prefin        name pattern used for model default is \code{"final_"}
+#' @param preffs        name pattern used for ffs default is \code{"ffs_"}
 #' @param modelSaveName name pattern used for saving the model default is \code{"model.RData" }
+#' @param nrclu         number of cluster to be used
 #' 
 #' @export trainModel
 #' @examples  
 #' #' \dontrun{
 #' result<-  trainModel(trainingDF =trainingDF,
-#'                      predictors   = c("R","G","B","VARI","NDTI","TGI","GLI","GLAI"),
+#'                      predictors   = c("R","G","B"),
 #'                      response     = "ID",
 #'                      spaceVar     = "FN",
-#'                      names = c("ID","R","G","B","A","VARI","NDTI","TGI","GLI","GLAI","FN"),
+#'                      names        = c("ID","R","G","B","A","FN"), 
 #'                      noLoc        = length(imageTrainFiles),
-#'                      cl_method    = "rf",
 #'                      metric_ffs   = "kappa",
 #'                      pVal         = 0.5) 
 #'                  }
 
-trainModel<-function(   trainingDF =NULL,
+trainModel<-function(   trainingDF   = NULL,
                         predictors   = c("R","G","B"),
                         response     = "ID",
                         spaceVar     = "FN",
                         names        = c("ID","R","G","B","A","FN"),
                         noLoc        = 3,
-                        cl_method    = "rf",
-                        metric   = "Kappa",
-                        summaryFunction = "twoClassSummary",
+                        sumFunction  = "twoClassSummary",
                         pVal         = 0.5,
                         prefin       ="final_",
                         preffs       ="ffs_",
                         modelSaveName="model.RData" ,
-                        nrclu = 3) {
+                        runtest      = FALSE,
+                        noClu = 3) {
   
   # if (tuneThreshold) summaryFunction = "fourStats"
   # if (!tuneThreshold) summaryFunction = "twoClassSummary"
@@ -289,48 +288,52 @@ trainModel<-function(   trainingDF =NULL,
   # create subset according to pval
   trainIndex<-caret::createDataPartition(trainingDF$ID, p = pVal, list=FALSE)
   data_train <- trainingDF[ trainIndex,]
-  #data_test <- trainingDF[-trainIndex,]
+  if (runtest) data_test <- trainingDF[-trainIndex,]
   # create llo 
-  spacefolds <- CAST::CreateSpacetimeFolds(x=data_train,
+  spacefolds <- CAST::CreateSpacetimeFolds(x        = data_train,
                                            spacevar = spaceVar,
-                                           k=noLoc, # of CV
-                                           seed=100)
-  # define control values  
+                                           k        = noLoc, # number of CV
+                                           seed     = 100)
+  
+  if (length(unique(eval(parse(text=paste("data_train$",response,sep = ""))))) > 2) metric = "Kappa" 
+  else metric = "ROC" 
+  
+  # define control values for ROC (two categorical variables like green and no green) 
   if (metric=="ROC")
-  ctrl <- caret::trainControl(method="cv",
-                              savePredictions = TRUE,
-                              verbose=TRUE,
-                              index=spacefolds$index,
-                              indexOut=spacefolds$indexOut,
-                              returnResamp = "all",
-                              classProbs = TRUE,
-                              summaryFunction = eval(parse(text=summaryFunction)))
-  if (metric=="Kappa")
     ctrl <- caret::trainControl(method="cv",
                                 savePredictions = TRUE,
-                                verbose=TRUE,
-                                index=spacefolds$index,
-                                indexOut=spacefolds$indexOut,
-                                returnResamp = "all",
-                                classProbs = TRUE)
+                                verbose         = TRUE,
+                                index           = spacefolds$index,
+                                indexOut        = spacefolds$indexOut,
+                                returnResamp    = "all",
+                                classProbs      = TRUE,
+                                summaryFunction = eval(parse(text=sumFunction)))
+  # define control values for Kappa (more than two categorical variables like green and no green) 
+  else if (metric=="Kappa")
+    ctrl <- caret::trainControl(method          ="cv",
+                                savePredictions = TRUE,
+                                verbose         = TRUE,
+                                index           = spacefolds$index,
+                                indexOut        = spacefolds$indexOut,
+                                returnResamp    = "all",
+                                classProbs      = TRUE)
   
   # make it paralel
-
-  cl <- parallel::makeCluster(nrclu)
+  cl <- parallel::makeCluster(noClu)
   doParallel::registerDoParallel(cl)  
-  ffs_model <- ffs(data_train[,predictors],
-                   eval(parse(text=paste("data_train$",response,sep = ""))),
-                   method=cl_method,
-                   metric=metric,
-                   trControl = ctrl,
-                   withinSE=TRUE, 
-                   tuneGrid = expand.grid(mtry = 2)
+  # run forward feature selection 
+  ffs_model <- ffs(predictors = data_train[,predictors],
+                   response   = eval(parse(text=paste("data_train$",response,sep = ""))),
+                   method     = "rf",
+                   metric     = metric,
+                   trControl  = ctrl,
+                   withinSE   = TRUE, 
+                   tuneGrid   = expand.grid(mtry = 2)
   )
-
   
-  
+  # take resulting predictors 
   predictors <- data_train[,names(ffs_model$trainingData)[-length(names(ffs_model$trainingData))]]
-  
+  # and run final tuning 
   model_final <- train(predictors,
                        data_train[,response],
                        method = cl_method,
@@ -341,13 +344,12 @@ trainModel<-function(   trainingDF =NULL,
                        trControl = ctrl)
   parallel::stopCluster(cl)
   
-
   return(list(ffs_model,model_final))
 }
 
-#' creates a parameter list from the input files
+#' create name vector corresponding to the training image stack 
 #' 
-#' @param rgbi band names 
+#' @param rgbi default is  NA
 #' @param haratxt band names 
 #' @param  stat band names 
 #' @param morpho band names 
@@ -355,84 +357,74 @@ trainModel<-function(   trainingDF =NULL,
 #' 
 #' @export makebNames 
 
-makebNames <- function(rgbi    = "",
-                       haratxt = "",
+makebNames <- function(rgbi    = NA,
+                       haratxt = NA,
                        stat    = FALSE,
-                       morpho  ="",
-                       edge= "" ){
+                       morpho  = NA,
+                       edge    = NA ){
   
-  if (rgbi[1]!="") bnames <- append(c("red","green","blue","alpha"),rgbi)
-  
-  if(haratxt == "simple"){
-    bnames <- c("Energy", "Entropy", "Correlation", 
-                "Inverse_Difference_Moment", "Inertia", 
-                "Cluster_Shade", "Cluster_Prominence",
-                "Haralick_Correlation")
-  } else if(haratxt == "advanced"){
-    bnames <- c("Hara_Mean", "Hara_Variance", "Dissimilarity",
-                "Sum_Average", 
-                "Sum_Variance", "Sum_Entropy", 
-                "Difference_of_Variances", 
-                "Difference_of_Entropies", 
-                "IC1", "IC2")
-  } else if(haratxt == "higher"){
-    bnames <- c("Short_Run_Emphasis", 
-                "Long_Run_Emphasis", 
-                "Grey-Level_Nonuniformity", 
-                "Run_Length_Nonuniformity", 
-                "Run_Percentage", 
-                "Low_Grey-Level_Run_Emphasis", 
-                "High_Grey-Level_Run_Emphasis", 
-                "Short_Run_Low_Grey-Level_Emphasis", 
-                "Short_Run_High_Grey-Level_Emphasis", 
-                "Long_Run_Low_Grey-Level_Emphasis",
-                "Long_Run_High_Grey-Level_Emphasis")
-  } else if(haratxt == "all"){
-    bnames <- c("Energy", "Entropy", "Correlation", 
-                "Inverse_Difference_Moment", "Inertia", 
-                "Cluster_Shade", "Cluster_Prominence",
-                "Haralick_Correlation",
-                "Hara_Mean", "Hara_Variance", "Dissimilarity",
-                "Sum_Average", 
-                "Sum_Variance", "Sum_Entropy", 
-                "Difference_of_Variances", 
-                "Difference_of_Entropies", 
-                "IC1", "IC2",
-                "Short_Run_Emphasis", 
-                "Long_Run_Emphasis", 
-                "Grey-Level_Nonuniformity", 
-                "Run_Length_Nonuniformity", 
-                "Run_Percentage", 
-                "Low_Grey-Level_Run_Emphasis", 
-                "High_Grey-Level_Run_Emphasis", 
-                "Short_Run_Low_Grey-Level_Emphasis", 
-                "Short_Run_High_Grey-Level_Emphasis", 
-                "Long_Run_Low_Grey-Level_Emphasis",
-                "Long_Run_High_Grey-Level_Emphasis")
+  if (!is.na(rgbi[1])) bnames <- append(c("red","green","blue"),rgbi)
+  if (!is.na(haratxt)) {
+    if(haratxt == "simple"){
+      bnames <- c("Energy", "Entropy", "Correlation", 
+                  "Inverse_Difference_Moment", "Inertia", 
+                  "Cluster_Shade", "Cluster_Prominence",
+                  "Haralick_Correlation")
+    } else if(haratxt == "advanced"){
+      bnames <- c("Hara_Mean", "Hara_Variance", "Dissimilarity",
+                  "Sum_Average", 
+                  "Sum_Variance", "Sum_Entropy", 
+                  "Difference_of_Variances", 
+                  "Difference_of_Entropies", 
+                  "IC1", "IC2")
+    } else if(haratxt == "higher"){
+      bnames <- c("Short_Run_Emphasis", 
+                  "Long_Run_Emphasis", 
+                  "Grey-Level_Nonuniformity", 
+                  "Run_Length_Nonuniformity", 
+                  "Run_Percentage", 
+                  "Low_Grey-Level_Run_Emphasis", 
+                  "High_Grey-Level_Run_Emphasis", 
+                  "Short_Run_Low_Grey-Level_Emphasis", 
+                  "Short_Run_High_Grey-Level_Emphasis", 
+                  "Long_Run_Low_Grey-Level_Emphasis",
+                  "Long_Run_High_Grey-Level_Emphasis")
+    } else if(haratxt == "all"){
+      bnames <- c("Energy", "Entropy", "Correlation", 
+                  "Inverse_Difference_Moment", "Inertia", 
+                  "Cluster_Shade", "Cluster_Prominence",
+                  "Haralick_Correlation",
+                  "Hara_Mean", "Hara_Variance", "Dissimilarity",
+                  "Sum_Average", 
+                  "Sum_Variance", "Sum_Entropy", 
+                  "Difference_of_Variances", 
+                  "Difference_of_Entropies", 
+                  "IC1", "IC2",
+                  "Short_Run_Emphasis", 
+                  "Long_Run_Emphasis", 
+                  "Grey-Level_Nonuniformity", 
+                  "Run_Length_Nonuniformity", 
+                  "Run_Percentage", 
+                  "Low_Grey-Level_Run_Emphasis", 
+                  "High_Grey-Level_Run_Emphasis", 
+                  "Short_Run_Low_Grey-Level_Emphasis", 
+                  "Short_Run_High_Grey-Level_Emphasis", 
+                  "Long_Run_Low_Grey-Level_Emphasis",
+                  "Long_Run_High_Grey-Level_Emphasis")
+    }
   }
-  if (stat ==TRUE)  {
+  if (stat == TRUE)  {
     bnames    = c("Stat_Mean","Stat_Variance", "Skewness", "Kurtosis")
   } 
   
-  if (morpho != "")  {
+  if (!is.na(morpho))  {
     bnames    =  morpho
   } 
   
-  if (edge != "")  {
+  if (!is.na(edge))  {
     bnames    =  edge
   } 
-  # if (haratxt != "" & stat ==TRUE) { 
-  #   bnames <- append(rgbi,append(statname,bnames))
-  # } else if (haratxt == "" & stat ==TRUE) {
-  #   bnames <- append(rgbi,statname)  
-  # } else if (haratxt != "" & stat ==FALSE) {
-  #   bnames <- append(rgbi,bnames)
-  # } else if (haratxt == "" & stat ==FALSE) {
-  #   bnames <- rgbi
-  # }
-  
   return(bnames)
-  
   
 }
 

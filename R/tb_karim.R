@@ -58,7 +58,7 @@ if (!isGeneric('h_xyz2tif')) {
 
 #' @examples
 
-#'#' \dontrun{
+#' \dontrun{
 #' # get some typical data as provided by the authority
 #' url<-"http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
@@ -410,4 +410,19 @@ h_fun_multiply <- function(x)
 }
 	h_fun_whichmax <- function(mask,value) { 
 raster::xyFromCell(value,which.max(mask * value))
+}
+
+	#' removes zombie processes
+	#' @description removes zombie processes
+	#' @export rmZombie
+rmZombie <- inline::cfunction(body='int wstat; while (waitpid(-1, &wstat, WNOHANG) > 0) {};',
+                          includes='#include <sys/wait.h>',
+                          convention='.C')	
+Last <- function(...) {
+  collect(wait=FALSE)
+  all <- children()
+  if (length(all)) {
+    kill(all, SIGTERM)
+    collect(all)
+  }
 }

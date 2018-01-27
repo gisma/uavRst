@@ -2,11 +2,13 @@
 load(file = "~/temp7/GRASS7/output/")
 library(corrplot)
 library("PerformanceAnalytics")
-drops <- c("alpha","IC1","Haralick_Correlation","Cluster_Prominence","Long_Run_High_Grey-Level_Emphasis","Long_Run_Low_Grey-Level_Emphasis","Run_Percentage","Skewness","Variance","Mean","Cluster_Shade","Inertia","Long_Run_Emphasis")
-drops <- c("alpha")
+drops <- c("IC1","Haralick_Correlation","Cluster_Prominence","Long_Run_High_Grey-Level_Emphasis","Long_Run_Low_Grey-Level_Emphasis","Run_Percentage","Skewness","Variance","Mean","Cluster_Shade","Inertia","Long_Run_Emphasis")
+
 keeps <- c("ID","red","green","blue","GLAI","Energy","Correlation","Short_Run_Emphasis","HI","SI","Entropy","Low_Grey-Level_Run_Emphasis","FN","Skewness","Variance","Mean")
+keepsGreen <-c("ID","red","green","blue","VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI","FN")
 tr<-trainDF
 tr<-tr[ , !(names(tr) %in% drops)]
+tr<-tr[ , (names(tr) %in% keepsGreen)]
 save(tr,file = "~/temp7/GRASS7/output/training.RData")
 drops <- c("ID","FN")
 tr<-tr[ , !(names(tr) %in% drops)]

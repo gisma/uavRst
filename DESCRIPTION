@@ -16,7 +16,7 @@ Imports:
     stringr,
     foreach,
         sp,
-    raster,
+        sf,
     htmlwidgets,
     htmltools,
     Rcpp,
@@ -39,7 +39,11 @@ Imports:
     doParallel,
     CAST,
     curl,
-    glcm
+    glcm,
+    inline,
+    raster,
+    lattice,
+    latticeExtra
 LinkingTo: Rcpp
 RoxygenNote: 6.0.1
 SystemRequirements: GNU make

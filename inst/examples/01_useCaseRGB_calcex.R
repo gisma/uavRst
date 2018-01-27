@@ -99,10 +99,10 @@ if (calculateBands) {
   
   # create list of image files to be processed 
   # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
-  imageFiles <- list.files(pattern="[.]tif$", path=paste0(currentDataFolder), full.names=TRUE)
+  imageFiles <- list.files(pattern="[.]tif$", path=currentDataFolder, full.names=TRUE)
   
   # stack the ortho images
-  rgb<- lapply(imageFiles, FUN=raster::stack)
+  #rgb<- lapply(imageFiles, FUN=raster::raster)
   
   
   ### calculate indices and base stat export it to tif
@@ -110,11 +110,13 @@ if (calculateBands) {
   rgb_all<- flist<-rasFN<-list()
   
   # for all images do
-  for (i in 1:length(rgb)){
+  for (i in 1:length(imageFiles)){
     cat(":::: processing indices of...",basename(imageFiles[i]),"\n")
-    # calculates indices
-    rgb_rgbi<-raster::stack(rgb[[i]],uavRst::rgbIndices(rgb[[i]][[1]],rgb[[i]][[2]],rgb[[i]][[3]],indices))
-    bnames <-makebNames(rgbi = indices)
+    r<-raster::stack(imageFiles[i])
+    # calculate and stack r,g,b and requested indices
+    rgb_rgbi<-raster::stack(r[[1:3]],uavRst::rgbIndices(r[[1]],r[[2]],r[[3]],indices))
+    bnames <- uavRst::makebNames(rgbi = indices)
+    names(rgb_rgbi)<-bnames 
     # assign bandnumber according to name
     cat("\n")
     for (filterBand in channels){

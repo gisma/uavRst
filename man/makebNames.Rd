@@ -2,13 +2,13 @@
 % Please edit documentation in R/rs_classify.R
 \name{makebNames}
 \alias{makebNames}
-\title{creates a parameter list from the input files}
+\title{create name vector corresponding to the training image stack}
 \usage{
-makebNames(rgbi = "", haratxt = "", stat = FALSE, morpho = "",
-  edge = "")
+makebNames(rgbi = NA, haratxt = NA, stat = FALSE, morpho = NA,
+  edge = NA)
 }
 \arguments{
-\item{rgbi}{band names}
+\item{rgbi}{default is  NA}
 
 \item{haratxt}{band names}
 
@@ -19,5 +19,5 @@ makebNames(rgbi = "", haratxt = "", stat = FALSE, morpho = "",
 \item{edge}{band names}
 }
 \description{
-creates a parameter list from the input files
+create name vector corresponding to the training image stack
 }

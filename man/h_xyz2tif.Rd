@@ -16,7 +16,7 @@ a geoT
 Read xyz data and generate a raster  \code{Raster*} object.
 }
 \examples{
-#' \dontrun{
+\dontrun{
 # get some typical data as provided by the authority
 url<-"http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip"
 res <- curl::curl_download(url, "testdata.zip")

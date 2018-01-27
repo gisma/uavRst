@@ -4,17 +4,9 @@
 # as provided by the dataframe from step2
 
 #### packages
-rm(list =ls())
+#rm(list =ls())
 require(uavRst)
 
-# below you will find classes names and classes IDs 
-# NOTE ADAPT IT TO YOUR NEEDS
-# classes numbers
-idNumber=c(1,2,3,4,5)
-# classes names
-idNames= c("green","nogreen","nogreen","nogreen","nogreen")
-# prefix of current run
-prefixrunFN<-"traddel"
 
 #---> define environment and settings
 # define project folder
@@ -30,12 +22,21 @@ currentIdxFolder<- path_data_training_idx
 setwd(path_run)
 
 #---> start processing
-# prefix for dataframe providing the training data
+# adapt dataframe for special needs
+# here GREEN LEAFS
+# NOTE ADAPT IT TO YOUR NEEDS
+# classes numbers
+idNumber=c(1,2,3,4,5)
+# classes names
+idNames= c("green","greenish","bud","nogreen","nogreen")
+# prefix of current run
+prefixrunFN<-"traddel"
+# load raw training dataframe
 trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))  
 load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
 names(trainDF)<-append("ID",append(bnames,"FN"))
-drops <- c("alpha")
-trainDF<-trainDF[ , !(names(trainDF) %in% drops)]
+#keepsGreen <-c("ID","red","green","blue","VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI","FN")
+#trainDF<-trainDF[ , (names(trainDF) %in% keepsGreen)]
 # define classes
 for (i in 1:length(idNumber)){
   trainDF$ID[trainDF$ID==i]<-idNames[i]
@@ -43,32 +44,34 @@ for (i in 1:length(idNumber)){
 trainDF$ID <- as.factor(trainDF$ID)
 # split names in predict and all var names 
 na<-names(trainDF)
-
 # split names in predict and all var names 
 na<-names(trainDF)
-
 pred<-na[3:length(na)-1]
 # call training sequence
+
+# call training function
 result<-  uavRst::trainModel(trainingDF = trainDF,
                              predictors   = pred,
                              response     = "ID",
                              spaceVar     = "FN",
                              names        =  na,
                              noLoc        =  5,
-                             cl_method    = "rf",
-                             metric   = "ROC",
                              pVal         = 0.01,
-                             nrclu = 4)
+                             noClu = 4)
 
+system("kill -9 $(pidof R)")
 
-model_final<-result[[2]]
-
-save(model_final, file = paste0(path_output,prefixrunFN,"_model_final",".RData"))
+save(result[[1]], file = paste0(path_output,prefixrunFN,"_model_ffs",".RData"))
+save(result[[2]], file = paste0(path_output,prefixrunFN,"_model_final",".RData"))
 
 perf <- model_final$pred[model_final$pred$mtry==model_final$bestTune$mtry,]
-#cstat<-classificationStats(perf$pred,perf$obs,plot = T) 
-#summary(lm(as.numeric(as.character(perf$pred))~as.numeric(as.character(perf$obs))))
-#plot(as.numeric(as.character(perf$pred))~as.numeric(as.character(perf$obs)))
+# scores for categorical 
+classificationStats(perf$pred,perf$obs, plot = T) 
+
+# linear model for numeric
+# summary(lm(as.numeric(as.character(perf$pred))~as.numeric(as.character(perf$obs))))
+# plot(as.numeric(as.character(perf$pred))~as.numeric(as.character(perf$obs)))
+
 cat(":: training...finsihed \n")
 
 
