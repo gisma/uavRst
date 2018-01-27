@@ -129,7 +129,7 @@ if (calculateBands) {
     rgb_rgbi<-raster::stack(r[[1:3]],uavRst::rgbIndices(r[[1]],r[[2]],r[[3]],indices))
     bnames <- uavRst::makebNames(rgbi = indices)
     names(rgb_rgbi)<-bnames 
-    cat(":::: save ...",paste0("rgbi_",basename(imageFiles[i])),"\n")
+    cat("\n     save ...",paste0("rgbi_",basename(imageFiles[i])),"\n")
     raster::writeRaster(rgb_rgbi,
                         paste0("rgbi_",basename(imageFiles[i])),
                         progress = "text",                        
@@ -143,7 +143,7 @@ if (calculateBands) {
       if (filterBand=="blue") bandNr <- 3
       # export single channel for synthetic band calculation
       # if (filterBand!="") {
-      cat(":::: save ...",paste0(filterBand,"_",basename(imageFiles[i])),"\n")
+      cat("     save ...",paste0(filterBand,"_",basename(imageFiles[i])),"\n")
       raster::writeRaster(rgb_rgbi[[bandNr]],
                           paste0(filterBand,"_",basename(imageFiles[i])), 
                           progress = "text",
@@ -206,7 +206,7 @@ if (calculateBands) {
     
     # extract filename    
     tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
-    cat(":::: save ...",prefixTrainGeom, tmpFN,"\n")
+    cat("     save ...",prefixTrainGeom, tmpFN,"\n")
 
     # write file to envi
     raster::writeRaster(r,
