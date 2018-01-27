@@ -31,21 +31,21 @@ link2GI::initProj(projRootDir = projRootDir,
 # set working directory
 setwd(path_run)
 
-res <- calcex( useTrainData      = TRUE, # usually training data will need more/all channels and classification data the necessary ones # useTrainData switch to decide if using training images or classification data (FALSE) 
-               calculateBands    = TRUE, # calculate syntheic bands and indices
-               extractTrain      = TRUE, # extract training data according to training geometries
-               prefixrunFN       = "traddel", # prefix of current run
-               suffixTrainGeom   = "TrainingArea", # suffix of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp
-               prefixTrainGeom   = "index_", # suffix of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif 
-               indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") , #c("VARI","NDTI","TGI","GLI","NGRDI","GLAI") # indices: options are ("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI")
-               channels          = c("red", "green", "blue"),#channels options c("red", "green", "blue")  
+res <- calcex( useTrainData      = TRUE, 
+               calculateBands    = TRUE, 
+               extractTrain      = TRUE, 
+               prefixrunFN       = "traddel",
+               suffixTrainGeom   = "TrainingArea",
+               prefixTrainGeom   = "index_", 
+               indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") , 
+               channels          = c("red", "green", "blue"),  
                hara              = FALSE,
-               haraType          = c("simple"),   # options are "all" "simple" "advanced"  "higher"  # "higher" takes a LOT of time
-               stat              = TRUE, # statistic: (mean,variance, curtosis, skewness)
-               edge              = TRUE, # Edge filtering
-               edgeType          = c("gradient","sobel","touzi"), # options are c("gradient","sobel","touzi")
-               morpho            = TRUE, # morpho filtering
-               morphoType        = c("dilate","erode","opening","closing"), # options are ("dilate","erode","opening","closing")
-               kernel            = 3, # kernelsize
+               haraType          = c("simple"),   
+               stat              = TRUE, 
+               edge              = TRUE, 
+               edgeType          = c("gradient","sobel","touzi"), 
+               morpho            = TRUE, 
+               morphoType        = c("dilate","erode","opening","closing"), 
+               kernel            = 3, 
                currentDataFolder = path_data_training,
                currentIdxFolder  = path_data_training_idx)

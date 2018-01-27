@@ -20,12 +20,10 @@
 #' @param prefixTrainGeom   prefix of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index_"  
 #' @param channels          optional channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")
 #' @param hara              logical switch for using  HaralickTextureExtraction default = TRUE \cr
-#' for a review of a lot of feature extraction algorithms look at:
-#' \href{http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}
-#' glcm<->haralick c("mean"  advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
-#' using stats will cover mean and variance while dissimilarity is highly correllated to  Homogeneity
-#' => stat + simple ~ glcm 
-#' \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}
+#' for a review of a lot of feature extraction algorithms look at:\href{http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
+#' glcm<-> haralick c("mean"  advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
+#' using stats will cover mean and variance while dissimilarity is highly correlated to  Homogeneity data. For a nice introduction look at: \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Hallbey}
+
 #' @param haraType          hara options default is c("simple"), other  options are "advanced"  "higher" "all". NOTE:  "higher" takes a LOT of time
 #' @param stat              logical switch for using statistic default = TRUE the stas are mean,variance, curtosis, skewness
 #' @param edge              logical switch for using edge filtering default = TRUE
@@ -36,6 +34,40 @@
 #' @param kernel            size of kernel for filtering and statistics default is  3
 #' @param currentDataFolder  NULL folder to image (and shape) data
 #' @param  currentidxFolder  NULL folder for saving the results
+#' @examples 
+#' \dontrun{
+#' require(uavRst)
+#'devtools::install_github("gisma/link2GI", ref = "master")
+#'
+#'#---> define environment and settings
+#'# define project folder
+#'projRootDir <- "~/temp7/GRASS7"
+#'
+#'# create project structure and export global pathes
+#'link2GI::initProj(projRootDir = projRootDir,
+#'                  projFolders = c("data/","data/training/","data/training/idx/","data/training/idx/","output/","output/index/","run/","fun/") )
+#'# set working directory
+#'setwd(path_run)
+#'res <- calcex( useTrainData      = TRUE, 
+#'               calculateBands    = TRUE, 
+#'               extractTrain      = TRUE, 
+#'               prefixrunFN       = "traddel",
+#'               suffixTrainGeom   = "TrainingArea",
+#'               prefixTrainGeom   = "index_", 
+#'               indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") , 
+#'               channels          = c("red", "green", "blue"),  
+#'               hara              = FALSE,
+#'               haraType          = c("simple"),   
+#'               stat              = TRUE, 
+#'               edge              = TRUE, 
+#'               edgeType          = c("gradient","sobel","touzi"), 
+#'               morpho            = TRUE, 
+#'               morphoType        = c("dilate","erode","opening","closing"), 
+#'               kernel            = 3, 
+#'               currentDataFolder = path_data_training,
+#'               currentIdxFolder  = path_data_training_idx)
+#'}
+#'               
 #' @export calcex
   
 
