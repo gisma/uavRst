@@ -2,15 +2,19 @@
 # Basic script to set up the environment for a typical classification project
 # The usecaseRGB 01-04 scripts are providing a common workflow for a random forest based classification of visible imagery.
 # The worflow is divided in 4 steps:
+
 # (01) calcex() calculation of spectral indices, basic spatial statistics and textures and
-#      extracting of training values over all channels according to training data
-#      
-# (02) trainRGBmodel() training using random forest and the forward feature selection method
-#
-# (03) calculation spectral indices, basic spatial statistics and textures for 
-#      all rgb data according to the model requests (01_useCaseRGB_calcex.R)
-# (04) prediction (02_useCaseRGB_predict.R)
-# (05) basic analysis and results extraction (04_useCaseRGB_analyze.R)
+#               extracting of training values over all channels according to training data
+
+# (02) ffsTrainModel() training using random forest and the forward feature selection method 
+#                      startTrain=TRUE
+
+# (03) calcex() with respect to the selected predictor variables you may calculate 
+#               the requested channels for all rgb data that you want to predict.
+
+# (04) prediction startPredict=TRUE
+
+# (05) basic analysis and results extraction (useCaseRGB_analyze.R)
 
 #devtools::install_github("gisma/uavRst", ref = "master")
 require(uavRst)
@@ -20,6 +24,7 @@ rm(list =ls())
 #.rs.restartR()
 
 startTrain=FALSE
+startPredict=FALSE
 
 #---> define environment and settings
 # define project folder
@@ -54,43 +59,54 @@ res <- calcex( useTrainData      = TRUE,
 # ------------------  TRAIN
 
 if (startTrain){
-  #---> start processing
-  # adapt dataframe for special needs
-  # here GREEN LEAFS
+  # here example is given for GREEN LEAVES
+  
   # NOTE ADAPT IT TO YOUR NEEDS
-  # classes numbers
+  
+  # classes IDs as given by the training vector files ID column
   idNumber=c(1,2,3,4,5)
-  # classes names
+  # rename them 
   idNames= c("green","greenish","bud","nogreen","nogreen")
-  # prefix of current run
+  
+  # simple and maybe sufficient give your training run  a unique name 
+  # to be integrated in results DF and file 
   prefixrunFN<-"traddel"
+  
   # load raw training dataframe
+  if (!exists)("trainDF")
   trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))  
+  if (!exists)("bnames")
   load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
+  # add leading Title "ID" and tailing title "FN"
   names(trainDF)<-append("ID",append(bnames,"FN"))
+  
+  # manipulate the data frame to you rneeds by dropping predictor variables
   #keepsGreen <-c("ID","red","green","blue","VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI","FN")
   #trainDF<-trainDF[ , (names(trainDF) %in% keepsGreen)]
-  # define classes
+  
+  # now rename the classes
   for (i in 1:length(idNumber)){
     trainDF$ID[trainDF$ID==i]<-idNames[i]
   }
   trainDF$ID <- as.factor(trainDF$ID)
-  # split names in predict and all var names 
-  na<-names(trainDF)
-  # split names in predict and all var names 
-  na<-names(trainDF)
-  pred<-na[3:length(na)-1]
   
-  result<-  uavRst::trainModel(trainingDF = trainDF,
-                               predictors   = pred,
-                               response     = "ID",
-                               spaceVar     = "FN",
-                               names        =  na,
-                               noLoc        =  5,
-                               pVal         = 0.01,
-                               noClu = 4)
+  # get actual name list from the DF
+  na<-names(trainDF)
+  # cut leading and tailing ID/FN
+  predictNames<-na[3:length(na)-1]
   
-  #system("kill -9 $(pidof R)")
+  # call Training 
+  result<-  uavRst::ffsTrainModel(trainingDF = trainDF,
+                                  predictors   = predictNames,
+                                  response     = "ID",
+                                  spaceVar     = "FN",
+                                  names        =  na,
+                                  noLoc        =  5,
+                                  pVal         = 0.01,
+                                  noClu = 4)
+  
+  # if parallel process was interuppted and not finished correctly the resulting R sessions will be killed
+  system("kill -9 $(pidof R)")
   
   save(result[[1]], file = paste0(path_output,prefixrunFN,"_model_ffs",".RData"))
   save(result[[2]], file = paste0(path_output,prefixrunFN,"_model_final",".RData"))
@@ -104,4 +120,22 @@ if (startTrain){
   # plot(as.numeric(as.character(perf$pred))~as.numeric(as.character(perf$obs)))
   
   cat(":: training...finsihed \n")
+}
+
+if (startPredict){
+  # set vars
+  imageFiles <- list.files(pattern="[.]tif$", path=path_data_training, full.names=TRUE)
+  bnameList <-  list.files(pattern="[.]RData$", path=path_data_training_idx, full.names=TRUE)
+  load(bnameList)
+  load(file = paste0(path_output,prefixrunFN,"_model_final",".RData"))
+  # TODO https://stackoverflow.com/questions/25388139/r-parallel-computing-and-zombie-processes
+  
+  predictRGB(imageFiles=imageFiles,
+             model = model_final,
+             in_prefix = "index_",
+             out_prefix = "classified_",
+             bandNames = bnames) 
+  
+  cat(":: ...finsihed \n")
+  
 }
