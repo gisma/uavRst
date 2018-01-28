@@ -43,7 +43,8 @@ Imports:
     inline,
     raster,
     lattice,
-    latticeExtra
+    latticeExtra,
+    crayon
 LinkingTo: Rcpp
 RoxygenNote: 6.0.1
 SystemRequirements: GNU make

@@ -61,7 +61,7 @@ if (startCalcex){
   # note otions are commented due to the fact that the maximum is default
   # to restrict calculations uncomment and select by editng the param list
   res <- calcex( useTrainData      = TRUE, 
-                 calculateBands    = TRUE, 
+                 calculateBands    = FALSE, 
                  extractTrain      = TRUE, 
                  prefixrunFN       = prefixrunFN,
                  suffixTrainGeom   = "TrainingArea",

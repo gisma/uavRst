@@ -100,6 +100,12 @@ calcex<- function ( useTrainData      = TRUE,
                     kernel            = 3, 
                     currentDataFolder = NULL,
                     currentIdxFolder  = NULL){
+  require(crayon)
+  catHead  <- black $ bgGreen
+  catErr <- red $ bold
+  catNote <- blue $ bold
+  catOk <- green $ bold
+  
   
 if (useTrainData) {
   currentDataFolder<- currentDataFolder #paste0(path_data_training)
@@ -118,7 +124,7 @@ if ((stat == TRUE || hara == TRUE || edge == TRUE || morpho == TRUE) & path_OTB 
 
 ### ----- start preprocessing ---------------------------------------------------
 if (calculateBands) {
-  cat("\n::: preprocess input data...\n")
+  cat(catHead("\n     ---------------- preprocess input data ------------------                \n"))
   
   # create list of image files to be processed 
   # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
@@ -134,13 +140,13 @@ if (calculateBands) {
   
   # for all images do
   for (i in 1:length(imageFiles)){
-    cat(":::: processing indices of...",basename(imageFiles[i]),"\n")
+    cat(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
     r<-raster::stack(imageFiles[i])
     # calculate and stack r,g,b and requested indices
     rgb_rgbi<-raster::stack(r[[1:3]],uavRst::rgbIndices(r[[1]],r[[2]],r[[3]],indices))
     bnames <- uavRst::makebNames(rgbi = indices)
     names(rgb_rgbi)<-bnames 
-    cat("\n     save ...",paste0("rgbi_",basename(imageFiles[i])),"\n")
+    cat(catOk("\n     save ...",paste0("rgbi_",basename(imageFiles[i])),"\n"))
     raster::writeRaster(rgb_rgbi,
                         paste0("rgbi_",basename(imageFiles[i])),
                         progress = "text",                        
@@ -148,7 +154,7 @@ if (calculateBands) {
     # if RGB transform
     if (RGBTrans){
       
-      cat(":::: processing color transformation RGB to... ",colorSpaces,"\n")
+      cat(catNote(":::: processing color transformation...\n"))
       uavRst::imageMagickconvert(input = imageFiles[i],
                                  colorspace = colorSpaces)
       rgbtranslist<-list()
@@ -161,7 +167,7 @@ if (calculateBands) {
       for (jj in 1:length(rt)) {
         extent(rt[[jj]])<-extent(r)
         projection(rt[[jj]]) <- CRS(projection(r))
-        cat("     writing... ",colorSpaces[jj],"_",basename(imageFiles[i]),"\n")
+        cat(catOk(":::: save... ",colorSpaces[jj],"_",basename(imageFiles[i]),"\n"))
         raster::writeRaster(rt[[jj]],
                             paste0(colorSpaces[jj],"_ref",basename(imageFiles[i])),
                             overwrite=TRUE,
@@ -182,7 +188,7 @@ if (calculateBands) {
       if (filterBand=="blue") bandNr <- 3
       # export single channel for synthetic band calculation
       # if (filterBand!="") {
-      cat("     save ...",paste0(filterBand,"_",basename(imageFiles[i])),"\n")
+      cat(catNote(":::: write temporary channel...",paste0(filterBand,"_",basename(imageFiles[i])),"\n"))
       raster::writeRaster(rgb_rgbi[[bandNr]],
                           paste0(filterBand,"_",basename(imageFiles[i])), 
                           progress = "text",
@@ -194,7 +200,7 @@ if (calculateBands) {
       # }
       # if calc statistcis 
       if (stat){
-        cat(":::: processing stats...",fbFN,"\n")
+        cat(catNote(":::: processing stats...",fbFN,"\n"))
         otbLocalStat(input = fbFN,
                      out = paste0(filterBand,"stat_",basename(imageFiles[i])),
                      ram = "4096",
@@ -204,7 +210,7 @@ if (calculateBands) {
       # if calc edge
       if (edge){
         for (edges in edgeType){
-          cat(":::: processing edge... ",edges,"\n")
+          cat(catNote(":::: processing edge... ",edges,"\n"))
           uavRst::otbEdge(input = fbFN,
                           out = paste0(filterBand,edges,basename(imageFiles[i])),
                           filter = edges)
@@ -214,7 +220,7 @@ if (calculateBands) {
       # if calc morpho
       if (morpho){
         for (morphos in morphoType){
-          cat(":::: processing morpho... ",morphos,"\n")
+          cat(catNote(":::: processing morpho... ",morphos,"\n"))
           uavRst::otbGrayMorpho(input = fbFN,
                                 out = paste0(filterBand,morphos,basename(imageFiles[i])),
                                 filter = morphos)
@@ -224,7 +230,7 @@ if (calculateBands) {
       # if calc haralick
       if (hara){
         for (haras in haraType){
-          cat(":::: processing haralick... ",haras,"\n")
+          cat(catNote(":::: processing haralick... ",haras,"\n"))
           uavRst::otbTexturesHaralick(x = fbFN,
                                       output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),
                                       texture = haras)
@@ -245,7 +251,7 @@ if (calculateBands) {
     
     # extract filename    
     tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
-    cat("     save ...",prefixTrainGeom, tmpFN,"\n")
+    cat(catOk("     save ...",prefixTrainGeom, tmpFN,"\n"))
 
     # write file to envi
     raster::writeRaster(r,
@@ -255,7 +261,7 @@ if (calculateBands) {
                         overwrite=TRUE)
 
     # cleanup runtime files lists...
-    cat(":::: removing temp files...\n")
+    cat(catNote(":::: removing temp files...\n"))
     file.remove(flist)
     flist<-list()
   }
@@ -263,10 +269,12 @@ if (calculateBands) {
   # save bandname list we need it only once
   save(bnames,file = paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
   
-  cat(":::: finished preprocessing RGB data...\n")
+  
+  cat(catHead("\n     ---------------- finished preprocessing RGB data ------------------                \n"))
 }
 # ----- start extraction ---------------------------------------------------
 if (extractTrain){
+  cat(catHead("\n     --------------- start extract processing ------------------                \n"))
   load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
   # get image and geometry data for training purposes
   imageTrainFiles <- list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE)
@@ -290,7 +298,7 @@ if (extractTrain){
   saveRDS(eval(parse(text=paste0(prefixrunFN,"_trainDF"))), paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))
   #read it into another name 
   #DF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))  
-  cat("\n:::: extraction...finsihed \n")
+  cat(catHead("\n     --------------- stop start extract processing ------------------                \n"))
   return(trainDF)
 }
 }
