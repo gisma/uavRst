@@ -107,8 +107,11 @@ extractTrainData<-function(rasterStack  = NULL,
                            trainPlots     = NULL,
                            bnames = NULL,
                            imgFN) {
+  require(crayon)
+  catNote <- blue $ bold
+
   
-  cat("\n:::: extract trainPlots data...\n")
+  cat(catNote("\n:::: extract trainPlots data...\n"))
   trainingDF =  data.frame()
   # extract trainPlots Area pixel values
   # TODO https://gis.stackexchange.com/questions/253618/r-multicore-approach-to-extract-raster-values-using-spatial-points
