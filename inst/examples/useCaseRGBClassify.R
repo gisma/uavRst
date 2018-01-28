@@ -58,23 +58,25 @@ setwd(path_run)
 unlink(paste0(path_run,"*"), force = TRUE)
 if (startCalcex){
   # start calculation of synthetic bands and extraction of the training data
+  # note otions are commented due to the fact that the maximum is default
+  # to restrict calculations uncomment and select by editng the param list
   res <- calcex( useTrainData      = TRUE, 
                  calculateBands    = TRUE, 
                  extractTrain      = TRUE, 
                  prefixrunFN       = prefixrunFN,
                  suffixTrainGeom   = "TrainingArea",
                  prefixTrainGeom   = "index_", 
-                 indices           = c("VARI"), #,"NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") , 
+                # indices           =  c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"), 
                  RGBTrans          = TRUE,
-                 colorSpaces       = c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
-                 channels          = c("red", "green", "blue"),  
+                # colorSpaces       = c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
+                # channels          = c("red", "green", "blue"),  
                  hara              = FALSE,
-                 haraType          = c("simple"),   
+                # haraType          = c("simple","advanced","higher"),   
                  stat              = TRUE, 
                  edge              = TRUE, 
-                 edgeType          = c("gradient","sobel","touzi"), 
+                # edgeType          = c("gradient","sobel","touzi"), 
                  morpho            = TRUE, 
-                 morphoType        = c("dilate","erode","opening","closing"), 
+                # morphoType        = c("dilate","erode","opening","closing"), 
                  kernel            = 3, 
                  currentDataFolder = currentDataFolder,
                  currentIdxFolder  = currentIdxFolder)

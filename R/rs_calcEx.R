@@ -64,7 +64,7 @@
 #'               indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") , 
 #'               channels          = c("red", "green", "blue"),  
 #'               hara              = FALSE,
-#'               haraType          = c("simple"),   
+#'               haraType          = c("simple","advanced","higher"),   
 #'               stat              = TRUE, 
 #'               edge              = TRUE, 
 #'               edgeType          = c("gradient","sobel","touzi"), 
@@ -86,7 +86,7 @@ calcex<- function ( useTrainData      = TRUE,
                     prefixTrainGeom   = "index_",
                     channels          = c("red", "green", "blue"),
                     hara              = TRUE,
-                    haraType          = c("simple"),
+                    haraType          = c("simple","advanced","higher"),
                     stat              = TRUE, 
                     edge              = TRUE, 
                     edgeType          = c("gradient","sobel","touzi"),
@@ -148,7 +148,7 @@ if (calculateBands) {
     # if RGB transform
     if (RGBTrans){
       
-      cat(":::: processing color transformation to... ",colorSpaces,"\n")
+      cat(":::: processing color transformation RGB to... ",colorSpaces,"\n")
       uavRst::imageMagickconvert(input = imageFiles[i],
                                  colorspace = colorSpaces)
       rgbtranslist<-list()
