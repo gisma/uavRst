@@ -54,7 +54,12 @@
 #' 
 #' 
 rgbIndices <- function(red,green,blue,
-                      rgbi=c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI")) {
+                      rgbi=c("VVI","VARI","NDTI","RI","SCI","BI",
+                             "SI","HI",
+                             "TGI","GLI",
+                             "NGRDI","GRVI",
+                             "GLAI","HUE",
+                             "CI","SAT","SHP")) {
   
   ## compatibility check
   #  if (raster::nlayers(rgb) < 3)
@@ -100,12 +105,12 @@ rgbIndices <- function(red,green,blue,
       names(RI) <- "RI"
       return(RI)
       
-    } else if (item == "CI") {
-      # CI Soil Colour Index
-      cat("\n      calculate Soil Colour Index (CI)")
-      CI <- (red - green) / (red + green)
-      names(CI) <- "CI"
-      return(CI)
+    } else if (item == "SCI") {
+      # SCI Soil Colour Index
+      cat("\n      calculate Soil Colour Index (SCI)")
+      SCI <- (red - green) / (red + green)
+      names(SCI) <- "SCI"
+      return(SCI)
       
     } else if (item == "BI") {
       #  Brightness Index
@@ -152,12 +157,48 @@ rgbIndices <- function(red,green,blue,
     }  else if (item=="GLAI"){
       # NGRDI Normalized green red difference index 
       cat("\n      calculate greenish Leaf Area Index  (GLAI) (highly experimental)")
-      vevi<-(green - red) / (green +  red -  blue )
+      # vevi<-(green - red) / (green +  red -  blue )
       GLAI = (25 * ((green - red) / (green +  red -  blue )) + 1.25 )
       names(GLAI) <- "GLAI"
       return(GLAI)
       
-    }  
+    }  else if (item=="GRVI"){
+      # GRVI  Green-Red Vegetation Index  Remote Sensing 2010, 2, 2369-2387; doi:10.3390/rs2102369
+      cat("\n      calculate  Green-Red Vegetation Index   (GRVI)")
+      GRVI<-(green-red)/(green+red) 
+      names(GRVI) <- "GRVI"
+      return(GRVI)
+      
+    } else if (item == "CI") {
+      # CI  https://www.indexdatabase.de/search/?s=color
+      cat("\n      calculate Coloration Index (CI)")
+      CI <- (red - blue) / red
+      names(CI) <- "CI"
+      return(CI)
+      
+    } else if (item == "HUE") {
+      # HUE Index https://www.indexdatabase.de/search/?s=HUE
+      cat("\n      calculate Hue Index (HUE)")
+      HUE <- 	 arctan(2 * (red - green - blue) / 30.5 * (green - blue))
+      names(HUE) <- "HUE"
+      return(HUE)
+      
+    }  else if (item == "SAT") {
+      # Saturation Index https://www.indexdatabase.de/db/i-single.php?id=77
+      cat("\n      calculate Saturation Index (SAT)")
+      SAT <- 	 (max(red,green,blue) - min(red,green,blue)) / max(red,green,blue)
+      names(SAT) <- "SAT"
+      return(SAT)
+      
+    } else if (item == "SHP") {
+      # Shape Index https://www.indexdatabase.de/search/?s=shape
+      cat("\n      calculate Shape Index (SHP)")
+      SHP <- 	 2 * (red - green - blue) / (green - blue)
+      names(SHP) <- "SHP"
+      return(SHP)
+      
+    } 
+    
     
   })
   return(raster::stack(indices))

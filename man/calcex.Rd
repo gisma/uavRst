@@ -11,9 +11,9 @@ calcex(useTrainData = TRUE, calculateBands = TRUE, extractTrain = TRUE,
   hara = TRUE, haraType = c("simple"), stat = TRUE, edge = TRUE,
   edgeType = c("gradient", "sobel", "touzi"), morpho = TRUE,
   morphoType = c("dilate", "erode", "opening", "closing"),
-  indices = c("VVI", "VARI", "NDTI", "RI", "CI", "BI", "SI", "HI", "TGI",
-  "GLI", "NGRDI", "GLAI"), kernel = 3, currentDataFolder = NULL,
-  currentIdxFolder = NULL)
+  indices = c("VVI", "VARI", "NDTI", "RI", "SCI", "BI", "SI", "HI", "TGI",
+  "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), kernel = 3,
+  currentDataFolder = NULL, currentIdxFolder = NULL)
 }
 \arguments{
 \item{useTrainData}{logical switch for choosing training data (which needs much more/all possible channels) or classification data the necessary ones # useTrainData switch to decide if using training images or classification data (FALSE) default = TRUE}

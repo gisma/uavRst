@@ -28,9 +28,9 @@ devtools::install_github("gisma/link2GI", ref = "master")
 rm(list =ls())
 
 # set processing switches
-startCalcex  = FALSE
+startCalcex  = TRUE
 startTrain   = TRUE
-startPredict = FALSE
+startPredict = TRUE
 
 # simple and maybe sufficient give your training run  a unique name 
 # to be integrated in results DF and file 
@@ -57,12 +57,12 @@ setwd(path_run)
 if (startCalcex){
   # start calculation of synthetic bands and extraction of the training data
   res <- calcex( useTrainData      = TRUE, 
-                 calculateBands    = FALSE, 
+                 calculateBands    = TRUE, 
                  extractTrain      = TRUE, 
                  prefixrunFN       = prefixrunFN,
                  suffixTrainGeom   = "TrainingArea",
                  prefixTrainGeom   = "index_", 
-                 indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") , 
+                 #indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") , 
                  channels          = c("red", "green", "blue"),  
                  hara              = FALSE,
                  haraType          = c("simple"),   
@@ -85,7 +85,7 @@ if (startTrain){
   # classes IDs as given by the training vector files ID column
   idNumber=c(1,2,3,4,5)
   # rename them 
-  idNames= c("green","greenish","bud","nogreen","nogreen")
+  idNames= c("green","greenish","nogreen","nogreen","nogreen")
   
   # load raw training dataframe
   if (!(exists)("trainDF"))
@@ -117,13 +117,13 @@ if (startTrain){
                                   spaceVar     = "FN",
                                   names        =  na,
                                   noLoc        =  5,
-                                  pVal         = 0.01,
+                                  pVal         = 0.05,
                                   noClu = 4)
   
   # if parallel process was interuppted and not finished correctly the resulting R sessions will be killed
   system("kill -9 $(pidof R)")
   
-  save(result[[1]], file = paste0(path_output,prefixrunFN,"_model_ffs",".RData"))
+  #save(result[[1]], file = paste0(path_output,prefixrunFN,"_model_ffs",".RData"))
   save(result[[2]], file = paste0(path_output,prefixrunFN,"_model_final",".RData"))
   
   perf <- model_final$pred[model_final$pred$mtry==model_final$bestTune$mtry,]

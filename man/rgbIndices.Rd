@@ -4,8 +4,9 @@
 \alias{rgbIndices}
 \title{RGB indices}
 \usage{
-rgbIndices(red, green, blue, rgbi = c("VVI", "VARI", "NDTI", "RI", "CI", "BI",
-  "SI", "HI", "TGI", "GLI", "NGRDI", "GLAI"))
+rgbIndices(red, green, blue, rgbi = c("VVI", "VARI", "NDTI", "RI", "SCI",
+  "BI", "SI", "HI", "TGI", "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT",
+  "SHP"))
 }
 \arguments{
 \item{rgbi}{the implemented RGB indices currently \link{seealso}
