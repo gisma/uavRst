@@ -179,7 +179,7 @@ rgbIndices <- function(red,green,blue,
     } else if (item == "HUE") {
       # HUE Index https://www.indexdatabase.de/search/?s=HUE
       cat("\n      calculate Hue Index (HUE)")
-      HUE <- 	 arctan(2 * (red - green - blue) / 30.5 * (green - blue))
+      HUE <- 	 atan(2 * (red - green - blue) / 30.5 * (green - blue))
       names(HUE) <- "HUE"
       return(HUE)
       
