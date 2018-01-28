@@ -54,6 +54,8 @@ currentIdxFolder  = path_data_training_idx
 
 # set working directory dirty but helpful
 setwd(path_run)
+# clean run dir
+unlink(paste0(path_run,"*"), force = TRUE)
 if (startCalcex){
   # start calculation of synthetic bands and extraction of the training data
   res <- calcex( useTrainData      = TRUE, 
@@ -62,7 +64,9 @@ if (startCalcex){
                  prefixrunFN       = prefixrunFN,
                  suffixTrainGeom   = "TrainingArea",
                  prefixTrainGeom   = "index_", 
-                 #indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") , 
+                 indices           = c("VARI"), #,"NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") , 
+                 RGBTrans          = TRUE,
+                 colorSpaces       = c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
                  channels          = c("red", "green", "blue"),  
                  hara              = FALSE,
                  haraType          = c("simple"),   

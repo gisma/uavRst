@@ -31,6 +31,8 @@
 #' @param morpho            logical switch for using morphological filtering default = TRUE
 #' @param morphoType        morphological options default is c("dilate","erode","opening","closing") all options are ("dilate","erode","opening","closing")
 #' @param indices           RGB indices default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VARI","NDTI","TGI","GLI","NGRDI","GLAI") 
+#' @param RGBTrans          logical switch for using color space transforming default = TRUE
+#' @param colorSpaces        RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
 #' @param kernel            size of kernel for filtering and statistics default is  3
 #' @param currentDataFolder  NULL folder to image (and shape) data
 #' @param  currentidxFolder  NULL folder for saving the results
@@ -93,6 +95,8 @@ calcex<- function ( useTrainData      = TRUE,
                     indices           = c("VVI","VARI","NDTI","RI","SCI","BI",
                                           "SI","HI","TGI","GLI","NGRDI","GRVI",
                                           "GLAI","HUE","CI","SAT","SHP") , 
+                    RGBTrans          = TRUE,
+                    colorSpaces       = c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
                     kernel            = 3, 
                     currentDataFolder = NULL,
                     currentIdxFolder  = NULL){
@@ -141,6 +145,34 @@ if (calculateBands) {
                         paste0("rgbi_",basename(imageFiles[i])),
                         progress = "text",                        
                         overwrite=TRUE)
+    # if RGB transform
+    if (RGBTrans){
+      
+      cat(":::: processing color transformation to... ",colorSpaces,"\n")
+      uavRst::imageMagickconvert(input = imageFiles[i],
+                                 colorspace = colorSpaces)
+      rgbtranslist<-list()
+      jj=1
+      for (colMod in colorSpaces) {
+        rgbtranslist[[jj]]<-paste0(colMod,"_",basename(imageFiles[i]))
+        jj<-jj+1
+      }
+      rt<- lapply(rgbtranslist, FUN=raster::raster)
+      for (jj in 1:length(rt)) {
+        extent(rt[[jj]])<-extent(r)
+        projection(rt[[jj]]) <- CRS(projection(r))
+        cat("     writing... ",colorSpaces[jj],"_",basename(imageFiles[i]),"\n")
+        raster::writeRaster(rt[[jj]],
+                            paste0(colorSpaces[jj],"_ref",basename(imageFiles[i])),
+                            overwrite=TRUE,
+                            progress="text")
+      }
+      file.remove(unlist(rgbtranslist))
+      #r<-raster::stack(imageFiles[i])
+      
+      bnames <-append(bnames,makebNames(RGBtrans = colorSpaces))
+      
+    }
     
     # assign bandnumber according to name
     cat("\n")

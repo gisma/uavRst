@@ -12,8 +12,9 @@ calcex(useTrainData = TRUE, calculateBands = TRUE, extractTrain = TRUE,
   edgeType = c("gradient", "sobel", "touzi"), morpho = TRUE,
   morphoType = c("dilate", "erode", "opening", "closing"),
   indices = c("VVI", "VARI", "NDTI", "RI", "SCI", "BI", "SI", "HI", "TGI",
-  "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), kernel = 3,
-  currentDataFolder = NULL, currentIdxFolder = NULL)
+  "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), RGBTrans = TRUE,
+  colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ",
+  "YUV"), kernel = 3, currentDataFolder = NULL, currentIdxFolder = NULL)
 }
 \arguments{
 \item{useTrainData}{logical switch for choosing training data (which needs much more/all possible channels) or classification data the necessary ones # useTrainData switch to decide if using training images or classification data (FALSE) default = TRUE}
@@ -48,6 +49,10 @@ using stats will cover mean and variance while dissimilarity is highly correlate
 \item{morphoType}{morphological options default is c("dilate","erode","opening","closing") all options are ("dilate","erode","opening","closing")}
 
 \item{indices}{RGB indices default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VARI","NDTI","TGI","GLI","NGRDI","GLAI")}
+
+\item{RGBTrans}{logical switch for using color space transforming default = TRUE}
+
+\item{colorSpaces}{RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")}
 
 \item{kernel}{size of kernel for filtering and statistics default is  3}
 

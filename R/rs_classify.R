@@ -361,7 +361,8 @@ makebNames <- function(rgbi    = NA,
                        haratxt = NA,
                        stat    = FALSE,
                        morpho  = NA,
-                       edge    = NA ){
+                       edge    = NA ,
+                       RGBtrans=NA){
   
   if (!is.na(rgbi[1])) bnames <- append(c("red","green","blue"),rgbi)
   if (!is.na(haratxt)) {
@@ -423,6 +424,9 @@ makebNames <- function(rgbi    = NA,
   
   if (!is.na(edge))  {
     bnames    =  edge
+  } 
+  if (!is.na(RGBtrans))  {
+    bnames    =  RGBtrans
   } 
   return(bnames)
   

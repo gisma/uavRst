@@ -5,7 +5,7 @@
 \title{create name vector corresponding to the training image stack}
 \usage{
 makebNames(rgbi = NA, haratxt = NA, stat = FALSE, morpho = NA,
-  edge = NA)
+  edge = NA, RGBtrans = NA)
 }
 \arguments{
 \item{rgbi}{default is  NA}
