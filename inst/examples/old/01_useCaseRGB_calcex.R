@@ -1,4 +1,4 @@
-# 01_useCaseRGB_calcex.R
+y# 01_useCaseRGB_calcex.R
 
 # The usecaseRGB 01-04 scripts are providing a common workflow for a random forest based classification of visible imagery.
 # The worflow is divided in 4 steps:

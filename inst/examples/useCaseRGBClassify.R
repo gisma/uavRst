@@ -28,7 +28,7 @@ devtools::install_github("gisma/link2GI", ref = "master")
 rm(list =ls())
 
 # set processing switches
-startCalcex  = TRUE
+startCalcex  = FALSE
 startTrain   = TRUE
 startPredict = TRUE
 
@@ -91,7 +91,7 @@ if (startTrain){
   # classes IDs as given by the training vector files ID column
   idNumber=c(1,2,3,4,5)
   # rename them 
-  idNames= c("green","greenish","nogreen","nogreen","nogreen")
+  idNames= c("green","nogreen","nogreen","nogreen","nogreen")
   
   # load raw training dataframe
   if (!(exists)("trainDF"))
@@ -115,7 +115,7 @@ if (startTrain){
   na<-names(trainDF)
   # cut leading and tailing ID/FN
   predictNames<-na[3:length(na)-1]
-  
+  pVal<- 0.1
   # call Training 
   result<-  uavRst::ffsTrainModel(trainingDF = trainDF,
                                   predictors   = predictNames,
@@ -123,15 +123,15 @@ if (startTrain){
                                   spaceVar     = "FN",
                                   names        =  na,
                                   noLoc        =  5,
-                                  pVal         = 0.05,
+                                  pVal         = pVal,
                                   noClu = 4)
   
   # if parallel process was interuppted and not finished correctly the resulting R sessions will be killed
   system("kill -9 $(pidof R)")
   
-  #save(result[[1]], file = paste0(path_output,prefixrunFN,"_model_ffs",".RData"))
-  save(result[[2]], file = paste0(path_output,prefixrunFN,"_model_final",".RData"))
-  
+
+  saveRDS(result, file = paste0(path_output,prefixrunFN,"_",pVal,"_model_final",".rds"))
+  model_final=result[[2]]
   perf <- model_final$pred[model_final$pred$mtry==model_final$bestTune$mtry,]
   # scores for categorical 
   skills <- classificationStats(perf$pred,perf$obs, plot = T) 
