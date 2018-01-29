@@ -47,8 +47,13 @@
 #' 
 #' @seealso 
 #' For a comprehensive overview of remote sensing indices have a look at: \href{http://www.indexdatabase.de/db/i.php}{A database for remote sensing indices}\cr
-#' Wavelength ranges for overlapping digital camera bands are: red 580-670 nm, green 480-610 nm, and blue 400-520 nm (Hunt et al., 2005)
-#' \href{http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=2161&context=usdaarsfacpub}{Hunt et al., 2005}
+#' Approximatly wavelength ranges for overlapping digital camera bands are: 
+#' \itemize{
+#' \item \code{red} 580-670 nm, 
+#' \item \code{green} 480-610 nm, 
+#' \item \code{blue} 400-520 nm
+#'}
+#' \href{http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=2161&context=usdaarsfacpub}{Hunt et al., 2005}. However check the manual of your camera. 
 #' 
 #' @examples
 #' \dontrun{
