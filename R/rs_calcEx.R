@@ -1,7 +1,7 @@
 #' calculation of spectral indices, basic spatial statistics and textures and
 #'      optionally extracting pix values over all channels according to vector data
 #' @description 
-#' The usecaseRGB functions are providing a common workflow for a random forest based classification of visible imagery.
+#' The calcex function covers step 1 of the  usecaseRGBClassify workflow for a random forest based classification of visible imagery.
 #' The worflow is divided in 4 steps:\cr\cr
 #' (01) calculation of spectral indices, basic spatial statistics and textures and
 #'      extracting of training values over all channels according to training data
@@ -12,6 +12,7 @@
 #'      all rgb data according to the model requests (01_useCaseRGB_calcex.R)\cr\cr
 #' (04) prediction (02_useCaseRGB_predict.R)\cr\cr
 #' (05) basic analysis and results extraction (04_useCaseRGB_analyze.R)\cr\cr
+#' 
 #' @param useTrainData      logical switch for choosing training data (which needs much more/all possible channels) or classification data the necessary ones # useTrainData switch to decide if using training images or classification data (FALSE) default = TRUE
 #' @param calculateBands    logical switch for set on calculation of syntheic bands and indices default = TRUE
 #' @param extractTrain      logical switch for set on extract training data according to training geometries default = TRUE
