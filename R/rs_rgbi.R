@@ -4,42 +4,51 @@
 #' This function calculates various spectral indices from a RGB. It returns at least red green and blue as splitted channels in a stack. Additionally you can choose RGB indices.
 #' \code{Raster*} object.  
 #' 
-#' @param rgb a \code{RasterStack} or \code{RasterBrick} object. 3
-#' bands are mandatory (for RGB indices they should be: "red", "green" and "blue").
-#' @param rgbi the implemented RGB indices currently \link{seealso}
-
-
-#' A \code{RasterLayer} with the index calculates as:\cr
-#' BI    sqrt((R**2+G**2+B*2)/3 Brightness Index\cr
-#' CI    (R-G)/(R+G) Soil Colour Index\cr
-#' GLI   (2*g - r - b)/(2*g + r + b) Green leaf index Vis Louhaichi et al. (2001)\cr
-#' HI    (2*R-G-B)/(G-B) Primary colours Hue Index\cr
-#' NDTI  (R-G)/(R+G) Normalized difference turbidity index Water\cr
-#' NGRDI (G-R)/(G+R) Normalized green red difference index (sometimes GRVI) Tucker (1979)
-#' RI    R**2/(B*G**3) Redness Index\cr
-#' SI    (R-B)/(R+B) Spectral Slope Saturation Index\cr
-#' TGI   -0.5[190(R670-R550)-120(R670 - R480)] The triangular greenness index (TGI) estimates chlorophyll concentration in leaves and canopies\cr
-#' VARI  (green-red)/(green+red-blue). A Visible Atmospherically Resistant Index (VARI)\cr
-#' VVI   (1-(r-30)/(r+30))*(1-(g-50)/(g+50))*(1-(b-1)/(b+1))
-#  GLAI  (25 * (green - red) / (green +  red -  blue ) + 1.25 )
-#' 
+#' @param red   a single \code{Raster} or \code{RasterBrick} band.
+#' @param green a single \code{Raster} or \code{RasterBrick} band.
+#' @param blue  a single \code{Raster} or \code{RasterBrick} band.
+#' @param rgbi the implemented RGB indices currently 
+#' \itemize{
+#'\item \code{BI}    sqrt((R**2+G**2+B*2)/3 Brightness Index\cr
+#'\item \code{SCI}   (R-G)/(R+G) Soil Colour Index\cr
+#'\item \code{GLI}   (2*g - r - b)/(2*g + r + b) Green leaf index Vis Louhaichi et al. (2001)\cr
+#'\item \code{HI}    (2*R-G-B)/(G-B) Primary colours Hue Index\cr
+#'\item \code{NDTI}  (R-G)/(R+G) Normalized difference turbidity index Water\cr
+#'\item \code{NGRDI} (G-R)/(G+R) Normalized green red difference index (sometimes GRVI) Tucker (1979)
+#'\item \code{RI}    R**2/(B*G**3) Redness Index\cr
+#'\item \code{SI}    (R-B)/(R+B) Spectral Slope Saturation Index\cr
+#'\item \code{TGI}   -0.5[190(R670-R550)-120(R670 - R480)] The triangular greenness index (TGI) estimates chlorophyll concentration in leaves and canopies\cr
+#'\item \code{VARI}  (green-red)/(green+red-blue). A Visible Atmospherically Resistant Index (VARI)\cr
+#'\item \code{VVI}   (1-(r-30)/(r+30))*(1-(g-50)/(g+50))*(1-(b-1)/(b+1))\cr
+#'\item \code{GLAI}  (25 * (green - red) / (green +  red -  blue ) + 1.25 )\cr
+#'\item \code{GRVI}  (green-red)/(green+red)  Green-Red Vegetation Index
+#'\item \code{CI}    (red - blue) / red Coloration Index
+#'\item \code{HUE}   atan(2 * (red - green - blue) / 30.5 * (green - blue)) Overall Hue Index
+#'\item \code{SAT}   (max(red,green,blue) - min(red,green,blue)) / max(red,green,blue) Overall Saturation Index
+#'\item \code{SHP} 	 2 * (red - green - blue) / (green - blue) Shape index
+#' }
 #' 
 #' @export rgbIndices
 #' 
 #' @references
 #' 
-#' Planetary Habitability Laboratory (2015): Visible Vegetation Index (VVI). Available online via \url{http://phl.upr.edu/projects/visible-vegetation-index-vvi}.\cr
+#' Planetary Habitability Laboratory (2015): Visible Vegetation Index (VVI). Available online via \href{http://phl.upr.edu/projects/visible-vegetation-index-vvi}{VVI}.\cr
 #' Lacaux, J. P., Tourre, Y. M., Vignolles, C., Ndione, J. A., and Lafaye, M.: Classification of ponds from high-spatial resolution remote sensing: Application to Rift Valley Fever epidemics in Senegal, Remote Sens. Environ., 106, 66-74, 2007.(NDTI) )\cr
 #' Gitelson, A., et al.: Vegetation and Soil Lines in Visible Spectral Space: A Concept and Technique for Remote Estimation of Vegetation Fraction.  International Journal of Remote Sensing 23 (2002): 2537-2562. (VARI)\cr
 #' MADEIRA, J., BEDIDI, A., CERVELLE, B., POUGET, M. and FLAY, N., 1997, Visible spectrometric indices of hematite (Hm) and goethite (Gt) content in lateritic soils: 5490 N. Levin et al. the application of a Thematic Mapper (TM) image for soil-mapping in Brasilia, Brazil. International Journal of Remote Sensing, 18, pp. 2835-2852.\cr
 #' MATHIEU, R., POUGET, M., CERVELLE, B. and ESCADAFAL, R., 1998, Relationships between satellite-based radiometric indices simulated using laboratory reflectance data and typic soil colour of an arid environment. Remote Sensing of Environment, 66, pp. 17-28. \cr
 #' Louhaichi, M., Borman, M.M., Johnson, D.E., 2001. Spatially located platform and aerial photography for documentation of grazing impacts on wheat. Geocarto International 16, 65-70.\cr
 #' Tucker, C.J., 1979. Red and photographic infrared linear combinations for monitoring vegetation. Remote Sensing of Environment 8, 127-150.\cr
+#' GRVI  Green-Red Vegetation Index  Remote Sensing 2010, 2, 2369-2387; doi:10.3390/rs2102369\cr
+#' CI  \href{https://www.indexdatabase.de/search/?s=color}{IDB Coloration}\cr
+#' HUE Index \href{https://www.indexdatabase.de/search/?s=HUE}{IDB Hue}\cr
+#' Saturation Index \href{https://www.indexdatabase.de/db/i-single.php?id=77}{IDB Saturation}\cr
+#' Shape Index \href{https://www.indexdatabase.de/search/?s=shape}{IDB Shape}\cr
 #' 
 #' @seealso 
-#' For a comprehensive overview of remote sensing indices have a look at: \url{http://www.indexdatabase.de/db/i.php}(A database for remote sensing indices)\cr
+#' For a comprehensive overview of remote sensing indices have a look at: \href{http://www.indexdatabase.de/db/i.php}{A database for remote sensing indices}\cr
 #' Wavelength ranges for overlapping digital camera bands are: red 580-670 nm, green 480-610 nm, and blue 400-520 nm (Hunt et al., 2005)
-#' \url{http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=2161&context=usdaarsfacpub}
+#' \href{http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=2161&context=usdaarsfacpub}{Hunt et al., 2005}
 #' 
 #' @examples
 #' \dontrun{

@@ -49,7 +49,7 @@ using stats will cover mean and variance while dissimilarity is highly correlate
 
 \item{morphoType}{morphological options default is c("dilate","erode","opening","closing") all options are ("dilate","erode","opening","closing")}
 
-\item{indices}{RGB indices default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VARI","NDTI","TGI","GLI","NGRDI","GLAI")}
+\item{indices}{RGB indices default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP")}
 
 \item{RGBTrans}{logical switch for using color space transforming default = TRUE}
 

@@ -35,7 +35,7 @@
 #' @param edgeType          edge options default is c("gradient","sobel","touzi") all options are c("gradient","sobel","touzi")
 #' @param morpho            logical switch for using morphological filtering default = TRUE
 #' @param morphoType        morphological options default is c("dilate","erode","opening","closing") all options are ("dilate","erode","opening","closing")
-#' @param indices           RGB indices default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VARI","NDTI","TGI","GLI","NGRDI","GLAI") 
+#' @param indices           RGB indices default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP") 
 #' @param RGBTrans          logical switch for using color space transforming default = TRUE
 #' @param colorSpaces        RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
 #' @param kernel            size of kernel for filtering and statistics default is  3
