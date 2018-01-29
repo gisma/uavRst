@@ -64,7 +64,7 @@ using stats will cover mean and variance while dissimilarity is highly correlate
 \item{currentidxFolder}{NULL folder for saving the results}
 }
 \description{
-The usecaseRGB functions are providing a common workflow for a random forest based classification of visible imagery.
+The calcex function covers step 1 of the  usecaseRGBClassify workflow for a random forest based classification of visible imagery.
 The worflow is divided in 4 steps:\cr\cr
 (01) calculation of spectral indices, basic spatial statistics and textures and
      extracting of training values over all channels according to training data

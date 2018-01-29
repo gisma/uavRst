@@ -259,7 +259,8 @@ if (calculateBands) {
     # create an alltogether stack
     tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
     cat(catOk("     save ...",prefixTrainGeom, tmpFN,"\n"))
-    r<-raster::brick(raster::stack(flist))
+    # r<-raster::brick(raster::stack(flist)) qgis cannot read heder
+    r<-(raster::stack(flist))
     if (raster::nlayers(r)!=length(bnames)) stop("\n Number of names and layers differ...\n most common case is a broken cleanup of the runtime directory!")
     names(r)<-bnames
     # write file to envi
@@ -269,7 +270,7 @@ if (calculateBands) {
                         progress ="text",
                         #options="COMPRESS=LZW",
                         overwrite=TRUE)
-    raster::hdr(r, filename = paste0(currentIdxFolder,"/", prefixTrainGeom,tmpFN), format = "ENVI")
+    #raster::hdr(r, filename = paste0(currentIdxFolder,"/", prefixTrainGeom,tmpFN), format = "ENVI") qgis cannot read heder
 
     # cleanup runtime files lists...
     if (cleanTiffs) {
