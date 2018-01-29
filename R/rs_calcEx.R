@@ -8,14 +8,14 @@
 #'\item \code{startTrain  = TRUE} start training. NOTE: you may set more switsches in the call of calcex
 #'\item \code{startPredict  = TRUE} start prediction. NOTE: you may set more switsches in the call of calcex
 #'}
-#' (01) calculation of spectral indices, basic spatial statistics and textures and
-#'      extracting of training values over all channels according to training data
-#'      \cr\cr
-#' (02) model training using random forest and the forward feature selection method\cr\cr
-#' (03) calculation spectral indices, basic spatial statistics and textures for 
-#'      all rgb data according to the model requests\cr\cr
-#' (04) prediction\cr\cr
-#' (05) basic analysis and results extraction (04_useCaseRGB_analyze.R highly preliminary) \cr\cr
+#' (01) calcex() calculation of spectral indices, basic spatial statistics and textures and
+#'               extracting of training values over all channels according to training data\cr\cr
+#' (02) ffsTrainModel() training using random forest and the forward feature selection method \cr
+#'                      startTrain=TRUE\cr\cr
+#' (03) calcex() with respect to the selected predictor variables you may calculate 
+#'               the requested channels for all rgb data that you want to predict.\cr\cr
+#' (04) prediction startPredict=TRUE\cr\cr
+#' (05) for a basic analysis and results extraction have a look at useCaseRGB_analyze.R (highly preliminary!) \cr\cr
 #' 
 #' @param useTrainData      logical switch for choosing training data (which needs much more/all possible channels) or classification data the necessary ones # useTrainData switch to decide if using training images or classification data (FALSE) default = TRUE
 #' @param calculateBands    logical switch for set on calculation of syntheic bands and indices default = TRUE
