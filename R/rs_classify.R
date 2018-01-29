@@ -429,7 +429,7 @@ makebNames <- function(rgbi    = NA,
     bnames    =  edge
   } 
   if (!is.na(RGBtrans))  {
-    bnames    =  bnames <- c(paste0(RGBtrans,"_b1"),paste0(RGBtrans,"_b2"),paste0(RGBtrans,"_b3"), paste0(RGBtrans,"_b4"))
+    bnames    =  bnames <- c(paste0(RGBtrans,"_b1"),paste0(RGBtrans,"_b2"),paste0(RGBtrans,"_b3"))
   } 
   return(bnames)
   

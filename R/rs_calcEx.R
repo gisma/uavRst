@@ -171,7 +171,7 @@ if (calculateBands) {
         extent(rt[[jj]])<-extent(r)
         projection(rt[[jj]]) <- CRS(projection(r))
         cat(catOk(":::: save... ",colorSpaces[jj],"_",basename(imageFiles[i]),"\n"))
-        raster::writeRaster(rt[[jj]],
+        raster::writeRaster(stack(rt[[jj]][[1:3]]),
                             paste0(colorSpaces[jj],"_ref",basename(imageFiles[i])),
                             overwrite=TRUE,
                             options="INTERLEAVE=BAND",
@@ -256,20 +256,19 @@ if (calculateBands) {
     # end of single channnel calculation
     
     # create an alltogether stack
-    r<-raster::stack(flist)
-    if (raster::nlayers(r)!=length(bnames)) stop("\n Number of names and layers differ...\n most common case is a broken cleanup of the runtime directory!")
-    names(r)<-bnames
-    
-    # extract filename    
     tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
     cat(catOk("     save ...",prefixTrainGeom, tmpFN,"\n"))
-
+    r<-raster::brick(raster::stack(flist))
+    if (raster::nlayers(r)!=length(bnames)) stop("\n Number of names and layers differ...\n most common case is a broken cleanup of the runtime directory!")
+    names(r)<-bnames
     # write file to envi
     raster::writeRaster(r,
                         paste0(currentIdxFolder,"/", prefixTrainGeom,tmpFN),
                         format="ENVI", 
                         progress ="text",
+                        #options="COMPRESS=LZW",
                         overwrite=TRUE)
+    raster::hdr(r, filename = paste0(currentIdxFolder,"/", prefixTrainGeom,tmpFN), format = "ENVI")
 
     # cleanup runtime files lists...
     if (cleanTiffs) {

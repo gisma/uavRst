@@ -70,7 +70,7 @@ if (startCalcex){
                  RGBTrans          = TRUE,
                  colorSpaces       = c("CIELab","XYZ","YUV"),
                  channels          = c("red"),# "green", "blue"),  
-                 hara              = TRUE,
+                 hara              = FALSE,
                  haraType          = c("simple"), #,"advanced","higher"),   
                  stat              = TRUE, 
                  edge              = TRUE, 
