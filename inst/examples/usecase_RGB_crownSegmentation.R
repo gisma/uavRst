@@ -60,7 +60,7 @@ saga <- link2GI::linkSAGA()
   i <- 1
   for (index in indices) {
     cat("convert ",index,"\n")
-    h_r2saga(rgbI[[i]],index)
+    r2saga(rgbI[[i]],index)
     i <- i + 1
   }
 

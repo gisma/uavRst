@@ -40,9 +40,9 @@ h_read_gpx <- function(file,
 }
 
 
-if (!isGeneric('h_xyz2tif')) {
-  setGeneric('h_xyz2tif', function(x, ...)
-    standardGeneric('h_xyz2tif'))
+if (!isGeneric('xyz2tif')) {
+  setGeneric('xyz2tif', function(x, ...)
+    standardGeneric('xyz2tif'))
 }
 #' Read and Convert xyz DEM/DSM Data as typically provided by the Authorities
 #' 
@@ -67,17 +67,17 @@ if (!isGeneric('h_xyz2tif')) {
 #'       junkpaths = TRUE,
 #'       overwrite = TRUE)
 #' 
-#' h_xyz2tif(file.path(getwd(),
+#' xyz2tif(file.path(getwd(),
 #'           basename(grep(".g01dgm", 
 #'           unzip(res,list = TRUE)$Name,value = TRUE))))
 #' 
 #' plot(raster(paste0(getwd(),"/",file_path_sans_ext(basename(file.path(getwd(),
 #' basename(grep(".g01dgm", unzip(res,list = TRUE)$Name,value = TRUE))))),".tif")))
 #' }
-#' @export h_xyz2tif
+#' @export xyz2tif
 #' 
 
-h_xyz2tif <- function(xyzFN=NUL,  epsgCode ="25832"){
+xyz2tif <- function(xyzFN=NUL,  epsgCode ="25832"){
   # read data 
   xyz<-data.table::fread(xyzFN)
   cat("write it to",paste0(dirname(xyzFN),"/",tools::file_path_sans_ext(basename(xyzFN)),".tif"),"\n")
@@ -156,7 +156,7 @@ h_comp_ll_proj4 <- function(x) {
 #' @param export write shafefile default = F 
 #' @export
 #' 
-h_sp_line <- function(p1,
+sp_line <- function(p1,
                       p2,
                       ID,
                       proj4="+proj=longlat +datum=WGS84 +no_defs",
@@ -176,7 +176,7 @@ h_sp_line <- function(p1,
 #' @param export write shafefile default = F 
 #' @export
 #' 
-h_sp_point <- function(lon,
+sp_point <- function(lon,
                        lat,
                        ID="point",
                        proj4="+proj=longlat +datum=WGS84 +no_defs",
@@ -198,7 +198,7 @@ h_sp_point <- function(lon,
 #' @param line  sp object
 #' @export
 #' 
-h_line_extract_maxpos <- function(dem,line){
+line_extract_maxpos <- function(dem,line){
   mask <- dem
   raster::values(mask) <- NA
   #...update it with the altitude information of the flightline
@@ -219,7 +219,7 @@ h_line_extract_maxpos <- function(dem,line){
 #' extract for all polygons the position of the maximum value
 #' @export
 #' 
-h_poly_extract_maxpos <- function(x,lN, poly_split=TRUE){
+poly_extract_maxpos <- function(x,lN, poly_split=TRUE){
   # read raster input data 
   if (poly_split) {system(paste0("rm -rf ",paste0(path_tmp,"split")))}
   dem <- raster::raster(x)
@@ -339,7 +339,7 @@ h_grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
 #' @export
-h_shape2grass <- function(runDir = NULL, layer = NULL) {
+shape2grass <- function(runDir = NULL, layer = NULL) {
   # import point locations to GRASS
   rgrass7::execGRASS('v.in.ogr',
                      flags  = c('o',"overwrite","quiet"),
@@ -353,7 +353,7 @@ h_shape2grass <- function(runDir = NULL, layer = NULL) {
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
 #' @export
-h_grass2shape <- function(runDir = NULL, layer = NULL){
+grass2shape <- function(runDir = NULL, layer = NULL){
   rgrass7::execGRASS("v.out.ogr",
                      flags  = c("overwrite","quiet"),
                      input  = layer,
@@ -369,7 +369,7 @@ h_grass2shape <- function(runDir = NULL, layer = NULL){
 #' @param fn filname without extension
 #' @param ext extent of the raster in R notation
 #' @export
-h_saga2r<- function(fn,ext) {
+saga2r<- function(fn,ext) {
   gdalUtils::gdalwarp(paste0(path_run,fn,".sdat"), 
                       paste0(path_run,fn,".tif"), 
                       overwrite = TRUE,  
@@ -385,7 +385,7 @@ h_saga2r<- function(fn,ext) {
 #' @param x raster object
 #' @param fn filname without extension
 #' @export
-h_r2saga <- function(x,fn) {
+r2saga <- function(x,fn) {
   
   raster::writeRaster(x,paste0(path_run,fn,".tif"),overwrite = TRUE)
   # convert to SAGA

@@ -59,7 +59,7 @@ fa_tree_segementation <- function(x = NULL,
   cat("\n:: start crown identification...\n")
   options(warn=-1)
   if (!exists(sagaCmd)) link2GI::linkSAGA()
-  h_r2saga(x,"chm")
+  r2saga(x,"chm")
   if (seeding){
   cat(":: run seed finding...\n")
   # first segment run is a simple watershed segementation just for deriving more reliable seeds 
@@ -88,7 +88,7 @@ fa_tree_segementation <- function(x = NULL,
   
   # create raw zero mask
   seeds <- ts[[1]] * x
-  h_r2saga(seeds,"treeSeeds")
+  r2saga(seeds,"treeSeeds")
   
   # reclass extracted seeds to minTreeAlt
   ret <- system(paste0(sagaCmd, "  grid_tools 15 ",

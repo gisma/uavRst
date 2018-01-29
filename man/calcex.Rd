@@ -65,16 +65,20 @@ using stats will cover mean and variance while dissimilarity is highly correlate
 }
 \description{
 The calcex function covers step 1 of the  usecaseRGBClassify workflow for a random forest based classification of visible imagery.
-The worflow is divided in 4 steps:\cr\cr
+The worflow is divided in 4 steps and can be controlled by using the  processing switches of the example (inst/examples/useCaseRGBclassify.R) script :\cr
+  \itemize{
+\item \code{startCalcex  = TRUE} start extraction. NOTE: you may set more switsches in the call of calcex
+\item \code{startTrain  = TRUE} start training. NOTE: you may set more switsches in the call of calcex
+\item \code{startPredict  = TRUE} start prediction. NOTE: you may set more switsches in the call of calcex
+}
 (01) calculation of spectral indices, basic spatial statistics and textures and
      extracting of training values over all channels according to training data
-     (calcex)\cr\cr
-(02) model training using random forest and the forward feature selection method
-     (02_useCaseRGB_train.R)\cr\cr
+     \cr\cr
+(02) model training using random forest and the forward feature selection method\cr\cr
 (03) calculation spectral indices, basic spatial statistics and textures for 
-     all rgb data according to the model requests (01_useCaseRGB_calcex.R)\cr\cr
-(04) prediction (02_useCaseRGB_predict.R)\cr\cr
-(05) basic analysis and results extraction (04_useCaseRGB_analyze.R)\cr\cr
+     all rgb data according to the model requests\cr\cr
+(04) prediction\cr\cr
+(05) basic analysis and results extraction (04_useCaseRGB_analyze.R highly preliminary) \cr\cr
 }
 \examples{
 \dontrun{

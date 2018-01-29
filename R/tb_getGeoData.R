@@ -1,12 +1,12 @@
-if (!isGeneric('t_getgeodata')) {
-  setGeneric('t_getgeodata', function(x, ...)
-    standardGeneric('t_getgeodata'))
+if (!isGeneric('getGeodata')) {
+  setGeneric('getGeodata', function(x, ...)
+    standardGeneric('getGeodata'))
 }
-#'@name t_getgeodata
+#'@name getGeodata
 #'
 #'@title Retrieves online geodata and converts it to raster/sp objects
 #'
-#'@description Robert J. Hijmans getData() from the raster package is well known and highly used. The only disadvantage is that it currently doesn't support a bunch of great additional and/or improved/newer data sets.  t_getgeodata provides some more actual or better choices for climate and DEM data as well as some easy to use interfaces to OSM and other crowd sourced data compilations.
+#'@description Robert J. Hijmans getData() from the raster package is well known and highly used. The only disadvantage is that it currently doesn't support a bunch of great additional and/or improved/newer data sets.  getGeodata provides some more actual or better choices for climate and DEM data as well as some easy to use interfaces to OSM and other crowd sourced data compilations.
 #' The main issue of the functionis to offer an easy to use access to a wider range of free to access data sets that may improve significantly the quality of typical ecological and other spatial analysis approaches by an straightforward utilization of data.
 #' You may download the data individually but by default all data will be downloaded georeferenced and converted in \link{raster} or \link{sp} objects.
 #'
@@ -36,8 +36,8 @@ if (!isGeneric('t_getgeodata')) {
 #' \code{alt} stands for altitude (elevation); the data were aggregated from SRTM 90 m resolution data between -60 and 60 latitude. \cr
 #' \code{countries} has polygons for all countries at a higher resolution than the 'wrld_simpl' data\cr in the maptools pacakge . \cr
 #'If  \code{name}='alt' or \code{name}='GADM' you must provide a 'country=' argument. Countries are specified by their 3 letter ISO codes. Use getData('ISO3') to see these codes. In the case of GADM you must also provide the level of administrative subdivision (0=country, 1=first level subdivision). In the case of alt you can set 'mask' to FALSE. If it is TRUE values for neighbouring countries are set to NA. For example:\cr \cr
-#'     \code{t_getgeodata('GADM', country='FRA', level=1)}\cr
-#'     \code{t_getgeodata('alt', country='FRA', mask=TRUE)}\cr
+#'     \code{getGeodata('GADM', country='FRA', level=1)}\cr
+#'     \code{getGeodata('alt', country='FRA', mask=TRUE)}\cr
 #'     }
 #'     
 #'\subsection{SRTM}{
@@ -48,7 +48,7 @@ if (!isGeneric('t_getgeodata')) {
 #'\subsection{CMIP5}{
 #'If \code{name}=CMIP5 for (projected) future climate data you must provide arguments var and res as above. Only resolutions 2.5, 5, and 10 are currently available. In addition, you need to provide model, rcp and year.
 #'For example:\cr
-#'   \code{t_getgeodata('CMIP5', var='tmin', res=10, rcp=85, model='AC', year=70)}\cr
+#'   \code{getGeodata('CMIP5', var='tmin', res=10, rcp=85, model='AC', year=70)}\cr
 #'   function (var, model, rcp, year, res, lon, lat, path, download = TRUE)\cr
 #'   'model' should be one of "AC", "BC", "CC", "CE", "CN", "GF", "GD", "GS", "HD", "HG", "HE", "IN", "IP", "MI", "MR", "MC", "MP", "MG", or "NO".\cr
 #'   'rcp' should be one of 26, 45, 60, or 85.\cr
@@ -59,8 +59,8 @@ if (!isGeneric('t_getgeodata')) {
 #'\subsection{worldclim}{
 #' \code{worldclim} is a database of global interpolated climate data. \cr
 #'If  \code{name}='worldclim' you must also provide a variable name 'var=', and a resolution 'res='. Valid variables names are 'tmin', 'tmax', 'prec' and 'bio'. Valid resolutions are 0.5, 2.5, 5, and 10 (minutes of a degree). In the case of res=0.5, you must also provide a lon and lat argument for a tile; for the lower resolutions global data will be downloaded. In all cases there are 12 (monthly) files for each variable except for 'bio' which contains 19 files.\cr
-#'    \code{t_getgeodata('worldclim', var='tmin', res=0.5, lon=5, lat=45)} \cr
-#'    \code{t_getgeodata('worldclim', var='bio', res=10)}\cr\cr
+#'    \code{getGeodata('worldclim', var='tmin', res=0.5, lon=5, lat=45)} \cr
+#'    \code{getGeodata('worldclim', var='bio', res=10)}\cr\cr
 #'}
 #'
 #'@section Additional Data Sets:
@@ -133,20 +133,20 @@ if (!isGeneric('t_getgeodata')) {
 #'\item \code{TT}: \code{startTime = 1}  is equivalent to the Januar 1659 \code{endTime = 4080}  is equvalent to December 1998
 #'}
 #'}
-#'\code{m<-t_getgeodata('schmatzPangea', item="tasmax_A_MO_pmip2_21k_oa_CCSM_eu_30s",startTime=1,endTime=3)}
-#'\code{m<-t_getgeodata('schmatzPangea', item="bioclim_A_MO_pmip2_21k_oa_CCSM_eu_30s",data="bio_1")}
-#'\code{TT<- t_getgeodata('schmaztLGMData', item='TT_Luterbacher_Xoplaki_1659-1998')}
+#'\code{m<-getGeodata('schmatzPangea', item="tasmax_A_MO_pmip2_21k_oa_CCSM_eu_30s",startTime=1,endTime=3)}
+#'\code{m<-getGeodata('schmatzPangea', item="bioclim_A_MO_pmip2_21k_oa_CCSM_eu_30s",data="bio_1")}
+#'\code{TT<- getGeodata('schmaztLGMData', item='TT_Luterbacher_Xoplaki_1659-1998')}
 #'}
 #'
 #'\subsection{Harry's Peaks}{
 #' \code{harrylist} is a list of world wide about 60.000 coordinates altitudes and names of summits. 
 #'If  \code{name=}'harrylist' you will download and clean the complete list\cr
-#'    \code{t_getgeodata('harrylist')}\cr \cr
+#'    \code{getGeodata('harrylist')}\cr \cr
 #'}
 #'\subsection{OSM Point Data}{
 #' \code{OSMp} is the OSM Point Data from the current OSM database\cr
 #'If  \code{name}='OSMp' you must provide lat_min,lat_max,lon_min,lon_max for the boundig box. Additionally you must set  the switch 'all' to \code{FALSE} if you just want to download a specified item. Then you have to  provide the content of the desired items in the 'key' and 'val' argument. According to this combination you have to provide a tag list containing the Tags of the element c('name','ele').\cr\cr
-#'    \code{t_getgeodata('OSMp', 
+#'    \code{getGeodata('OSMp', 
 #'                       extent=c(11.35547,11.40009,47.10114,47.13512), 
 #'                       key='natural',
 #'                       val='peak',
@@ -171,7 +171,7 @@ if (!isGeneric('t_getgeodata')) {
 #'}
 #'For use in ArcGIS the data is correctly georeferenced. However for R you MUST use the following proj4 strings if you want to project other data acccording to the Austrian Datum. DO NOT USE the default EPSG Code string! All datasets except Lienz are projected with: ''+proj=tmerc +lat_0=0 +lon_0=10.33333333333333 +k=1 +x_0=0 +y_0=-5000000 +ellps=bessel +towgs84=577.326, 90.129, 463.919, 5.137, 1.474, 5.297, 2.4232 +units=m'. Item=lz_10m (Lienz) has an different Central_Meridian. You have to change it to 13.333333.\cr
 #'
-#'\code{t_getgeodata('tiroldem', item = 'KU_DGM10')} \cr
+#'\code{getGeodata('tiroldem', item = 'KU_DGM10')} \cr
 #'}
 
 #'@references
@@ -186,65 +186,65 @@ if (!isGeneric('t_getgeodata')) {
 #'
 
 
-#'@export t_getgeodata
+#'@export getGeodata
 #'
 #'@examples
 #' \dontrun{
 #' ## get SRTM data at a position
-#' r<-t_getgeodata(name="SRTM",xtent = extent(11.,11.,50.,50.))
+#' r<-getGeodata(name="SRTM",xtent = extent(11.,11.,50.,50.))
 #' ## get SRTM data for an area
-#' r<-t_getgeodata(name="SRTM",xtent = extent(11.,17.,50.,56.))
+#' r<-getGeodata(name="SRTM",xtent = extent(11.,17.,50.,56.))
 #' ## get SRTM data for an area with a buffer zone 
 #' ## (e.g. for a cost or watershed analysis) zone is in degree
-#' r<-t_getgeodata(name="SRTM",xtent = extent(11.,17.,50.,56.), zone = 3.0)
+#' r<-getGeodata(name="SRTM",xtent = extent(11.,17.,50.,56.), zone = 3.0)
 #' ## get SRTM Tile names
-#' t<-t_getgeodata(name="SRTM",
+#' t<-getGeodata(name="SRTM",
 #'                 xtent = extent(11.,17.,50.,56.), 
 #'                 zone = 3.0, download = FALSE)
 #' ## get SRTM data for an area with a buffer and merge it
-#' r<-t_getgeodata(name="SRTM",
+#' r<-getGeodata(name="SRTM",
 #'                 xtent = extent(11.,17.,50.,56.), 
 #'                 zone = 3.0, merge = TRUE)
 #'
 #' ## get Schmatz et al. data please have a look at details
-#' r<- t_getgeodata('schmatzPangea', 
+#' r<- getGeodata('schmatzPangea', 
 #'                   item='tasmin_A_MO_pmip2_21k_oa_CNRM_eu_30s',
 #'                   endTime=12)
-#' r<- t_getgeodata('schmatzPangea', 
+#' r<- getGeodata('schmatzPangea', 
 #'                   item="bioclim_A_MO_pmip2_21k_oa_CCSM_eu_30s", 
 #'                   layer="bio_1")
 #'
 #' ## get a single tile of the Tirolean DEM
-#' r<- t_getgeodata('tiroldem', 
+#' r<- getGeodata('tiroldem', 
 #'                   items='IBK_DGM10')
 #'                   
 #' ## get a single 3 tiles of the Tirolean DEM as a merged raster
-#' r<- t_getgeodata('tiroldem', 
+#' r<- getGeodata('tiroldem', 
 #'                   item=c('IBK_DGM10','IL_DGM10','IM_DGM10'), 
 #'                   merge =TRUE)
 #'
 #' # get arbitrary OSM point data
-#' r<- t_getgeodata('OSMp', 
+#' r<- getGeodata('OSMp', 
 #'                   extent=c(11.35547,11.40009,47.10114,47.13512), 
 #'                   key='natural',
 #'                   val='saddle',
 #'                   taglist=c('name','ele','direction'))
 #'
 #' # get Harald Breitkreutz' summit list
-#' r<- t_getgeodata('harrylist', 
+#' r<- getGeodata('harrylist', 
 #'                   extent=c(11.35547,11.40009,47.10114,47.13512))
 #'
 #' ### the following datasets are retrieved according to Hijmans \code{getData}
-#' r<- t_getgeodata('worldclim', var='tmin', res=0.5, lon=5, lat=45)
-#' r<- t_getgeodata('worldclim', var='bio', res=10)
-#' r<- t_getgeodata('CMIP5', var='tmin', res=10, rcp=85, model='AC', year=70)
-#' v<- t_getgeodata('alt', country='FRA', mask=TRUE)
-#' v<- t_getgeodata('GADM', country='FRA', level=1)
+#' r<- getGeodata('worldclim', var='tmin', res=0.5, lon=5, lat=45)
+#' r<- getGeodata('worldclim', var='bio', res=10)
+#' r<- getGeodata('CMIP5', var='tmin', res=10, rcp=85, model='AC', year=70)
+#' v<- getGeodata('alt', country='FRA', mask=TRUE)
+#' v<- getGeodata('GADM', country='FRA', level=1)
 #' t<- ccodes()
 #' }
 
 
-t_getgeodata <- function(name='GADM', download=TRUE, path='', ...) {
+getGeodata <- function(name='GADM', download=TRUE, path='', ...) {
   require(raster)
   require(osmar)
   require(sp)
