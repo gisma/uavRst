@@ -36,6 +36,7 @@
 #' @param kernel            size of kernel for filtering and statistics default is  3
 #' @param currentDataFolder  NULL folder to image (and shape) data
 #' @param  currentidxFolder  NULL folder for saving the results
+#' @param  cleanTiffs  TRUE logical switch for deleting the calculated tifs default is TRUE
 #' @examples 
 #' \dontrun{
 #' require(uavRst)
@@ -99,7 +100,8 @@ calcex<- function ( useTrainData      = TRUE,
                     colorSpaces       = c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
                     kernel            = 3, 
                     currentDataFolder = NULL,
-                    currentIdxFolder  = NULL){
+                    currentIdxFolder  = NULL,
+                    cleanTiffs        = TRUE){
   require(crayon)
   catHead  <- black $ bgGreen
   catErr <- red $ bold
@@ -137,7 +139,7 @@ if (calculateBands) {
   ### calculate indices and base stat export it to tif
   # create list vars
   flist<-list()
-  
+    
   # for all images do
   for (i in 1:length(imageFiles)){
     cat(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
@@ -151,6 +153,7 @@ if (calculateBands) {
                         paste0("rgbi_",basename(imageFiles[i])),
                         progress = "text",                        
                         overwrite=TRUE)
+    flist<-paste0("rgbi_",basename(imageFiles[i]))
     # if RGB transform
     if (RGBTrans){
       
@@ -163,7 +166,7 @@ if (calculateBands) {
         rgbtranslist[[jj]]<-paste0(colMod,"_",basename(imageFiles[i]))
         jj<-jj+1
       }
-      rt<- lapply(rgbtranslist, FUN=raster::raster)
+      rt<- lapply(rgbtranslist, FUN=raster::stack)
       for (jj in 1:length(rt)) {
         extent(rt[[jj]])<-extent(r)
         projection(rt[[jj]]) <- CRS(projection(r))
@@ -171,12 +174,15 @@ if (calculateBands) {
         raster::writeRaster(rt[[jj]],
                             paste0(colorSpaces[jj],"_ref",basename(imageFiles[i])),
                             overwrite=TRUE,
+                            options="INTERLEAVE=BAND",
                             progress="text")
+        bnames <-append(bnames,makebNames(RGBtrans = colorSpaces[jj]))
+        flist<-append(flist, paste0(colorSpaces[jj],"_ref",basename(imageFiles[i])))
       }
       file.remove(unlist(rgbtranslist))
       #r<-raster::stack(imageFiles[i])
       
-      bnames <-append(bnames,makebNames(RGBtrans = colorSpaces))
+      #bnames <-append(bnames,makebNames(RGBtrans = colorSpaces))
       
     }
     
@@ -205,6 +211,7 @@ if (calculateBands) {
                      out = paste0(filterBand,"stat_",basename(imageFiles[i])),
                      ram = "4096",
                      radius =  kernel)
+        flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,"stat_",basename(imageFiles[i])),"*")))
         bnames <-append(bnames,paste0(makebNames(stat = TRUE),"_",filterBand))
       }
       # if calc edge
@@ -214,6 +221,8 @@ if (calculateBands) {
           uavRst::otbEdge(input = fbFN,
                           out = paste0(filterBand,edges,basename(imageFiles[i])),
                           filter = edges)
+          
+          flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,edges,basename(imageFiles[i])),"*")))
           bnames <-append(bnames,makebNames(edge = paste0(edges,"_",filterBand)))
         }
       }    
@@ -224,6 +233,7 @@ if (calculateBands) {
           uavRst::otbGrayMorpho(input = fbFN,
                                 out = paste0(filterBand,morphos,basename(imageFiles[i])),
                                 filter = morphos)
+          flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,morphos,basename(imageFiles[i])),"*")))
           bnames <-append(bnames,makebNames(edge = paste0(morphos,"_",filterBand)))
         }    
       }
@@ -234,6 +244,7 @@ if (calculateBands) {
           uavRst::otbTexturesHaralick(x = fbFN,
                                       output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),
                                       texture = haras)
+          flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,"hara_",basename(imageFiles[i])),"*")))
           bnames <-append(bnames,paste0(makebNames(hara = haras),"_",filterBand))
         }
       }
@@ -241,7 +252,7 @@ if (calculateBands) {
       file.remove(paste0(filterBand,"_",basename(imageFiles[i])))
     }
     # get the rest in a list
-    flist<-(Sys.glob(paste0("*",basename(imageFiles[i]),"*")))
+    #flist<-(Sys.glob(paste0("*",basename(imageFiles[i]),"*")))
     # end of single channnel calculation
     
     # create an alltogether stack
@@ -261,8 +272,10 @@ if (calculateBands) {
                         overwrite=TRUE)
 
     # cleanup runtime files lists...
-    cat(catNote(":::: removing temp files...\n"))
-    file.remove(flist)
+    if (cleanTiffs) {
+      cat(catNote(":::: removing temp files...\n"))
+      file.remove(flist)
+      }
     flist<-list()
   }
   

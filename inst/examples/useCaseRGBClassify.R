@@ -28,7 +28,7 @@ devtools::install_github("gisma/link2GI", ref = "master")
 rm(list =ls())
 
 # set processing switches
-startCalcex  = FALSE
+startCalcex  = TRUE
 startTrain   = TRUE
 startPredict = TRUE
 
@@ -61,17 +61,17 @@ if (startCalcex){
   # note otions are commented due to the fact that the maximum is default
   # to restrict calculations uncomment and select by editng the param list
   res <- calcex( useTrainData      = TRUE, 
-                 calculateBands    = FALSE, 
+                 calculateBands    = TRUE, 
                  extractTrain      = TRUE, 
                  prefixrunFN       = prefixrunFN,
                  suffixTrainGeom   = "TrainingArea",
                  prefixTrainGeom   = "index_", 
-                # indices           =  c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"), 
+                 indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"), 
                  RGBTrans          = TRUE,
-                # colorSpaces       = c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
-                # channels          = c("red", "green", "blue"),  
-                 hara              = FALSE,
-                # haraType          = c("simple","advanced","higher"),   
+                 colorSpaces       = c("CIELab","XYZ","YUV"),
+                 channels          = c("red"),# "green", "blue"),  
+                 hara              = TRUE,
+                 haraType          = c("simple"), #,"advanced","higher"),   
                  stat              = TRUE, 
                  edge              = TRUE, 
                 # edgeType          = c("gradient","sobel","touzi"), 
@@ -91,7 +91,7 @@ if (startTrain){
   # classes IDs as given by the training vector files ID column
   idNumber=c(1,2,3,4,5)
   # rename them 
-  idNames= c("green","nogreen","nogreen","nogreen","nogreen")
+  idNames= c("green","greenish","greenish","nogreen","nogreen")
   
   # load raw training dataframe
   if (!(exists)("trainDF"))

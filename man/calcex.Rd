@@ -14,7 +14,8 @@ calcex(useTrainData = TRUE, calculateBands = TRUE, extractTrain = TRUE,
   indices = c("VVI", "VARI", "NDTI", "RI", "SCI", "BI", "SI", "HI", "TGI",
   "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), RGBTrans = TRUE,
   colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ",
-  "YUV"), kernel = 3, currentDataFolder = NULL, currentIdxFolder = NULL)
+  "YUV"), kernel = 3, currentDataFolder = NULL, currentIdxFolder = NULL,
+  cleanTiffs = TRUE)
 }
 \arguments{
 \item{useTrainData}{logical switch for choosing training data (which needs much more/all possible channels) or classification data the necessary ones # useTrainData switch to decide if using training images or classification data (FALSE) default = TRUE}
@@ -57,6 +58,8 @@ using stats will cover mean and variance while dissimilarity is highly correlate
 \item{kernel}{size of kernel for filtering and statistics default is  3}
 
 \item{currentDataFolder}{NULL folder to image (and shape) data}
+
+\item{cleanTiffs}{TRUE logical switch for deleting the calculated tifs default is TRUE}
 
 \item{currentidxFolder}{NULL folder for saving the results}
 }
