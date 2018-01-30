@@ -47,7 +47,7 @@ fa_basicTreeCrownFilter<- function(crownFn,
   crownarea <- crownarea[crownarea@data$area < crownMaxArea,]
   crownarea <- crownarea[crownarea$VALUE >= 0,]
   #  filter for solidity and WL ratio
-  crownarea <- crownarea[eval(parse(text=paste("crownarea@data$",TAopt,sep = ""))) ,] > opt
+  crownarea <- crownarea[eval(parse(text=paste0("crownarea@data$",TAopt)))  > opt ]
    crowns <- crownarea
   # calculate centroids as synthetic tree stems of the crowns
   sT <- rgeos::gCentroid(crowns,byid = TRUE)
