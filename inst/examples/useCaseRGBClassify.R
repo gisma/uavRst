@@ -22,7 +22,7 @@
 #devtools::install_github("gisma/uavRst", ref = "master")
 require(uavRst)
 # same with link2GI
-devtools::install_github("gisma/link2GI", ref = "master")
+#devtools::install_github("gisma/link2GI", ref = "master")
 
 # clean everything
 rm(list =ls())
@@ -34,10 +34,10 @@ startPredict = TRUE
 
 # simple and maybe sufficient give your training run  a unique name 
 # to be integrated in results DF and file 
-prefixrunFN       = "traddel"
+prefixrunFN       = "desert_eme"
 
 # define project folder
-projRootDir <- "~/temp7/GRASS7"
+projRootDir <- "/media/solo/7fbfcfdf-6276-48ad-ba94-82ba2f9993b9/drohne/chile/"
 
 # create project structure and export global pathes
 link2GI::initProj(projRootDir = projRootDir,
@@ -61,10 +61,10 @@ if (startCalcex){
   # note otions are commented due to the fact that the maximum is default
   # to restrict calculations uncomment and select by editng the param list
   res <- calcex( useTrainData      = TRUE, 
-                 calculateBands    = TRUE, 
+                 calculateBands    = FALSE, 
                  extractTrain      = TRUE, 
                  prefixrunFN       = prefixrunFN,
-                 suffixTrainGeom   = "TrainingArea",
+                 suffixTrainGeom   = "",
                  prefixTrainGeom   = "index_", 
                 # indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"), 
                  RGBTrans          = TRUE,
@@ -89,9 +89,9 @@ if (startTrain){
   # NOTE ADAPT IT TO YOUR NEEDS
   
   # classes IDs as given by the training vector files ID column
-  idNumber=c(1,2,3,4,5)
+  idNumber=c(1,2,3,4,5,6,7)
   # rename them 
-  idNames= c("green","greenish","greenish","nogreen","nogreen")
+  idNames= c("lightgreen","darkgreen","lightsoil","darksoil","shadow","lightgray","darkgray")
   
   # load raw training dataframe
   if (!(exists)("trainDF"))
