@@ -16,7 +16,7 @@ indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI")
 
 
 # only post processing to avoid the point cloud to DSM/DEM operation
-calculate_chm <- FALSE
+calculate_chm <- TRUE
 
 # just process a clipped area for testing
 only_postprocessing <- FALSE

@@ -10,6 +10,8 @@ require(uavRst)
 
 # orthoimage filename
 orthImg <- "ortho_05.tif"
+load("/home/creu/lehre/msc/active/msc-2017/data/gis/output/0_5_10_15_20_50stat.RData")
+plot2<-raster::shapefile("/home/creu/lehre/msc/active/msc-2017/data/gis/input/ref/plot_UTM.shp")
 
 # rgb indices 
 indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI")   
@@ -19,14 +21,16 @@ indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI")
 calculate_chm <- FALSE
 
 # just process a clipped area for testing
-only_postprocessing <- TRUE
+only_postprocessing <- FALSE
 #ext  <- raster::extent(498372,498472,5664417,5664513)
 #ext  <- raster::extent(498300,498620,5664070,5664475)
 #ext  <- raster::extent(498432,498545,5664204,5664302)
 #ext  <- raster::extent(498404,498488,5664458,5664536)
 
+#plot2
+ext<- raster::extent(477393.,477460. ,5631938. , 5632003.)
 # all sample trees
-ext  <- raster::extent(498310,498610,5664085,5664470)
+#ext  <- raster::extent(498310,498610,5664085,5664470)
 
 # define project folder
 projRootDir <- "~/temp6/GRASS7"
@@ -108,7 +112,7 @@ if (calculate_chm) {
   }
 
 # ----  start crown analysis --------------------------------------------------------
-
+chmR<-raster::crop(chm,ext)
 # call tree crown segmentation 
 crowns <- fa_crown_segmentation(chmR,
                                 minTreeAlt = 7,

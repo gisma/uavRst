@@ -653,6 +653,48 @@ otbGrayMorpho<- function(input=NULL,
   }
   return(retStack)
 }
+#' calculate gdal derived DEM params
+#' 
+#' @note please provide a GeoTiff file
+#' @param dem of GeoTiff containing one channel DEM
+#' @param item index to be calculated default are c("slope", "aspect","TRI","TPI","Roughness")
+#' @export gdalDEMParam
+#' @examples 
+#' #' \dontrun{
+#' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
+#' res <- curl::curl_download(url, "testdata.zip")
+#' unzip(res,junkpaths = TRUE,overwrite = TRUE)
+#' gm<-gdalDEMParam(dem=paste0(getwd(),"4490600_5321400.tif"))
+#' raster::plot(gm[[1]])
+#' }
+# calculate gdal derived DEM params
+gdalDEMParam<- function(dem,
+                        item=NULL) {
+  if (is.null(item)){
+    items<-c("slope", "aspect","TRI","TPI","Roughness")
+  }
+  s<-raster(fn)
+  y<-yres(s)
+  x<-xres(s)
+  gdalwarp(dem,'dem2.tif',
+           te=paste(extent(s)[1],
+           ' ',
+           extent(s)[3],
+           ' ',
+           extent(s)[2],
+           ' ',
+           extent(s)[4]),
+           tr=paste(x,' ', y),
+           overwrite = TRUE,
+           multi = TRUE)
+  
+  for (item in items){
+    gdaldem(item,
+            "dem2.tif",
+            paste0(item,".tif"))
+  }
+}
+
 # if necessary creates additional folders for the resulting files
 getOutputDir<- function (outDir){
   if (!is.null(outDir)) {
@@ -664,3 +706,4 @@ getOutputDir<- function (outDir){
   }
   return(otbOutputDir)
 }
+

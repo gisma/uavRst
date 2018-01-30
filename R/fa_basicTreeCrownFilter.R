@@ -27,23 +27,27 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 
 
 fa_basicTreeCrownFilter<- function(crownFn,
-                              minTreeAlt = 5, 
-                              crownMinArea = 3, 
-                              crownMaxArea =150) {
+                              minTreeAlt = 10, 
+                              crownMinArea = 5, 
+                              crownMaxArea =100,
+                              opt = 0.5,
+                              TAchmQ = "chmQ50",
+                              TAopt = "solidity") {
   # read crown vector data set
   crownarea <- rgdal::readOGR(dirname(crownFn),tools::file_path_sans_ext(basename(crownFn)), verbose = FALSE)
   
   crownarea@proj4string <- sp::CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
   # calculate area
   crownarea[is.na(crownarea$chmQ10)]<- 0
-  
   crownarea@data$area <- rgeos::gArea(crownarea,byid = TRUE)
   # filter for min, tree height and min max crown area
-  crownarea <-  crownarea[crownarea@data$chmQ10 >= minTreeAlt ,]
+            
+  crownarea <- crownarea[eval(parse(text=paste("crownarea@data$",TAchmQ,sep = ""))) >= minTreeAlt ,]
   crownarea <- crownarea[crownarea@data$area > crownMinArea,]
   crownarea <- crownarea[crownarea@data$area < crownMaxArea,]
   crownarea <- crownarea[crownarea$VALUE >= 0,]
   #  filter for solidity and WL ratio
+  crownarea <- crownarea[eval(parse(text=paste("crownarea@data$",TAopt,sep = ""))) ,] > opt
    crowns <- crownarea
   # calculate centroids as synthetic tree stems of the crowns
   sT <- rgeos::gCentroid(crowns,byid = TRUE)
