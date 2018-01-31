@@ -6,9 +6,10 @@
 \usage{
 ffsTrainModel(trainingDF = NULL, predictors = c("R", "G", "B"),
   response = "ID", spaceVar = "FN", names = c("ID", "R", "G", "B", "A",
-  "FN"), noLoc = 3, sumFunction = "twoClassSummary", pVal = 0.5,
-  prefin = "final_", preffs = "ffs_", modelSaveName = "model.RData",
-  runtest = FALSE, noClu = 3)
+  "FN"), noLoc = length(unique(trainingDF$FN)),
+  sumFunction = "twoClassSummary", pVal = 0.5, prefin = "final_",
+  preffs = "ffs_", modelSaveName = "model.RData", runtest = FALSE,
+  seed = 100, noClu = 3)
 }
 \arguments{
 \item{trainingDF}{dataframe containing training data}
@@ -32,6 +33,8 @@ ffsTrainModel(trainingDF = NULL, predictors = c("R", "G", "B"),
 \item{modelSaveName}{name pattern used for saving the model default is \code{"model.RData" }}
 
 \item{runtest}{logical default is false, if set a external validation will be performed}
+
+\item{seed}{number for seeding}
 
 \item{metric}{accuracy metrics for ffs for classification  default is \code{"kappa"}}
 

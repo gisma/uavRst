@@ -255,6 +255,7 @@ predictRGB <- function(imageFiles=NULL,
 #' @param prefin        name pattern used for model default is \code{"final_"}
 #' @param preffs        name pattern used for ffs default is \code{"ffs_"}
 #' @param modelSaveName name pattern used for saving the model default is \code{"model.RData" }
+#' @param seed          number for seeding
 #' @param nrclu         number of cluster to be used
 #' 
 #' @export ffsTrainModel
@@ -275,19 +276,17 @@ ffsTrainModel<-function(   trainingDF   = NULL,
                         response     = "ID",
                         spaceVar     = "FN",
                         names        = c("ID","R","G","B","A","FN"),
-                        noLoc        = 3,
+                        noLoc        = length(unique(trainingDF$FN)),
                         sumFunction  = "twoClassSummary",
                         pVal         = 0.5,
                         prefin       ="final_",
                         preffs       ="ffs_",
                         modelSaveName="model.RData" ,
                         runtest      = FALSE,
+                        seed         = 100,
                         noClu = 3) {
   
-  # if (tuneThreshold) summaryFunction = "fourStats"
-  # if (!tuneThreshold) summaryFunction = "twoClassSummary"
-  # if (type=="regression")summaryFunction ="defaultSummary"
-  
+
   # create subset according to pval
   trainIndex<-caret::createDataPartition(trainingDF$ID, p = pVal, list=FALSE)
   data_train <- trainingDF[ trainIndex,]
@@ -296,7 +295,7 @@ ffsTrainModel<-function(   trainingDF   = NULL,
   spacefolds <- CAST::CreateSpacetimeFolds(x        = data_train,
                                            spacevar = spaceVar,
                                            k        = noLoc, # number of CV
-                                           seed     = 100)
+                                           seed     = seed)
   
   if (length(unique(eval(parse(text=paste("data_train$",response,sep = ""))))) > 2) metric = "Kappa" 
   else metric = "ROC" 
@@ -319,7 +318,7 @@ ffsTrainModel<-function(   trainingDF   = NULL,
                                 index           = spacefolds$index,
                                 indexOut        = spacefolds$indexOut,
                                 returnResamp    = "all",
-                                classProbs      = TRUE)
+                                classProbs      = FALSE)
   
   # make it paralel
   cl <- parallel::makeCluster(noClu)

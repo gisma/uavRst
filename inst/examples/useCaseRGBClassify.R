@@ -28,16 +28,16 @@ require(uavRst)
 rm(list =ls())
 
 # set processing switches
-startCalcex  = TRUE
+startCalcex  = FALSE
 startTrain   = TRUE
-startPredict = TRUE
+startPredict = FALSE
 
 # simple and maybe sufficient give your training run  a unique name 
 # to be integrated in results DF and file 
-prefixrunFN       = "desert_eme"
+prefixrunFN       = "traddel"
 
 # define project folder
-projRootDir <- "/media/solo/7fbfcfdf-6276-48ad-ba94-82ba2f9993b9/drohne/chile/"
+projRootDir <- "~/temp7/GRASS7/"
 
 # create project structure and export global pathes
 link2GI::initProj(projRootDir = projRootDir,
@@ -122,7 +122,7 @@ if (startTrain){
                                   response     = "ID",
                                   spaceVar     = "FN",
                                   names        =  na,
-                                  noLoc        =  5,
+                                  #noLoc        =  5,
                                   pVal         = pVal,
                                   noClu = 4)
   

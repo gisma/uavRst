@@ -30,11 +30,13 @@ fa_basicTreeCrownFilter<- function(crownFn,
                               minTreeAlt = 10, 
                               crownMinArea = 5, 
                               crownMaxArea =100,
+                              crownSTDW = 5,
                               opt = 0.5,
                               TAchmQ = "chmQ50",
                               TAopt = "solidity") {
   # read crown vector data set
-  crownarea <- rgdal::readOGR(dirname(crownFn),tools::file_path_sans_ext(basename(crownFn)), verbose = FALSE)
+  #crownarea <- rgdal::readOGR(dirname(crownFn),tools::file_path_sans_ext(basename(crownFn)), verbose = FALSE)
+  crownarea <- as(sf::st_read("crowns.geojson"),"Spatial")
   
   crownarea@proj4string <- sp::CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
   # calculate area
@@ -46,28 +48,25 @@ fa_basicTreeCrownFilter<- function(crownFn,
   crownarea <- crownarea[crownarea@data$area > crownMinArea,]
   crownarea <- crownarea[crownarea@data$area < crownMaxArea,]
   crownarea <- crownarea[crownarea$VALUE >= 0,]
-  #  filter for solidity and WL ratio
-  crownarea <- crownarea[eval(parse(text=paste0("crownarea@data$",TAopt)))  > opt ]
+  crownarea <- crownarea[crownarea@data$chmSTDDEV > crownSTDW,]
+  #  filter for arbitray threshold
+  crownarea <- crownarea[eval(parse(text=paste0("crownarea@data$",TAopt)))  > opt ,]
    crowns <- crownarea
   # calculate centroids as synthetic tree stems of the crowns
   sT <- rgeos::gCentroid(crowns,byid = TRUE)
   crowns@data$xcoord <- sT@coords[,1]
   crowns@data$ycoord <- sT@coords[,2]
+  crowns@data$height <- crownarea@data$chmRANGE
   centerTrees <- crowns@data
   sp::coordinates(centerTrees) <- ~xcoord+ycoord
   sp::proj4string(centerTrees) <- sp::CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
   
   
   # save centerTrees and crowns as shapefile
-  rgdal::writeOGR(obj = centerTrees,
-                  layer = "cTr", 
-                  driver = "ESRI Shapefile", 
-                  dsn = path_run, 
-                  overwrite_layer = TRUE)
-  rgdal::writeOGR(obj = crowns,
-                  layer = "cro", 
-                  driver = "ESRI Shapefile", 
-                  dsn = path_run, 
-                  overwrite_layer = TRUE)
+  # export geojson
+  sf::st_write(sf::st_as_sf(centerTrees), "cTr.geojson",delete_dsn=TRUE,driver="GeoJSON")
+  # export geojson
+  sf::st_write(sf::st_as_sf(crowns), "cro.geojson",delete_dsn=TRUE,driver="GeoJSON")
+  
   return(list(centerTrees,crowns))
 }

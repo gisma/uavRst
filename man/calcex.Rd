@@ -5,7 +5,7 @@
 \title{calculation of spectral indices, basic spatial statistics and textures and
      optionally extracting pix values over all channels according to vector data}
 \usage{
-calcex(useTrainData = TRUE, calculateBands = TRUE, extractTrain = TRUE,
+calcex(useTrainData = TRUE, calculateBands = FALSE, extractTrain = TRUE,
   prefixrunFN = "train", suffixTrainGeom = "TrainingArea",
   prefixTrainGeom = "index_", channels = c("red", "green", "blue"),
   hara = TRUE, haraType = c("simple", "advanced", "higher"), stat = TRUE,

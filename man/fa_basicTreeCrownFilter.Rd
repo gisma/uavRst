@@ -5,7 +5,8 @@
 \title{applies minnimum height and min/max area thresholds on the raw tree crown geometries}
 \usage{
 fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, crownMinArea = 5,
-  crownMaxArea = 100, opt = 0.5, TAchmQ = "chmQ50", TAopt = "solidity")
+  crownMaxArea = 100, crownSTDW = 5, opt = 0.5, TAchmQ = "chmQ50",
+  TAopt = "solidity")
 }
 \arguments{
 \item{crownFn}{filname of OGR comliant vector file}
