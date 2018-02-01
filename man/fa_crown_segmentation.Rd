@@ -4,14 +4,17 @@
 \alias{fa_crown_segmentation}
 \title{Tree segmentation based on a CHM}
 \usage{
-fa_crown_segmentation(x = NULL, minTreeAlt = 5, crownMinArea = 3,
-  is0_output = 1, is0_join = 1, is0_thresh = 0.09, is3_leafsize = 8,
-  is3_normalize = 1, is3_neighbour = 1, is3_method = 0, is3_sig1 = 0.1,
-  is3_sig2 = 3.01, is3_threshold = 0.001, is3_seed_params = c("GLI",
-  "HI"), majority_radius = 5, seeding = TRUE, split = TRUE)
+fa_crown_segmentation(x = NULL, minTreeAlt = 10, crownMinArea = 3,
+  crownMaxArea = 150, is0_output = 1, is0_join = 1, is0_thresh = 0.09,
+  is3_leafsize = 8, is3_normalize = 1, is3_neighbour = 0,
+  is3_method = 0, is3_sig1 = 0.05, is3_sig2 = 0.05,
+  is3_threshold = 5e-05, is3_seed_params = c("chm"), majority_radius = 5,
+  seeding = TRUE, split = TRUE)
 }
 \arguments{
 \item{x}{spatial raster object}
+
+\item{crownMinArea}{default is 3 minimum area of crown}
 
 \item{is0_output}{default is 0,     # 0=s seed value 1=segment id}
 
@@ -23,17 +26,17 @@ fa_crown_segmentation(x = NULL, minTreeAlt = 5, crownMinArea = 3,
 
 \item{is3_normalize}{default is 1,}
 
-\item{is3_neighbour}{default is 1,}
+\item{is3_neighbour}{default is 0,}
 
 \item{is3_method}{default is 0,}
 
-\item{is3_sig1}{default is  0.1,}
+\item{is3_sig1}{default is  0.05,}
 
-\item{is3_sig2}{default is 3.01,}
+\item{is3_sig2}{default is  0.05,}
 
-\item{is3_threshold}{default is 0.001,}
+\item{is3_threshold}{default is  0.0001,}
 
-\item{is3_seed_params}{default is c("GLI","HI") rgb image derived indices}
+\item{is3_seed_params}{default is c("GLI","HI","GRV") rgb image derived indices}
 
 \item{majority_radius}{default is 5.000}
 
@@ -42,6 +45,8 @@ fa_crown_segmentation(x = NULL, minTreeAlt = 5, crownMinArea = 3,
 \item{split}{default  is TRUE switch if splitting of the polygons is called}
 
 \item{minTreealt}{default is 5}
+
+\item{crownMinArea}{default is 225 maximum area of crown}
 }
 \value{
 basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices

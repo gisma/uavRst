@@ -389,6 +389,8 @@ r2saga <- function(x,fn) {
   
   raster::writeRaster(x,paste0(path_run,fn,".tif"),overwrite = TRUE)
   # convert to SAGA
+
+  
   gdalUtils::gdalwarp(paste0(path_run,fn,".tif"), 
                       paste0(path_run,fn,".sdat"), 
                       overwrite = TRUE,  

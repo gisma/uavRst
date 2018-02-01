@@ -17,6 +17,10 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 #'@param minTreeAlt minimum height in meter that will be regarded as tree
 #'@param crownMinArea minimum area of crowns that is accepted
 #'@param crownMaxArea maximum area of crowns that is accepted
+#'@param mintreeAltParam parameter that is used for filtering mintreealt default ist Median "chmQ50"
+#'@param crownSTDW parameter that optionally filters for the STDV of the crown altitudes default is NULL
+#'@param TAopt optional parameter that my be used for filtering default is NULL
+#'@param opt threshold value for optional filter default is NULL
 
 
 
@@ -30,27 +34,32 @@ fa_basicTreeCrownFilter<- function(crownFn,
                               minTreeAlt = 10, 
                               crownMinArea = 5, 
                               crownMaxArea =100,
-                              crownSTDW = 5,
-                              opt = 0.5,
-                              TAchmQ = "chmQ50",
-                              TAopt = "solidity") {
+                              mintreeAltParam = "chmQ50",
+                              crownSTDW = NULL,
+                              opt = NULL,
+                              TAopt = NULL) {
   # read crown vector data set
   #crownarea <- rgdal::readOGR(dirname(crownFn),tools::file_path_sans_ext(basename(crownFn)), verbose = FALSE)
-  crownarea <- as(sf::st_read("crowns.geojson"),"Spatial")
+  if (class(crownFn)=="character")  crownarea <- as(sf::st_read(crownFn),"Spatial")
+    # {
+    # if (substr(basename(crownFn),nchar(basename(crownFn))-3,nchar(basename(crownFn)))==".shp") 
+    #   crownarea <- as(sf::st_read("crowns.geojson"),"Spatial")
+    # else crownarea <- as(sf::st_read("crowns.geojson"),"Spatial")
+    #   }
+  else crownarea <- crowFn
   
   crownarea@proj4string <- sp::CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
   # calculate area
   crownarea[is.na(crownarea$chmQ10)]<- 0
   crownarea@data$area <- rgeos::gArea(crownarea,byid = TRUE)
   # filter for min, tree height and min max crown area
-            
-  crownarea <- crownarea[eval(parse(text=paste("crownarea@data$",TAchmQ,sep = ""))) >= minTreeAlt ,]
+  crownarea <- crownarea[eval(parse(text=paste("crownarea@data$",mintreeAltParam,sep = ""))) >= minTreeAlt ,]
   crownarea <- crownarea[crownarea@data$area > crownMinArea,]
   crownarea <- crownarea[crownarea@data$area < crownMaxArea,]
   crownarea <- crownarea[crownarea$VALUE >= 0,]
-  crownarea <- crownarea[crownarea@data$chmSTDDEV > crownSTDW,]
+  if (!is.null(crownSTDW)) crownarea <- crownarea[crownarea@data$chmSTDDEV > crownSTDW,]
   #  filter for arbitray threshold
-  crownarea <- crownarea[eval(parse(text=paste0("crownarea@data$",TAopt)))  > opt ,]
+  if (!is.null(TAopt)) crownarea <- crownarea[eval(parse(text=paste0("crownarea@data$",TAopt)))  > opt ,]
    crowns <- crownarea
   # calculate centroids as synthetic tree stems of the crowns
   sT <- rgeos::gCentroid(crowns,byid = TRUE)

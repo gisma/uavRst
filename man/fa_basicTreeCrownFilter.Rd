@@ -5,8 +5,8 @@
 \title{applies minnimum height and min/max area thresholds on the raw tree crown geometries}
 \usage{
 fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, crownMinArea = 5,
-  crownMaxArea = 100, crownSTDW = 5, opt = 0.5, TAchmQ = "chmQ50",
-  TAopt = "solidity")
+  crownMaxArea = 100, mintreeAltParam = "chmQ50", crownSTDW = NULL,
+  opt = NULL, TAopt = NULL)
 }
 \arguments{
 \item{crownFn}{filname of OGR comliant vector file}
@@ -16,6 +16,14 @@ fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, crownMinArea = 5,
 \item{crownMinArea}{minimum area of crowns that is accepted}
 
 \item{crownMaxArea}{maximum area of crowns that is accepted}
+
+\item{mintreeAltParam}{parameter that is used for filtering mintreealt default ist Median "chmQ50"}
+
+\item{crownSTDW}{parameter that optionally filters for the STDV of the crown altitudes default is NULL}
+
+\item{opt}{threshold value for optional filter default is NULL}
+
+\item{TAopt}{optional parameter that my be used for filtering default is NULL}
 }
 \value{
 fa_basicTreeCrownFilterbasically returns SPDF  with the crown polygons and all calculated parameters
