@@ -78,7 +78,6 @@ chm<-statLayer[[2]][[3]]
 # assign extent
 ext<- raster::extent(477393.,477460. ,5631938. , 5632003.)
 # link GDAL and SAGA
-gdal <- link2GI::linkgdalUtils()
 saga <- link2GI::linkSAGA()
 
 # ---------- start pr-processing ---------------------------------------------------  ---------------------------------------------------
@@ -107,7 +106,7 @@ seeds <- uavRst::fa_treeSeeding(chmR,
                                 crownMaxArea = 225,
                                 is0_join = 1, 
                                 is0_thresh = 0.20, 
-                                seeding = TRUE
+
 )
 
 # call tree crown segmentation 
@@ -145,7 +144,7 @@ trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crown
 # vie it
 pl<-mapview(plot2)
 tc<-mapview(trees_crowns[[2]])
-tc+p
+tc+pl
 
 # cut result is with reference
 finalTrees<-rgeos::gIntersection(plot2,trees_crowns[[2]],,byid = TRUE,)
