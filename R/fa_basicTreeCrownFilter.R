@@ -31,22 +31,18 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 
 
 fa_basicTreeCrownFilter<- function(crownFn,
-                              minTreeAlt = 10, 
-                              crownMinArea = 5, 
-                              crownMaxArea =100,
-                              mintreeAltParam = "chmQ50",
-                              crownSTDW = NULL,
-                              opt = NULL,
-                              TAopt = NULL) {
+                                   minTreeAlt = 10, 
+                                   crownMinArea = 5, 
+                                   crownMaxArea =100,
+                                   mintreeAltParam = "chmQ50",
+                                   crownSTDW = NULL,
+                                   opt = NULL,
+                                   TAopt = NULL) {
   # read crown vector data set
-  #crownarea <- rgdal::readOGR(dirname(crownFn),tools::file_path_sans_ext(basename(crownFn)), verbose = FALSE)
-  if (class(crownFn)=="character")  crownarea <- as(sf::st_read(crownFn),"Spatial")
-    # {
-    # if (substr(basename(crownFn),nchar(basename(crownFn))-3,nchar(basename(crownFn)))==".shp") 
-    #   crownarea <- as(sf::st_read("crowns.geojson"),"Spatial")
-    # else crownarea <- as(sf::st_read("crowns.geojson"),"Spatial")
-    #   }
-  else crownarea <- crowFn
+  if (class(crownFn)=="character")  
+    crownarea <- raster::shapefile(crownFn)
+  else 
+    crownarea <- crownFn
   
   crownarea@proj4string <- sp::CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
   # calculate area
@@ -60,7 +56,7 @@ fa_basicTreeCrownFilter<- function(crownFn,
   if (!is.null(crownSTDW)) crownarea <- crownarea[crownarea@data$chmSTDDEV > crownSTDW,]
   #  filter for arbitray threshold
   if (!is.null(TAopt)) crownarea <- crownarea[eval(parse(text=paste0("crownarea@data$",TAopt)))  > opt ,]
-   crowns <- crownarea
+  crowns <- crownarea
   # calculate centroids as synthetic tree stems of the crowns
   sT <- rgeos::gCentroid(crowns,byid = TRUE)
   crowns@data$xcoord <- sT@coords[,1]
@@ -73,9 +69,9 @@ fa_basicTreeCrownFilter<- function(crownFn,
   
   # save centerTrees and crowns as shapefile
   # export geojson
-  sf::st_write(sf::st_as_sf(centerTrees), "cTr.geojson",delete_dsn=TRUE,driver="GeoJSON")
+  #sf::st_write(sf::st_as_sf(centerTrees), "cTr.geojson",delete_dsn=TRUE,driver="GeoJSON")
   # export geojson
-  sf::st_write(sf::st_as_sf(crowns), "cro.geojson",delete_dsn=TRUE,driver="GeoJSON")
+  #sf::st_write(sf::st_as_sf(crowns), "cro.geojson",delete_dsn=TRUE,driver="GeoJSON")
   
   return(list(centerTrees,crowns))
 }

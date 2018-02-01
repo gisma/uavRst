@@ -27,5 +27,8 @@ fa_caMetrics<- function(crownarea, funNames = c("length","elongation","eccentric
     }))
     colnames(crownarea@data)[ncol(crownarea@data)]<-subfun
   }
+  crownarea@proj4string <- sp::CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+  crownarea[is.na(crownarea$chmQ10)]<- 0
+  crownarea@data$Area <- rgeos::gArea(crownarea,byid = TRUE)
   return(crownarea)
 }

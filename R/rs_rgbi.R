@@ -68,12 +68,12 @@
 #' 
 #' 
 rgbIndices <- function(red,green,blue,
-                      rgbi=c("VVI","VARI","NDTI","RI","SCI","BI",
-                             "SI","HI",
-                             "TGI","GLI",
-                             "NGRDI","GRVI",
-                             "GLAI","HUE",
-                             "CI","SAT","SHP")) {
+                       rgbi=c("VVI","VARI","NDTI","RI","SCI","BI",
+                              "SI","HI",
+                              "TGI","GLI",
+                              "NGRDI","GRVI",
+                              "GLAI","HUE",
+                              "CI","SAT","SHP")) {
   
   ## compatibility check
   #  if (raster::nlayers(rgb) < 3)
@@ -212,8 +212,6 @@ rgbIndices <- function(red,green,blue,
       return(SHP)
       
     } 
-    
-    
   })
   return(raster::stack(indices))
 }

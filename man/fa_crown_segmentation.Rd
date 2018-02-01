@@ -4,23 +4,13 @@
 \alias{fa_crown_segmentation}
 \title{Tree segmentation based on a CHM}
 \usage{
-fa_crown_segmentation(x = NULL, minTreeAlt = 10, crownMinArea = 3,
-  crownMaxArea = 150, is0_output = 1, is0_join = 1, is0_thresh = 0.1,
-  is3_leafsize = 8, is3_normalize = 1, is3_neighbour = 0,
-  is3_method = 0, is3_sig1 = 0.05, is3_sig2 = 0.05,
-  is3_threshold = 5e-05, is3_seed_params = c("chm"), majority_radius = 5,
-  seeding = TRUE, split = TRUE)
+fa_crown_segmentation(seeds = "seeds.sgrd", is3_leafsize = 8,
+  is3_normalize = 1, is3_neighbour = 0, is3_method = 0, is3_sig1 = 0.05,
+  is3_sig2 = 0.05, is3_threshold = 5e-05, is3_seed_params = c("chm"),
+  majority_radius = 5, seeding = TRUE, split = TRUE)
 }
 \arguments{
-\item{x}{spatial raster object}
-
-\item{crownMinArea}{default is 3 minimum area of crown}
-
-\item{is0_output}{default is 0,     # 0=s seed value 1=segment id}
-
-\item{is0_join}{default is 2,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff}
-
-\item{is0_thresh}{default is 0.05,  # threshold for join difference in m}
+\item{seeds}{spatial raster object}
 
 \item{is3_leafsize}{default is 8,}
 
@@ -38,15 +28,9 @@ fa_crown_segmentation(x = NULL, minTreeAlt = 10, crownMinArea = 3,
 
 \item{is3_seed_params}{default is c("GLI","HI","GRV") rgb image derived indices}
 
-\item{majority_radius}{default is 5.000}
-
 \item{seeding}{default  is TRUE switch if seeding is called}
 
 \item{split}{default  is TRUE switch if splitting of the polygons is called}
-
-\item{minTreealt}{default is 5}
-
-\item{crownMinArea}{default is 225 maximum area of crown}
 }
 \value{
 basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices

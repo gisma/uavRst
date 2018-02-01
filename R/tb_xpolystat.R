@@ -35,20 +35,29 @@ if (!isGeneric('xpolystat')) {
 #'}
 #'
 xpolystat <- function(x = NULL,
-                           spdf = NULL,
-                           count = 1,
-                           min = 1,
-                           max = 1,
-                           sum = 1,
-                           range = 1,
-                           mean = 1,
-                           var = 1, 
-                           stddev = 1,
-                           quantile = 10)   {
-                                  
-cat(":: run statistics...\n")
-# calculate chm statistics for each crown 
+                      spdf = NULL,
+                      count = 1,
+                      min = 1,
+                      max = 1,
+                      sum = 1,
+                      range = 1,
+                      mean = 1,
+                      var = 1, 
+                      stddev = 1,
+                      quantile = 10)   {
+  
+  cat(":: run statistics...\n")
+  # calculate chm statistics for each crown 
   if (!exists(sagaCmd)) link2GI::linkSAGA()
+  if (class(spdf)!="character")     {
+    rgdal::writeOGR(obj    = spdf,
+                    layer  = "spdf", 
+                    driver = "ESRI Shapefile", 
+                    dsn    = path_run, 
+                    overwrite_layer = TRUE)
+      spdf<-"spdf.shp"
+  }
+  
   for (i in seq(1:length(x))) {
     cat(":: calculate ",x[i], " statistics\n")
     ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
@@ -80,6 +89,7 @@ cat(":: run statistics...\n")
       #stat <- stat1
     }
   }
+  
   rgdal::writeOGR(obj = stat,
                   layer = "polyStat",
                   driver = "ESRI Shapefile",

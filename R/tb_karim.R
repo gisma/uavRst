@@ -17,7 +17,7 @@ if (!isGeneric('h_read_gpx ')) {
 
 h_read_gpx <- function(file, 
                        layers=c("waypoints", "tracks", "routes", "track_points", "route_points")
-                       ) {
+) {
   if (!all(layers %in% c("waypoints", "tracks", "routes", "track_points", "route_points"))) stop("Incorrect layer(s)", call. = FALSE)
   
   # check if features exist per layer
@@ -157,10 +157,10 @@ h_comp_ll_proj4 <- function(x) {
 #' @export
 #' 
 sp_line <- function(p1,
-                      p2,
-                      ID,
-                      proj4="+proj=longlat +datum=WGS84 +no_defs",
-                      export=FALSE) {   
+                    p2,
+                    ID,
+                    proj4="+proj=longlat +datum=WGS84 +no_defs",
+                    export=FALSE) {   
   line <- SpatialLines(list(Lines(Line(cbind(p1,p2)), ID = ID)))
   sp::proj4string(line) <- CRS(proj4)
   if (export) {
@@ -177,10 +177,10 @@ sp_line <- function(p1,
 #' @export
 #' 
 sp_point <- function(lon,
-                       lat,
-                       ID="point",
-                       proj4="+proj=longlat +datum=WGS84 +no_defs",
-                       export=FALSE) {
+                     lat,
+                     ID="point",
+                     proj4="+proj=longlat +datum=WGS84 +no_defs",
+                     export=FALSE) {
   point = cbind(lon,lat)
   point = sp::SpatialPoints(point)
   point = SpatialPointsDataFrame(point, as.data.frame(ID))
@@ -231,7 +231,7 @@ poly_extract_maxpos <- function(x,lN, poly_split=TRUE){
   # read vector input data the sf way
   sf_dcs <- sf::st_read(paste0(path_run,lN,".shp"),quiet = TRUE)
   dcs <- as(sf_dcs, "Spatial")
-
+  
   # retrieve unique NAME 
   ids <- unique(dcs@data$NAME)
   
@@ -259,9 +259,9 @@ poly_extract_maxpos <- function(x,lN, poly_split=TRUE){
     # assign vars
     #maskx <- velox::velox(mask)
     #chmx <- velox::velox(dem)
-     
+    
     rn <- as.character(x)
-
+    
     # create temp folder and assign it to raster
     dir.create(paste0(path_tmp,rn),recursive=TRUE)
     raster::rasterOptions(tmpdir=paste0(path_tmp,rn)) 
@@ -291,7 +291,7 @@ poly_extract_maxpos <- function(x,lN, poly_split=TRUE){
     
     # write it to a df
     df <- data.frame(x = max_pos[1], y = max_pos[2], id = rn)
-   
+    
     # get rid of temp raster files
     system(paste0("rm -rf ",paste0(path_tmp,rn)))
     
@@ -389,7 +389,7 @@ r2saga <- function(x,fn) {
   
   raster::writeRaster(x,paste0(path_run,fn,".tif"),overwrite = TRUE)
   # convert to SAGA
-
+  
   
   gdalUtils::gdalwarp(paste0(path_run,fn,".tif"), 
                       paste0(path_run,fn,".sdat"), 
@@ -410,16 +410,16 @@ h_fun_multiply <- function(x)
   
   return(result)
 }
-	h_fun_whichmax <- function(mask,value) { 
-raster::xyFromCell(value,which.max(mask * value))
+h_fun_whichmax <- function(mask,value) { 
+  raster::xyFromCell(value,which.max(mask * value))
 }
 
-	#' removes zombie processes
-	#' @description removes zombie processes
-	#' @export rmZombie
+#' removes zombie processes
+#' @description removes zombie processes
+#' @export rmZombie
 rmZombie <- inline::cfunction(body='int wstat; while (waitpid(-1, &wstat, WNOHANG) > 0) {};',
-                          includes='#include <sys/wait.h>',
-                          convention='.C')	
+                              includes='#include <sys/wait.h>',
+                              convention='.C')	
 Last <- function(...) {
   collect(wait=FALSE)
   all <- children()
