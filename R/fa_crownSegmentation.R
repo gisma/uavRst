@@ -41,12 +41,12 @@ if (!isGeneric('fa_crown_segmentation')) {
 #'}
 #'
 fa_crown_segmentation <- function(x = NULL,
-                                  minTreeAlt = 10,
-                                  crownMinArea = 3,
-                                  crownMaxArea =150,
+                                  minTreeAlt       = 10,
+                                  crownMinArea     = 3,
+                                  crownMaxArea     = 150,
                                    is0_output      = 1,     # 0= seed value 1=segment id
                                    is0_join        = 1,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
-                                   is0_thresh      = 0.09,  # threshold for join difference in m
+                                   is0_thresh      = 0.10,  # threshold for join difference in m
                                    is3_leafsize    = 8,
                                    is3_normalize   = 1,
                                    is3_neighbour   = 0,
@@ -106,11 +106,11 @@ fa_crown_segmentation <- function(x = NULL,
   #                 driver = "ESRI Shapefile", 
   #                 dsn    = path_run, 
   #                 overwrite_layer = TRUE)
-  trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"polyStat.shp"),
+  trees_crowns <- fa_basicTreeCrownFilter(crownFn = paste0(path_run,"polyStat.shp"),
                                                   minTreeAlt = minTreeAlt,
                                                   crownMinArea = crownMinArea,
                                                   crownMaxArea = crownMaxArea,
-                                                  mintreeAltParam = "chmQ20"
+                                                  mintreeAltParam = "chmQ10"
                                                   )
   rgdal::writeOGR(obj    = trees_crowns[[2]],
                   layer  = "dummyCrownSegment", 
@@ -145,7 +145,7 @@ fa_crown_segmentation <- function(x = NULL,
   
   cat(":: run main segmentation...\n")
   # create correct param list s
-  is3_seed_params<-c("HI","GLI")
+  #is3_seed_params<-c("HI","GLI")
   
   param_list <- paste0(path_run,is3_seed_params,".sgrd;",collapse = "")
 

@@ -5,7 +5,7 @@
 \title{Tree segmentation based on a CHM}
 \usage{
 fa_crown_segmentation(x = NULL, minTreeAlt = 10, crownMinArea = 3,
-  crownMaxArea = 150, is0_output = 1, is0_join = 1, is0_thresh = 0.09,
+  crownMaxArea = 150, is0_output = 1, is0_join = 1, is0_thresh = 0.1,
   is3_leafsize = 8, is3_normalize = 1, is3_neighbour = 0,
   is3_method = 0, is3_sig1 = 0.05, is3_sig2 = 0.05,
   is3_threshold = 5e-05, is3_seed_params = c("chm"), majority_radius = 5,
