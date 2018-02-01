@@ -40,7 +40,7 @@ fa_basicTreeCrownFilter<- function(crownFn,
                                    TAopt = NULL) {
   # read crown vector data set
   if (class(crownFn)=="character")  
-    crownarea <- raster::shapefile(crownFn)
+    crownarea <- as(sf::st_read(crownFn),"Spatial")
   else 
     crownarea <- crownFn
   

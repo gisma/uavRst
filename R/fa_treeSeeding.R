@@ -18,8 +18,6 @@ if (!isGeneric('fa_treeSeeding')) {
 #'@param is0_output      default is 0,     # 0=s seed value 1=segment id
 #'@param is0_join        default is 2,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
 #'@param is0_thresh      default is 0.05,  # threshold for join difference in m
-#'@param majority_radius default is 5.000
-#'@param seeding default  is TRUE switch if seeding is called
 #'@param split default  is TRUE switch if splitting of the polygons is called
 
 #'@return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
@@ -39,8 +37,6 @@ fa_treeSeeding <- function(x = NULL,
                                   is0_output      = 1,     # 0= seed value 1=segment id
                                   is0_join        = 1,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
                                   is0_thresh      = 0.10,  # threshold for join difference in m
-                                  majority_radius = 5.000,
-                                  seeding = TRUE,
                                   split = TRUE
                                   
 )  {
@@ -48,7 +44,7 @@ fa_treeSeeding <- function(x = NULL,
   options(warn=-1)
   if (!exists(sagaCmd)) link2GI::linkSAGA()
   r2saga(x,"chm")
-  if (seeding){
+
     cat(":: run pre-segmentation...\n")
     # first segment run is a simple watershed segmentation just for deriving more reliable seeds 
     # TODO improve different advanceds seed finding algorithms
@@ -126,6 +122,6 @@ fa_treeSeeding <- function(x = NULL,
     
     # TODO SF
     # trees <- sf::st_read(paste0(path_run,"treeSeeds.shp"))
-  }
+ 
   return(raster::raster(paste0(path_run,"seeds.sdat")))
 }

@@ -6,7 +6,7 @@
 \usage{
 fa_treeSeeding(x = NULL, minTreeAlt = 10, crownMinArea = 3,
   crownMaxArea = 150, is0_output = 1, is0_join = 1, is0_thresh = 0.1,
-  majority_radius = 5, seeding = TRUE, split = TRUE)
+  split = TRUE)
 }
 \arguments{
 \item{x}{spatial raster object}
@@ -18,10 +18,6 @@ fa_treeSeeding(x = NULL, minTreeAlt = 10, crownMinArea = 3,
 \item{is0_join}{default is 2,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff}
 
 \item{is0_thresh}{default is 0.05,  # threshold for join difference in m}
-
-\item{majority_radius}{default is 5.000}
-
-\item{seeding}{default  is TRUE switch if seeding is called}
 
 \item{split}{default  is TRUE switch if splitting of the polygons is called}
 

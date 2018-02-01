@@ -42,7 +42,7 @@ fa_crown_segmentation <- function(seeds = "seeds.sgrd",
                                    is3_sig2        = 0.05,
                                    is3_threshold   = 0.00005,
                                    is3_seed_params = c("chm"),
-                                   majority_radius = 5.000,
+                                   majority_radius = 2.000,
                                   seeding = TRUE,
                                   split = TRUE
                                    

@@ -7,7 +7,7 @@
 fa_crown_segmentation(seeds = "seeds.sgrd", is3_leafsize = 8,
   is3_normalize = 1, is3_neighbour = 0, is3_method = 0, is3_sig1 = 0.05,
   is3_sig2 = 0.05, is3_threshold = 5e-05, is3_seed_params = c("chm"),
-  majority_radius = 5, seeding = TRUE, split = TRUE)
+  majority_radius = 2, seeding = TRUE, split = TRUE)
 }
 \arguments{
 \item{seeds}{spatial raster object}
