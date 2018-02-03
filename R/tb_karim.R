@@ -414,20 +414,20 @@ h_fun_whichmax <- function(mask,value) {
   raster::xyFromCell(value,which.max(mask * value))
 }
 
-#' removes zombie processes
-#' @description removes zombie processes
-#' @export rmZombie
-rmZombie <- inline::cfunction(body='int wstat; while (waitpid(-1, &wstat, WNOHANG) > 0) {};',
-                              includes='#include <sys/wait.h>',
-                              convention='.C')	
-Last <- function(...) {
-  collect(wait=FALSE)
-  all <- children()
-  if (length(all)) {
-    kill(all, SIGTERM)
-    collect(all)
-  }
-}
+#' #' removes zombie processes
+#' #' @description removes zombie processes
+#' #' @export rmZombie
+#' rmZombie <- inline::cfunction(body='int wstat; while (waitpid(-1, &wstat, WNOHANG) > 0) {};',
+#'                               includes='#include <sys/WaitForSingleObject.h>',
+#'                               convention='.C')	
+#' Last <- function(...) {
+#'   collect(wait=FALSE)
+#'   all <- children()
+#'   if (length(all)) {
+#'     kill(all, SIGTERM)
+#'     collect(all)
+#'   }
+#' }
 
 if (!isGeneric('xpolystat')) {
   setGeneric('xpolystat', function(x, ...)
