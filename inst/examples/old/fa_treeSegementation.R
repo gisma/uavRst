@@ -20,9 +20,9 @@ if (!isGeneric('fa_tree_segementation')) {
 #'@param is3_normalize   default is 1,
 #'@param is3_neighbour   default is 1,
 #'@param is3_method      default is 0,
-#'@param is3_sig1        default is  0.1,
-#'@param is3_sig2        default is 3.01,
-#'@param is3_threshold   default is 0.001,
+#'@param is3_thVarFeature        default is  0.1,
+#'@param is3_thVarSpatial        default is 3.01,
+#'@param is3_thSimilarity   default is 0.001,
 #'@param is3_param1      default is HI first rgb image derived index
 #'@param is3_param2      default is HI  GLI next rgb image derived index
 #'@param majority_radius default is 5.000
@@ -47,9 +47,9 @@ fa_tree_segementation <- function(x = NULL,
                                    is3_normalize   = 1,
                                    is3_neighbour   = 1,
                                    is3_method      = 0,
-                                   is3_sig1        =  0.1,
-                                   is3_sig2        = 3.01,
-                                   is3_threshold   = 0.001,
+                                   is3_thVarFeature        =  0.1,
+                                   is3_thVarSpatial        = 3.01,
+                                   is3_thSimilarity   = 0.001,
                                   is3_param2 = "GLI",
                                   is3_param1 = "HI",
                                    majority_radius = 5.000,
@@ -122,9 +122,9 @@ fa_tree_segementation <- function(x = NULL,
                        " -NORMALIZE ",is3_normalize,
                        " -NEIGHBOUR ",is3_neighbour, 
                        " -METHOD ",is3_method,
-                       " -SIG_1 ",is3_sig1,
-                       " -SIG_2 ",is3_sig2,
-                       " -THRESHOLD ",is3_threshold),
+                       " -SIG_1 ",is3_thVarFeature,
+                       " -SIG_2 ",is3_thVarSpatial,
+                       " -THRESHOLD ",is3_thSimilarity),
                 intern = TRUE)
   # fill holes inside the crowns (simple approach)
   # TODO better segmentation

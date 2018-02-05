@@ -5,38 +5,32 @@
 \title{Tree segmentation based on a CHM}
 \usage{
 fa_crown_segmentation(seeds = "seeds.sgrd", is3_leafsize = 8,
-  is3_normalize = 1, is3_neighbour = 0, is3_method = 0, is3_sig1 = 0.05,
-  is3_sig2 = 0.05, is3_threshold = 5e-05, is3_seed_params = c("chm"),
-  majority_radius = 2, seeding = TRUE, split = TRUE)
+  is3_normalize = 1, is3_neighbour = 0, is3_method = 0,
+  is3_thVarfeature = 0.05, is3_thVarSpatial = 0.05,
+  is3_thSimilarity = 5e-05, is3_seed_params = c("chm"),
+  majority_radius = 2)
 }
 \arguments{
 \item{seeds}{spatial raster object}
 
-\item{is3_leafsize}{default is 8,}
+\item{is3_leafsize}{integer, bin size of grey value sampling range from 1 to 256 default is 8,}
 
-\item{is3_normalize}{default is 1,}
+\item{is3_normalize}{integer,  logical switch if data will be normalized or not default is 1,}
 
-\item{is3_neighbour}{default is 0,}
+\item{is3_neighbour}{integer,  von Neumanns' neighborhood (0) or Moore's (1) default is 0,}
 
-\item{is3_method}{default is 0,}
+\item{is3_method}{integer, growing algorithm for feature space and position (0) or feature space only (1)}
 
-\item{is3_sig1}{default is  0.05,}
+\item{is3_thVarSpatial}{numerical, spatial variance default is  0.05}
 
-\item{is3_sig2}{default is  0.05,}
+\item{is3_thSimilarity}{mumerical similarity threshold default is  0.00005,}
 
-\item{is3_threshold}{default is  0.0001,}
+\item{is3_seed_params}{vector of characters corresponding with the used attributes default is c("chm") altitude values from surface model}
 
-\item{is3_seed_params}{default is c("GLI","HI","GRV") rgb image derived indices}
-
-\item{seeding}{default  is TRUE switch if seeding is called}
-
-\item{split}{default  is TRUE switch if splitting of the polygons is called}
-}
-\value{
-basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
+\item{is3_thVarFeaturen}{numerical, spatial variance default is  0.05,}
 }
 \description{
-Tree segmentation based on a CHM
+Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 }
 \examples{
 \dontrun{

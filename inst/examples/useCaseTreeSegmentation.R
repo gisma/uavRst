@@ -112,9 +112,9 @@ seeds <- uavRst::fa_treeSeeding(chmR,
 # call tree crown segmentation 
 crowns <- uavRst::fa_crown_segmentation(seeds = seeds,
                                         majority_radius = 9.0,
-                                        is3_sig1 = 0.05,
-                                        is3_sig2 = 0.05,
-                                        is3_threshold = 0.00005,
+                                        is3_thVarFeature = 0.05,
+                                        is3_thVarSpatial = 0.05,
+                                        is3_thSimilarity = 0.00005,
                                         is3_seed_params = indices,
 )
 
