@@ -46,6 +46,7 @@ dist: trusty
 addons:
   postgresql: "9.6"
 
+
 before_install:
 
   - sudo inst/scripts/./postinst.sh
