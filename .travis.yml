@@ -49,58 +49,29 @@ addons:
 
 before_install:
 
-
-  - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
-  - sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-
-  - sudo apt-key adv -y  --keyserver keyserver.ubuntu.com --recv-keys BDCB16CCBE796FF2
-  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CDF2E7E8
-  - sudo wget -O - http://qgis.org/downloads/qgis-2015.gpg.key | gpg --import
-  - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
-  - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-experimental
-  - sudo add-apt-repository -y ppa:webupd8team/java
-  - sudo apt-add-repository -y ppa:aims/aims-desktop
-  - sudo apt-add-repository -y ppa:superm1/uefi 
-# rcran
-  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
-  - sudo add-apt-repository ppa:marutter/rdev
-
-
-  - sudo apt-get update
-  - sudo apt-get upgrade
-
-
-
-  - sudo apt-get --yes --force-yes upgrade
-
-cd /
-  - sudo ln -s /usr/share/initramfs-tools/scripts
+  - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
+  - sudo apt-get --yes --force-yes update -qq
   - sudo apt-get install -y  libmagick++-dev gimp inkscape grsync arandr gparted filezilla 
   - sudo apt-get install -y  git-core cvs subversion mercurial aptitude
   - sudo apt-get install -y  git cmake g++ libboost-all-dev libgdal1-dev libeigen3-dev libflann-dev libopenni-dev 
-  - sudo apt-get install -y  google-chrome-beta
-  - sudo apt-get install -y  lupin-casper apt-clone casper cifs-utils 
-  - sudo apt-get install -y  cryptsetup cryptsetup-bin dmeventd dmraid dmsetup dpkg-repack efibootmgr fwupdate 
-  - sudo apt-get install -y  gir1.2-timezonemap-1.0 gir1.2-xkl-1.0 gparted grub-gfxpayload-lists jfsutils keyutils 
-  - sudo apt-get install -y  libdevmapper-event1.02.1 libdmraid1.0.0.rc16 libefivar0 libfwup0 
+  - sudo apt-get install -y  lupin-casper casper
   - sudo apt-get install -y  liblvm2app2.2 liblvm2cmd2.02 liblzo2-2  libreadline5  libtimezonemap1 
-  - sudo apt-get install -y  localechooser-data lvm2 mokutil os-prober python-crypto python-ldb python-tdb 
-  - sudo apt-get install -y  rdate reiserfsprogs secureboot-db user-setup 
   - sudo apt-get install -y  wamerican xfsprogs feh libid3tag0 libimlib2 ecryptfs-utils libecryptfs0 libnss3-1d
-  - sudo apt-get install -y pandoc texlive texlive-lang-german texlive-latex-extra texmaker 
-  - sudo apt-get install -y  python-samba samba-common samba-common-bin grub-common grub-pc grub-pc-bin grub2-common kpartx kpartx-boot 
   - sudo apt-get install -y  libdebian-installer4 libgif4 sbsigntool libjpeg-progs libjpeg8
-  - sudo apt-get install -y  openjdk-7-jre icedtea-7-plugin openjdk-7-jdk openjdk-7-source openjdk-7-demo openjdk-7-doc openjdk-7-jre-headless
-  - sudo apt-get install -y  build-essential autoconf libtool pkg-config python-opengl python-imaging python-pyrex python-pyside.qtopengl idle-python2.7 qt4-dev-tools qt4-designer libqtgui4 libqtcore4 libqt4-xml libqt4-test libqt4-script libqt4-network libqt4-dbus python-qt4 python-qt4-gl libgle3 python-dev
-  - sudo apt-get install -y  python2.7 python-dev build-essential python-shapely python-rpy python-gdal python-psycopg2 python-rpy2 python-numpy python-wxtools spyder python-setuptools-doc python-vtk libvtk-java python-numpy libgeotiff-dev swig2.0 python-scipy python-pip python-wheel libgeos++-dev python-software-properties
+  - sudo apt-get install -y  build-essential autoconf libtool pkg-config python-opengl python-imaging python-pyrex python-pyside.qtopengl -   - sudo apt-get install -y  idle-python2.7 qt4-dev-tools qt4-designer libqtgui4 libqtcore4 libqt4-xml libqt4-test libqt4-script 
+  - sudo apt-get install -y  libqt4-network libqt4-dbus python-qt4 python-qt4-gl libgle3 python-dev
+  - sudo apt-get install -y  python2.7 python-dev build-essential python-shapely python-rpy python-gdal python-psycopg2 python-rpy2 
+  - sudo apt-get install -y  python-numpy python-wxtools spyder python-setuptools-doc python-vtk libvtk-java python-numpy libgeotiff-dev     - sudo apt-get install -y  swig2.0 python-scipy python-pip python-wheel libgeos++-dev python-software-properties
   - sudo apt-get install -y  libgdal1-dev binutils libproj-dev gdal-bin geotiff-bin
-  - sudo apt-get install -y  r-base rstudio-upstream-deb r-cran-rjava libvtk5.8-qt4 libqhull-dev qt-sdk libvtk5-qt4-dev libpcap-dev python-vtk libvtk-java python-numpy libgeotiff-dev libgeos++-dev libcurl4-openssl-dev
-  - sudo apt-get install -y  libwxgtk3.0-dev libgdal-dev libproj-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev libssl-dev libffi-dev python-dev libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev libevent-dev
-  - sudo apt-get install -y  liblas-bin liblas-dev 
-  - sudo  apt-get install -y  libimage-exiftool-perl dcraw gpsbabel
-  - sudo apt-get install -y  grass saga qgis qgis-api-doc qgis-plugin-globe-common qgis-common qgis-providers-common qgis-provider-grass python-qgis 
-  - sudo  apt-get install -y  libgd-gd2-perl libv8-3.14-dev usb-creator-gtk
-  - sudo apt-get autoremove -y
+  - sudo apt-get install -y  r-base rstudio-upstream-deb r-cran-rjava libvtk5.8-qt4 libqhull-dev qt-sdk libvtk5-qt4-dev libpcap-dev 
+  - sudo apt-get install -y  python-vtk libvtk-java python-numpy libgeotiff-dev libgeos++-dev libcurl4-openssl-dev
+  - sudo apt-get install -y  libwxgtk3.0-dev libgdal-dev libproj-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev 
+  - sudo apt-get install -y  unixodbc-dev libssl-dev libffi-dev python-dev libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev
+  - sudo apt-get install -y  libevent-dev liblas-bin liblas-dev 
+  - sudo apt-get install -y  libimage-exiftool-perl dcraw gpsbabel
+  - sudo apt-get install -y  grass saga qgis qgis-api-doc qgis-plugin-globe-common qgis-common qgis-providers-common 
+  - sudo apt-get install -y  qgis-provider-grass python-qgis 
+  - sudo apt-get install -y  libgd-gd2-perl libv8-3.14-dev usb-creator-gtk
 
   # install tmap dependencies
   - sudo apt-get install --yes libprotobuf-dev protobuf-compiler libv8-3.14-dev
