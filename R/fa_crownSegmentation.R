@@ -7,7 +7,7 @@ if (!isGeneric('fa_crown_segmentation')) {
 #'@title Tree segmentation based on a CHM
 #'
 #'@description
-#' Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
+#' Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. After the segementation itself the results are hole filled and optionally filtered by a majority filter in the 3*3 surrounding.
 #'
 #'@author Chris Reudenbach
 #'

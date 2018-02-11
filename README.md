@@ -1,3 +1,7 @@
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) 
+[![Travis-CI Build Status](https://travis-ci.org/gisma/link2GI.svg?branch=master)](https://travis-ci.org/gisma/link2GI)
+[![License](https://img.shields.io/badge/license-GPL%20%28%3E=%203%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
+
 # Unmanned Aerial Vehicle Remote Sensing Tools
 The [uavR](https://github.com/gisma/uavR) "package family" is divided in in two packages:
 
@@ -26,7 +30,8 @@ The [Fusion toolset](http://forsys.sefs.uw.edu/fusion/fusionlatest.html) is avai
 
 Note: For running Fusion tools under Linux you first need to install wine.
 
-In addition you need to install the  ```link2GI``` package. Because the CRAN version is a bit outdated you should get the actual github hosted version of the [link2GI](https://github.com/gisma/link2GI/blob/master/README.md) package. 
+In addition you need to install the  ```link2GI``` package. 
+In case of any problems drop an issue or try to use the actual github hosted version of the [link2GI](https://github.com/gisma/link2GI/blob/master/README.md) package. 
 
 Nevertheless all mentioned software packages have to be installed correctly on your the OS. Most of it tested under Windows and Linux and should run....The most easiest way to obtain a fairly good runtime enviroment is to setup Linux as a dual boot system or in a VB. If interested in setting up a clean Xubuntu or Mint Linux and then  use the  [postinstall script](http://giswerk.org/doku.php?do=export_code&id=tutorials:softgis:xubuntu:xubuntugis&codeblock=0setup) for installing most of the stuff. For using some of the the Solo related functions you need to install the [dronekit](http://python.dronekit.io/develop/installation.html) python libs in addition.
 
