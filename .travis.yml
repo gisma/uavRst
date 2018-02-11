@@ -47,7 +47,8 @@ addons:
   postgresql: "9.6"
 
 before_install:
-install: inst/scripts/postinst.sh
+
+  -sudo inst/scripts/./postinst.sh
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
   - sudo apt-get --yes --force-yes update -qq
   # install tmap dependencies
