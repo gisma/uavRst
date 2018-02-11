@@ -49,11 +49,13 @@ addons:
 
 before_install:
 
-  - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
-  - sudo apt-get --yes --force-yes update -qq
-  - sudo apt-get install -y  libmagick++-dev gimp inkscape grsync arandr gparted filezilla 
-  - sudo apt-get install -y  git-core cvs subversion mercurial aptitude
-  - sudo apt-get install -y  git cmake g++ libboost-all-dev libgdal1-dev libeigen3-dev libflann-dev libopenni-dev 
+  - sudo sh -c 'echo "deb http://qgis.org/ubuntugis trusty main" >> /etc/apt/sources.list'
+  - sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis trusty main " >> /etc/apt/sources.list'
+  - wget -O - http://qgis.org/downloads/qgis-2017.gpg.key | gpg --import
+  - gpg --fingerprint CAEB3DC3BDF7FB45 && gpg --export --armor CAEB3DC3BDF7FB45 | sudo apt-key add -
+  - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable  
+  - sudo apt-get update && sudo apt upgrade -y --allow-unauthenticated
+  - sudo apt install gdal-bin libgdal-dev python-gdal python3-gdal libudunits2-dev saga
   - sudo apt-get install -y  lupin-casper casper
   - sudo apt-get install -y  liblvm2app2.2 liblvm2cmd2.02 liblzo2-2  libreadline5  libtimezonemap1 
   - sudo apt-get install -y  wamerican xfsprogs feh libid3tag0 libimlib2 ecryptfs-utils libecryptfs0 libnss3-1d
@@ -71,8 +73,8 @@ before_install:
   - sudo apt-get install -y  unixodbc-dev libssl-dev libffi-dev python-dev libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev
   - sudo apt-get install -y  libevent-dev liblas-bin liblas-dev 
   - sudo apt-get install -y  libimage-exiftool-perl dcraw gpsbabel
-  - sudo apt-get install -y  grass saga qgis qgis-api-doc qgis-plugin-globe-common qgis-common qgis-providers-common 
-  - sudo apt-get install -y  qgis-provider-grass python-qgis 
+  - sudo apt-get install -y  grass  
+  - sudo apt-get install -y   
   - sudo apt-get install -y  libgd-gd2-perl libv8-3.14-dev 
 
   # install tmap dependencies
