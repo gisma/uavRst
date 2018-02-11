@@ -58,11 +58,11 @@ before_install:
   - sudo apt-get install -y  liblvm2app2.2 liblvm2cmd2.02 liblzo2-2  libreadline5  libtimezonemap1 
   - sudo apt-get install -y  wamerican xfsprogs feh libid3tag0 libimlib2 ecryptfs-utils libecryptfs0 libnss3-1d
   - sudo apt-get install -y  libdebian-installer4 libgif4 sbsigntool libjpeg-progs libjpeg8
-  - sudo apt-get install -y  build-essential autoconf libtool pkg-config python-opengl python-imaging python-pyrex python-pyside.qtopengl    
-  - sudo apt-get install -y  idle-python2.7 qt4-dev-tools qt4-designer libqtgui4 libqtcore4 libqt4-xml libqt4-test libqt4-script 
+  - sudo apt-get install -y  build-essential autoconf libtool pkg-config python-opengl python-imaging python-pyrex python-pyside.qtopengl
+  - sudo apt-get install -y  idle-python2.7 qt4-dev-tools qt4-designer libqtgui4 libqtcore4 libqt4-xml libqt4-test
   - sudo apt-get install -y  libqt4-network libqt4-dbus python-qt4 python-qt4-gl libgle3 python-dev
-  - sudo apt-get install -y  python2.7 python-dev build-essential python-shapely python-rpy python-gdal python-psycopg2 python-rpy2 
-  - sudo apt-get install -y  python-numpy python-wxtools spyder python-setuptools-doc python-vtk libvtk-java python-numpy libgeotiff-dev     
+  - sudo apt-get install -y  python2.7 python-dev build-essential python-shapely python-rpy python-gdal python-psycopg2 python-rpy2
+  - sudo apt-get install -y  python-numpy python-wxtools spyder python-setuptools-doc python-vtk libvtk-java python-numpy libgeotiff-dev
   - sudo apt-get install -y  swig2.0 python-scipy python-pip python-wheel libgeos++-dev python-software-properties
   - sudo apt-get install -y  libgdal1-dev binutils libproj-dev gdal-bin geotiff-bin
   - sudo apt-get install -y  r-base rstudio-upstream-deb r-cran-rjava libvtk5.8-qt4 libqhull-dev qt-sdk libvtk5-qt4-dev libpcap-dev 
@@ -73,7 +73,7 @@ before_install:
   - sudo apt-get install -y  libimage-exiftool-perl dcraw gpsbabel
   - sudo apt-get install -y  grass saga qgis qgis-api-doc qgis-plugin-globe-common qgis-common qgis-providers-common 
   - sudo apt-get install -y  qgis-provider-grass python-qgis 
-  - sudo apt-get install -y  libgd-gd2-perl libv8-3.14-dev usb-creator-gtk
+  - sudo apt-get install -y  libgd-gd2-perl libv8-3.14-dev 
 
   # install tmap dependencies
   - sudo apt-get install --yes libprotobuf-dev protobuf-compiler libv8-3.14-dev
