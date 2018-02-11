@@ -65,7 +65,7 @@ before_install:
   - sudo apt-get install -y  python-numpy python-wxtools spyder python-setuptools-doc python-vtk libvtk-java python-numpy libgeotiff-dev
   - sudo apt-get install -y  swig2.0 python-scipy python-pip python-wheel libgeos++-dev python-software-properties
   - sudo apt-get install -y  libgdal1-dev binutils libproj-dev gdal-bin geotiff-bin
-  - sudo apt-get install -y  r-base rstudio-upstream-deb r-cran-rjava libvtk5.8-qt4 libqhull-dev qt-sdk libvtk5-qt4-dev libpcap-dev 
+  - sudo apt-get install -y  r-base 
   - sudo apt-get install -y  python-vtk libvtk-java python-numpy libgeotiff-dev libgeos++-dev libcurl4-openssl-dev
   - sudo apt-get install -y  libwxgtk3.0-dev libgdal-dev libproj-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev 
   - sudo apt-get install -y  unixodbc-dev libssl-dev libffi-dev python-dev libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev
