@@ -5,17 +5,39 @@ r:
   - oldrel
 
 r_packages:
-  - covr
-  - rgdal
-  - roxygen2
-  - rmarkdown
-  - sf
-  - raster
-  - gdalUtils
-  - tools
-  - rgrass7
-  - sp
-  - RSAGA
+    - covr
+    - stringr
+    - foreach
+    - sp
+    - sf
+    - htmlwidgets
+    - htmltools
+    - Rcpp
+    - rgdal
+    - rgeos
+    - gdalUtils
+    - geosphere
+    - tools
+    - maptools
+    - mapview
+    - log4r
+    - caret
+    - igraph
+    - zoo
+    - data.table
+    - parallel
+    - spatial.tools
+    - velox
+    - link2GI
+    - doParallel
+    - CAST
+    - curl
+    - glcm
+    - inline
+    - raster
+    - lattice
+    - latticeExtra
+    - crayonA
 
 sudo: required
 
