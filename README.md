@@ -41,8 +41,7 @@ Even if honestly working on it it will be still a long run passing the CRAN chec
 To install from ```github```  you need to have installed the ```devtools``` package.
 
 ```S
-devtools::install_github("gisma/
-", ref = "master")
+devtools::install_github("gisma/uavRst", ref = "master")
 ```
 
 If you want to install all dependencies (may take a while) use:
