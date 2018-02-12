@@ -21,7 +21,9 @@
 #' @import caret
 #' @importFrom utils write.table
 #' @importFrom grDevices colorRampPalette
-#' @importFrom methods as
+#' @import  lattice
+#' @import latticeExtra
+#' @import crayon sf
 #' @importFrom utils modifyList
 #'
 #' @useDynLib uavRst
