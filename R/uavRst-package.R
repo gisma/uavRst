@@ -20,6 +20,9 @@
 #' @import log4r
 #' @import caret
 #' @importFrom utils write.table
+#' @importFrom grDevices colorRampPalette
+#' @importFrom methods as
+#' @importFrom utils modifyList
 #'
 #' @useDynLib uavRst
 #' @keywords package
