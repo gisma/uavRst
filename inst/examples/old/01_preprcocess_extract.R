@@ -56,7 +56,7 @@ link2GI::initProj(projRootDir = projRootDir,
 setwd(path_run)
 
 # link GDAL and SAGA
-gdal <- link2GI::linkgdalUtils()
+gdal <- link2GI::linkGDAL()
 otb<- link2GI::linkOTB()
 
 #source(paste(path_fu,"basicClassify.R",sep=.Platform$file.sep))

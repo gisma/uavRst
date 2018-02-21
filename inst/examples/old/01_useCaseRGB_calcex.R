@@ -88,7 +88,7 @@ if (!useTrainData) {
 }
 
 # link GDAL and OTB
-gdal <- link2GI::linkgdalUtils()
+gdal <- link2GI::linkGDAL()
 link2GI::linkOTB()
 
 if ((stat == TRUE || hara == TRUE || edge == TRUE || morpho == TRUE) & path_OTB == "") stop("OTB missing - please check")

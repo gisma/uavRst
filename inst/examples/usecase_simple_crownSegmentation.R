@@ -51,7 +51,7 @@ raster::rasterOptions(tmpdir=path_tmp)
 setwd(path_run)
 
 # link GDAL and SAGA
-gdal <- link2GI::linkgdalUtils()
+gdal <- link2GI::linkGDAL()
 saga <- link2GI::linkSAGA()
 
 # ----- calculate DSM DTM & CHM  ---------------------------------------------------

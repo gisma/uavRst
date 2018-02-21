@@ -62,7 +62,7 @@ fa_pc2DTM <- function(lasDir = NULL,
                    path_lastools = NULL,
                    cores = "3") {
   
-  gdal <- link2GI::linkgdalUtils()
+  gdal <- link2GI::linkGDAL()
   saga <- link2GI::linkSAGA()  
   
   # some basic checks 
