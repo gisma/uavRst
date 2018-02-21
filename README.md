@@ -1,5 +1,4 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) 
-[![Travis-CI Build Status](https://travis-ci.org/gisma/uavRst.svg?branch=master)](https://travis-ci.org/gisma/uavRst)
 [![License](https://img.shields.io/badge/license-GPL%20%28%3E=%203%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
 
 # Unmanned Aerial Vehicle Remote Sensing Tools
@@ -42,8 +41,7 @@ Even if honestly working on it it will be still a long run passing the CRAN chec
 To install from ```github```  you need to have installed the ```devtools``` package.
 
 ```S
-devtools::install_github("gisma/
-", ref = "master")
+devtools::install_github("gisma/uavRst", ref = "master")
 ```
 
 If you want to install all dependencies (may take a while) use:
