@@ -196,6 +196,10 @@ fa_pc2DTM <- function(lasDir = NULL,
   
   
   # import to saga as point cloud
+  
+    saga <- link2GI::linkSAGA()
+    sagaCmd<-saga$sagaCmd
+  
   ret <- system(paste0(sagaCmd,' io_shapes 16 ',
                        ' -POINTS ', path_run,'pointcloud',
                        ' -FILE  ', path_run,'outg.txt',

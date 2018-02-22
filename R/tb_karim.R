@@ -479,7 +479,10 @@ xpolystat <- function(x = NULL,
   
   cat(":: run statistics...\n")
   # calculate chm statistics for each crown 
-  if (!exists(sagaCmd)) link2GI::linkSAGA()
+  
+    saga <- link2GI::linkSAGA()
+    sagaCmd<-saga$sagaCmd
+  
   if (class(spdf)!="character")     {
     rgdal::writeOGR(obj    = spdf,
                     layer  = "spdf", 

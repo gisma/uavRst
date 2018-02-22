@@ -42,6 +42,9 @@ fa_crown_segmentation <- function(seeds = "seeds.sgrd",
   # create correct param list s
   #is3_seed_params<-c("HI","GLI")
   
+    saga <- link2GI::linkSAGA()
+    sagaCmd<-saga$sagaCmd
+  
   param_list <- paste0(path_run,is3_seed_params,".sgrd;",collapse = "")
   
   # Start final segmentation algorithm as provided by SAGA's seeded Region Growing segmentation (imagery_segmentation 3)

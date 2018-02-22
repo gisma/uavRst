@@ -60,7 +60,10 @@ fa_pc2DSM <- function(lasDir = NULL,
                    path_lastools = NULL) {
   
   gdal <- link2GI::linkGDAL()
-  if (!exists(sagaCmd)) link2GI::linkSAGA()
+  
+    saga <- link2GI::linkSAGA()
+    sagaCmd<-saga$sagaCmd
+  
   # some basic checks 
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
   lasDir <- path.expand(lasDir)
@@ -86,7 +89,7 @@ fa_pc2DSM <- function(lasDir = NULL,
   }
   else if (length(lasFileNames) > 0) {
     extFN <- substr(extension(basename(lasFileNames[1])),2,4)
-    noF <- length(lazFileNames)
+    noF <- length(lasFileNames)
   }
   else stop("no valid las or laz files found...\n")
   
@@ -95,7 +98,9 @@ fa_pc2DSM <- function(lasDir = NULL,
   
   # create project structure and export global pathes
   link2GI::initProj(projRootDir = gisdbase_path, 
-                    projFolders =  c("output/","run/"))
+                    projFolders =  c("output/","run/"),
+                    global = TRUE,
+                    path_prefix = "path_")
   
   # delete content in run directory
   unlink(paste0(path_run,"*"), force = TRUE)
@@ -119,15 +124,15 @@ fa_pc2DSM <- function(lasDir = NULL,
   sp_param[5] <- proj4
   
   # create and export globally project folder structure
-  link2GI::initProj(projRootDir = gisdbase_path, 
+  paths<-link2GI::initProj(projRootDir = gisdbase_path, 
                     GRASSlocation = GRASSlocation, 
                     projFolders =  projFolder)
   
   # create GRASS7 connection according gisdbase_exist (permanent or temporary)
   if (gisdbase_exist)
-    link2GI::linkGRASS7(gisdbase = gisdbase_path, location = GRASSlocation, gisdbase_exist = TRUE)  
+    paths<-link2GI::linkGRASS7(gisdbase = gisdbase_path, location = GRASSlocation, gisdbase_exist = TRUE)  
   else 
-    link2GI::linkGRASS7(gisdbase = gisdbase_path, location = GRASSlocation, spatial_params = sp_param,resolution = grid_size)  
+    paths<-link2GI::linkGRASS7(gisdbase = gisdbase_path, location = GRASSlocation, spatial_params = sp_param,resolution = grid_size)  
   
   # late raw DSM using r.in.lidar
   cat(":: calculate DSM...\n")
@@ -138,6 +143,7 @@ fa_pc2DSM <- function(lasDir = NULL,
                             output = "point_cloud_dsm",
                             method = grass_lidar_method,
                             pth = grass_lidar_pth,
+                            resolution = grid_size,
                             intern = TRUE,
                             ignore.stderr = TRUE
   )

@@ -58,7 +58,11 @@ fa_tree_segementation <- function(x = NULL,
 )  {
   cat("\n:: start crown identification...\n")
   options(warn=-1)
-  if (!exists(sagaCmd)) link2GI::linkSAGA()
+  
+  
+    saga <- link2GI::linkSAGA()
+    sagaCmd<-saga$sagaCmd
+  
   r2saga(x,"chm")
   if (seeding){
   cat(":: run seed finding...\n")

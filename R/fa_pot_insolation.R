@@ -54,7 +54,9 @@ fa_pot_insol <- function(x = NULL,
                           pi_lumped = 70.000000 )   {
   
   cat(":: run potential insolation analysis...\n")
-  if (!exists(sagaCmd)) link2GI::linkSAGA()
+  
+    saga <- link2GI::linkSAGA()
+    sagaCmd<-saga$sagaCmd
   
   cat(":: run sky view factor...\n")
   ret <-  system(paste0(sagaCmd, " ta_lighting 3 ",
