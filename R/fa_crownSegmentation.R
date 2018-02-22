@@ -17,7 +17,7 @@ if (!isGeneric('fa_crown_segmentation')) {
 #'@param is3_neighbour      integer,  von Neumanns' neighborhood (0) or Moore's (1) default is 0,
 #'@param is3_method         integer, growing algorithm for feature space and position (0) or feature space only (1)
 #'@param is3_thVarSpatial   numerical, spatial variance default is  0.05
-#'@param is3_thVarFeaturen  numerical, spatial variance default is  0.05,
+#'@param is3_thVarFeature  numerical, spatial variance default is  0.05,
 #'@param is3_thSimilarity   mumerical similarity threshold default is  0.00005,
 #'@param is3_seed_params    vector of characters corresponding with the used attributes default is c("chm") altitude values from surface model
 #'@export fa_crown_segmentation
@@ -57,7 +57,7 @@ fa_crown_segmentation <- function(seeds = "seeds.sgrd",
                        " -NORMALIZE ",is3_normalize,
                        " -NEIGHBOUR ",is3_neighbour, 
                        " -METHOD "   ,is3_method,
-                       " -SIG_1 "    ,is3_thVarfeature,
+                       " -SIG_1 "    ,is3_thVarFeature,
                        " -SIG_2 "    ,is3_thVarSpatial,
                        " -THRESHOLD ",is3_thSimilarity),
                 intern = TRUE)
