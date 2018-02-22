@@ -184,16 +184,16 @@ fa_pc2DTM <- function(lasDir = NULL,
   
   #### starting SAGA classification
   # create output mask file for interpolation
-  cat(":: classify ground points (aDTM) ...\n")
-  r <- raster::raster(paste0(path_output,"o_dtm.tif"))
-  r[r > 0] <- 0
-  raster::writeRaster(r,filename = paste0(path_run,"rawdtm.tif"),overwrite = TRUE)
-  gdalUtils::gdalwarp(paste0(path_run,"rawdtm.tif"), 
-                      paste0(path_run,"rawdtm.sdat"), 
-                      overwrite = TRUE,  
-                      of = 'SAGA',
-                      verbose = FALSE) 
-  
+  # cat(":: classify ground points (aDTM) ...\n")
+  # r <- raster::rasterFromXYZ(paste0(path_output,"o_dtm.tif"))
+  # r[r > 0] <- 0
+  # raster::writeRaster(r,filename = paste0(path_run,"rawdtm.tif"),overwrite = TRUE)
+  # gdalUtils::gdalwarp(paste0(path_run,"rawdtm.tif"), 
+  #                     paste0(path_run,"rawdtm.sdat"), 
+  #                     overwrite = TRUE,  
+  #                     of = 'SAGA',
+  #                     verbose = FALSE) 
+  # 
   
   # import to saga as point cloud
   
@@ -225,17 +225,18 @@ fa_pc2DTM <- function(lasDir = NULL,
                        ' -LEVEL_MAX ',level_max),
                 intern = TRUE, 
                 ignore.stderr = TRUE)
-  
-  dtm <- gdalUtils::gdalwarp(paste0(path_run,"rawdtm.sdat"), 
-                             paste0(path_output,"dtm.tif"), 
-                             t_srs = proj4,
-                             output_Raster = TRUE,
-                             overwrite = TRUE,  
-                             verbose = FALSE) 
+  dtm<-raster::raster(paste0(path_run,"rawdtm.sdat"))
+  raster::projection(dtm)<-proj4
+  # dtm <- gdalUtils::gdalwarp(paste0(path_run,"rawdtm.sdat"), 
+  #                            paste0(path_output,"dtm.tif"), 
+  #                            t_srs = proj4,
+  #                            output_Raster = TRUE,
+  #                            overwrite = TRUE,  
+  #                            verbose = FALSE) 
   cat(":: calculate metadata ... \n")
   dtm[dtm <= dtm_minalt] <- NA
   dtm[dtm > dtm_maxalt] <- NA
-  raster::writeRaster(dtm, paste0(path_output, "/dtm.tif"),overwrite = TRUE)
+  raster::writeRaster(dtm, paste0(path_output, "dtm.tif"),overwrite = TRUE)
   #e <- extent(dtm)
   #dtmA <- as(e, 'SpatialPolygons')  
   dtmA <- methods::as(raster::extent(dtm), "SpatialPolygons")

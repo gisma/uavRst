@@ -33,8 +33,8 @@ ext<- raster::extent(477393.,477460. ,5631938. , 5632003.)
 # define project folder
 projRootDir <- "~/proj/uav/thesis/finn"
 
-# define uav point cloud data folder 
-las_data_dir <- "~/proj/uav/thesis/finn/data/"
+# define uav point cloud data folder mapview(plot2)
+las_data_dir <- "~/proj/uav/thesis/finn/data/sequoia/"
 projFolders = c("data/","output/","run/","las/")
 global = TRUE
 path_prefix = "path_"
@@ -59,24 +59,34 @@ setwd(path_run)
 #otb <- link2GI::linkOTB()
 #makGlobalVar("path_OTB",otb$pathOTB)
 # ----- calculate DSM DTM & CHM  ---------------------------------------------------
-
-
-  dsm <- uavRst::fa_pc2DSM(lasDir = las_data_dir,
-                           gisdbase_path = projRootDir,
-                           otb_gauss_radius ="0.5",
-                           grid_size = "0.5",
-                           GRASSlocation = "dsm",
-                           grass_lidar_method = "mean")
-
+# create DSM
+dsm <- uavRst::fa_pc2DSM(lasDir = las_data_dir,
+                         gisdbase_path = projRootDir,
+                         otb_gauss_radius ="0.5",
+                         grid_size = "0.5",
+                         GRASSlocation = "dsm",
+                         grass_lidar_method = "mean")
+# create DTM
 dtm <- uavRst::fa_pc2DTM(lasDir = las_data_dir,
                          gisdbase_path = projRootDir,
                          thin_with_grid = "0.5",
                          level_max = "5" ,
                          grid_size = "0.5")
+dsmR <- dsm[[1]]
+dtmR <- dtm[[1]]
 
+dsmR<-raster::crop(dsmR,ext)
+dtmR<-raster::crop(dtmR,ext)
+raster::plot(dsmR)
+raster::plot(dtmR)
+# adjust dsm to dtm
+dsmR <- raster::resample(dsmR, dtmR , method = 'bilinear')
 
+# calculate CHM
+chmR <- dsmR - dtmR
 
-chmR<-dsm[[1]]
+#raster::plot(chmR)
+#mapview::mapview(chmR)+plot2
 raster::writeRaster(chmR,"chm.tif",
                     overwrite = TRUE)
 # index for segmentation default is chm
@@ -94,11 +104,11 @@ for (item in indices){
 
 # call seeding process
 seeds <- uavRst::fa_treeSeeding(chmR,
-                                minTreeAlt = 12.5,
+                                minTreeAlt = 5.5,
                                 crownMinArea = 3,
                                 crownMaxArea = 225,
                                 is0_join = 1, 
-                                is0_thresh = 0.20, 
+                                is0_thresh = 0.20 
                                 
 )
 
