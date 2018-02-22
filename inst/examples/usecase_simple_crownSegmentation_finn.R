@@ -100,29 +100,29 @@ seeds <- uavRst::fa_treeSeeding(chmR,
 )
 
 # call tree crown segmentation 
-crowns <- uavRst::fa_crown_segmentation(seeds = seeds,
-                                        majority_radius = 9.0,
-                                        is3_thVarFeature = 0.05,
-                                        is3_thVarSpatial = 0.05,
-                                        is3_thSimilarity = 0.00005,
+rawCrowns <- uavRst::fa_crown_segmentation(seeds = seeds,
+                                        majority_radius = 2.0,
+                                        is3_thVarFeature = 0.5,
+                                        is3_thVarSpatial = 0.5,
+                                        is3_thSimilarity = 0.0005,
                                         is3_seed_params = indices,
 )
 
 cat("::: run post-classification...\n")
 # extract stats
-polyStat <- uavRst::xpolystat(c("chm"),
-                              spdf = crowns)
+ statRawCrowns <- uavRst::xpolystat(c("chm"),
+                               spdf = crowns)
 
 # calculate metrics of the crown geometries
-crowns <- uavRst::fa_caMetrics(polyStat)
+#crowns <- uavRst::fa_caMetrics(statRawCrowns)
 
 # export geojson
 sf::st_write(sf::st_as_sf(crowns), "crowns.geojson",delete_dsn=TRUE,driver="GeoJSON")
-rgdal::writeOGR(obj = crowns,
-                layer = "crowns", 
-                driver = "ESRI Shapefile", 
-                dsn = path_run, 
-                overwrite_layer = TRUE)
+# rgdal::writeOGR(obj = statRawCrowns,
+#                 layer = "statRawCrowns", 
+#                 driver = "ESRI Shapefile", 
+#                 dsn = path_run, 
+#                 overwrite_layer = TRUE)
 # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
 trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crowns.geojson"),
                                                 minTreeAlt = 5,
@@ -132,9 +132,9 @@ trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crown
 )
 
 # vie it
-pl<-mapview(plot2)
-tc<-mapview(trees_crowns[[2]])
-tc+pl
+dsm<-mapview::mapview(chmR)
+tc<-mapview::mapview(trees_crowns)
+tc+dsm
 
 # cut result is with reference
 finalTrees<-rgeos::gIntersection(plot2,trees_crowns[[2]],,byid = TRUE,)

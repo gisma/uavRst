@@ -21,13 +21,13 @@ fa_crown_segmentation(seeds = "seeds.sgrd", is3_leafsize = 8,
 
 \item{is3_method}{integer, growing algorithm for feature space and position (0) or feature space only (1)}
 
+\item{is3_thVarFeature}{numerical, spatial variance default is  0.05,}
+
 \item{is3_thVarSpatial}{numerical, spatial variance default is  0.05}
 
 \item{is3_thSimilarity}{mumerical similarity threshold default is  0.00005,}
 
 \item{is3_seed_params}{vector of characters corresponding with the used attributes default is c("chm") altitude values from surface model}
-
-\item{is3_thVarFeaturen}{numerical, spatial variance default is  0.05,}
 }
 \description{
 Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. After the segementation itself the results are hole filled and optionally filtered by a majority filter in the 3*3 surrounding.
