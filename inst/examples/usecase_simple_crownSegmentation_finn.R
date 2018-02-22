@@ -70,104 +70,74 @@ setwd(path_run)
                            grid_size = "0.05",
                            GRASSlocation = "dsm",
                            grass_lidar_method = "range")
-  # create DTM
-  dtm <- uavRst::fa_pc2DTM(lasDir = las_data_dir,
-                           gisdbase_path = projRootDir,
-                           thin_with_grid = "0.5",
-                           level_max = "5" ,
-                           grid_size = "0.05")
-  dsmR <- dsm[[1]]
-  dtmR <- dtm[[1]]
-  
-  # adjust dsm to dtm
-  dsmR <- raster::resample(dsmR, dtmR, method = 'bilinear')
-  raster::writeRaster(dsmR,paste0(path_output,"dsm.tif"),
-                      overwrite = TRUE)
-  # calculate CHM
-  chmR <- dsmR - dtmR
-  raster::writeRaster(chmR,paste0(path_output,"chm.tif"),
-                      overwrite = TRUE)
 
 
-# ----- start preprocessing ---------------------------------------------------
 
-  cat("\n::: preprocess input data...\n")
-  dsm <- raster::raster(paste0(path_output,"dsm.tif"))
-  dtm <- raster::raster(paste0(path_output,"dtm.tif"))
-  rgb <- raster::stack(paste0(path_data,orthImg))
+chmR<-dsm[[1]]
+raster::writeRaster(chmR,"chm.tif",
+                    overwrite = TRUE)
+# index for segmentation default is chm
+indices <- c("chm")
+for (item in indices){
+  gdalUtils::gdalwarp(paste0(path_run,item,".tif"), 
+                      paste0(path_run,item,".sdat"), 
+                      overwrite = TRUE,  
+                      of = 'SAGA',
+                      verbose = FALSE)
+}
 
-  dtmR <- raster::crop(dtm,ext)
-  dsmR <- raster::crop(dsm,ext)
-  dsmR <- raster::resample(dsmR, dtmR, method = 'bilinear')
-  chmR <- dsmR - dtmR
-
-  rgb <- raster::crop(rgb,ext)
-  rgb <- raster::resample(rgb, chmR, method = 'bilinear')
-  raster::writeRaster(rgb,paste0(path_output,"ortho.tif"),
-                      overwrite = TRUE)
-
-  cat("::: calculate RGBI... \n")
-  rgbI <- uavRst::rs_rgbIndices(rgb[[1]],rgb[[2]],rgb[[3]],indices)
-  
-  cat("\n convert RGBIs to SAGA... \n")
-  i <- 1
-  for (index in indices) {
-    cat("convert ",index,"\n")
-    r2saga(rgbI[[i]],index)
-    i <- i + 1
-  }
 
 # ----  start crown analysis --------------------------------------------------------
-chmR<-raster::crop(chm,ext)
-# call tree crown segmentation 
-crowns <- fa_crown_segmentation(chmR,
-                                minTreeAlt = 7,
+
+# call seeding process
+seeds <- uavRst::fa_treeSeeding(chmR,
+                                minTreeAlt = 12.5,
                                 crownMinArea = 3,
+                                crownMaxArea = 225,
                                 is0_join = 1, 
-                                is0_thresh = 0.25, 
-                                majority_radius = 5.0, 
-                                is3_thVarFeature = 0.015,
-                                is3_leafsize = 256, 
-                                is3_neighbour = 0,
-                                is3_thVarSpatial = 2.5,
-                                is3_thSimilarity = 0.00005,
-                                is3_seed_params = indices,
-                                seeding = TRUE
+                                is0_thresh = 0.20, 
+                                
 )
 
-# calculate potential insolation
-uavRst::potInsolation("chm",pi_day = "01/06/2017",pi_day_stop = "30/06/2017",pi_hour_step = 1.0)
-
-# extract stats
-polyStat <- xpolystat(c("tot","dir","dif","chm"),
-                      spdf = "tree_crowns.shp")
-
+# call tree crown segmentation 
+crowns <- uavRst::fa_crown_segmentation(seeds = seeds,
+                                        majority_radius = 9.0,
+                                        is3_thVarFeature = 0.05,
+                                        is3_thVarSpatial = 0.05,
+                                        is3_thSimilarity = 0.00005,
+                                        is3_seed_params = indices,
+)
 
 cat("::: run post-classification...\n")
+# extract stats
+polyStat <- uavRst::xpolystat(c("chm"),
+                              spdf = crowns)
 
 # calculate metrics of the crown geometries
 crowns <- uavRst::fa_caMetrics(polyStat)
 
+# export geojson
+sf::st_write(sf::st_as_sf(crowns), "crowns.geojson",delete_dsn=TRUE,driver="GeoJSON")
 rgdal::writeOGR(obj = crowns,
                 layer = "crowns", 
                 driver = "ESRI Shapefile", 
                 dsn = path_run, 
                 overwrite_layer = TRUE)
-
 # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
-trees_crowns <- fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crowns.shp"),
-                                        minTreeAlt = 5,
-                                        crownMinArea = 3,
-                                        crownMaxArea = 225)
+trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crowns.geojson"),
+                                                minTreeAlt = 5,
+                                                crownMinArea = 5,
+                                                crownMaxArea = 150,
+                                                mintreeAltParam = "chmQ20"
+)
 
-# pixvalues <- basicExtraction(x = chmR,fN = trees_crowns_2[[2]],responseCat = "ID")
- 
+# vie it
+pl<-mapview(plot2)
+tc<-mapview(trees_crowns[[2]])
+tc+pl
+
+# cut result is with reference
+finalTrees<-rgeos::gIntersection(plot2,trees_crowns[[2]],,byid = TRUE,)
+plot(finalTrees)
 
 
-# save results to shape
-rgdal::writeOGR(obj = crowns, 
-                layer = "crowns", 
-                driver = "ESRI Shapefile", 
-                dsn = path_run, 
-                overwrite_layer = TRUE)
-cat(":: ...finsihed \n")
