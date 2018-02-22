@@ -9,19 +9,19 @@ require(link2GI)
 require(uavRst)
 
 # orthoimage filename
-orthImg <- "ortho_05.tif"
-load("/home/creu/lehre/msc/active/msc-2017/data/gis/output/0_5_10_15_20_50stat.RData")
+#orthImg <- "ortho_05.tif"
+#load("/home/creu/lehre/msc/active/msc-2017/data/gis/output/0_5_10_15_20_50stat.RData")
 plot2<-raster::shapefile("/home/creu/lehre/msc/active/msc-2017/data/gis/input/ref/plot_UTM.shp")
 
 # rgb indices 
-indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI")   
+#indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI")   
 
 
 # only post processing to avoid the point cloud to DSM/DEM operation
-calculate_chm <- FALSE
+#calculate_chm <- FALSE
 
 # just process a clipped area for testing
-only_postprocessing <- FALSE
+#only_postprocessing <- FALSE
 #ext  <- raster::extent(498372,498472,5664417,5664513)
 #ext  <- raster::extent(498300,498620,5664070,5664475)
 #ext  <- raster::extent(498432,498545,5664204,5664302)
@@ -33,7 +33,7 @@ ext<- raster::extent(477393.,477460. ,5631938. , 5632003.)
 #ext  <- raster::extent(498310,498610,5664085,5664470)
 
 # define project folder
-projRootDir <- "~/proj/uav//thesis/finn"
+projRootDir <- "~/proj/uav/thesis/finn"
 
 # define uav point cloud data folder 
 las_data_dir <- "/home/creu/Downloads"
@@ -42,7 +42,7 @@ global = TRUE
 path_prefix = "path_"
 
 # create project structure and export global pathes
- paths<-link2GI::initProj(projRootDir = projRootDir,
+paths<-link2GI::initProj(projRootDir = projRootDir,
                    projFolders = c("data/","output/","run/","las/"),
                    global = TRUE,
                    path_prefix = "path"
@@ -57,16 +57,13 @@ raster::rasterOptions(tmpdir=path_tmp)
 setwd(path_run)
 
 # link GDAL and SAGA
-gdal <- link2GI::linkGDAL()
-saga <- link2GI::linkSAGA()
-otb <- link2GI::linkOTB()
-makGlobalVar("path_OTB",otb$pathOTB)
+#gdal <- link2GI::linkGDAL()
+#saga <- link2GI::linkSAGA()
+#otb <- link2GI::linkOTB()
+#makGlobalVar("path_OTB",otb$pathOTB)
 # ----- calculate DSM DTM & CHM  ---------------------------------------------------
 
-# CREATE dtm & dsm
-if (calculate_chm) {
-  cat("\n::: calculate DSM DTM and CHM from point cloud data...\n")
-  # create DSM
+
   dsm <- uavRst::fa_pc2DSM(lasDir = las_data_dir,
                            gisdbase_path = projRootDir,
                            otb_gauss_radius ="0.5",
@@ -90,7 +87,7 @@ if (calculate_chm) {
   chmR <- dsmR - dtmR
   raster::writeRaster(chmR,paste0(path_output,"chm.tif"),
                       overwrite = TRUE)
-}
+
 
 # ----- start preprocessing ---------------------------------------------------
 

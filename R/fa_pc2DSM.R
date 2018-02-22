@@ -143,7 +143,7 @@ fa_pc2DSM <- function(lasDir = NULL,
                             output = "point_cloud_dsm",
                             method = grass_lidar_method,
                             pth = grass_lidar_pth,
-                            resolution = grid_size,
+                            resolution = as.numeric(grid_size),
                             intern = TRUE,
                             ignore.stderr = TRUE
   )
@@ -167,7 +167,8 @@ fa_pc2DSM <- function(lasDir = NULL,
   # otb gaussian smooth
   if (type_smooth == "otb_gauss") {
     otb_gauss_radius <- as.character(as.numeric(otb_gauss_radius)/as.numeric(grid_size))
-    link2GI::linkOTB()
+    otb <- link2GI::linkOTB()
+    makGlobalVar("path_OTB",otb$pathOTB)
     module  <- "otbcli_Smoothing"
     command <- paste0(path_OTB, module)
     command <- paste0(command, " -in ",path_output,"filled_point_cloud_dsm.tif")
