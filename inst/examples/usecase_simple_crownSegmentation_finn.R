@@ -9,8 +9,6 @@ require(link2GI)
 require(uavRst)
 
 # orthoimage filename
-#orthImg <- "ortho_05.tif"
-#load("/home/creu/lehre/msc/active/msc-2017/data/gis/output/0_5_10_15_20_50stat.RData")
 plot2<-raster::shapefile("/home/creu/lehre/msc/active/msc-2017/data/gis/input/ref/plot_UTM.shp")
 
 # rgb indices 
@@ -36,22 +34,21 @@ ext<- raster::extent(477393.,477460. ,5631938. , 5632003.)
 projRootDir <- "~/proj/uav/thesis/finn"
 
 # define uav point cloud data folder 
-las_data_dir <- "/home/creu/Downloads"
+las_data_dir <- "~/proj/uav/thesis/finn/data/"
 projFolders = c("data/","output/","run/","las/")
 global = TRUE
 path_prefix = "path_"
 
 # create project structure and export global pathes
 paths<-link2GI::initProj(projRootDir = projRootDir,
-                   projFolders = c("data/","output/","run/","las/"),
+                   projFolders = projFolders,
                    global = TRUE,
-                   path_prefix = "path"
-                     )
+                   path_prefix = path_prefix)
 
 # clean dirs
-if (!only_postprocessing) unlink(paste0(path_run,"*"), force = TRUE)
-unlink(paste0(path_tmp,"*"), force = TRUE)
-raster::rasterOptions(tmpdir=path_tmp) 
+
+unlink(paste0(path_run,"*"), force = TRUE)
+raster::rasterOptions(tmpdir=path_run) 
 
 # set working directory
 setwd(path_run)
@@ -67,9 +64,15 @@ setwd(path_run)
   dsm <- uavRst::fa_pc2DSM(lasDir = las_data_dir,
                            gisdbase_path = projRootDir,
                            otb_gauss_radius ="0.5",
-                           grid_size = "0.05",
+                           grid_size = "0.5",
                            GRASSlocation = "dsm",
-                           grass_lidar_method = "range")
+                           grass_lidar_method = "mean")
+
+dtm <- uavRst::fa_pc2DTM(lasDir = las_data_dir,
+                         gisdbase_path = projRootDir,
+                         thin_with_grid = "0.5",
+                         level_max = "5" ,
+                         grid_size = "0.5")
 
 
 
@@ -132,8 +135,8 @@ trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crown
 )
 
 # vie it
-dsm<-mapview::mapview(chmR)
-tc<-mapview::mapview(trees_crowns)
+dsm<-mapview::mapview(plot2)
+tc<-mapview::mapview(dsm)
 tc+dsm
 
 # cut result is with reference

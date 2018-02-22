@@ -135,7 +135,7 @@ fa_pc2DTM <- function(lasDir = NULL,
   # merge all files
   cat(":: merge point cloud files ...\n")
   ret <- system(paste0(lasmerge,
-                       " -i ",path_run,"/export*_red2.",extFN,
+                       " -i ",path_run,"/*_red2.",extFN,
                        " -o ",path_run,"out.",extFN),
                 intern = TRUE, 
                 ignore.stderr = TRUE
