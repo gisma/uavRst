@@ -8,43 +8,30 @@
 require(link2GI)
 require(uavRst)
 
-# orthoimage filename
-plot2<-raster::shapefile("/home/creu/lehre/msc/active/msc-2017/data/gis/input/ref/plot_UTM.shp")
-
-# rgb indices 
-#indices <- c("VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI")   
-
-
-# only post processing to avoid the point cloud to DSM/DEM operation
-#calculate_chm <- FALSE
-
-# just process a clipped area for testing
-#only_postprocessing <- FALSE
-#ext  <- raster::extent(498372,498472,5664417,5664513)
-#ext  <- raster::extent(498300,498620,5664070,5664475)
-#ext  <- raster::extent(498432,498545,5664204,5664302)
-#ext  <- raster::extent(498404,498488,5664458,5664536)
-
-#plot2
-ext<- raster::extent(477393.,477460. ,5631938. , 5632003.)
-# all sample trees
-#ext  <- raster::extent(498310,498610,5664085,5664470)
-
+# define project settings, data folders etc
 # define project folder
 projRootDir <- "~/proj/uav/thesis/finn"
-
-# define uav point cloud data folder mapview(plot2)
+# lidar data folder
 las_data_dir <- "~/proj/uav/thesis/finn/data/sequoia/"
+# proj subfolders
 projFolders = c("data/","output/","run/","las/")
+# export folders as global
 global = TRUE
+# with folder name plus following prefix
 path_prefix = "path_"
+# proj4 string of ALL data
 proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "
+
+# referenz shape filename
+plot2<-raster::shapefile("/home/creu/lehre/msc/active/msc-2017/data/gis/input/ref/plot_UTM.shp")
+
 # create project structure and export global pathes
 paths<-link2GI::initProj(projRootDir = projRootDir,
                    projFolders = projFolders,
                    global = TRUE,
                    path_prefix = path_prefix)
 
+# link all CLI stuff
 giLinks<-uavRst:::linkBuilder()
 
 # clean dirs
@@ -55,11 +42,7 @@ raster::rasterOptions(tmpdir=path_run)
 # set working directory
 setwd(path_run)
 
-# link GDAL and SAGA
-#gdal <- link2GI::linkGDAL()
-#saga <- link2GI::linkSAGA()
-#otb <- link2GI::linkOTB()
-#makGlobalVar("path_OTB",otb$pathOTB)
+
 # ----- calculate DSM DTM & CHM  ---------------------------------------------------
 # create DSM
 dsm <- uavRst::fa_pc2DSM(lasDir = las_data_dir,
@@ -97,18 +80,6 @@ chmR[chmR<0]<-0
 
 # inverse chm
 #chmR<- (- 1 * chmR) + raster::maxValue(chmR)
-#raster::plot(chmR)
-#mapview::mapview(chmR)+plot2
-# index for segmentation default is chm
-# indices <- c("chm")
-# for (item in indices){
-  # gdalUtils::gdalwarp(paste0(path_run,item,".tif"), 
-  #                     paste0(path_run,item,".sdat"), 
-  #                     overwrite = TRUE,  
-  #                     of = 'SAGA',
-  #                     verbose = FALSE)
-#   raster::writeRaster(chmR,paste0(path_run,item,".sdat"),overwrite = TRUE)
-# }
 
 
 # ----  start crown analysis ------------------------session(--------------------------------

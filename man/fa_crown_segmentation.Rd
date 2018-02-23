@@ -4,11 +4,11 @@
 \alias{fa_crown_segmentation}
 \title{Tree segmentation based on a CHM}
 \usage{
-fa_crown_segmentation(seeds = "seeds.sgrd", is3_leafsize = 8,
+fa_crown_segmentation(seeds = "seed.sgrd", is3_leafsize = 8,
   is3_normalize = 1, is3_neighbour = 0, is3_method = 0,
   is3_thVarFeature = 0.05, is3_thVarSpatial = 0.05,
   is3_thSimilarity = 5e-05, is3_seed_params = c("chm"),
-  majority_radius = 2)
+  majority_radius = 2, giLinks = NULL)
 }
 \arguments{
 \item{seeds}{spatial raster object}
@@ -28,6 +28,8 @@ fa_crown_segmentation(seeds = "seeds.sgrd", is3_leafsize = 8,
 \item{is3_thSimilarity}{mumerical similarity threshold default is  0.00005,}
 
 \item{is3_seed_params}{vector of characters corresponding with the used attributes default is c("chm") altitude values from surface model}
+
+\item{giLinks}{list of GI tools cli pathes  default is NULL}
 }
 \description{
 Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. After the segementation itself the results are hole filled and optionally filtered by a majority filter in the 3*3 surrounding.
