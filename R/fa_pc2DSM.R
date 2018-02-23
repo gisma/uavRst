@@ -102,10 +102,10 @@ fa_pc2DSM <- function(lasDir = NULL,
   path_lastools <- path.expand(path_lastools)
   
   # create project structure and export global pathes
-  link2GI::initProj(projRootDir = gisdbase_path, 
-                    projFolders =  c("output/","run/"),
-                    global = TRUE,
-                    path_prefix = "path_")
+  # link2GI::initProj(projRootDir = gisdbase_path, 
+  #                   projFolders =  c("output/","run/"),
+  #                   global = TRUE,
+  #                   path_prefix = "path_")
   
   # delete content in run directory
   unlink(paste0(path_run,"*"), force = TRUE)
@@ -156,8 +156,8 @@ fa_pc2DSM <- function(lasDir = NULL,
   
   
   cat(":: convert raw DSM to GeoTiff \n")
-  h_grass2tif(runDir = path_output, layer = "point_cloud_dsm")
-
+  #h_grass2tif(runDir = path_output, layer = "point_cloud_dsm")
+  raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("point_cloud_dsm"))),paste0(path_data,"point_cloud_dsm"), overwrite=TRUE,format="GTiff")
   cat(":: preliminary fill of gaps... \n")
   ret <- system(paste0("gdal_fillnodata.py ",
                        path_output,"point_cloud_dsm.tif ",
@@ -207,7 +207,7 @@ fa_pc2DSM <- function(lasDir = NULL,
     cat(":: calculate metadata ... \n")
     dsm[dsm <= dsm_minalt] <- NA
     dsm[dsm > dsm_maxalt] <- NA
-    raster::writeRaster(dsm, paste0(path_output, "/dsm.tif"), overwrite = TRUE)
+    raster::writeRaster(dsm, paste0(path_output, "dsm.tif"), overwrite = TRUE)
     e <- extent(dsm)
     dsmA <- as(e, 'SpatialPolygons')  
     if (dsm_area) {

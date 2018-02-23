@@ -22,8 +22,9 @@ path_prefix = "path_"
 # proj4 string of ALL data
 proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "
 
+ext<- raster::extent(477393.,477460. ,5631938. , 5632003.)
 # referenz shape filename
-plot2<-raster::shapefile("/home/creu/lehre/msc/active/msc-2017/data/gis/input/ref/plot_UTM.shp")
+#plot2<-raster::shapefile("/home/creu/lehre/msc/active/msc-2017/data/gis/input/ref/plot_UTM.shp")
 
 # create project structure and export global pathes
 paths<-link2GI::initProj(projRootDir = projRootDir,
