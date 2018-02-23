@@ -4,7 +4,7 @@
 \alias{gdalDEMParam}
 \title{calculate gdal derived DEM params}
 \usage{
-gdalDEMParam(dem, fn, item = NULL)
+gdalDEMParam(dem, item = NULL)
 }
 \arguments{
 \item{dem}{of GeoTiff containing one channel DEM}
