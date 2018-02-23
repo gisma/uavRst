@@ -48,20 +48,7 @@ rs_basicClassify<-function(rasterLayer=c("b1","b2","b3","RI","CI","BI"),training
   
 }
 
-# calculate gdal derived DEM params
-gdalDEMParam<- function(dem,fn,item=NULL) {
-  if (is.null(item)){
-    items<-c("slope", "aspect","TRI","TPI","Roughness")
-  }
-  s<-raster(fn)
-  y<-yres(s)
-  x<-xres(s)
-  gdalwarp(dem,'dem2.tif',te=paste(extent(s)[1],' ',extent(s)[3],' ',extent(s)[2],' ',extent(s)[4]), tr=paste(x,' ', y),overwrite = TRUE, multi = TRUE)
-  
-  for (item in items){
-    gdaldem(item,"dem2.tif",paste0(item,".tif"))
-  }
-}
+
 
 # Split rgb
 gdalsplit<-function(fn){

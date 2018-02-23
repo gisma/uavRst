@@ -197,24 +197,7 @@ r_in_lidar<- function(input=NULL,
 }
 
 
-#' converts GRASS raster to geotiff
-#' @description converts GRASS raster to geotiff
-#' @param runDir path of working directory
-#' @param layer name GRASS raster
-#' @param returnRaster return GRASS raster as an R raster object default = FALSE
 
-#' @export
-#' 
-h_grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
-  
-  rgrass7::execGRASS("r.out.gdal",
-                     flags     = c("c","overwrite","quiet"),
-                     createopt = "TFW=YES,COMPRESS=LZW",
-                     input     = layer,
-                     output    = paste0(runDir,"/",layer,".tif")
-  )
-  if (returnRaster) return(raster::raster(paste0(runDir,"/",layer,".tif")))
-}
 
 
 

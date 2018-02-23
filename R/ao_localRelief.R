@@ -148,7 +148,9 @@ ao_pc2Hillshade <- function(lasDir = NULL,
   
   
   cat(":: convert raw DSM  geotiff \n")
-  hillshade <- h_grass2tif(runDir = path_output, layer = "hillshade",returnRaster = TRUE)
+  # write GRASS to TIF
+  raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("hillshade"))),paste0(path_output,"hillshade"), overwrite=TRUE,format="GTiff")
+  #hillshade <- h_grass2tif(runDir = path_output, layer = "hillshade",returnRaster = TRUE)
   
   return(hillshade)  
 }
