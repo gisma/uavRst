@@ -38,7 +38,7 @@ las_data_dir <- "~/proj/uav/thesis/finn/data/sequoia/"
 projFolders = c("data/","output/","run/","las/")
 global = TRUE
 path_prefix = "path_"
-
+proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "
 # create project structure and export global pathes
 paths<-link2GI::initProj(projRootDir = projRootDir,
                    projFolders = projFolders,
@@ -84,53 +84,57 @@ dsmR <- raster::resample(dsmR, dtmR , method = 'bilinear')
 
 # calculate CHM
 chmR <- dsmR - dtmR
-
+chmR[chmR<0]<-0
+#chmR<- (- 1 * chmR) + raster::maxValue(chmR)
 #raster::plot(chmR)
 #mapview::mapview(chmR)+plot2
-raster::writeRaster(chmR,"chm.tif",
-                    overwrite = TRUE)
 # index for segmentation default is chm
-indices <- c("chm")
-for (item in indices){
-  gdalUtils::gdalwarp(paste0(path_run,item,".tif"), 
-                      paste0(path_run,item,".sdat"), 
-                      overwrite = TRUE,  
-                      of = 'SAGA',
-                      verbose = FALSE)
-}
+# indices <- c("chm")
+# for (item in indices){
+  # gdalUtils::gdalwarp(paste0(path_run,item,".tif"), 
+  #                     paste0(path_run,item,".sdat"), 
+  #                     overwrite = TRUE,  
+  #                     of = 'SAGA',
+  #                     verbose = FALSE)
+#   raster::writeRaster(chmR,paste0(path_run,item,".sdat"),overwrite = TRUE)
+# }
 
 
-# ----  start crown analysis --------------------------------------------------------
+# ----  start crown analysis ------------------------session(--------------------------------
 
 # call seeding process
 seeds <- uavRst::fa_treeSeeding(chmR,
-                                minTreeAlt = 5.5,
+                                minTreeAlt = 5,
                                 crownMinArea = 3,
-                                crownMaxArea = 225,
+                                crownMaxArea = 125,
                                 is0_join = 1, 
-                                is0_thresh = 0.20 
+                                is0_thresh = 0.10 
                                 
 )
 
+seeds <- raster::resample(seeds, chmR , method = 'bilinear')
+raster::writeRaster(seeds,"seed.sdat",overwrite = TRUE)
+raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE)
+
 # call tree crown segmentation 
-rawCrowns <- uavRst::fa_crown_segmentation(seeds = seeds,
-                                        majority_radius = 2.0,
+rawCrowns <- uavRst::fa_crown_segmentation(
+                                        majority_radius = 5.0,
                                         is3_thVarFeature = 0.5,
                                         is3_thVarSpatial = 0.5,
                                         is3_thSimilarity = 0.0005,
-                                        is3_seed_params = indices,
+                                        is3_seed_params = indices
 )
 
 cat("::: run post-classification...\n")
 # extract stats
  statRawCrowns <- uavRst::xpolystat(c("chm"),
-                               spdf = crowns)
+                               spdf = rawCrowns)
 
 # calculate metrics of the crown geometries
 #crowns <- uavRst::fa_caMetrics(statRawCrowns)
 
 # export geojson
-sf::st_write(sf::st_as_sf(crowns), "crowns.geojson",delete_dsn=TRUE,driver="GeoJSON")
+sf::st_write(sf::st_as_sf(statRawCrowns), "crowns.geojson",delete_dsn=TRUE,driver="GeoJSON")
 # rgdal::writeOGR(obj = statRawCrowns,
 #                 layer = "statRawCrowns", 
 #                 driver = "ESRI Shapefile", 
@@ -146,8 +150,9 @@ trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crown
 
 # vie it
 dsm<-mapview::mapview(plot2)
-tc<-mapview::mapview(dsm)
-tc+dsm
+tc<-mapview::mapview(rawCrowns)
+tc+chmR
+
 
 # cut result is with reference
 finalTrees<-rgeos::gIntersection(plot2,trees_crowns[[2]],,byid = TRUE,)

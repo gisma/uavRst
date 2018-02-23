@@ -27,7 +27,7 @@ if (!isGeneric('fa_crown_segmentation')) {
 #'  fa_crown_segmentation(x = rasterobj,  "nameofSAGAFile")
 #'}
 #'
-fa_crown_segmentation <- function(seeds = "seeds.sgrd",
+fa_crown_segmentation <- function(seeds = "seed.sgrd",
                                   is3_leafsize       = 8,
                                   is3_normalize      = 1,
                                   is3_neighbour      = 0,
@@ -44,13 +44,12 @@ fa_crown_segmentation <- function(seeds = "seeds.sgrd",
   
     saga <- link2GI::linkSAGA()
     sagaCmd<-saga$sagaCmd
-  
-  param_list <- paste0(path_run,is3_seed_params,".sgrd;",collapse = "")
+    param_list <- paste0(path_run,is3_seed_params,".sgrd;",collapse = "")
   
   # Start final segmentation algorithm as provided by SAGA's seeded Region Growing segmentation (imagery_segmentation 3)
   # TODO sensitivity analysis of the parameters
   ret <- system(paste0(sagaCmd, " imagery_segmentation 3 ",
-                       " -SEEDS "    ,path_run,"seeds.sgrd",
+                       " -SEEDS "    ,path_run,"seed.sgrd",
                        " -FEATURES '", param_list,
                        "' -SEGMENTS ",path_run,"pre_tree_crowns.shp",
                        " -LEAFSIZE " ,is3_leafsize,

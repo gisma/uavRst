@@ -4,9 +4,9 @@
 \alias{fa_treeSeeding}
 \title{Tree segmentation based on a CHM}
 \usage{
-fa_treeSeeding(x = NULL, minTreeAlt = 10, crownMinArea = 3,
-  crownMaxArea = 150, is0_output = 1, is0_join = 1, is0_thresh = 0.1,
-  split = TRUE)
+fa_treeSeeding(x = NULL, minTreeAlt = 10, minTreeAltParam = "chmQ20",
+  crownMinArea = 3, crownMaxArea = 150, is0_output = 1, is0_join = 1,
+  is0_thresh = 0.1, split = TRUE)
 }
 \arguments{
 \item{x}{spatial raster object}
@@ -22,6 +22,8 @@ fa_treeSeeding(x = NULL, minTreeAlt = 10, crownMinArea = 3,
 \item{split}{default  is TRUE switch if splitting of the polygons is called}
 
 \item{minTreealt}{default is 5}
+
+\item{mintreeAltParam}{default is "chmQ20"}
 
 \item{crownMinArea}{default is 225 maximum area of crown}
 }

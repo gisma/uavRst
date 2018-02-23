@@ -13,6 +13,7 @@ if (!isGeneric('fa_treeSeeding')) {
 #'
 #'@param x  spatial raster object
 #'@param minTreealt default is 5 
+#'@param mintreeAltParam default is "chmQ20"
 #'@param crownMinArea    default is 3 minimum area of crown
 #'@param crownMinArea    default is 225 maximum area of crown
 #'@param is0_output      default is 0,     # 0=s seed value 1=segment id
@@ -32,6 +33,7 @@ if (!isGeneric('fa_treeSeeding')) {
 #'
 fa_treeSeeding <- function(x = NULL,
                                   minTreeAlt       = 10,
+                                  minTreeAltParam  = "chmQ20",
                                   crownMinArea     = 3,
                                   crownMaxArea     = 150,
                                   is0_output      = 1,     # 0= seed value 1=segment id
@@ -94,7 +96,7 @@ fa_treeSeeding <- function(x = NULL,
                                             minTreeAlt = minTreeAlt,
                                             crownMinArea = crownMinArea,
                                             crownMaxArea = crownMaxArea,
-                                            mintreeAltParam = "chmQ10"
+                                            mintreeAltParam = minTreeAltParam 
     )
     rgdal::writeOGR(obj    = trees_crowns[[2]],
                     layer  = "dummyCrownSegment", 
