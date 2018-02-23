@@ -71,15 +71,20 @@ fa_crown_segmentation <- function(seeds = "seed.sgrd",
   
   # fill holes inside the crowns (simple approach)
   # TODO better segmentation
+  if (majority_radius > 0)
+    outname<- "sieve_pre_tree_crowns.sdat"
+  else  
+    outname<- "tree_crowns.sgrd"
   ret <- system(paste0("gdal_sieve.py -8 ",
                        path_run,"pre_tree_crowns.sdat ",
-                       path_run,"fpre_tree_crowns.sdat",
+                       path_run,outname,
                        " -of SAGA"),
                 intern = TRUE)
   
   # apply majority filter for smoothing the extremly irregular crown boundaries 
+  if (majority_radius > 0)
   ret <- system(paste0(sagaCmd, " grid_filter 6 ",
-                       " -INPUT "   ,path_run,"fpre_tree_crowns.sgrd",
+                       " -INPUT "   ,path_run,"sieve_pre_tree_crowns.sgrd",
                        " -RESULT "  ,path_run,"tree_crowns.sgrd",
                        " -MODE 0",
                        " -RADIUS "  ,majority_radius,

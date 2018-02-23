@@ -314,6 +314,7 @@ poly_extract_maxpos <- function(x,lN, poly_split=TRUE){
   return(list(seeds,max_pos))
 }
 
+
 #' converts GRASS raster to geotiff
 #' @description converts GRASS raster to geotiff
 #' @param runDir path of working directory
@@ -323,7 +324,7 @@ poly_extract_maxpos <- function(x,lN, poly_split=TRUE){
 #' @export
 #' 
 h_grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
-  
+  linkGRASS7()
   rgrass7::execGRASS("r.out.gdal",
                      flags     = c("c","overwrite","quiet"),
                      createopt = "TFW=YES,COMPRESS=LZW",
@@ -339,7 +340,7 @@ h_grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
 #' @export
-shape2grass <- function(runDir = NULL, layer = NULL) {
+h_shape2grass <- function(runDir = NULL, layer = NULL) {
   # import point locations to GRASS
   rgrass7::execGRASS('v.in.ogr',
                      flags  = c('o',"overwrite","quiet"),
@@ -353,7 +354,7 @@ shape2grass <- function(runDir = NULL, layer = NULL) {
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
 #' @export
-grass2shape <- function(runDir = NULL, layer = NULL){
+h_grass2shape <- function(runDir = NULL, layer = NULL){
   rgrass7::execGRASS("v.out.ogr",
                      flags  = c("overwrite","quiet"),
                      input  = layer,
@@ -361,7 +362,6 @@ grass2shape <- function(runDir = NULL, layer = NULL){
                      output = paste0(layer,".shp")
   )
 }
-
 
 
 #' converts SAGA raster to R raster object
