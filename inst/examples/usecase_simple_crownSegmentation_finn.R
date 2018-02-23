@@ -45,6 +45,8 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                    global = TRUE,
                    path_prefix = path_prefix)
 
+giLinks<-uavRst:::linkBuilder()
+
 # clean dirs
 
 unlink(paste0(path_run,"*"), force = TRUE)
@@ -65,26 +67,35 @@ dsm <- uavRst::fa_pc2DSM(lasDir = las_data_dir,
                          otb_gauss_radius ="0.5",
                          grid_size = "0.5",
                          GRASSlocation = "dsm",
-                         grass_lidar_method = "mean")
+                         grass_lidar_method = "mean",
+                         giLinks = giLinks)
 # create DTM
 dtm <- uavRst::fa_pc2DTM(lasDir = las_data_dir,
                          gisdbase_path = projRootDir,
                          thin_with_grid = "0.5",
                          level_max = "5" ,
-                         grid_size = "0.5")
+                         grid_size = "0.5",
+                         giLinks = giLinks)
+
+# take the rsulting raster files
 dsmR <- dsm[[1]]
 dtmR <- dtm[[1]]
 
+# crop them to the test area
 dsmR<-raster::crop(dsmR,ext)
 dtmR<-raster::crop(dtmR,ext)
-raster::plot(dsmR)
-raster::plot(dtmR)
-# adjust dsm to dtm
+#raster::plot(dsmR)
+#raster::plot(dtmR)
+
+# if not already done adjust dsm to dtm
 dsmR <- raster::resample(dsmR, dtmR , method = 'bilinear')
 
 # calculate CHM
 chmR <- dsmR - dtmR
+# reset negative values to 0
 chmR[chmR<0]<-0
+
+# inverse chm
 #chmR<- (- 1 * chmR) + raster::maxValue(chmR)
 #raster::plot(chmR)
 #mapview::mapview(chmR)+plot2
@@ -111,35 +122,32 @@ seeds <- uavRst::fa_treeSeeding(chmR,
                                 is0_thresh = 0.10 
                                 
 )
-
+# workaround for strange effects with SAGA 
+# even if all params are identical it is dealing with different grid systems
 seeds <- raster::resample(seeds, chmR , method = 'bilinear')
-raster::writeRaster(seeds,"seed.sdat",overwrite = TRUE)
+seeds[seeds<=0]<-0
+# statically writing of the two minimum raster for segmentation
+raster::writeRaster(seeds,"seed.sdat",overwrite = TRUE,NAflag = 0)
 raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE)
 
 # call tree crown segmentation 
 rawCrowns <- uavRst::fa_crown_segmentation(
-                                        majority_radius = 5.0,
-                                        is3_thVarFeature = 0.5,
-                                        is3_thVarSpatial = 0.5,
-                                        is3_thSimilarity = 0.0005,
-                                        is3_seed_params = indices
+                                        majority_radius = 3,
+                                        is3_thVarFeature = .09,
+                                        is3_thVarSpatial = .09,
+                                        is3_thSimilarity = 0.00001,
+                                        giLinks = giLinks
 )
 
 cat("::: run post-classification...\n")
-# extract stats
+
+# extract chm stats by potential crown segments
  statRawCrowns <- uavRst::xpolystat(c("chm"),
                                spdf = rawCrowns)
 
-# calculate metrics of the crown geometries
-#crowns <- uavRst::fa_caMetrics(statRawCrowns)
-
 # export geojson
 sf::st_write(sf::st_as_sf(statRawCrowns), "crowns.geojson",delete_dsn=TRUE,driver="GeoJSON")
-# rgdal::writeOGR(obj = statRawCrowns,
-#                 layer = "statRawCrowns", 
-#                 driver = "ESRI Shapefile", 
-#                 dsn = path_run, 
-#                 overwrite_layer = TRUE)
+
 # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
 trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crowns.geojson"),
                                                 minTreeAlt = 5,
@@ -148,14 +156,15 @@ trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crown
                                                 mintreeAltParam = "chmQ20"
 )
 
-# vie it
-dsm<-mapview::mapview(plot2)
-tc<-mapview::mapview(rawCrowns)
-tc+chmR
-
+# view it
+mapview::mapview(plot2) +
+mapview::mapview(trees_crowns[[2]]) +
+mapview::mapview(chmR)  
 
 # cut result is with reference
+plot2<-sp::spTransform(plot2,CRSobj = raster::crs(proj4))
+trees_crowns[[2]]<-sp::spTransform(trees_crowns[[2]],CRSobj = raster::crs(proj4))
 finalTrees<-rgeos::gIntersection(plot2,trees_crowns[[2]],,byid = TRUE,)
-plot(finalTrees)
+mapview::mapview(finalTrees)
 
 

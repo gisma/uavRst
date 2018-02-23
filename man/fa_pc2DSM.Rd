@@ -11,7 +11,7 @@ fa_pc2DSM(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
   type_smooth = "otb_gauss", dsm_minalt = 0, dsm_maxalt = 4000,
   dsm_area = FALSE,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
-  gisdbase_exist = FALSE, path_lastools = NULL)
+  gisdbase_exist = FALSE, path_lastools = NULL, giLinks = NULL)
 }
 \arguments{
 \item{lasDir}{default is \code{NULL} path  to the laz/las file(s)}
@@ -37,6 +37,8 @@ fa_pc2DSM(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
 \item{proj4}{default is EPSG \code{32632} any valid proj4 string that is assumingly the correct one}
 
 \item{gisdbase_exist}{default is  \code{FALSE} switch if gisdbase is created or  linked only}
+
+\item{giLinks}{list of GI tools cli pathes  default is NULL}
 
 \item{dsm_minalt}{default is \code{4000}, maximum DTM altitude accepted}
 }

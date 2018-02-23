@@ -24,6 +24,7 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 
 
 
+
 #'@return fa_basicTreeCrownFilterbasically returns SPDF  with the crown polygons and all calculated parameters
 #'
 #'

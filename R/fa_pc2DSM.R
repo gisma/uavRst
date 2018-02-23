@@ -24,6 +24,7 @@ if (!isGeneric('fa_pc2DSM')) {
 #'@param dsm_area default \code{FALSE} generate polygon of valid DSM data 
 #'@param proj4  default is EPSG \code{32632} any valid proj4 string that is assumingly the correct one
 #'@param gisdbase_exist default is  \code{FALSE} switch if gisdbase is created or  linked only
+#'@param giLinks            list of GI tools cli pathes  default is NULL
 
 
 #'@return fa_pc2DSM basically returns a  DSM
@@ -57,12 +58,16 @@ fa_pc2DSM <- function(lasDir = NULL,
                    dsm_area = FALSE,
                    proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                    gisdbase_exist = FALSE,
-                   path_lastools = NULL) {
+                   path_lastools = NULL,
+                   giLinks =NULL) {
   
-  gdal <- link2GI::linkGDAL()
+  if (is.null(giLinks)){
+    giLinks <- linkBuilder()
+  }
   
-    saga <- link2GI::linkSAGA()
-    sagaCmd<-saga$sagaCmd
+  gdal <- giLinks$gdal
+  saga <- giLinks$saga
+  sagaCmd<-saga$sagaCmd
   
   # some basic checks 
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")

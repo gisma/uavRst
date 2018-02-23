@@ -10,7 +10,7 @@ fa_pc2DTM(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
   dtm_maxalt = 4000, dtm_area = FALSE, projFolder = c("data/", "output/",
   "run/", "las/"),
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
-  path_lastools = NULL, cores = "3")
+  path_lastools = NULL, cores = "3", giLinks = NULL)
 }
 \arguments{
 \item{lasDir}{default is \code{NULL} path  to the laz/las file(s)}
@@ -40,6 +40,8 @@ fa_pc2DTM(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
 \item{path_lastools}{directory for the windows lastools}
 
 \item{cores}{number of cores that will be used}
+
+\item{giLinks}{list of GI tools cli pathes  default is NULL}
 
 \item{level_max}{default is 3, Maximum number of spline iterations highly suggested to take odd numbers. As higher as more detailed (spurious).}
 

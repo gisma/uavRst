@@ -20,6 +20,7 @@ if (!isGeneric('fa_treeSeeding')) {
 #'@param is0_join        default is 2,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
 #'@param is0_thresh      default is 0.05,  # threshold for join difference in m
 #'@param split default  is TRUE switch if splitting of the polygons is called
+#'
 
 #'@return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 #'
@@ -39,14 +40,20 @@ fa_treeSeeding <- function(x = NULL,
                                   is0_output      = 1,     # 0= seed value 1=segment id
                                   is0_join        = 1,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
                                   is0_thresh      = 0.10,  # threshold for join difference in m
-                                  split = TRUE
+                                  split = TRUE,
+                                  giLinks = NULL
                                   
 )  {
   cat("\n:: start crown identification...\n")
   options(warn=-1)
   
-    saga <- link2GI::linkSAGA()
-    sagaCmd<-saga$sagaCmd
+  if (is.null(giLinks)){
+    giLinks <- linkBuilder()
+  }
+  
+  gdal <- giLinks$gdal
+  saga <- giLinks$saga
+  sagaCmd<-saga$sagaCmd
   
   r2saga(x,"chm")
 

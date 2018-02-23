@@ -20,6 +20,7 @@ if (!isGeneric('fa_crown_segmentation')) {
 #'@param is3_thVarFeature  numerical, spatial variance default is  0.05,
 #'@param is3_thSimilarity   mumerical similarity threshold default is  0.00005,
 #'@param is3_seed_params    vector of characters corresponding with the used attributes default is c("chm") altitude values from surface model
+#'@param giLinks            list of GI tools cli pathes  default is NULL
 #'@export fa_crown_segmentation
 #'@examples
 #'\dontrun{
@@ -36,14 +37,21 @@ fa_crown_segmentation <- function(seeds = "seed.sgrd",
                                   is3_thVarSpatial   = 0.05,
                                   is3_thSimilarity   = 0.00005,
                                   is3_seed_params    = c("chm"),
-                                  majority_radius    = 2.000) {
+                                  majority_radius    = 2.000,
+                                  giLinks = NULL) {
   
   cat("::: run main segmentation...\n")
   # create correct param list s
   #is3_seed_params<-c("HI","GLI")
+  if (is.null(giLinks)){
+    giLinks <- linkBuilder()
+  }
   
-    saga <- link2GI::linkSAGA()
-    sagaCmd<-saga$sagaCmd
+  gdal <- giLinks$gdal
+  saga <- giLinks$saga
+  sagaCmd<-saga$sagaCmd
+    
+  
     param_list <- paste0(path_run,is3_seed_params,".sgrd;",collapse = "")
   
   # Start final segmentation algorithm as provided by SAGA's seeded Region Growing segmentation (imagery_segmentation 3)

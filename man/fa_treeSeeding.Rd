@@ -6,7 +6,7 @@
 \usage{
 fa_treeSeeding(x = NULL, minTreeAlt = 10, minTreeAltParam = "chmQ20",
   crownMinArea = 3, crownMaxArea = 150, is0_output = 1, is0_join = 1,
-  is0_thresh = 0.1, split = TRUE)
+  is0_thresh = 0.1, split = TRUE, giLinks = NULL)
 }
 \arguments{
 \item{x}{spatial raster object}

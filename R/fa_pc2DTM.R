@@ -28,7 +28,7 @@ if (!isGeneric('fa_pc2DTM')) {
 #'@param dtm_area default \code{FALSE} generate polygon of valid DTM data
 #'@param cores number of cores that will be used
 #'@param proj4  default is EPSG 32632 any valid proj4 string that is assumingly the correct one
-
+#'@param giLinks            list of GI tools cli pathes  default is NULL
 
 
 #'@return fa_pc2DTM basically returns a DTM
@@ -60,10 +60,15 @@ fa_pc2DTM <- function(lasDir = NULL,
                    projFolder = c("data/","output/","run/","las/"),
                    proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                    path_lastools = NULL,
-                   cores = "3") {
+                   cores = "3",
+                   giLinks = NULL) {
   
-  gdal <- link2GI::linkGDAL()
-  saga <- link2GI::linkSAGA()  
+  if (is.null(giLinks)){
+    giLinks <- linkBuilder()
+  }
+  gdal <- giLinks$gdal
+  saga <- giLinks$saga
+  sagaCmd<-saga$sagaCmd 
   
   # some basic checks 
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")

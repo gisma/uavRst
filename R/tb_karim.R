@@ -531,3 +531,51 @@ xpolystat <- function(x = NULL,
                   overwrite_layer = TRUE)
   return(stat)
 }
+
+
+linkBuilder <- function(links=NULL, 
+                        simple = TRUE,
+                        linkItems = c("saga","grass7","otb","gdal"),
+                        sagaArgs = "default_SAGA = NULL, 
+                                    searchLocation = 'default',
+                                    ver_select = FALSE, 
+                                    quiet = TRUE, 
+                                    returnPaths = TRUE",
+                        grassArgs = "x = NULL, 
+                                     default_GRASS7 = NULL, 
+                                     search_path = NULL,
+                                     ver_select = FALSE, 
+                                     gisdbase_exist = FALSE, 
+                                     gisdbase = NULL,
+                                     location = NULL, 
+                                     spatial_params = NULL, 
+                                     resolution = NULL,
+                                     quiet = TRUE, 
+                                     returnPaths = FALSE",
+                        otbArgs =   "bin_OTB = NULL, 
+                                     root_OTB = NULL, 
+                                     type_OTB = NULL,
+                                     searchLocation = NULL, 
+                                     ver_select = FALSE, 
+                                     quiet = TRUE,
+                                     returnPaths = TRUE",
+                        gdalArgs =  "quiet = TRUE, 
+                                     returnPaths = TRUE"
+                        
+
+                        ){
+  if (is.null(links) && (simple)){
+    link<-list()
+    for (links in linkItems) {
+      link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)",sep = "")))) 
+    }
+    
+  } else if (is.null(links)) {
+    link<-list()
+    for (links in linkItems) {
+      link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(",eval(parse(text=paste0(links,"Args"))),")",sep = "")))) 
+    }
+    
+  }
+  return(link)
+}
