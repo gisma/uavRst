@@ -90,9 +90,9 @@ seeds <- uavRst::fa_treeSeeding(chmR,
                                 crownMinArea = 3,
                                 crownMaxArea = 125,
                                 is0_join = 1, 
-                                is0_thresh = 0.10 
-                                
-)
+                                is0_thresh = 0.10,
+                                giLinks = giLinks )
+
 # workaround for strange effects with SAGA 
 # even if all params are identical it is dealing with different grid systems
 seeds <- raster::resample(seeds, chmR , method = 'bilinear')
@@ -107,8 +107,7 @@ rawCrowns <- uavRst::fa_crown_segmentation(
                                         is3_thVarFeature = .09,
                                         is3_thVarSpatial = .09,
                                         is3_thSimilarity = 0.00001,
-                                        giLinks = giLinks
-)
+                                        giLinks = giLinks )
 
 cat("::: run post-classification...\n")
 
@@ -124,8 +123,7 @@ trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crown
                                                 minTreeAlt = 5,
                                                 crownMinArea = 5,
                                                 crownMaxArea = 150,
-                                                mintreeAltParam = "chmQ20"
-)
+                                                mintreeAltParam = "chmQ20" )
 
 # view it
 mapview::mapview(plot2) +
@@ -135,7 +133,7 @@ mapview::mapview(chmR)
 # cut result is with reference
 plot2<-sp::spTransform(plot2,CRSobj = raster::crs(proj4))
 trees_crowns[[2]]<-sp::spTransform(trees_crowns[[2]],CRSobj = raster::crs(proj4))
-finalTrees<-rgeos::gIntersection(plot2,trees_crowns[[2]],,byid = TRUE,)
+finalTrees<-rgeos::gIntersection(plot2,trees_crowns[[2]],byid = TRUE)
 mapview::mapview(finalTrees)
 
 
