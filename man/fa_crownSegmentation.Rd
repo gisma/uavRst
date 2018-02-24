@@ -5,10 +5,10 @@
 \title{Tree segmentation based on a CHM}
 \usage{
 fa_crownSegmentation(treePos = NULL, chm = NULL, minTreeAlt = 2,
-  is3_leafsize = 8, is3_normalize = 1, is3_neighbour = 0,
-  is3_method = 0, is3_thVarFeature = 0.05, is3_thVarSpatial = 0.05,
-  is3_thSimilarity = 5e-05, is3_seed_params = c("chm"),
-  majority_radius = 2, giLinks = NULL)
+  mintreeAltParam = "chmQ20", is3_leafsize = 8, is3_normalize = 1,
+  is3_neighbour = 0, is3_method = 0, is3_thVarFeature = 0.05,
+  is3_thVarSpatial = 0.05, is3_thSimilarity = 5e-05,
+  is3_seed_params = c("chm"), majority_radius = 2, giLinks = NULL)
 }
 \arguments{
 \item{treePos}{spatial raster object}
@@ -19,6 +19,8 @@ the input for \code{treePos}.}
 \item{minTreeAlt}{numeric. The minimum height value for a \code{chm} pixel to be considered as part of a crown segment.
 All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 height of \code{treePos}.}
+
+\item{mintreeAltParam}{default is "chmQ20"}
 
 \item{is3_leafsize}{integer, bin size of grey value sampling range from 1 to 256 default is 8,}
 

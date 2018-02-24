@@ -15,6 +15,7 @@ if (!isGeneric('fa_crownSegmentation')) {
 #'@param minTreeAlt  numeric. The minimum height value for a \code{chm} pixel to be considered as part of a crown segment.
 #' All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 #' height of \code{treePos}.
+#'@param mintreeAltParam default is "chmQ20"
 #' @param chm Canopy height model in \link[raster]{raster} format. Should be the same that was used to create
 #' the input for \code{treePos}.
 #'@param is3_leafsize       integer, bin size of grey value sampling range from 1 to 256 default is 8,
@@ -38,6 +39,7 @@ if (!isGeneric('fa_crownSegmentation')) {
 fa_crownSegmentation <- function(treePos = NULL,
                                    chm = NULL,
                                   minTreeAlt         =2,
+                                 mintreeAltParam = "chmQ20",
                                   is3_leafsize       = 8,
                                   is3_normalize      = 1,
                                   is3_neighbour      = 0,
@@ -53,7 +55,7 @@ fa_crownSegmentation <- function(treePos = NULL,
     raster::writeRaster(treePos,file.path(path_run,"treePos.sdat"),overwrite = TRUE,NAflag = 0)
   }
   if (class(chm) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
-    chm[chm<minTreeAlt] = 0
+    chm[chm<minTreeAlt] = -1
     raster::writeRaster(chm,file.path(path_run,"chm.sdat"),overwrite = TRUE,NAflag = 0)
   }
   
@@ -77,7 +79,7 @@ fa_crownSegmentation <- function(treePos = NULL,
   ret <- system(paste0(sagaCmd, " imagery_segmentation 3 ",
                        " -SEEDS "    ,path_run,"treePos.sgrd",
                        " -FEATURES '", param_list,
-                       "' -SEGMENTS ",path_run,"tree_crowns.shp",
+                       "' -SEGMENTS ",path_run,"crowns.shp",
                        " -LEAFSIZE " ,is3_leafsize,
                        " -NORMALIZE ",is3_normalize,
                        " -NEIGHBOUR ",is3_neighbour, 
@@ -92,14 +94,14 @@ fa_crownSegmentation <- function(treePos = NULL,
   if (majority_radius > 0){
     outname<- "sieve_pre_tree_crowns.sdat"
     ret <- system(paste0("gdal_sieve.py -8 ",
-                         path_run,"tree_crowns.sdat ",
+                         path_run,"crowns.sdat ",
                          path_run,outname,
                          " -of SAGA"),
                   intern = TRUE)
     # apply majority filter for smoothing the extremly irregular crown boundaries 
     ret <- system(paste0(sagaCmd, " grid_filter 6 ",
                          " -INPUT "   ,path_run,"sieve_pre_tree_crowns.sgrd",
-                         " -RESULT "  ,path_run,"tree_crowns.sgrd",
+                         " -RESULT "  ,path_run,"crowns.sgrd",
                          " -MODE 0",
                          " -RADIUS "  ,majority_radius,
                          " -THRESHOLD 0.0 "),
@@ -109,21 +111,21 @@ fa_crownSegmentation <- function(treePos = NULL,
   
   # convert filtered crown clumps to shape format 
   ret <- system(paste0(sagaCmd, " shapes_grid 6 ",
-                       " -GRID "     ,path_run,"tree_crowns.sgrd",
-                       " -POLYGONS " ,path_run,"tree_crowns.shp",
+                       " -GRID "     ,path_run,"crowns.sgrd",
+                       " -POLYGONS " ,path_run,"crowns.shp",
                        " -CLASS_ALL 1" ,
                        " -CLASS_ID 1.0",
                        " -SPLIT 1"),
                 intern = TRUE)
   
   
-  tree_crowns <- rgdal::readOGR(path_run,"tree_crowns", verbose = FALSE)
+  crowns <- rgdal::readOGR(path_run,"crowns", verbose = FALSE)
   #crowns<-tree_crowns[tree_crowns$VALUE > 0,]
-  sp::proj4string(tree_crowns)<-proj
+  sp::proj4string(crowns)<-proj
   
   # extract chm stats by potential crown segments
   statRawCrowns <- uavRst::xpolystat(c("chm"),
-                                     spdf = tree_crowns)
+                                     spdf = crowns)
   
   # export geojson
   sf::st_write(sf::st_as_sf(statRawCrowns), "crowns.geojson",delete_dsn=TRUE,driver="GeoJSON")
@@ -133,7 +135,7 @@ fa_crownSegmentation <- function(treePos = NULL,
                                                   minTreeAlt = minTreeAlt,
                                                   minCrownArea = 1,
                                                   maxCrownArea = 250,
-                                                  mintreeAltParam = "chmQ10" )[[2]]
+                                                  mintreeAltParam = "chmQ20" )[[2]]
   
   options(warn=0)
   cat("segmentation finsihed...\n")

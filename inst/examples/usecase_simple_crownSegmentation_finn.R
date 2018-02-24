@@ -120,10 +120,10 @@ rawCrowns <- uavRst::fa_crownSegmentation( treePos = tPos,
                                            is3_normalize = 0,
                                            is3_method = 0,
                                            is3_neighbour = 1,
-                                           majority_radius = 5,
-                                           is3_thVarFeature = .5,
-                                           is3_thVarSpatial = 1.5,
-                                           is3_thSimilarity = 0.00005,
+                                           majority_radius = 3,
+                                           is3_thVarFeature = .2,
+                                           is3_thVarSpatial = .2,
+                                           is3_thSimilarity = 0.0002,
                                            giLinks = giLinks )
  
 
@@ -140,9 +140,6 @@ mapview::mapview(rawCrownsFT) + mapview::mapview(rawCrowns)
 cat("::: run post-classification...\n")
 
 
-# extract chm stats by potential crown segments
- statRawCrowns <- uavRst::xpolystat(c("chm"),
-                               spdf = rawCrowns)
 
 # export geojson
 sf::st_write(sf::st_as_sf(statRawCrowns), "crowns.geojson",delete_dsn=TRUE,driver="GeoJSON")

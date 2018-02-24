@@ -471,7 +471,7 @@ xpolystat <- function(x = NULL,
                       stddev = 1,
                       quantile = 10)   {
   
-  cat(":: run statistics...\n")
+  #cat(":: run statistics...\n")
   # calculate chm statistics for each crown 
   
     saga <- link2GI::linkSAGA()
