@@ -1,8 +1,3 @@
-if (!isGeneric('fa_crownSegmentation')) {
-  setGeneric('fa_crownSegmentation', function(x, ...)
-    standardGeneric('fa_crownSegmentation'))
-}
-
 #'@name fa_crownSegmentation
 #'@title Tree crown segmentation based on a seeded region growing algorithm
 #'
@@ -127,11 +122,13 @@ fa_crownSegmentation <- function(treePos = NULL,
   statRawCrowns <- uavRst::xpolystat(c("chm"),
                                      spdf = crowns)
   
-  # export geojson
-  sf::st_write(sf::st_as_sf(statRawCrowns), "crowns.geojson",delete_dsn=TRUE,driver="GeoJSON")
-  
+  rgdal::writeOGR(obj = statRawCrowns,
+                  dsn = path_run,
+                  layer = "crowns",
+                  driver= "ESRI Shapefile",
+                  overwrite=TRUE)
   # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
-  tree_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crowns.geojson"),
+  tree_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"statRawCrowns.shp"),
                                                   minTreeAlt = minTreeAlt,
                                                   minCrownArea = 0,
                                                   maxCrownArea = 250,
@@ -144,8 +141,8 @@ fa_crownSegmentation <- function(treePos = NULL,
 
 
 
-#' very fast watershed segemenation algorithm provided by 'ForestTools'
-#' @description Segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Very fast algorithm based on the imagr watershed algorithm.
+#' fast and straightforward watershed segmentation based on imagr
+#' @description  'ForestTools' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Very fast algorithm based on the imagr watershed algorithm.
 #' Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools}{'ForestTools'}
 #' @name fa_crownSegmentationFT
 
@@ -157,9 +154,10 @@ fa_crownSegmentation <- function(treePos = NULL,
 #' All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 #' height of \code{treePos}.
 #' @param format string. Format of the function's output. Can be set to either 'raster' or 'polygons'.
-
-
-#' @export fa_crownSegementationFT
+#' 
+#' @import ForestTools
+#' 
+#' @export 
 #' @examples 
 #' \dontrun{
 #'  crownsFT <- crownSegementationFT(chm = kootenayCHM,
@@ -167,10 +165,9 @@ fa_crownSegmentation <- function(treePos = NULL,
 #'                                 format = "polygons", 
 #'                                 minTreeAlt = 1.5, 
 #'                                 verbose = FALSE)
+#'                                 
 #' }
 
-## packages
-require(ForestTools)
 
 fa_crownSegementationFT <- function(treePos = NULL, 
                                     chm = NULL,
@@ -200,4 +197,57 @@ fa_crownSegementationFT <- function(treePos = NULL,
                overwrite=TRUE)
 
   return(crownsFT)
+}
+
+#' watershed segmentation based on rLiDAR
+#' @description  'rLiDAR' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Generic segmentation algorithm
+#' Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
+#' 
+#' 
+#' @name fa_crownSegmentationRL
+#' 
+#' @param treePos numeric. \code{matrix} or \code{data.frame} with three columns (tree xy coordinates and height).
+#' number of crown segments equal to the number of treetops.
+#' @param chm Canopy height model in \link[raster]{raster} or \link[raster]{SpatialGridDataFrame} file format. Should be the same that was used to create
+#' the input for \code{treePos}.
+#' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
+#' height of \code{treePos}.
+#' @param exclusion numeric. A single value from 0 to 1 that represents the % of pixel exclusion. E.g. a value of 0.5 will exclude all of the pixels for a single tree that has a height value of less than 50% of the maximum height from the same tree. Default value is 0.2
+#' @import rLiDAR
+#' @export 
+#' @examples 
+#' \dontrun{
+#'  crownsRL <- ForestCAS(chm, treePos, maxCrownArea, exclusion)
+#' }
+
+
+fa_crownSegementationRL <- function(treePos = NULL, 
+                                    chm = NULL,
+                                    maxCrownArea = 150,
+                                    exclusion = 0.2) {
+  
+  if (class(treePos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
+    treePos <- raster::rasterToPoints(treePos,spatial = TRUE)
+  } else {
+    r<-raster::raster(treePos)
+    treePos <- raster::rasterToPoints(treePos,spatial = TRUE)
+  }
+  maxcrown <- sqrt(maxCrownArea/ pi)
+  # Crown segmentation
+  
+  xyz <- as.data.frame(raster::rasterToPoints(tp))
+  names(xyz)<- c("x","y","height")
+  canopy<-rLiDAR::ForestCAS(chm = chm, 
+                            loc = xyz, 
+                            maxcrown = maxcrown, 
+                            exclusion =exclusion)
+  canopy[[1]]@proj4string <- chmR@crs
+  # Writing Shapefile
+  rgdal::writeOGR(obj = canopy[[1]],
+                  dsn = paste0(path_output, "crowns_LR"),
+                  layer = "crowns_LR",
+                  driver= "ESRI Shapefile",
+                  overwrite=TRUE)
+  
+  return(canopy[[1]])
 }

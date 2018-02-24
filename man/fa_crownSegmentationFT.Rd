@@ -2,7 +2,12 @@
 % Please edit documentation in R/fa_crownSegmentation.R
 \name{fa_crownSegmentationFT}
 \alias{fa_crownSegmentationFT}
-\title{very fast watershed segemenation algorithm provided by 'ForestTools'}
+\alias{fa_crownSegementationFT}
+\title{fast and straightforward watershed segmentation based on imagr}
+\usage{
+fa_crownSegementationFT(treePos = NULL, chm = NULL, minTreeAlt = 2,
+  format = "polygons", verbose = FALSE)
+}
 \arguments{
 \item{treePos}{\link[sp]{SpatialPointsDataFrame}. The point locations of treetops. The function will generally produce a
 number of crown segments equal to the number of treetops.}
@@ -17,7 +22,7 @@ height of \code{treePos}.}
 \item{format}{string. Format of the function's output. Can be set to either 'raster' or 'polygons'.}
 }
 \description{
-Segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Very fast algorithm based on the imagr watershed algorithm.
+'ForestTools' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Very fast algorithm based on the imagr watershed algorithm.
 Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools}{'ForestTools'}
 }
 \examples{
@@ -27,5 +32,6 @@ Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools
                                 format = "polygons", 
                                 minTreeAlt = 1.5, 
                                 verbose = FALSE)
+                                
 }
 }

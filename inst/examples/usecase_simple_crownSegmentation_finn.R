@@ -135,21 +135,19 @@ rawCrownsFT <- fa_crownSegementationFT(treePos = tPos,
                         verbose = TRUE)
 
 
+
 mapview::mapview(rawCrownsFT) + mapview::mapview(rawCrowns) 
+
+
+### rLiDAR approach
+crownsRL <- fa_crownSegementationRL(chm=chmR, 
+                                    treePos=tPos, 
+                                    maxCrownArea=maxCrownArea, 
+                                    exclusion=0.2)
 
 cat("::: run post-classification...\n")
 
 
-
-# export geojson
-sf::st_write(sf::st_as_sf(statRawCrowns), "crowns.geojson",delete_dsn=TRUE,driver="GeoJSON")
-
-# simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
-trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crowns.geojson"),
-                                                minTreeAlt = 5,
-                                                minCrownArea = 5,
-                                                maxCrownArea = 150,
-                                                mintreeAltParam = "chmQ20" )
 
 # view it
 mapview::mapview(plot2) 
@@ -158,7 +156,7 @@ mapview::mapview(chmR)
 
 # cut result is with reference
 plot2<-sp::spTransform(plot2,CRSobj = raster::crs(proj4))
-trees_crowns[[2]]<-sp::spTransform(trees_crowns[[2]],CRSobj = raster::crs(proj4))
+trees_crowns[[2]]<-sp::spTransform(rawCrowns,CRSobj = raster::crs(proj4))
 finalTrees<-rgeos::gIntersection(plot2,trees_crowns[[2]],byid = TRUE)
 mapview::mapview(finalTrees)
 

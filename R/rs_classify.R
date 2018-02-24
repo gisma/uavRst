@@ -422,8 +422,8 @@ makebNames <- function(rgbi    = NA,
 }
 
 
-#' calculation of spectral indices, basic spatial statistics and textures and
-#'      optionally extracting pix values over all channels according to vector data
+#' wrapper to preprocess synthetic raster bands from a given RGB and optionally 
+#' extracting values according to training vector data
 #' @description 
 #' The calcex function covers step 1 of the  usecaseRGBClassify workflow for a random forest based classification of visible imagery.
 #' The worflow is divided in 4 steps and can be controlled by using the  processing switches of the example (inst/examples/useCaseRGBclassify.R) script :\cr

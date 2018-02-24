@@ -21,6 +21,7 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 #'@param crownSTDW parameter that optionally filters for the STDV of the crown altitudes default is NULL
 #'@param TAopt optional parameter that my be used for filtering default is NULL
 #'@param opt threshold value for optional filter default is NULL
+#'@param proj4string proj4 string 
 
 
 
@@ -38,14 +39,15 @@ fa_basicTreeCrownFilter<- function(crownFn,
                                    mintreeAltParam = "chmQ50",
                                    crownSTDW = NULL,
                                    opt = NULL,
-                                   TAopt = NULL) {
+                                   TAopt = NULL,
+                                   proj4string="+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs") {
   # read crown vector data set
   if (class(crownFn)=="character")  
-    crownarea <- as(sf::st_read(crownFn),"Spatial")
+    crownarea <- rgdal::readOGR(path_run,"crowns", verbose = FALSE)
   else 
     crownarea <- crownFn
   
-  crownarea@proj4string <- sp::CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+  crownarea@proj4string <- sp::CRS(proj4string)
   # calculate area
   crownarea[is.na(crownarea$chmQ10)]<- 0
   crownarea@data$area <- rgeos::gArea(crownarea,byid = TRUE)

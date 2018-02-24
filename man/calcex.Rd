@@ -2,8 +2,8 @@
 % Please edit documentation in R/rs_classify.R
 \name{calcex}
 \alias{calcex}
-\title{calculation of spectral indices, basic spatial statistics and textures and
-     optionally extracting pix values over all channels according to vector data}
+\title{wrapper to preprocess synthetic raster bands from a given RGB and optionally 
+extracting values according to training vector data}
 \usage{
 calcex(useTrainData = TRUE, calculateBands = FALSE, extractTrain = TRUE,
   prefixrunFN = "train", suffixTrainGeom = "TrainingArea",

@@ -6,7 +6,8 @@
 \usage{
 fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, minCrownArea = 5,
   maxCrownArea = 100, mintreeAltParam = "chmQ50", crownSTDW = NULL,
-  opt = NULL, TAopt = NULL)
+  opt = NULL, TAopt = NULL,
+  proj4string = "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
 }
 \arguments{
 \item{crownFn}{filname of OGR comliant vector file}
@@ -24,6 +25,8 @@ fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, minCrownArea = 5,
 \item{opt}{threshold value for optional filter default is NULL}
 
 \item{TAopt}{optional parameter that my be used for filtering default is NULL}
+
+\item{proj4string}{proj4 string}
 }
 \value{
 fa_basicTreeCrownFilterbasically returns SPDF  with the crown polygons and all calculated parameters
