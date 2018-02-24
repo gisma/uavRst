@@ -103,16 +103,17 @@ if (calculate_chm) {
   i <- 1
   for (index in indices) {
     cat("convert ",index,"\n")
-    r2saga(rgbI[[i]],index)
+    raster::writeRaster(rgbI[[i]],paste0(index,".sdat"),overwrite = TRUE,NAflag = 0)
+    #r2saga(rgbI[[i]],index)
     i <- i + 1
   }
 
 # ----  start crown analysis --------------------------------------------------------
 
 # call tree crown segmentation 
-crowns <- fa_crown_segmentation(chmR,
+crowns <- uavRst::fa_crownSegmentation(chmR,
                                 minTreeAlt = 7,
-                                crownMinArea = 3,
+                                minCrownArea = 3,
                                 is0_join = 1, 
                                 is0_thresh = 0.25, 
                                 majority_radius = 5.0, 
@@ -147,8 +148,8 @@ rgdal::writeOGR(obj = crowns,
 # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
 trees_crowns <- fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crowns.shp"),
                                         minTreeAlt = 5,
-                                        crownMinArea = 3,
-                                        crownMaxArea = 225)
+                                        minCrownArea = 3,
+                                        maxCrownArea = 225)
 
 # pixvalues <- basicExtraction(x = chmR,fN = trees_crowns_2[[2]],responseCat = "ID")
  

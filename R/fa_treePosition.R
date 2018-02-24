@@ -1,9 +1,9 @@
-if (!isGeneric('fa_treeSeeding')) {
-  setGeneric('fa_treeSeeding', function(x, ...)
-    standardGeneric('fa_treeSeeding'))
+if (!isGeneric('fa_findTreePosition')) {
+  setGeneric('fa_findTreePosition', function(x, ...)
+    standardGeneric('fa_findTreePosition'))
 }
 
-#'@name fa_treeSeeding
+#'@name fa_findTreePosition
 #'@title Tree segmentation based on a CHM
 #'
 #'@description
@@ -11,13 +11,13 @@ if (!isGeneric('fa_treeSeeding')) {
 #'
 #'@author Chris Reudenbach
 #'
-#'@param x  spatial raster object
-#'@param minTreealt default is 5 
+#'@param chm  spatial raster object
+#'@param minTreeAlt default is 5 
 #'@param mintreeAltParam default is "chmQ20"
-#'@param crownMinArea    default is 3 minimum area of crown
-#'@param crownMinArea    default is 225 maximum area of crown
-#'@param is0_output      default is 0,     # 0=s seed value 1=segment id
-#'@param is0_join        default is 2,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
+#'@param minCrownArea    default is 3 minimum area of crown
+#'@param maxCrownArea    default is 225 maximum area of crown
+#'@param is0_output      default is 0,     # 0=s treePos value 1=segment id
+#'@param is0_join        default is 2,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff
 #'@param is0_thresh      default is 0.05,  # threshold for join difference in m
 #'@param split default  is TRUE switch if splitting of the polygons is called
 #'
@@ -25,20 +25,20 @@ if (!isGeneric('fa_treeSeeding')) {
 #'@return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 #'
 #'
-#'@export fa_treeSeeding
+#'@export fa_findTreePosition
 #'@examples
 #'\dontrun{
 #' # Tree segmentation based on a CHM
-#'  fa_treeSeeding(x = rasterobj,  "nameofSAGAFile")
+#'  fa_findTreePosition(chm = rasterobj,  "nameofSAGAFile")
 #'}
 #'
-fa_treeSeeding <- function(x = NULL,
+fa_findTreePosition <- function(chm = NULL,
                                   minTreeAlt       = 10,
                                   minTreeAltParam  = "chmQ20",
-                                  crownMinArea     = 3,
-                                  crownMaxArea     = 150,
-                                  is0_output      = 1,     # 0= seed value 1=segment id
-                                  is0_join        = 1,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
+                                  minCrownArea     = 3,
+                                  maxCrownArea     = 150,
+                                  is0_output      = 1,     # 0= treePos value 1=segment id
+                                  is0_join        = 1,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff
                                   is0_thresh      = 0.10,  # threshold for join difference in m
                                   split = TRUE,
                                   giLinks = NULL
@@ -54,16 +54,17 @@ fa_treeSeeding <- function(x = NULL,
   gdal <- giLinks$gdal
   saga <- giLinks$saga
   sagaCmd<-saga$sagaCmd
-  
-  r2saga(x,"chm")
+  raster::writeRaster(chm,paste0("chm.sdat"),overwrite = TRUE,NAflag = 0)
+  raster::writeRaster(chm,paste0("chm.tif"),overwrite = TRUE,NAflag = 0)
+  #r2saga(chm,"chm")
 
     cat(":: run pre-segmentation...\n")
-    # first segment run is a simple watershed segmentation just for deriving more reliable seeds 
-    # TODO improve different advanceds seed finding algorithms
+    # first segment run is a simple watershed segmentation just for deriving more reliable treePoss 
+    # TODO improve different advanceds treePos finding algorithms
     ret <- system(paste0(sagaCmd, " imagery_segmentation 0 ",
                          " -GRID "     ,path_run,"chm.sgrd",
                          " -SEGMENTS " ,path_run,"dummyCrownSegments.sgrd",
-                         " -SEEDS "    ,path_run,"treeSeeds.shp",
+                         " -SEEDS "    ,path_run,"treePos.shp",
                          " -OUTPUT "   ,is0_output, 
                          " -DOWN 1"    , 
                          " -JOIN "     ,is0_join,
@@ -81,28 +82,14 @@ fa_treeSeeding <- function(x = NULL,
                   intern = TRUE)
     cat(":: filter results...\n")
     
-    # tmp <- rgdal::readOGR(path_run,"dummyCrownSegment",verbose = FALSE)
-    # tmp <- tmp[tmp$VALUE >= 0,]
-    # tmp@data$area <- rgeos::gArea(tmp,byid = TRUE)
-    # tmp <- tmp[tmp$area > crownMinArea,]
-    # rgdal::writeOGR(obj    = tmp,
-    #                 layer  = "dummyCrownSegment", 
-    #                 driver = "ESRI Shapefile", 
-    #                 dsn    = path_run, 
-    #                 overwrite_layer = TRUE)
-    # 
     # 
     cat(":: find max height position...\n")
     dummycrownsStat <- uavRst::xpolystat(c("chm"), spdf ="dummyCrownSegment.shp")
-    # rgdal::writeOGR(obj    = polyStat,
-    #                 layer  = "polyStat", 
-    #                 driver = "ESRI Shapefile", 
-    #                 dsn    = path_run, 
-    #                 overwrite_layer = TRUE)
+
     trees_crowns <- fa_basicTreeCrownFilter(crownFn = dummycrownsStat,
                                             minTreeAlt = minTreeAlt,
-                                            crownMinArea = crownMinArea,
-                                            crownMaxArea = crownMaxArea,
+                                            minCrownArea = minCrownArea,
+                                            maxCrownArea = maxCrownArea,
                                             mintreeAltParam = minTreeAltParam 
     )
     rgdal::writeOGR(obj    = trees_crowns[[2]],
@@ -112,16 +99,17 @@ fa_treeSeeding <- function(x = NULL,
                     overwrite_layer = TRUE)
     
     cat(":: find max height position...\n")
-    ts <-  poly_extract_maxpos(paste0(path_run,"chm.tif"),"dummyCrownSegment",poly_split = split)
+    ts <-  extractMaxPosPoly(paste0(path_run,"chm.tif"),"dummyCrownSegment",poly_split = split)
     # create raw zero mask
-    seeds <- ts[[1]] * x
-    r2saga(seeds,"treeSeeds")
+    treePos <- ts[[1]] * chm
+    raster::writeRaster(treePos,"treePos0.sdat",overwrite = TRUE,NAflag = 0)
+    #r2saga(treePos,"treePos0")
     # extract stats
     
-    # reclass extracted seeds to minTreeAlt
+    # reclass extracted treePoss to minTreeAlt
     ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
-                         " -INPUT "  ,path_run,"treeSeeds.sgrd",
-                         " -RESULT " ,path_run,"seeds.sgrd",
+                         " -INPUT "  ,path_run,"treePos0.sgrd",
+                         " -RESULT " ,path_run,"treePos.sgrd",
                          " -METHOD 0 ",
                          " -OLD "    ,minTreeAlt ,
                          " -NEW 0.00000",
@@ -133,7 +121,7 @@ fa_treeSeeding <- function(x = NULL,
                   ,intern = TRUE)
     
     # TODO SF
-    # trees <- sf::st_read(paste0(path_run,"treeSeeds.shp"))
+    # trees <- sf::st_read(paste0(path_run,"treePos.shp"))
  
-  return(raster::raster(paste0(path_run,"seeds.sdat")))
+  return(raster::raster(paste0(path_run,"treePos.sdat")))
 }

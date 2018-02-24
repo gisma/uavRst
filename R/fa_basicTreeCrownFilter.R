@@ -15,8 +15,8 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 #'
 #'@param crownFn filname of OGR comliant vector file
 #'@param minTreeAlt minimum height in meter that will be regarded as tree
-#'@param crownMinArea minimum area of crowns that is accepted
-#'@param crownMaxArea maximum area of crowns that is accepted
+#'@param minCrownArea minimum area of crowns that is accepted
+#'@param maxCrownArea maximum area of crowns that is accepted
 #'@param mintreeAltParam parameter that is used for filtering mintreealt default ist Median "chmQ50"
 #'@param crownSTDW parameter that optionally filters for the STDV of the crown altitudes default is NULL
 #'@param TAopt optional parameter that my be used for filtering default is NULL
@@ -33,8 +33,8 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 
 fa_basicTreeCrownFilter<- function(crownFn,
                                    minTreeAlt = 10, 
-                                   crownMinArea = 5, 
-                                   crownMaxArea =100,
+                                   minCrownArea = 5, 
+                                   maxCrownArea =100,
                                    mintreeAltParam = "chmQ50",
                                    crownSTDW = NULL,
                                    opt = NULL,
@@ -51,8 +51,8 @@ fa_basicTreeCrownFilter<- function(crownFn,
   crownarea@data$area <- rgeos::gArea(crownarea,byid = TRUE)
   # filter for min, tree height and min max crown area
   crownarea <- crownarea[eval(parse(text=paste("crownarea@data$",mintreeAltParam,sep = ""))) >= minTreeAlt ,]
-  crownarea <- crownarea[crownarea@data$area > crownMinArea,]
-  crownarea <- crownarea[crownarea@data$area < crownMaxArea,]
+  crownarea <- crownarea[crownarea@data$area > minCrownArea,]
+  crownarea <- crownarea[crownarea@data$area < maxCrownArea,]
   crownarea <- crownarea[crownarea$VALUE >= 0,]
   if (!is.null(crownSTDW)) crownarea <- crownarea[crownarea@data$chmSTDDEV > crownSTDW,]
   #  filter for arbitray threshold

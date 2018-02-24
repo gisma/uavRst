@@ -100,17 +100,17 @@ for (item in indices){
 # ----  start crown analysis --------------------------------------------------------
 
 # call seeding process
-seeds <- uavRst::fa_treeSeeding(chmR,
+seeds <- uavRst::fa_findTreePosition(chmR,
                                 minTreeAlt = 12.5,
-                                crownMinArea = 3,
-                                crownMaxArea = 225,
+                                minCrownArea = 3,
+                                maxCrownArea = 225,
                                 is0_join = 1, 
                                 is0_thresh = 0.20, 
 
 )
 
 # call tree crown segmentation 
-crowns <- uavRst::fa_crown_segmentation(seeds = seeds,
+crowns <- uavRst::fa_crownSegmentation(seeds = seeds,
                                         majority_radius = 9.0,
                                         is3_thVarFeature = 0.05,
                                         is3_thVarSpatial = 0.05,
@@ -136,8 +136,8 @@ rgdal::writeOGR(obj = crowns,
 # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
 trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crowns.geojson"),
                                                 minTreeAlt = 5,
-                                                crownMinArea = 5,
-                                                crownMaxArea = 150,
+                                                minCrownArea = 5,
+                                                maxCrownArea = 150,
                                                 mintreeAltParam = "chmQ20"
 )
 

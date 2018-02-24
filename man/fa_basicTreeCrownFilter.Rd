@@ -4,8 +4,8 @@
 \alias{fa_basicTreeCrownFilter}
 \title{applies minnimum height and min/max area thresholds on the raw tree crown geometries}
 \usage{
-fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, crownMinArea = 5,
-  crownMaxArea = 100, mintreeAltParam = "chmQ50", crownSTDW = NULL,
+fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, minCrownArea = 5,
+  maxCrownArea = 100, mintreeAltParam = "chmQ50", crownSTDW = NULL,
   opt = NULL, TAopt = NULL)
 }
 \arguments{
@@ -13,9 +13,9 @@ fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, crownMinArea = 5,
 
 \item{minTreeAlt}{minimum height in meter that will be regarded as tree}
 
-\item{crownMinArea}{minimum area of crowns that is accepted}
+\item{minCrownArea}{minimum area of crowns that is accepted}
 
-\item{crownMaxArea}{maximum area of crowns that is accepted}
+\item{maxCrownArea}{maximum area of crowns that is accepted}
 
 \item{mintreeAltParam}{parameter that is used for filtering mintreealt default ist Median "chmQ50"}
 

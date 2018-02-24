@@ -217,9 +217,9 @@ line_extract_maxpos <- function(dem,line){
 #' @param lN layer name of shape file
 #' @param poly_split split polygon in single file default is TRUE
 #' extract for all polygons the position of the maximum value
-#' @export
+#' @export extractMaxPosPoly
 #' 
-poly_extract_maxpos <- function(x,lN, poly_split=TRUE){
+extractMaxPosPoly <- function(x,lN, poly_split=TRUE){
   # read raster input data 
   if (poly_split) {system(paste0("rm -rf ",paste0(path_tmp,"split")))}
   dem <- raster::raster(x)
@@ -429,13 +429,7 @@ h_fun_whichmax <- function(mask,value) {
 #'   }
 #' }
 
-if (!isGeneric('xpolystat')) {
-  setGeneric('xpolystat', function(x, ...)
-    standardGeneric('xpolystat'))
-}
-
-#'@name xpolystat
-#'@title calculate statitiscs of polygon based raster extraction
+#'calculate decriptive stats of raster values underlying a polygon
 #'
 #'@description
 #' calculate statitiscs of polygon based raster extraction

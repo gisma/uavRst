@@ -12,9 +12,9 @@ if (!isGeneric('fa_tree_segementation')) {
 #'@author Chris Reudenbach
 #'
 #'@param x  spatial raster object
-#'@param minTreealt default is 5 
-#'@param is0_output      default is 0,     # 0=s seed value 1=segment id
-#'@param is0_join        default is 2,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
+#'@param minTreeAlt default is 5 
+#'@param is0_output      default is 0,     # 0=s treePos value 1=segment id
+#'@param is0_join        default is 2,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff
 #'@param is0_thresh      default is 0.05,  # threshold for join difference in m
 #'@param is3_leafsize    default is 8,
 #'@param is3_normalize   default is 1,
@@ -39,9 +39,9 @@ if (!isGeneric('fa_tree_segementation')) {
 #'}
 #'
 fa_tree_segementation <- function(x = NULL,
-                                  minTreeAlt = 5,
-                                   is0_output      = 1,     # 0= seed value 1=segment id
-                                   is0_join        = 1,     # 0=no join, 1=seed2saddle diff, 2=seed2seed diff
+                                   minTreeAlt = 5,
+                                   is0_output      = 1,     # 0= treePos value 1=segment id
+                                   is0_join        = 1,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff
                                    is0_thresh      = 0.09,  # threshold for join difference in m
                                    is3_leafsize    = 8,
                                    is3_normalize   = 1,
@@ -62,16 +62,16 @@ fa_tree_segementation <- function(x = NULL,
   
     saga <- link2GI::linkSAGA()
     sagaCmd<-saga$sagaCmd
-  
-  r2saga(x,"chm")
+    raster::writeRaster(x,"chm.sdat",overwrite = TRUE,NAflag = 0)
+  #r2saga(x,"chm")
   if (seeding){
-  cat(":: run seed finding...\n")
-  # first segment run is a simple watershed segementation just for deriving more reliable seeds 
-  # TODO improve different advanceds seed finding algorithms
+  cat(":: run treePos finding...\n")
+  # first segment run is a simple watershed segementation just for deriving more reliable treePoss 
+  # TODO improve different advanceds treePos finding algorithms
   ret <- system(paste0(sagaCmd, " imagery_segmentation 0 ",
                        " -GRID "     ,path_run,"chm.sgrd",
                        " -SEGMENTS " ,path_run,"dummyCrownSegments.sgrd",
-                       " -SEEDS "    ,path_run,"treeSeeds.shp",
+                       " -SEEDS "    ,path_run,"treePos.shp",
                        " -OUTPUT "   ,is0_output, 
                        " -DOWN 1"    , 
                        " -JOIN "     ,is0_join,
@@ -91,13 +91,14 @@ fa_tree_segementation <- function(x = NULL,
   ts <-  getmaxposFromPoly(x,"dummyCrownSegment")
   
   # create raw zero mask
-  seeds <- ts[[1]] * x
-  r2saga(seeds,"treeSeeds")
+  treePos <- ts[[1]] * x
+  raster::writeRaster(treePos,"treePos0.sdat",overwrite = TRUE,NAflag = 0)
+  #r2saga(treePos,"treePos0")
   
   # reclass extracted seeds to minTreeAlt
   ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
-                       " -INPUT "     ,path_run,"treeSeeds.sgrd",
-                       " -RESULT "     ,path_run,"seeds.sgrd",
+                       " -INPUT "     ,path_run,"treePos0.sgrd",
+                       " -RESULT "     ,path_run,"treePos.sgrd",
                        " -METHOD 0 ",
                        " -OLD ",minTreeAlt ,
                        " -NEW 0.00000",
@@ -109,14 +110,14 @@ fa_tree_segementation <- function(x = NULL,
                 ,intern = TRUE)
   
   # TODO SF
-  # trees <- sf::st_read(paste0(path_run,"treeSeeds.shp"))
+  # trees <- sf::st_read(paste0(path_run,"treePos.shp"))
   }
   
   cat(":: run main segementation...\n")
   # Start final segmentation algorithm as provided by SAGA's seeded Region Growing segmentation (imagery_segmentation 3)
   # TODO sensitivity analysis of the parameters
   ret <- system(paste0(sagaCmd, " imagery_segmentation 3 ",
-                       " -SEEDS "   ,path_run,"seeds.sgrd",
+                       " -SEEDS "   ,path_run,"treePos.sgrd",
                        " -FEATURES '"   ,
                        path_run,is3_param1,".sgrd;", 
                        path_run,is3_param2,".sgrd",

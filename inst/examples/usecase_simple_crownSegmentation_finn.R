@@ -14,7 +14,7 @@ projRootDir <- "~/proj/uav/thesis/finn"
 # lidar data folder
 las_data_dir <- "~/proj/uav/thesis/finn/data/sequoia/"
 # proj subfolders
-projFolders = c("data/","output/","run/","las/")
+projFolders = c("data/","data/ref/","output/","run/","las/")
 # export folders as global
 global = TRUE
 # with folder name plus following prefix
@@ -23,14 +23,16 @@ path_prefix = "path_"
 proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "
 
 ext<- raster::extent(477393.,477460. ,5631938. , 5632003.)
-# referenz shape filename
-#plot2<-raster::shapefile("/home/creu/lehre/msc/active/msc-2017/data/gis/input/ref/plot_UTM.shp")
+
 
 # create project structure and export global pathes
 paths<-link2GI::initProj(projRootDir = projRootDir,
                    projFolders = projFolders,
                    global = TRUE,
                    path_prefix = path_prefix)
+
+# referenz shape filename
+plot2<-raster::shapefile(paste0(path_data,"ref/plot_UTM.shp"))
 
 # link all CLI stuff
 giLinks<-uavRst:::linkBuilder()
@@ -44,7 +46,8 @@ raster::rasterOptions(tmpdir=path_run)
 setwd(path_run)
 
 
-# ----- calculate DSM DTM & CHM  ---------------------------------------------------
+# ----- calculate DSM DTM & CHM FROM UAV POINT CLOUDS-----------------------------------------------
+
 # create DSM
 dsm <- uavRst::fa_pc2DSM(lasDir = las_data_dir,
                          gisdbase_path = projRootDir,
@@ -81,34 +84,54 @@ chmR[chmR<0]<-0
 chmR1<-chmR
 # inverse chm
 #chmR<- (- 1 * chmR) + raster::maxValue(chmR)
+saveRDS(dtmR,file = paste0(path_output,"dtmR.rds"))
+saveRDS(dsmR,file = paste0(path_output,"dsmR.rds"))
+saveRDS(chmR,file = paste0(path_output,"chmR.rds"))
 
-chmR<-CHMdemo
-# ----  start crown analysis ------------------------session(--------------------------------
 
+
+
+
+# ----  start crown analysis ------------------------
+
+### generic uavRST appproach
 # call seeding process
-seeds <- uavRst::fa_treeSeeding(chmR,
-                                minTreeAlt = 3,
-                                crownMinArea = 1,
-                                crownMaxArea = 100,
+treePos <- uavRst::fa_findTreePosition(chmR,
+                                minTreeAlt = 2,
+                                minCrownArea = 1,
+                                maxCrownArea = 100,
                                 is0_join = 1, 
                                 is0_thresh = 0.01,
                                 giLinks = giLinks )
-
+saveRDS(treePos,file = paste0(path_output,"treePos_iws.rds"))
 # workaround for strange effects with SAGA 
 # even if all params are identical it is dealing with different grid systems
-r<-raster::resample(seeds, chmR , method = 'bilinear')
-r[r<=0]<-0
+tPos<-raster::resample(treePos, chmR , method = 'bilinear')
+tPos[tPos<=0]<-0
 # statically writing of the two minimum raster for segmentation
-raster::writeRaster(r,"seed.sdat",overwrite = TRUE,NAflag = 0)
-raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE)
+raster::writeRaster(tPos,"treePos.tif",overwrite = TRUE,NAflag = 0)
+raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE,NAflag = 0)
 
 # call tree crown segmentation 
-rawCrowns <- uavRst::fa_crown_segmentation(seeds = "seed.sgrd",is3_normalize = 0,
-                                        majority_radius = 5,
-                                        is3_thVarFeature = .75,
-                                        is3_thVarSpatial = .25,
-                                        is3_thSimilarity = 0.0005,
-                                        giLinks = giLinks )
+
+rawCrowns <- uavRst::fa_crownSegmentation( treePos = tPos,
+                                           is3_normalize = 0,
+                                           majority_radius = 5,
+                                           is3_thVarFeature = .75,
+                                           is3_thVarSpatial = .25,
+                                           is3_thSimilarity = 0.0005,
+                                           giLinks = giLinks )
+ 
+
+### Foresttools approach
+rawCrownsFT <- fa_crownSegementationFT(treePos = tPos, 
+                        chm = chmR,
+                        minTreeAlt = 2,
+                        format = "polygons",
+                        verbose = TRUE)
+
+
+mapview::mapview(rawCrownsFT) + mapview::mapview(rawCrowns) 
 
 cat("::: run post-classification...\n")
 
@@ -123,8 +146,8 @@ sf::st_write(sf::st_as_sf(statRawCrowns), "crowns.geojson",delete_dsn=TRUE,drive
 # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
 trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crowns.geojson"),
                                                 minTreeAlt = 5,
-                                                crownMinArea = 5,
-                                                crownMaxArea = 150,
+                                                minCrownArea = 5,
+                                                maxCrownArea = 150,
                                                 mintreeAltParam = "chmQ20" )
 
 # view it
