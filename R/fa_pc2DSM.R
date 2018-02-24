@@ -157,12 +157,12 @@ fa_pc2DSM <- function(lasDir = NULL,
   
   cat(":: convert raw DSM to GeoTiff \n")
   #h_grass2tif(runDir = path_output, layer = "point_cloud_dsm")
-  raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("point_cloud_dsm"))),paste0(path_data,"point_cloud_dsm"), overwrite=TRUE,format="GTiff")
+  raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("point_cloud_dsm"))),paste0(path_output,"point_cloud_dsm"), overwrite=TRUE,format="GTiff")
   cat(":: preliminary fill of gaps... \n")
-  uavRst:::fillGaps(path_output,paste0("point_cloud_dsm.tif "))  
-  # ret <- system(paste0("gdal_fillnodata.py ",
-  #                      path_output,"point_cloud_dsm.tif ",
-  #                      path_output,"filled_point_cloud_dsm.tif"),intern = TRUE)
+  #uavRst:::fillGaps(path_output,paste0("point_cloud_dsm.tif "))  
+   ret <- system(paste0("gdal_fillnodata.py ",
+                        path_output,"point_cloud_dsm.tif ",
+                        path_output,"filled_point_cloud_dsm.tif"),intern = TRUE)
   
   gdalUtils::gdalwarp(paste0(path_output,"point_cloud_dsm.tif"), 
                       paste0(path_run,"point_cloud_dsm.sdat"), 

@@ -78,39 +78,40 @@ dsmR <- raster::resample(dsmR, dtmR , method = 'bilinear')
 chmR <- dsmR - dtmR
 # reset negative values to 0
 chmR[chmR<0]<-0
-
+chmR1<-chmR
 # inverse chm
 #chmR<- (- 1 * chmR) + raster::maxValue(chmR)
 
-
+chmR<-CHMdemo
 # ----  start crown analysis ------------------------session(--------------------------------
 
 # call seeding process
 seeds <- uavRst::fa_treeSeeding(chmR,
-                                minTreeAlt = 5,
-                                crownMinArea = 3,
-                                crownMaxArea = 125,
+                                minTreeAlt = 3,
+                                crownMinArea = 1,
+                                crownMaxArea = 100,
                                 is0_join = 1, 
-                                is0_thresh = 0.10,
+                                is0_thresh = 0.01,
                                 giLinks = giLinks )
 
 # workaround for strange effects with SAGA 
 # even if all params are identical it is dealing with different grid systems
-seeds <- raster::resample(seeds, chmR , method = 'bilinear')
-seeds[seeds<=0]<-0
+r<-raster::resample(seeds, chmR , method = 'bilinear')
+r[r<=0]<-0
 # statically writing of the two minimum raster for segmentation
-raster::writeRaster(seeds,"seed.sdat",overwrite = TRUE,NAflag = 0)
+raster::writeRaster(r,"seed.sdat",overwrite = TRUE,NAflag = 0)
 raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE)
 
 # call tree crown segmentation 
-rawCrowns <- uavRst::fa_crown_segmentation(
-                                        majority_radius = 3,
-                                        is3_thVarFeature = .09,
-                                        is3_thVarSpatial = .09,
-                                        is3_thSimilarity = 0.00001,
+rawCrowns <- uavRst::fa_crown_segmentation(seeds = "seed.sgrd",is3_normalize = 0,
+                                        majority_radius = 5,
+                                        is3_thVarFeature = .75,
+                                        is3_thVarSpatial = .25,
+                                        is3_thSimilarity = 0.0005,
                                         giLinks = giLinks )
 
 cat("::: run post-classification...\n")
+
 
 # extract chm stats by potential crown segments
  statRawCrowns <- uavRst::xpolystat(c("chm"),
@@ -127,8 +128,8 @@ trees_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crown
                                                 mintreeAltParam = "chmQ20" )
 
 # view it
-mapview::mapview(plot2) +
-mapview::mapview(trees_crowns[[2]]) +
+mapview::mapview(plot2) 
+mapview::mapview(rawCrowns[[2]]) +
 mapview::mapview(chmR)  
 
 # cut result is with reference

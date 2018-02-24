@@ -59,7 +59,7 @@ fa_crown_segmentation <- function(seeds = "seed.sgrd",
   ret <- system(paste0(sagaCmd, " imagery_segmentation 3 ",
                        " -SEEDS "    ,path_run,"seed.sgrd",
                        " -FEATURES '", param_list,
-                       "' -SEGMENTS ",path_run,"pre_tree_crowns.shp",
+                       "' -SEGMENTS ",path_run,"tree_crowns.shp",
                        " -LEAFSIZE " ,is3_leafsize,
                        " -NORMALIZE ",is3_normalize,
                        " -NEIGHBOUR ",is3_neighbour, 
@@ -71,25 +71,23 @@ fa_crown_segmentation <- function(seeds = "seed.sgrd",
   
   # fill holes inside the crowns (simple approach)
   # TODO better segmentation
-  if (majority_radius > 0)
+  if (majority_radius > 0){
     outname<- "sieve_pre_tree_crowns.sdat"
-  else  
-    outname<- "tree_crowns.sgrd"
-  ret <- system(paste0("gdal_sieve.py -8 ",
-                       path_run,"pre_tree_crowns.sdat ",
-                       path_run,outname,
-                       " -of SAGA"),
-                intern = TRUE)
+    ret <- system(paste0("gdal_sieve.py -8 ",
+                         path_run,"tree_crowns.sdat ",
+                         path_run,outname,
+                         " -of SAGA"),
+                  intern = TRUE)
+    # apply majority filter for smoothing the extremly irregular crown boundaries 
+    ret <- system(paste0(sagaCmd, " grid_filter 6 ",
+                         " -INPUT "   ,path_run,"sieve_pre_tree_crowns.sgrd",
+                         " -RESULT "  ,path_run,"tree_crowns.sgrd",
+                         " -MODE 0",
+                         " -RADIUS "  ,majority_radius,
+                         " -THRESHOLD 0.0 "),
+                  intern = TRUE)
+    }
   
-  # apply majority filter for smoothing the extremly irregular crown boundaries 
-  if (majority_radius > 0)
-  ret <- system(paste0(sagaCmd, " grid_filter 6 ",
-                       " -INPUT "   ,path_run,"sieve_pre_tree_crowns.sgrd",
-                       " -RESULT "  ,path_run,"tree_crowns.sgrd",
-                       " -MODE 0",
-                       " -RADIUS "  ,majority_radius,
-                       " -THRESHOLD 0.0 "),
-                intern = TRUE)
   
   # convert filtered crown clumps to shape format 
   ret <- system(paste0(sagaCmd, " shapes_grid 6 ",
