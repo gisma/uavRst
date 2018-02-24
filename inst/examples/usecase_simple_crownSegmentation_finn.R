@@ -100,8 +100,8 @@ treePos <- uavRst::fa_findTreePosition(chmR,
                                 minTreeAlt = 2,
                                 minCrownArea = 1,
                                 maxCrownArea = 100,
-                                is0_join = 1, 
-                                is0_thresh = 0.01,
+                                join = 1, 
+                                thresh = 0.01,
                                 giLinks = giLinks )
 saveRDS(treePos,file = paste0(path_output,"treePos_iws.rds"))
 # workaround for strange effects with SAGA 
@@ -117,13 +117,13 @@ raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE,NAflag = 0)
 rawCrowns <- uavRst::fa_crownSegmentation( treePos = tPos,
                                            chm =chmR,
                                            minTreeAlt =3,
-                                           is3_normalize = 0,
-                                           is3_method = 0,
-                                           is3_neighbour = 1,
+                                           normalize = 0,
+                                           method = 0,
+                                           neighbour = 1,
                                            majority_radius = 3,
-                                           is3_thVarFeature = .2,
-                                           is3_thVarSpatial = .2,
-                                           is3_thSimilarity = 0.0002,
+                                           thVarFeature = .2,
+                                           thVarSpatial = .2,
+                                           thSimilarity = 0.0002,
                                            giLinks = giLinks )
  
 

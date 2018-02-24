@@ -2,12 +2,11 @@
 % Please edit documentation in R/fa_treePosition.R
 \name{fa_findTreePosition}
 \alias{fa_findTreePosition}
-\title{Tree segmentation based on a CHM}
+\title{Find potential tree positions using a canopy height model}
 \usage{
 fa_findTreePosition(chm = NULL, minTreeAlt = 10,
   minTreeAltParam = "chmQ20", minCrownArea = 3, maxCrownArea = 150,
-  is0_output = 1, is0_join = 1, is0_thresh = 0.1, split = TRUE,
-  giLinks = NULL)
+  output = 1, join = 1, thresh = 0.1, split = TRUE, giLinks = NULL)
 }
 \arguments{
 \item{chm}{spatial raster object}
@@ -18,11 +17,11 @@ fa_findTreePosition(chm = NULL, minTreeAlt = 10,
 
 \item{maxCrownArea}{default is 225 maximum area of crown}
 
-\item{is0_output}{default is 0,     # 0=s treePos value 1=segment id}
+\item{output}{default is 0,     # 0=s treePos value 1=segment id}
 
-\item{is0_join}{default is 2,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff}
+\item{join}{default is 2,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff}
 
-\item{is0_thresh}{default is 0.05,  # threshold for join difference in m}
+\item{thresh}{default is 0.05,  # threshold for join difference in m}
 
 \item{split}{default  is TRUE switch if splitting of the polygons is called}
 
@@ -32,7 +31,7 @@ fa_findTreePosition(chm = NULL, minTreeAlt = 10,
 basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 }
 \description{
-Tree segmentation based on a CHM
+Find potential tree positions using a canopy height model using a iterative watershed algorithm
 }
 \examples{
 \dontrun{

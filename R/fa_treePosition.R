@@ -4,10 +4,10 @@ if (!isGeneric('fa_findTreePosition')) {
 }
 
 #'@name fa_findTreePosition
-#'@title Tree segmentation based on a CHM
+#'@title Find potential tree positions using a canopy height model
 #'
 #'@description
-#' Tree segmentation based on a CHM
+#' Find potential tree positions using a canopy height model using a iterative watershed algorithm 
 #'
 #'@author Chris Reudenbach
 #'
@@ -16,9 +16,9 @@ if (!isGeneric('fa_findTreePosition')) {
 #'@param mintreeAltParam default is "chmQ20"
 #'@param minCrownArea    default is 3 minimum area of crown
 #'@param maxCrownArea    default is 225 maximum area of crown
-#'@param is0_output      default is 0,     # 0=s treePos value 1=segment id
-#'@param is0_join        default is 2,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff
-#'@param is0_thresh      default is 0.05,  # threshold for join difference in m
+#'@param output      default is 0,     # 0=s treePos value 1=segment id
+#'@param join        default is 2,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff
+#'@param thresh      default is 0.05,  # threshold for join difference in m
 #'@param split default  is TRUE switch if splitting of the polygons is called
 #'
 
@@ -37,9 +37,9 @@ fa_findTreePosition <- function(chm = NULL,
                                   minTreeAltParam  = "chmQ20",
                                   minCrownArea     = 3,
                                   maxCrownArea     = 150,
-                                  is0_output      = 1,     # 0= treePos value 1=segment id
-                                  is0_join        = 1,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff
-                                  is0_thresh      = 0.10,  # threshold for join difference in m
+                                  output      = 1,     # 0= treePos value 1=segment id
+                                  join        = 1,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff
+                                  thresh      = 0.10,  # threshold for join difference in m
                                   split = TRUE,
                                   giLinks = NULL
                                   
@@ -65,10 +65,10 @@ fa_findTreePosition <- function(chm = NULL,
                          " -GRID "     ,path_run,"chm.sgrd",
                          " -SEGMENTS " ,path_run,"dummyCrownSegments.sgrd",
                          " -SEEDS "    ,path_run,"treePos.shp",
-                         " -OUTPUT "   ,is0_output, 
+                         " -OUTPUT "   ,output, 
                          " -DOWN 1"    , 
-                         " -JOIN "     ,is0_join,
-                         " -THRESHOLD ",is0_thresh, 
+                         " -JOIN "     ,join,
+                         " -THRESHOLD ",thresh, 
                          " -EDGE 0")
                   ,intern = TRUE)
     

@@ -4,10 +4,10 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 }
 
 #'@name fa_basicTreeCrownFilter
-#'@title applies minnimum height and min/max area thresholds on the raw tree crown geometries
+#'@title basic filtering of crown polygons using altitude, area and other optional thresholds 
 #'
 #'@description
-#' applies minnimum height and min/max area thresholds on the raw tree crown geometries crowns
+#' applies basic filtering of crown polygons using altitude, area and other optional thresholds 
 #'
 
 #'@author Chris Reudenbach

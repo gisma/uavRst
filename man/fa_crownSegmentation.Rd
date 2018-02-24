@@ -2,13 +2,13 @@
 % Please edit documentation in R/fa_crownSegmentation.R
 \name{fa_crownSegmentation}
 \alias{fa_crownSegmentation}
-\title{Tree segmentation based on a CHM}
+\title{Tree crown segmentation based on a seeded region growing algorithm}
 \usage{
 fa_crownSegmentation(treePos = NULL, chm = NULL, minTreeAlt = 2,
-  mintreeAltParam = "chmQ20", is3_leafsize = 8, is3_normalize = 1,
-  is3_neighbour = 0, is3_method = 0, is3_thVarFeature = 0.05,
-  is3_thVarSpatial = 0.05, is3_thSimilarity = 5e-05,
-  is3_seed_params = c("chm"), majority_radius = 2, giLinks = NULL)
+  mintreeAltParam = "chmQ20", leafsize = 8, normalize = 0,
+  neighbour = 1, method = 0, thVarFeature = 0.5, thVarSpatial = 0.5,
+  thSimilarity = 2e-04, seed_params = c("chm"), majority_radius = 3,
+  giLinks = NULL)
 }
 \arguments{
 \item{treePos}{spatial raster object}
@@ -22,23 +22,23 @@ height of \code{treePos}.}
 
 \item{mintreeAltParam}{default is "chmQ20"}
 
-\item{is3_leafsize}{integer, bin size of grey value sampling range from 1 to 256 default is 8,}
+\item{leafsize}{integer. bin size of grey value sampling range from 1 to 256}
 
-\item{is3_normalize}{integer,  logical switch if data will be normalized or not default is 1,}
+\item{normalize}{integer.  logical switch if data will be normalized (1)}
 
-\item{is3_neighbour}{integer,  von Neumanns' neighborhood (0) or Moore's (1) default is 0,}
+\item{neighbour}{integer.  von Neumanns' neighborhood (0) or Moore's (1)}
 
-\item{is3_method}{integer, growing algorithm for feature space and position (0) or feature space only (1)}
+\item{method}{integer. growing algorithm for feature space and position (0) or feature space only (1)}
 
-\item{is3_thVarFeature}{numerical, spatial variance default is  0.05,}
+\item{thVarFeature}{numeric. spatial variance}
 
-\item{is3_thVarSpatial}{numerical, spatial variance default is  0.05}
+\item{thVarSpatial}{numeric. spatial variance}
 
-\item{is3_thSimilarity}{mumerical similarity threshold default is  0.00005,}
+\item{thSimilarity}{mumeric. similarity threshold}
 
-\item{is3_seed_params}{vector of characters corresponding with the used attributes default is c("chm") altitude values from surface model}
+\item{seed_params}{vector. of characters corresponding with the used attributes. The altitude values from surface model \code{c("chm")} is mandantory.}
 
-\item{giLinks}{list of GI tools cli pathes  default is NULL}
+\item{giLinks}{list. of GI tools cli pathes}
 }
 \description{
 Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. After the segementation itself the results are hole filled and optionally filtered by a majority filter in the 3*3 surrounding.

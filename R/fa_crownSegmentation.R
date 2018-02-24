@@ -4,7 +4,7 @@ if (!isGeneric('fa_crownSegmentation')) {
 }
 
 #'@name fa_crownSegmentation
-#'@title Tree segmentation based on a CHM
+#'@title Tree crown segmentation based on a seeded region growing algorithm
 #'
 #'@description
 #' Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. After the segementation itself the results are hole filled and optionally filtered by a majority filter in the 3*3 surrounding.
@@ -18,15 +18,15 @@ if (!isGeneric('fa_crownSegmentation')) {
 #'@param mintreeAltParam default is "chmQ20"
 #' @param chm Canopy height model in \link[raster]{raster} format. Should be the same that was used to create
 #' the input for \code{treePos}.
-#'@param is3_leafsize       integer, bin size of grey value sampling range from 1 to 256 default is 8,
-#'@param is3_normalize      integer,  logical switch if data will be normalized or not default is 1,
-#'@param is3_neighbour      integer,  von Neumanns' neighborhood (0) or Moore's (1) default is 0,
-#'@param is3_method         integer, growing algorithm for feature space and position (0) or feature space only (1)
-#'@param is3_thVarSpatial   numerical, spatial variance default is  0.05
-#'@param is3_thVarFeature  numerical, spatial variance default is  0.05,
-#'@param is3_thSimilarity   mumerical similarity threshold default is  0.00005,
-#'@param is3_seed_params    vector of characters corresponding with the used attributes default is c("chm") altitude values from surface model
-#'@param giLinks            list of GI tools cli pathes  default is NULL
+#'@param leafsize       integer. bin size of grey value sampling range from 1 to 256 
+#'@param normalize      integer.  logical switch if data will be normalized (1) 
+#'@param neighbour      integer.  von Neumanns' neighborhood (0) or Moore's (1) 
+#'@param method         integer. growing algorithm for feature space and position (0) or feature space only (1)
+#'@param thVarSpatial   numeric. spatial variance 
+#'@param thVarFeature   numeric. spatial variance 
+#'@param thSimilarity   mumeric. similarity threshold 
+#'@param seed_params    vector. of characters corresponding with the used attributes. The altitude values from surface model \code{c("chm")} is mandantory. 
+#'@param giLinks        list. of GI tools cli pathes  
 #'@export fa_crownSegmentation
 #'@examples
 #'\dontrun{
@@ -40,15 +40,15 @@ fa_crownSegmentation <- function(treePos = NULL,
                                    chm = NULL,
                                   minTreeAlt         =2,
                                  mintreeAltParam = "chmQ20",
-                                  is3_leafsize       = 8,
-                                  is3_normalize      = 1,
-                                  is3_neighbour      = 0,
-                                  is3_method         = 0,
-                                  is3_thVarFeature   = 0.05,
-                                  is3_thVarSpatial   = 0.05,
-                                  is3_thSimilarity   = 0.00005,
-                                  is3_seed_params    = c("chm"),
-                                  majority_radius    = 2.000,
+                                  leafsize       = 8,
+                                  normalize      = 0,
+                                  neighbour      = 1,
+                                  method         = 0,
+                                  thVarFeature   = 0.5,
+                                  thVarSpatial   = 0.5,
+                                  thSimilarity   = 0.0002,
+                                  seed_params    = c("chm"),
+                                  majority_radius    = 3.000,
                                   giLinks = NULL) {
   proj<- raster::crs(treePos)
   if (class(treePos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
@@ -62,7 +62,7 @@ fa_crownSegmentation <- function(treePos = NULL,
   
   cat("::: run main segmentation...\n")
   # create correct param list s
-  #is3_seed_params<-c("HI","GLI")
+  #seed_params<-c("HI","GLI")
   if (is.null(giLinks)){
     giLinks <- linkBuilder()
   }
@@ -72,7 +72,7 @@ fa_crownSegmentation <- function(treePos = NULL,
   sagaCmd<-saga$sagaCmd
     
   
-  param_list <- paste0(path_run,is3_seed_params,".sgrd;",collapse = "")
+  param_list <- paste0(path_run,seed_params,".sgrd;",collapse = "")
   
   # Start final segmentation algorithm as provided by SAGA's seeded Region Growing segmentation (imagery_segmentation 3)
   # TODO sensitivity analysis of the parameters
@@ -80,13 +80,13 @@ fa_crownSegmentation <- function(treePos = NULL,
                        " -SEEDS "    ,path_run,"treePos.sgrd",
                        " -FEATURES '", param_list,
                        "' -SEGMENTS ",path_run,"crowns.shp",
-                       " -LEAFSIZE " ,is3_leafsize,
-                       " -NORMALIZE ",is3_normalize,
-                       " -NEIGHBOUR ",is3_neighbour, 
-                       " -METHOD "   ,is3_method,
-                       " -SIG_1 "    ,is3_thVarFeature,
-                       " -SIG_2 "    ,is3_thVarSpatial,
-                       " -THRESHOLD ",is3_thSimilarity),
+                       " -LEAFSIZE " ,leafsize,
+                       " -NORMALIZE ",normalize,
+                       " -NEIGHBOUR ",neighbour, 
+                       " -METHOD "   ,method,
+                       " -SIG_1 "    ,thVarFeature,
+                       " -SIG_2 "    ,thVarSpatial,
+                       " -THRESHOLD ",thSimilarity),
                 intern = TRUE)
   
   # fill holes inside the crowns (simple approach)
@@ -133,7 +133,7 @@ fa_crownSegmentation <- function(treePos = NULL,
   # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
   tree_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crowns.geojson"),
                                                   minTreeAlt = minTreeAlt,
-                                                  minCrownArea = 1,
+                                                  minCrownArea = 0,
                                                   maxCrownArea = 250,
                                                   mintreeAltParam = "chmQ20" )[[2]]
   

@@ -2,21 +2,7 @@
 % Please edit documentation in R/tb_karim.R
 \name{xpolystat}
 \alias{xpolystat}
-\title{#' removes zombie processes
-#' @description removes zombie processes
-#' @export rmZombie
-rmZombie <- inline::cfunction(body='int wstat; while (waitpid(-1, &wstat, WNOHANG) > 0) {};',
-                              includes='#include <sys/WaitForSingleObject.h>',
-                              convention='.C')	
-Last <- function(...) {
-  collect(wait=FALSE)
-  all <- children()
-  if (length(all)) {
-    kill(all, SIGTERM)
-    collect(all)
-  }
-}
-calculate decriptive stats of raster values underlying a polygon}
+\title{calculate decriptive stats of raster values underlying a polygon}
 \usage{
 xpolystat(x = NULL, spdf = NULL, count = 1, min = 1, max = 1,
   sum = 1, range = 1, mean = 1, var = 1, stddev = 1, quantile = 10)

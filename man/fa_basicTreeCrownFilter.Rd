@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_basicTreeCrownFilter.R
 \name{fa_basicTreeCrownFilter}
 \alias{fa_basicTreeCrownFilter}
-\title{applies minnimum height and min/max area thresholds on the raw tree crown geometries}
+\title{basic filtering of crown polygons using altitude, area and other optional thresholds}
 \usage{
 fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, minCrownArea = 5,
   maxCrownArea = 100, mintreeAltParam = "chmQ50", crownSTDW = NULL,
@@ -29,7 +29,7 @@ fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, minCrownArea = 5,
 fa_basicTreeCrownFilterbasically returns SPDF  with the crown polygons and all calculated parameters
 }
 \description{
-applies minnimum height and min/max area thresholds on the raw tree crown geometries crowns
+applies basic filtering of crown polygons using altitude, area and other optional thresholds
 }
 \author{
 Chris Reudenbach
