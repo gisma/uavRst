@@ -121,16 +121,16 @@ crowns <- uavRst::chmSegmentation( treePos = tPos,
                                            minTreeAlt = 3,
                                            normalize = 0,
                                            method = 0,
-                                           neighbour = 1,
-                                           majority_radius = 3,
+                                           neighbour = 0,
+                                           majority_radius = 8,
                                            thVarFeature = 1.,
                                            thVarSpatial = 1.,
-                                           thSimilarity = 0.002,
+                                           thSimilarity = 0.003,
                                            giLinks = giLinks )
  
 
 ### Foresttools approach
-rawCrownsFT <- uavRst::chmSegmentationFT(treePos = tPos, 
+crownsFT <- uavRst::chmSegmentationFT(treePos = tPos, 
                         chm = chmR,
                         minTreeAlt = minTreeAlt,
                         format = "polygons",
@@ -152,23 +152,20 @@ crownsITC<- uavRst::chmSegmentationITC(chm = chmR,
                         maxTreeAlt = 2,
                         maxCrownArea = maxCrownArea)
 
-mapview::mapview(crownsFT) + 
-  mapview::mapview(crownsRL) + 
-  mapview::mapview(crownsITC) +
-  mapview::mapview(crowns)
-cat("::: run post-classification...\n")
-
-
-
 # view it
-mapview::mapview(plot2) 
-mapview::mapview(rawCrowns[[2]]) +
-mapview::mapview(chmR)  
+mapview::mapview(crownsFT) + 
+mapview::mapview(crownsRL) + 
+mapview::mapview(crownsITC,zcol ="Height_m") +
+mapview::mapview(crowns,zcol="chmMAX") +
+mapview::mapview(chmR)
 
 # cut result is with reference
 plot2<-sp::spTransform(plot2,CRSobj = raster::crs(proj4))
-trees_crowns[[2]]<-sp::spTransform(rawCrowns,CRSobj = raster::crs(proj4))
-finalTrees<-rgeos::gIntersection(plot2,trees_crowns[[2]],byid = TRUE)
-mapview::mapview(finalTrees)
+crownsITC<-sp::spTransform(crownsITC,CRSobj = raster::crs(proj4))
+crowns<-sp::spTransform(crowns,CRSobj = raster::crs(proj4))
+finalTreesITC<-rgeos::gIntersection(plot2,crownsITC,byid = TRUE)
+finalTrees<-rgeos::gIntersection(plot2,crowns,byid = TRUE)
+mapview::mapview(finalTreesITC) +
+mapview::mapview(finalTrees)  
 
 
