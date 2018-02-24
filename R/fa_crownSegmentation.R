@@ -191,7 +191,7 @@ fa_crownSegementationFT <- function(treePos = NULL,
                                 verbose = verbose)
       
       # Writing Shapefile
-      writeOGR(obj = crownsFT,
+      rgdal::writeOGR(obj = crownsFT,
                dsn = paste0(path_output, "crowns_FT"),
                layer = "crowns_FT",
                driver= "ESRI Shapefile",
