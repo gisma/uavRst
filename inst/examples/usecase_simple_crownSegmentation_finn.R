@@ -116,7 +116,7 @@ raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE,NAflag = 0)
 
 # call tree crown segmentation 
 
-rawCrowns <- uavRst::fa_crownSegmentation( treePos = tPos,
+rawCrowns <- uavRst::chmSegmentation( treePos = tPos,
                                            chm =chmR,
                                            minTreeAlt = 3,
                                            normalize = 0,
@@ -130,7 +130,7 @@ rawCrowns <- uavRst::fa_crownSegmentation( treePos = tPos,
  
 
 ### Foresttools approach
-rawCrownsFT <- fa_crownSegementationFT(treePos = tPos, 
+rawCrownsFT <- uavRst::chmSegmentationFT(treePos = tPos, 
                         chm = chmR,
                         minTreeAlt = minTreeAlt,
                         format = "polygons",
@@ -142,13 +142,13 @@ mapview::mapview(rawCrownsFT) + mapview::mapview(rawCrowns)
 
 
 ### rLiDAR approach
-crownsRL <- fa_crownSegementationRL(chm=chmR, 
+crownsRL <- uavRst::chmSegmentationRL(chm=chmR, 
                                     treePos=tPos, 
                                     maxCrownArea=maxCrownArea, 
                                     exclusion=0.2)
 
 ### itcSeg approach
-crownsITC<- fa_crownSegementationDP(chm = chmR,
+crownsITC<- uavRst::chmSegmentationITC(chm = chmR,
                         EPSG_code =3064,
                         mov_window = 3,
                         TRESHSeed = 0.45,

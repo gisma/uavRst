@@ -22,16 +22,16 @@
 #'@param thSimilarity   mumeric. similarity threshold 
 #'@param seed_params    vector. of characters corresponding with the used attributes. The altitude values from surface model \code{c("chm")} is mandantory. 
 #'@param giLinks        list. of GI tools cli pathes  
-#'@export fa_crownSegmentation
+#'@export 
 #'@examples
 #'\dontrun{
-#' # Tree segmentation based on a CHM
-#'  fa_crownSegmentation(x = rasterobj,  "nameofSAGAFile")
+#' # crown segmentation based on a CHM
+#'  chmSegmentationFT(x = rasterobj,  "nameofSAGAFile")
 #'}
 #'
 #'
 
-fa_crownSegmentation <- function(treePos = NULL,
+chmSegmentation <- function(treePos = NULL,
                                  chm = NULL,
                                  minTreeAlt         =2,
                                  mintreeAltParam = "chmQ20",
@@ -158,7 +158,7 @@ fa_crownSegmentation <- function(treePos = NULL,
 #' @export 
 #' @examples 
 #' \dontrun{
-#'  crownsFT <- crownSegementationFT(chm = kootenayCHM,
+#'  crownsFT <- chmSegmentationFT(chm = kootenayCHM,
 #'                                  treePos = tpos 
 #'                                 format = "polygons", 
 #'                                 minTreeAlt = 1.5, 
@@ -167,7 +167,7 @@ fa_crownSegmentation <- function(treePos = NULL,
 #' }
 
 
-fa_crownSegementationFT <- function(treePos = NULL, 
+chmSegmentationFT <- function(treePos = NULL, 
                                     chm = NULL,
                                     minTreeAlt = 2,
                                     format = "polygons",
@@ -212,11 +212,11 @@ fa_crownSegementationFT <- function(treePos = NULL,
 #' @export 
 #' @examples 
 #' \dontrun{
-#'  crownsRL <- fa_crownSegementationR(chm, treePos, maxCrownArea, exclusion)
+#'  crownsRL <- chmSegmentationRL(chm, treePos, maxCrownArea, exclusion)
 #' }
 
 
-fa_crownSegementationRL <- function(treePos = NULL, 
+chmSegmentationRL <- function(treePos = NULL, 
                                     chm = NULL,
                                     maxCrownArea = 150,
                                     exclusion = 0.2) {
@@ -250,8 +250,10 @@ fa_crownSegementationRL <- function(treePos = NULL,
 
 #' decision tree method to grow individual tree crowns based on 'itcSegment'
 #' @description Segmentation of individual tree crowns as polygons based on a LiDAR derived canopy height model. 
-#' Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}\cr
-#' M. Dalponte, F. Reyes, K. Kandare, and D. Gianelle, "Delineation of Individual Tree Crowns from ALS and Hyperspectral data: a comparison among four methods," European Journal of Remote Sensing, Vol. 48, pp. 365-382, 2015.
+#' Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}.
+#'  M. Dalponte, F. Reyes, K. Kandare, and D. Gianelle, 
+#'  "Delineation of Individual Tree Crowns from ALS and Hyperspectral data: a comparison among four methods," 
+#'  European Journal of Remote Sensing, Vol. 48, pp. 365-382, 2015.
 #' 
 #' @examples 
 #' \dontrun{
@@ -260,6 +262,7 @@ fa_crownSegementationRL <- function(treePos = NULL,
 #'                        movWindow = 5,
 #'                        th_local_max = 5,
 #'                        max_crown_diam = 20)
+#'                        }
 #' @param treePos numeric. \code{matrix} or \code{data.frame} with three columns (tree xy coordinates and height).
 #' number of crown segments equal to the number of treetops.
 #' @param chm Canopy height model in \link[raster]{raster} or \link[raster]{SpatialGridDataFrame} file format. Should be the same that was used to create
@@ -268,16 +271,16 @@ fa_crownSegementationRL <- function(treePos = NULL,
 #' height of \code{treePos}.
 #' @param EPSG The EPSG code of the reference system of the CHM raster image.
 #' @param mov_window Size (in pixels) of the moving window to detect local maxima.
-#' @param th_local_max Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
+#' @param maxTreeAlt Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
 #' @import itcSegment
-#' @export fa_crownSegementationITC
+#' @export chmSegmentationITC
 #' @examples 
 #' \dontrun{
-#'  crownsITC <- fa_crownSegementationITC(chm, treePos, maxCrownArea, exclusion)
+#'  crownsITC <- chmSegmentationITC(chm, treePos, maxCrownArea, exclusion)
 #' }
 
 
-fa_crownSegementationITC <- function(chm =NULL,
+chmSegmentationITC <- function(chm =NULL,
                                     EPSG_code =3064,
                                     mov_window = 7,
                                     TRESHSeed = 0.45,
