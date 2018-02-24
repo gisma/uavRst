@@ -5,9 +5,9 @@
 \title{Tree crown segmentation based on a seeded region growing algorithm}
 \usage{
 fa_crownSegmentation(treePos = NULL, chm = NULL, minTreeAlt = 2,
-  mintreeAltParam = "chmQ20", leafsize = 8, normalize = 0,
-  neighbour = 1, method = 0, thVarFeature = 0.5, thVarSpatial = 0.5,
-  thSimilarity = 2e-04, seed_params = c("chm"), majority_radius = 3,
+  mintreeAltParam = "chmQ20", leafsize = 256, normalize = 0,
+  neighbour = 1, method = 0, thVarFeature = 1, thVarSpatial = 1,
+  thSimilarity = 0.002, seed_params = c("chm"), majority_radius = 3,
   giLinks = NULL)
 }
 \arguments{

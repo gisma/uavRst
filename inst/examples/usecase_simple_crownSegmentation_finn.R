@@ -121,9 +121,9 @@ rawCrowns <- uavRst::fa_crownSegmentation( treePos = tPos,
                                            method = 0,
                                            neighbour = 1,
                                            majority_radius = 3,
-                                           thVarFeature = .2,
-                                           thVarSpatial = .2,
-                                           thSimilarity = 0.0002,
+                                           thVarFeature = 1.,
+                                           thVarSpatial = 1.,
+                                           thSimilarity = 0.002,
                                            giLinks = giLinks )
  
 

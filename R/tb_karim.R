@@ -415,7 +415,7 @@ h_fun_whichmax <- function(mask,value) {
 }
 
 
-#'calculate decriptive stats of raster values underlying a polygon
+#'calculate decriptive stats of raster values of underlying a polygon
 #'
 #'@description
 #' calculate statitiscs of polygon based raster extraction
