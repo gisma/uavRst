@@ -8,7 +8,7 @@
 number of crown segments equal to the number of treetops.}
 
 \item{chm}{Canopy height model in \link[raster]{raster} format. Should be the same that was used to create
-the input for \code{treetops}.}
+the input for \code{treePos}.}
 
 \item{minTreeAlt}{numeric. The minimum height value for a \code{CHM} pixel to be considered as part of a crown segment.
 All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum

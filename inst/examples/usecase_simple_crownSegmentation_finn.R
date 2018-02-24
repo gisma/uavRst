@@ -115,11 +115,15 @@ raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE,NAflag = 0)
 # call tree crown segmentation 
 
 rawCrowns <- uavRst::fa_crownSegmentation( treePos = tPos,
+                                           chm =chmR,
+                                           minTreeAlt =3,
                                            is3_normalize = 0,
+                                           is3_method = 0,
+                                           is3_neighbour = 1,
                                            majority_radius = 5,
-                                           is3_thVarFeature = .75,
-                                           is3_thVarSpatial = .25,
-                                           is3_thSimilarity = 0.0005,
+                                           is3_thVarFeature = .5,
+                                           is3_thVarSpatial = 1.5,
+                                           is3_thSimilarity = 0.00005,
                                            giLinks = giLinks )
  
 

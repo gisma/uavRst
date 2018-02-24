@@ -12,6 +12,11 @@ if (!isGeneric('fa_crownSegmentation')) {
 #'@author Chris Reudenbach
 #'
 #'@param treePos  spatial raster object
+#'@param minTreeAlt  numeric. The minimum height value for a \code{chm} pixel to be considered as part of a crown segment.
+#' All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
+#' height of \code{treePos}.
+#' @param chm Canopy height model in \link[raster]{raster} format. Should be the same that was used to create
+#' the input for \code{treePos}.
 #'@param is3_leafsize       integer, bin size of grey value sampling range from 1 to 256 default is 8,
 #'@param is3_normalize      integer,  logical switch if data will be normalized or not default is 1,
 #'@param is3_neighbour      integer,  von Neumanns' neighborhood (0) or Moore's (1) default is 0,
@@ -31,6 +36,8 @@ if (!isGeneric('fa_crownSegmentation')) {
 #'
 
 fa_crownSegmentation <- function(treePos = NULL,
+                                   chm = NULL,
+                                  minTreeAlt         =2,
                                   is3_leafsize       = 8,
                                   is3_normalize      = 1,
                                   is3_neighbour      = 0,
@@ -45,6 +52,11 @@ fa_crownSegmentation <- function(treePos = NULL,
   if (class(treePos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
     raster::writeRaster(treePos,file.path(path_run,"treePos.sdat"),overwrite = TRUE,NAflag = 0)
   }
+  if (class(chm) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
+    chm[chm<minTreeAlt] = 0
+    raster::writeRaster(chm,file.path(path_run,"chm.sdat"),overwrite = TRUE,NAflag = 0)
+  }
+  
   
   cat("::: run main segmentation...\n")
   # create correct param list s
@@ -106,11 +118,26 @@ fa_crownSegmentation <- function(treePos = NULL,
   
   
   tree_crowns <- rgdal::readOGR(path_run,"tree_crowns", verbose = FALSE)
-  crowns<-tree_crowns[tree_crowns$VALUE > 0,]
-  sp::proj4string(crowns)<-proj
+  #crowns<-tree_crowns[tree_crowns$VALUE > 0,]
+  sp::proj4string(tree_crowns)<-proj
+  
+  # extract chm stats by potential crown segments
+  statRawCrowns <- uavRst::xpolystat(c("chm"),
+                                     spdf = tree_crowns)
+  
+  # export geojson
+  sf::st_write(sf::st_as_sf(statRawCrowns), "crowns.geojson",delete_dsn=TRUE,driver="GeoJSON")
+  
+  # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
+  tree_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"crowns.geojson"),
+                                                  minTreeAlt = minTreeAlt,
+                                                  minCrownArea = 1,
+                                                  maxCrownArea = 250,
+                                                  mintreeAltParam = "chmQ10" )[[2]]
+  
   options(warn=0)
   cat("segmentation finsihed...\n")
-  return(crowns)
+  return(tree_crowns)
 } 
 
 
@@ -123,7 +150,7 @@ fa_crownSegmentation <- function(treePos = NULL,
 #' @param treePos \link[sp]{SpatialPointsDataFrame}. The point locations of treetops. The function will generally produce a
 #' number of crown segments equal to the number of treetops.
 #' @param chm Canopy height model in \link[raster]{raster} format. Should be the same that was used to create
-#' the input for \code{treetops}.
+#' the input for \code{treePos}.
 #' @param minTreeAlt numeric. The minimum height value for a \code{CHM} pixel to be considered as part of a crown segment.
 #' All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 #' height of \code{treePos}.
