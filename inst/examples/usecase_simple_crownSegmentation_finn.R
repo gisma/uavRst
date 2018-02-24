@@ -24,6 +24,8 @@ proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84
 
 ext<- raster::extent(477393.,477460. ,5631938. , 5632003.)
 
+maxCrownArea = 150
+minTreeAlt = 2
 
 # create project structure and export global pathes
 paths<-link2GI::initProj(projRootDir = projRootDir,
@@ -97,9 +99,9 @@ saveRDS(chmR,file = paste0(path_output,"chmR.rds"))
 ### generic uavRST appproach
 # call seeding process
 treePos <- uavRst::fa_findTreePosition(chmR,
-                                minTreeAlt = 2,
+                                minTreeAlt = minTreeAlt,
                                 minCrownArea = 1,
-                                maxCrownArea = 100,
+                                maxCrownArea = maxCrownArea,
                                 join = 1, 
                                 thresh = 0.01,
                                 giLinks = giLinks )
@@ -116,7 +118,7 @@ raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE,NAflag = 0)
 
 rawCrowns <- uavRst::fa_crownSegmentation( treePos = tPos,
                                            chm =chmR,
-                                           minTreeAlt =3,
+                                           minTreeAlt = 3,
                                            normalize = 0,
                                            method = 0,
                                            neighbour = 1,
@@ -130,7 +132,7 @@ rawCrowns <- uavRst::fa_crownSegmentation( treePos = tPos,
 ### Foresttools approach
 rawCrownsFT <- fa_crownSegementationFT(treePos = tPos, 
                         chm = chmR,
-                        minTreeAlt = 2,
+                        minTreeAlt = minTreeAlt,
                         format = "polygons",
                         verbose = TRUE)
 
@@ -144,6 +146,15 @@ crownsRL <- fa_crownSegementationRL(chm=chmR,
                                     treePos=tPos, 
                                     maxCrownArea=maxCrownArea, 
                                     exclusion=0.2)
+
+### itcSeg approach
+crownsITC<- fa_crownSegementationDP(chm = chmR,
+                        EPSG_code =3064,
+                        mov_window = 3,
+                        TRESHSeed = 0.45,
+                        TRESHCrown = 0.55,
+                        maxTreeAlt = 2,
+                        maxCrownArea = maxCrownArea)
 
 cat("::: run post-classification...\n")
 

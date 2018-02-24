@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_crownSegmentation.R
 \name{fa_crownSegmentation}
 \alias{fa_crownSegmentation}
-\title{Tree crown segmentation based on a seeded region growing algorithm}
+\title{seeded region growing tree crown segmentation based on 'SAGA GIS'}
 \usage{
 fa_crownSegmentation(treePos = NULL, chm = NULL, minTreeAlt = 2,
   mintreeAltParam = "chmQ20", leafsize = 256, normalize = 0,

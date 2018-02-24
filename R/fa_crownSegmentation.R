@@ -1,5 +1,5 @@
-#'@name fa_crownSegmentation
-#'@title Tree crown segmentation based on a seeded region growing algorithm
+
+#'@title seeded region growing tree crown segmentation based on 'SAGA GIS'
 #'
 #'@description
 #' Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. After the segementation itself the results are hole filled and optionally filtered by a majority filter in the 3*3 surrounding.
@@ -32,19 +32,19 @@
 #'
 
 fa_crownSegmentation <- function(treePos = NULL,
-                                   chm = NULL,
-                                  minTreeAlt         =2,
+                                 chm = NULL,
+                                 minTreeAlt         =2,
                                  mintreeAltParam = "chmQ20",
-                                  leafsize       = 256,
-                                  normalize      = 0,
-                                  neighbour      = 1,
-                                  method         = 0,
-                                  thVarFeature   = 1.,
-                                  thVarSpatial   = 1.,
-                                  thSimilarity   = 0.002,
-                                  seed_params    = c("chm"),
-                                  majority_radius    = 3.000,
-                                  giLinks = NULL) {
+                                 leafsize       = 256,
+                                 normalize      = 0,
+                                 neighbour      = 1,
+                                 method         = 0,
+                                 thVarFeature   = 1.,
+                                 thVarSpatial   = 1.,
+                                 thSimilarity   = 0.002,
+                                 seed_params    = c("chm"),
+                                 majority_radius    = 3.000,
+                                 giLinks = NULL) {
   proj<- raster::crs(treePos)
   if (class(treePos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
     raster::writeRaster(treePos,file.path(path_run,"treePos.sdat"),overwrite = TRUE,NAflag = 0)
@@ -65,7 +65,7 @@ fa_crownSegmentation <- function(treePos = NULL,
   gdal <- giLinks$gdal
   saga <- giLinks$saga
   sagaCmd<-saga$sagaCmd
-    
+  
   
   param_list <- paste0(path_run,seed_params,".sgrd;",collapse = "")
   
@@ -101,7 +101,7 @@ fa_crownSegmentation <- function(treePos = NULL,
                          " -RADIUS "  ,majority_radius,
                          " -THRESHOLD 0.0 "),
                   intern = TRUE)
-    }
+  }
   
   
   # convert filtered crown clumps to shape format 
@@ -129,10 +129,10 @@ fa_crownSegmentation <- function(treePos = NULL,
                   overwrite=TRUE)
   # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
   tree_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"statRawCrowns.shp"),
-                                                  minTreeAlt = minTreeAlt,
-                                                  minCrownArea = 0,
-                                                  maxCrownArea = 250,
-                                                  mintreeAltParam = "chmQ20" )[[2]]
+                                                 minTreeAlt = minTreeAlt,
+                                                 minCrownArea = 0,
+                                                 maxCrownArea = 250,
+                                                 mintreeAltParam = "chmQ20" )[[2]]
   
   options(warn=0)
   cat("segmentation finsihed...\n")
@@ -141,11 +141,9 @@ fa_crownSegmentation <- function(treePos = NULL,
 
 
 
-#' fast and straightforward watershed segmentation based on imagr
+#' fast and straightforward watershed segmentation based on 'ForestTools'
 #' @description  'ForestTools' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Very fast algorithm based on the imagr watershed algorithm.
 #' Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools}{'ForestTools'}
-#' @name fa_crownSegmentationFT
-
 #' @param treePos \link[sp]{SpatialPointsDataFrame}. The point locations of treetops. The function will generally produce a
 #' number of crown segments equal to the number of treetops.
 #' @param chm Canopy height model in \link[raster]{raster} format. Should be the same that was used to create
@@ -181,21 +179,21 @@ fa_crownSegementationFT <- function(treePos = NULL,
     r<-raster::raster(treePos)
     treePos <- raster::rasterToPoints(treePos,spatial = TRUE)
   }
-      
-      # Crown segmentation
-      crownsFT <- ForestTools::SegmentCrowns(treetops = treePos, 
-                                CHM = chm, 
-                                format = format, 
-                                minHeight = minTreeAlt, 
-                                verbose = verbose)
-      
-      # Writing Shapefile
-      rgdal::writeOGR(obj = crownsFT,
-               dsn = paste0(path_output, "crowns_FT"),
-               layer = "crowns_FT",
-               driver= "ESRI Shapefile",
-               overwrite=TRUE)
-
+  
+  # Crown segmentation
+  crownsFT <- ForestTools::SegmentCrowns(treetops = treePos, 
+                                         CHM = chm, 
+                                         format = format, 
+                                         minHeight = minTreeAlt, 
+                                         verbose = verbose)
+  
+  # Writing Shapefile
+  rgdal::writeOGR(obj = crownsFT,
+                  dsn = paste0(path_output, "crowns_FT"),
+                  layer = "crowns_FT",
+                  driver= "ESRI Shapefile",
+                  overwrite=TRUE)
+  
   return(crownsFT)
 }
 
@@ -203,21 +201,18 @@ fa_crownSegementationFT <- function(treePos = NULL,
 #' @description  'rLiDAR' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Generic segmentation algorithm
 #' Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
 #' 
-#' 
-#' @name fa_crownSegmentationRL
-#' 
 #' @param treePos numeric. \code{matrix} or \code{data.frame} with three columns (tree xy coordinates and height).
 #' number of crown segments equal to the number of treetops.
 #' @param chm Canopy height model in \link[raster]{raster} or \link[raster]{SpatialGridDataFrame} file format. Should be the same that was used to create
 #' the input for \code{treePos}.
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
 #' height of \code{treePos}.
-#' @param exclusion numeric. A single value from 0 to 1 that represents the % of pixel exclusion. E.g. a value of 0.5 will exclude all of the pixels for a single tree that has a height value of less than 50% of the maximum height from the same tree. Default value is 0.2
+#' @param exclusion numeric. A single value from 0 to 1 that represents the percent of pixel exclusion.
 #' @import rLiDAR
 #' @export 
 #' @examples 
 #' \dontrun{
-#'  crownsRL <- ForestCAS(chm, treePos, maxCrownArea, exclusion)
+#'  crownsRL <- fa_crownSegementationR(chm, treePos, maxCrownArea, exclusion)
 #' }
 
 
@@ -250,4 +245,68 @@ fa_crownSegementationRL <- function(treePos = NULL,
                   overwrite=TRUE)
   
   return(canopy[[1]])
+}
+
+
+#' decision tree method to grow individual tree crowns based on 'itcSegment'
+#' @description Segmentation of individual tree crowns as polygons based on a LiDAR derived canopy height model. 
+#' Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}\cr
+#' M. Dalponte, F. Reyes, K. Kandare, and D. Gianelle, "Delineation of Individual Tree Crowns from ALS and Hyperspectral data: a comparison among four methods," European Journal of Remote Sensing, Vol. 48, pp. 365-382, 2015.
+#' 
+#' @examples 
+#' \dontrun{
+#'  tree_crowns_shp <- tree_crown_segmentation(chm = NULL, 
+#'                        rs_code = "25832",
+#'                        movWindow = 5,
+#'                        th_local_max = 5,
+#'                        max_crown_diam = 20)
+#' @param treePos numeric. \code{matrix} or \code{data.frame} with three columns (tree xy coordinates and height).
+#' number of crown segments equal to the number of treetops.
+#' @param chm Canopy height model in \link[raster]{raster} or \link[raster]{SpatialGridDataFrame} file format. Should be the same that was used to create
+#' the input for \code{treePos}.
+#' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
+#' height of \code{treePos}.
+#' @param EPSG The EPSG code of the reference system of the CHM raster image.
+#' @param mov_window Size (in pixels) of the moving window to detect local maxima.
+#' @param th_local_max Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
+#' @import itcSegment
+#' @export fa_crownSegementationITC
+#' @examples 
+#' \dontrun{
+#'  crownsITC <- fa_crownSegementationITC(chm, treePos, maxCrownArea, exclusion)
+#' }
+
+
+fa_crownSegementationITC <- function(chm =NULL,
+                                    EPSG_code =3064,
+                                    mov_window = 7,
+                                    TRESHSeed = 0.45,
+                                    TRESHCrown = 0.55,
+                                    maxTreeAlt = 2,
+                                    maxCrownArea = 100) {
+  
+  # if (class(treePos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
+  #   chm <- raster::raster(chm)
+  # } 
+  
+  maxcrown <- sqrt(maxCrownArea/ pi)*2
+  
+  crown_polygon <- itcSegment::itcIMG(imagery = chm,
+                                      epsg = EPSG_code,
+                                      TRESHSeed =  0.45,
+                                      TRESHCrown = 0.55,
+                                      searchWinSize = mov_window,
+                                      th = maxTreeAlt,
+                                      DIST = maxcrown,
+                                      ischm = TRUE)
+  
+  rgdal::writeOGR(crown_polygon,
+                  dsn = paste0(path_output, "crowns_itc", "localMax", maxTreeAlt, "_crownDiam", maxCrownArea),
+                  layer = "result",
+                  driver= "ESRI Shapefile",
+                  overwrite=TRUE)
+  
+  
+  
+  return(crown_polygon)
 }
