@@ -221,16 +221,17 @@ chmSegmentationRL <- function(treePos = NULL,
                                     maxCrownArea = 150,
                                     exclusion = 0.2) {
   
-  if (class(treePos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
-    treePos <- raster::rasterToPoints(treePos,spatial = TRUE)
-  } else {
-    r<-raster::raster(treePos)
-    treePos <- raster::rasterToPoints(treePos,spatial = TRUE)
-  }
+  # if (class(treePos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
+  #   treePos <- raster::rasterToPoints(treePos,spatial = TRUE)
+  # } else {
+  #   r<-raster::raster(treePos)
+  #   treePos <- raster::rasterToPoints(treePos,spatial = TRUE)
+  # }
+
   maxcrown <- sqrt(maxCrownArea/ pi)
   # Crown segmentation
   
-  xyz <- as.data.frame(raster::rasterToPoints(tp))
+  xyz <- as.data.frame(raster::rasterToPoints(treePos))
   names(xyz)<- c("x","y","height")
   canopy<-rLiDAR::ForestCAS(chm = chm, 
                             loc = xyz, 

@@ -116,7 +116,7 @@ raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE,NAflag = 0)
 
 # call tree crown segmentation 
 
-rawCrowns <- uavRst::chmSegmentation( treePos = tPos,
+crowns <- uavRst::chmSegmentation( treePos = tPos,
                                            chm =chmR,
                                            minTreeAlt = 3,
                                            normalize = 0,
@@ -137,10 +137,6 @@ rawCrownsFT <- uavRst::chmSegmentationFT(treePos = tPos,
                         verbose = TRUE)
 
 
-
-mapview::mapview(rawCrownsFT) + mapview::mapview(rawCrowns) 
-
-
 ### rLiDAR approach
 crownsRL <- uavRst::chmSegmentationRL(chm=chmR, 
                                     treePos=tPos, 
@@ -156,6 +152,10 @@ crownsITC<- uavRst::chmSegmentationITC(chm = chmR,
                         maxTreeAlt = 2,
                         maxCrownArea = maxCrownArea)
 
+mapview::mapview(crownsFT) + 
+  mapview::mapview(crownsRL) + 
+  mapview::mapview(crownsITC) +
+  mapview::mapview(crowns)
 cat("::: run post-classification...\n")
 
 
