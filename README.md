@@ -25,9 +25,11 @@ The ```uavRst``` analysis toolbox package is far from being well organized. Neve
 
 For running the ```uavRst``` on  your platform you will need a bunch of third party software. The most comfortable way to fulfill most of the requirements is to install QGIS, GRASS- and SAGA-GIS and depending on the choosen tool in addition the Fusion tools for the fusion processing chain of LiDAR data. Following the excellent [installation instructions](https://github.com/jannes-m/RQGIS/blob/master/vignettes/install_guide.Rmd)  of the [RQGIS](https://cran.r-project.org/web/packages/RQGIS/index.html) package will have a good first try to ensure a smooth working environment.
 
-The [Fusion toolset](http://forsys.sefs.uw.edu/fusion/fusionlatest.html) is available at the developer homepage. Please download it and install it as usual. Note you have to adapt the Installation folder in the ``controlFusion.txt`` file. Running a default installation on Windows you do not need to change the path. 
+The [Fusion toolset](http://forsys.sefs.uw.edu/fusion/fusionlatest.html) is available at the developer homepage. Please download it and install it as usual. Note you have to adapt the Installation folder in the ``controlFusion.txt`` file. If you are running a default installation on Windows you do not need to change the path. 
 
-Note: For running Fusion tools under Linux you first need to install wine.
+The [LAStools toolset](http://lastools.org/download/LAStools.zip) is available at the [rapidlasso](https://rapidlasso.com/lastools/) homepage. Please download it and unzip it as usual.
+
+Note: For running Fusion and LAStools tools under Linux you first need to install wine.
 
 In addition you need to install the  ```link2GI``` package. 
 In case of any problems drop an issue or try to use the actual github hosted version of the [link2GI](https://github.com/gisma/link2GI/blob/master/README.md) package. 
