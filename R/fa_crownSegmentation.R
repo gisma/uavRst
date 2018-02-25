@@ -392,7 +392,8 @@ chmSegmentationFU=function(lasDir =NULL,
                            fowfi="mean",
                            proj="+init=epsg:25832",
                            path = getwd(),
-                           Fp = "C:/FUSION/"){
+                           Fp = "C:/FUSION/",
+                           extent=NULL){
   
   output=""
   results="output\\"
@@ -438,7 +439,7 @@ chmSegmentationFU=function(lasDir =NULL,
     # calculate extents etc...
     
     #--> Fusion catalog if not allready exists
-    
+    if (is.null(ext)){
       command<-Fp
       command<-paste0(command, "catalog.exe")
       command<-paste0(command," ", i )
@@ -451,13 +452,18 @@ chmSegmentationFU=function(lasDir =NULL,
       #TODO  fix error in las files if (as.numeric(info[[2]][3])) fixLas()
       #--> define extent for further calculation
       extent<-paste(as.numeric(info2$MinX),as.numeric(info2$MinY),as.numeric(info2$MaxX),as.numeric(info2$MaxY))
-      ext<-c(as.numeric(info2$MinX),as.numeric(info2$MinY),as.numeric(info2$MaxX),as.numeric(info2$MaxY))
-      system(paste0(paste0(Fp,"clipdata.exe"," /class:2 ",i," ",i,"_groundpts.las "), extent))
+      extnumeric<-c(as.numeric(info2$MinX),as.numeric(info2$MinY),as.numeric(info2$MaxX),as.numeric(info2$MaxY))
+    } else {
+      extent<- paste(ext@xmin,ext@ymin,ext@xmax,ext@ymax)
+    }
+    
+      system(paste0(paste0(Fp,"clipdata.exe", " /class:2 ",i," ",i,"_groundpts.las "), extent))
       dellist=append(dellist,paste0(i,"_groundpts.las "))
+      i<- paste0(i,"_groundpts.las")
     for (k in fowsz){
       for (j in cellsz){
         system(paste0(Fp,"gridsurfacecreate.exe ", i,"_",j,"m_gridsurf.dtm "
-                      ,j," M M 1 32 0 0 ",i,"_groundpts.las"))
+                      ,j," M M 1 32 0 0 ",i))
         dellist=append(dellist,paste0(i,"_",j,"m_gridsurf.dtm "))
         system(paste0(Fp, "CanopyModel.exe ","/ground:",i,"_",j,"m_gridsurf.dtm ",
                       "/smooth:",k," ","/peaks ",

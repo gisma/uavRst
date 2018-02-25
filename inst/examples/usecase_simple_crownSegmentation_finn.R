@@ -21,8 +21,8 @@ global = TRUE
 path_prefix = "path_"
 # proj4 string of ALL data
 proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-
-ext<- raster::extent(477393.,477460. ,5631938. , 5632003.)
+extent <- c(477393.,477460. ,5631938. , 5632003.)
+ext<- raster::extent(as.numeric(extent))
 
 maxCrownArea = 150
 minTreeAlt = 2
@@ -153,13 +153,14 @@ crownsITC<- uavRst::chmSegmentationITC(chm = chmR,
                         maxCrownArea = maxCrownArea)
 
 chmSegmentationFU(lasDir = las_data_dir,
-                  cellsz=c(1,3,5),
+                  cellsz=c(1),
                   perc=37,
                   fowsz=3,
                   fowfi="mean",
                   proj="+init=epsg:25832",
                   path=getwd(),
-                  Fp)
+                  Fp,
+                  extent = ext)
 
 # view it
 mapview::mapview(crownsFT) + 
@@ -167,6 +168,7 @@ mapview::mapview(crownsRL) +
 mapview::mapview(crownsITC,zcol ="Height_m") +
 mapview::mapview(crowns,zcol="chmMAX") +
 mapview::mapview(chmR)
+
 
 
 #--------  now treetop alternatives all of them are fast and reliable

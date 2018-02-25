@@ -6,7 +6,7 @@
 \usage{
 chmSegmentationFU(lasDir = NULL, cellsz = 0.5, perc = 37, fowsz = 3,
   fowfi = "mean", proj = "+init=epsg:25832", path = getwd(),
-  Fp = "C:/FUSION/")
+  Fp = "C:/FUSION/", extent = NULL)
 }
 \arguments{
 \item{perc}{integer. n-th percentile of canopy heigth for heightbreak of Tree Segmentation (see Details)}
