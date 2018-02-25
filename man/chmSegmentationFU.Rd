@@ -4,23 +4,23 @@
 \alias{chmSegmentationFU}
 \title{Create Tree Segmentation based on wrapping 'Fusion'}
 \usage{
-chmSegmentationFU(lasDir = NULL, cellsz = 0.5, perc = 37, fowsz = 3,
-  fowfi = "mean", proj = "+init=epsg:25832", path = getwd(),
-  Fp = "C:/FUSION/", extent = NULL)
+chmSegmentationFU(lasDir = NULL, grid_size = 0.5, fusionPercentile = 37,
+  movingWin = 3, focalStatFun = "mean", proj4 = "+init=epsg:25832",
+  path = getwd(), fusionCmd = "C:/FUSION/", extent = NULL)
 }
 \arguments{
-\item{perc}{integer. n-th percentile of canopy heigth for heightbreak of Tree Segmentation (see Details)}
+\item{fusionPercentile}{integer. n-th percentile of canopy heigth for heightbreak of Tree Segmentation (see Details)}
 
-\item{fowsz}{integer. Cellsize for focal window (see Details)}
+\item{movingWin}{integer. Cellsize for focal window (see Details)}
 
-\item{fowfi}{function. The function fowfi should take multiple numbers and return a single number.
+\item{focalStatFun}{function. The function focalStatFun should take multiple numbers and return a single number.
 For example mean, modal, min or max}
 
-\item{proj}{character proj4 string}
+\item{proj4}{character proj4 string}
 
 \item{path}{character. Set working directory [Example: path = "D:/TreeSeg/"]}
 
-\item{Fp}{character. Directory for FUSION tools [Example: Fp = "D:/FUSION/"]}
+\item{fusionCmd}{character. Directory for FUSION tools [Example: fusionCmd = "D:/FUSION/"]}
 
 \item{lasList}{filename (.las-file) or list of filenames (.txt-file)}
 
@@ -37,25 +37,25 @@ The "Create Tree Segmentation" (chmSegmentationFU) function works with a watersh
  lasList: lasList has to be a .las-file or wildcard of .txt-file including different .las-files
  }
 \item{
- cellsz: Grid size of input raster (CanopyHeigthModel) in Tree Segmantation (default=1) !!BE AWARE!!. Main parameter for chmSegmentationFU, adapt to tree species (size, crown size, etc.) necessary.
+ grid_size: Grid size of input raster (CanopyHeigthModel) in Tree Segmantation (default=1) !!BE AWARE!!. Main parameter for chmSegmentationFU, adapt to tree species (size, crown size, etc.) necessary.
  }
 \item{
- perc: default=37 (95th percentile), 38 (99th percentile), 35 (80th percentile), for more information see FUSION GridMatrix \url{https://w3.ual.es/GruposInv/ProyectoCostas/FUSION_manual.pdf}
+ fusionPercentile: default=37 (95th percentile), 38 (99th percentile), 35 (80th percentile), for more information see FUSION GridMatrix \url{https://w3.ual.es/GruposInv/ProyectoCostas/FUSION_manual.pdf}
  }
 \item{
- fowsz: Focal uses a matrix of weights for the neighborhood of the focal cells. Fowsz ist the matrix of moving window. If fowsz is 3 a 3x3 window is used (default=3). For more details see: focal \url{https://www.rdocumentation.org/packages/raster/versions/2.6-7/topics/focal}
+ movingWin: Focal uses a matrix of weights for the neighborhood of the focal cells. movingWin ist the matrix of moving window. If movingWin is 3 a 3x3 window is used (default=3). For more details see: focal \url{https://www.rdocumentation.org/packages/raster/versions/2.6-7/topics/focal}
  }
 \item{
- fowfi: Focal can use different function options like mean, modal, min or max for the calculation (default="mean")
+ focalStatFun: Focal can use different function options like mean, modal, min or max for the calculation (default="mean")
  }
 \item{
- proj: Set projection with EPSG-Code (default="epsg:25832" --> ETRS89 / UTM zone 32N) for more information see: \url{http://spatialreference.org/}
+ proj4: Set projection with EPSG-Code (default="epsg:25832" --> ETRS89 / UTM zone 32N) for more information see: \url{http://spatialreference.org/}
  }
 \item{
  path: Creates a /output and /results folder. In /output all .tif-results and in /results are the .shp and basinmap.tif are saved.
  }
 \item{
- Fp: Directory for FUSION tools. FUSION tools can be downloaded here: \url{http://forsys.sefs.uw.edu/fusion/fusionlatest.html}
+ fusionCmd: Directory for FUSION tools. FUSION tools can be downloaded here: \url{http://forsys.sefs.uw.edu/fusion/fusionlatest.html}
  }
 }
 }
@@ -63,7 +63,7 @@ The "Create Tree Segmentation" (chmSegmentationFU) function works with a watersh
 {
  ## NOT RUN 
  ## i=list.files(path,pattern=".las$", full.names=FALSE)
- ## chmSegmentationFU(lasList=i,cellsz=c(1,3,5),perc=37,fowsz=3,fowfi="mean",proj="+init=epsg:25832",path,Fp)
+ ## chmSegmentationFU(lasList=i,grid_size=c(1,3,5),fusionPercentile=37,movingWin=3,focalStatFun="mean",proj4="+init=epsg:25832",path,fusionCmd)
 }
 }
 \references{

@@ -153,13 +153,13 @@ crownsITC<- uavRst::chmSegmentationITC(chm = chmR,
                         maxCrownArea = maxCrownArea)
 
 chmSegmentationFU(lasDir = las_data_dir,
-                  cellsz=c(1),
-                  perc=37,
-                  fowsz=3,
-                  fowfi="mean",
-                  proj="+init=epsg:25832",
-                  path=getwd(),
-                  Fp,
+                  grid_size = c(1),
+                  fusionPercentile    = 37,
+                  movingWin          = 3,
+                  focalStatFun = "mean",
+                  proj4 = proj4, #"+init=epsg:25832",
+                  path = getwd(),
+                  fusionCmd = NULL,
                   extent = ext)
 
 # view it
