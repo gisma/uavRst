@@ -5,7 +5,7 @@
 \title{seeded region growing tree crown segmentation based on 'SAGA GIS'}
 \usage{
 chmSegmentation(treePos = NULL, chm = NULL, minTreeAlt = 2,
-  mintreeAltParam = "chmQ20", leafsize = 256, normalize = 0,
+  minTreeAltParam = "chmQ20", leafsize = 256, normalize = 0,
   neighbour = 1, method = 0, thVarFeature = 1, thVarSpatial = 1,
   thSimilarity = 0.002, seed_params = c("chm"), majority_radius = 3,
   giLinks = NULL)
@@ -20,7 +20,7 @@ the input for \code{treePos}.}
 All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 height of \code{treePos}.}
 
-\item{mintreeAltParam}{default is "chmQ20"}
+\item{minTreeAltParam}{default is "chmQ20"}
 
 \item{leafsize}{integer. bin size of grey value sampling range from 1 to 256}
 

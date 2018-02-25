@@ -4,17 +4,17 @@
 \alias{chmSegmentationITC}
 \title{decision tree method to grow individual tree crowns based on 'itcSegment'}
 \usage{
-chmSegmentationITC(chm = NULL, EPSG_code = 3064, mov_window = 7,
-  TRESHSeed = 0.45, TRESHCrown = 0.55, maxTreeAlt = 2,
+chmSegmentationITC(chm = NULL, EPSG_code = 3064, movingWin = 7,
+  TRESHSeed = 0.45, TRESHCrown = 0.55, minTreeAlt = 2,
   maxCrownArea = 100)
 }
 \arguments{
 \item{chm}{Canopy height model in \link[raster]{raster} or \link[raster]{SpatialGridDataFrame} file format. Should be the same that was used to create
 the input for \code{treePos}.}
 
-\item{mov_window}{Size (in pixels) of the moving window to detect local maxima.}
+\item{movingWin}{Size (in pixels) of the moving window to detect local maxima.}
 
-\item{maxTreeAlt}{Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.}
+\item{minTreeAlt}{Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.}
 
 \item{maxCrownArea}{numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
 height of \code{treePos}.}

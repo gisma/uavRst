@@ -96,7 +96,7 @@ saveRDS(chmR,file = paste0(path_output,"chmR.rds"))
 
 # ----  start crown analysis ------------------------
 
-### generic uavRST appproach
+### generic uavRST approach
 # call seeding process
 treePos <- uavRst::fa_findTreePosition(chmR,
                                 minTreeAlt = minTreeAlt,
@@ -146,10 +146,10 @@ crownsRL <- uavRst::chmSegmentationRL(chm=chmR,
 ### itcSeg approach
 crownsITC<- uavRst::chmSegmentationITC(chm = chmR,
                         EPSG_code =3064,
-                        mov_window = 3,
+                        movingWin = 3,
                         TRESHSeed = 0.45,
                         TRESHCrown = 0.55,
-                        maxTreeAlt = 2,
+                        minTreeAlt = 2,
                         maxCrownArea = maxCrownArea)
 
 # view it
@@ -158,6 +158,17 @@ mapview::mapview(crownsRL) +
 mapview::mapview(crownsITC,zcol ="Height_m") +
 mapview::mapview(crowns,zcol="chmMAX") +
 mapview::mapview(chmR)
+
+
+#--------  now treetop alternatives all of them are fast and reliable
+# rlidar
+tPosRL <- treePosRL(chm =chmR, movingWin = 7, minTreeAlt = 2) 
+
+# lidR
+tPosliR <- treePoslidR(chm = chmR, movingWin = 7, minTreeAlt = 2)
+
+# ForestTools
+tPosFT <- treePosFT(chm = chmR, minTreeAlt = 2, maxCrownArea = maxCrownArea)
 
 # cut result is with reference
 plot2<-sp::spTransform(plot2,CRSobj = raster::crs(proj4))

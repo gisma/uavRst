@@ -10,7 +10,7 @@
 #'@param minTreeAlt  numeric. The minimum height value for a \code{chm} pixel to be considered as part of a crown segment.
 #' All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 #' height of \code{treePos}.
-#'@param mintreeAltParam default is "chmQ20"
+#'@param minTreeAltParam default is "chmQ20"
 #' @param chm Canopy height model in \link[raster]{raster} format. Should be the same that was used to create
 #' the input for \code{treePos}.
 #'@param leafsize       integer. bin size of grey value sampling range from 1 to 256 
@@ -34,7 +34,7 @@
 chmSegmentation <- function(treePos = NULL,
                                  chm = NULL,
                                  minTreeAlt         =2,
-                                 mintreeAltParam = "chmQ20",
+                                 minTreeAltParam = "chmQ20",
                                  leafsize       = 256,
                                  normalize      = 0,
                                  neighbour      = 1,
@@ -132,7 +132,7 @@ chmSegmentation <- function(treePos = NULL,
                                                  minTreeAlt = minTreeAlt,
                                                  minCrownArea = 0,
                                                  maxCrownArea = 250,
-                                                 mintreeAltParam = "chmQ20" )[[2]]
+                                                 minTreeAltParam = "chmQ20" )[[2]]
   
   options(warn=0)
   cat("segmentation finsihed...\n")
@@ -271,8 +271,8 @@ chmSegmentationRL <- function(treePos = NULL,
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
 #' height of \code{treePos}.
 #' @param EPSG The EPSG code of the reference system of the CHM raster image.
-#' @param mov_window Size (in pixels) of the moving window to detect local maxima.
-#' @param maxTreeAlt Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
+#' @param movingWin Size (in pixels) of the moving window to detect local maxima.
+#' @param minTreeAlt Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
 #' @import itcSegment
 #' @export chmSegmentationITC
 #' @examples 
@@ -283,10 +283,10 @@ chmSegmentationRL <- function(treePos = NULL,
 
 chmSegmentationITC <- function(chm =NULL,
                                     EPSG_code =3064,
-                                    mov_window = 7,
+                                    movingWin = 7,
                                     TRESHSeed = 0.45,
                                     TRESHCrown = 0.55,
-                                    maxTreeAlt = 2,
+                                    minTreeAlt = 2,
                                     maxCrownArea = 100) {
   
   # if (class(treePos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
@@ -299,13 +299,13 @@ chmSegmentationITC <- function(chm =NULL,
                                       epsg = EPSG_code,
                                       TRESHSeed =  0.45,
                                       TRESHCrown = 0.55,
-                                      searchWinSize = mov_window,
-                                      th = maxTreeAlt,
+                                      searchWinSize = movingWin,
+                                      th = minTreeAlt,
                                       DIST = maxcrown,
                                       ischm = TRUE)
   
   rgdal::writeOGR(crown_polygon,
-                  dsn = paste0(path_output, "crowns_itc", "localMax", maxTreeAlt, "_crownDiam", maxCrownArea),
+                  dsn = paste0(path_output, "crowns_itc", "localMax", minTreeAlt, "_crownDiam", maxCrownArea),
                   layer = "result",
                   driver= "ESRI Shapefile",
                   overwrite=TRUE)

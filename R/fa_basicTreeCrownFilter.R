@@ -17,7 +17,7 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 #'@param minTreeAlt minimum height in meter that will be regarded as tree
 #'@param minCrownArea minimum area of crowns that is accepted
 #'@param maxCrownArea maximum area of crowns that is accepted
-#'@param mintreeAltParam parameter that is used for filtering mintreealt default ist Median "chmQ50"
+#'@param minTreeAltParam parameter that is used for filtering mintreealt default ist Median "chmQ50"
 #'@param crownSTDW parameter that optionally filters for the STDV of the crown altitudes default is NULL
 #'@param TAopt optional parameter that my be used for filtering default is NULL
 #'@param opt threshold value for optional filter default is NULL
@@ -36,7 +36,7 @@ fa_basicTreeCrownFilter<- function(crownFn,
                                    minTreeAlt = 10, 
                                    minCrownArea = 5, 
                                    maxCrownArea =100,
-                                   mintreeAltParam = "chmQ50",
+                                   minTreeAltParam = "chmQ50",
                                    crownSTDW = NULL,
                                    opt = NULL,
                                    TAopt = NULL,
@@ -52,7 +52,7 @@ fa_basicTreeCrownFilter<- function(crownFn,
   crownarea[is.na(crownarea$chmQ10)]<- 0
   crownarea@data$area <- rgeos::gArea(crownarea,byid = TRUE)
   # filter for min, tree height and min max crown area
-  crownarea <- crownarea[eval(parse(text=paste("crownarea@data$",mintreeAltParam,sep = ""))) >= minTreeAlt ,]
+  crownarea <- crownarea[eval(parse(text=paste("crownarea@data$",minTreeAltParam,sep = ""))) >= minTreeAlt ,]
   crownarea <- crownarea[crownarea@data$area > minCrownArea,]
   crownarea <- crownarea[crownarea@data$area < maxCrownArea,]
   crownarea <- crownarea[crownarea$VALUE >= 0,]
@@ -67,7 +67,7 @@ fa_basicTreeCrownFilter<- function(crownFn,
   crowns@data$height <- crownarea@data$chmRANGE
   centerTrees <- crowns@data
   sp::coordinates(centerTrees) <- ~xcoord+ycoord
-  sp::proj4string(centerTrees) <- sp::CRS("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+  sp::proj4string(centerTrees) <- sp::CRS(proj4string)
   
   
   # save centerTrees and crowns as shapefile

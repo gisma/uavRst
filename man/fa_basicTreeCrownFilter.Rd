@@ -5,7 +5,7 @@
 \title{basic filtering of crown polygons using altitude, area and other optional thresholds}
 \usage{
 fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, minCrownArea = 5,
-  maxCrownArea = 100, mintreeAltParam = "chmQ50", crownSTDW = NULL,
+  maxCrownArea = 100, minTreeAltParam = "chmQ50", crownSTDW = NULL,
   opt = NULL, TAopt = NULL,
   proj4string = "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
 }
@@ -18,7 +18,7 @@ fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, minCrownArea = 5,
 
 \item{maxCrownArea}{maximum area of crowns that is accepted}
 
-\item{mintreeAltParam}{parameter that is used for filtering mintreealt default ist Median "chmQ50"}
+\item{minTreeAltParam}{parameter that is used for filtering mintreealt default ist Median "chmQ50"}
 
 \item{crownSTDW}{parameter that optionally filters for the STDV of the crown altitudes default is NULL}
 

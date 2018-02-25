@@ -13,6 +13,8 @@ fa_findTreePosition(chm = NULL, minTreeAlt = 10,
 
 \item{minTreeAlt}{default is 5}
 
+\item{minTreeAltParam}{default is "chmQ20"}
+
 \item{minCrownArea}{default is 3 minimum area of crown}
 
 \item{maxCrownArea}{default is 225 maximum area of crown}
@@ -24,8 +26,6 @@ fa_findTreePosition(chm = NULL, minTreeAlt = 10,
 \item{thresh}{default is 0.05,  # threshold for join difference in m}
 
 \item{split}{default  is TRUE switch if splitting of the polygons is called}
-
-\item{mintreeAltParam}{default is "chmQ20"}
 }
 \value{
 basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
