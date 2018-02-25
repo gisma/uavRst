@@ -491,7 +491,7 @@ chmSegmentationFU=function(lasDir =NULL,
                         lasFile,"_",actual_grid_size, "_treeseg_",l,"fusionPercentile.csv "))
           dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile", "_Basin_Map.asc"))
           dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile", "_Max_Height_Map.asc"))
-          tempo=raster::raster(paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile", "_Basin_Map.asc"))
+          tempo_basin=raster::raster(paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile", "_Basin_Map.asc"))
           raster::projection(tempo) <- sp::CRS(proj4)
           raster::writeRaster(tempo,paste0(lasFile,"_",actual_grid_size,"_",l,"_Basin_Map."),format="GTiff",overwrite=TRUE)
           tempo=raster::raster(paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile", "_Max_Height_Map.asc"))
@@ -500,14 +500,14 @@ chmSegmentationFU=function(lasDir =NULL,
           dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_Polygons.shp"))
           dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_Polygons.dbf"))
           dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_Polygons.shx"))
-          shapes <- rgdal::readOGR(paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_Polygons.shp"))
+          shapes_basin <- rgdal::readOGR(paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_Polygons.shp"))
           raster::projection(shapes) <- sp::CRS(proj4)
           rgdal::writeOGR(shapes,dsn=paste0(lasFile,"_",actual_grid_size,"m_",l,"fusionPercentile","_Polygons_class", ".shp"),
                    driver = "ESRI Shapefile",layer="treesize")
           dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_HighPoints.shp"))
           dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_HighPoints.dbf"))
           dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_HighPoints.shx"))
-          shapes <- rgdal::readOGR(paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_HighPoints.shp"))
+          shapes_hpoints <- rgdal::readOGR(paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_HighPoints.shp"))
           raster::projection(shapes) <- sp::CRS(proj4)
           rgdal::writeOGR(shapes,dsn=paste0(lasFile,"_",actual_grid_size,"m_",l,"fusionPercentile","_HighPoints_class", ".shp"),
                    driver = "ESRI Shapefile",layer="treepoint")
@@ -524,5 +524,6 @@ chmSegmentationFU=function(lasDir =NULL,
     file.remove(i)
   }
   dellist=list()
+  return(list(shapes_basin,shapes_hpoints,tempo_basin))
   }
   

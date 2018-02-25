@@ -151,8 +151,8 @@ crownsITC<- uavRst::chmSegmentationITC(chm = chmR,
                         TRESHCrown = 0.55,
                         minTreeAlt = 2,
                         maxCrownArea = maxCrownArea)
-
-chmSegmentationFU(lasDir = las_data_dir,
+### Fusion approach
+crownsFusion<- chmSegmentationFU(lasDir = las_data_dir,
                   grid_size = c(1),
                   fusionPercentile    = 37,
                   movingWin          = 3,
