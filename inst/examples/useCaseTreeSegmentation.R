@@ -100,7 +100,7 @@ for (item in indices){
 # ----  start crown analysis --------------------------------------------------------
 
 # call seeding process
-seeds <- uavRst::fa_findTreePosition(chmR,
+seeds <- uavRst::treePos(chmR,
                                 minTreeAlt = 12.5,
                                 minCrownArea = 3,
                                 maxCrownArea = 225,

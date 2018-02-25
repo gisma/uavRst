@@ -1,9 +1,9 @@
-if (!isGeneric('fa_findTreePosition')) {
-  setGeneric('fa_findTreePosition', function(x, ...)
-    standardGeneric('fa_findTreePosition'))
+if (!isGeneric('treePos')) {
+  setGeneric('treePos', function(x, ...)
+    standardGeneric('treePos'))
 }
 
-#'@name fa_findTreePosition
+#'@name treePos
 #'@title Find potential tree positions using a canopy height model
 #'
 #'@description
@@ -25,14 +25,14 @@ if (!isGeneric('fa_findTreePosition')) {
 #'@return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 #'
 #'
-#'@export fa_findTreePosition
+#'@export treePos
 #'@examples
 #'\dontrun{
 #' # Tree segmentation based on a CHM
-#'  fa_findTreePosition(chm = rasterobj,  "nameofSAGAFile")
+#'  treePos(chm = rasterobj,  "nameofSAGAFile")
 #'}
 #'
-fa_findTreePosition <- function(chm = NULL,
+treePos <- function(chm = NULL,
                                   minTreeAlt       = 10,
                                   minTreeAltParam  = "chmQ20",
                                   minCrownArea     = 3,

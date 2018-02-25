@@ -98,17 +98,17 @@ saveRDS(chmR,file = paste0(path_output,"chmR.rds"))
 
 ### generic uavRST approach
 # call seeding process
-treePos <- uavRst::fa_findTreePosition(chmR,
+tPos <- uavRst::treePos(chmR,
                                 minTreeAlt = minTreeAlt,
                                 minCrownArea = 1,
                                 maxCrownArea = maxCrownArea,
                                 join = 1, 
                                 thresh = 0.01,
                                 giLinks = giLinks )
-saveRDS(treePos,file = paste0(path_output,"treePos_iws.rds"))
+saveRDS(tPos,file = paste0(path_output,"treePos_iws.rds"))
 # workaround for strange effects with SAGA 
 # even if all params are identical it is dealing with different grid systems
-tPos<-raster::resample(treePos, chmR , method = 'bilinear')
+tPos<-raster::resample(tPos, chmR , method = 'bilinear')
 tPos[tPos<=0]<-0
 # statically writing of the two minimum raster for segmentation
 raster::writeRaster(tPos,"treePos.tif",overwrite = TRUE,NAflag = 0)
