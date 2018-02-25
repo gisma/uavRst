@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_crownSegmentation.R
 \name{chmSegmentationRL}
 \alias{chmSegmentationRL}
-\title{watershed segmentation based on rLiDAR}
+\title{watershed segmentation based on 'rLiDAR'}
 \usage{
 chmSegmentationRL(treePos = NULL, chm = NULL, maxCrownArea = 150,
   exclusion = 0.2)

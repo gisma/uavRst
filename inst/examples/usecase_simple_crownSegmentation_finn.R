@@ -152,6 +152,15 @@ crownsITC<- uavRst::chmSegmentationITC(chm = chmR,
                         minTreeAlt = 2,
                         maxCrownArea = maxCrownArea)
 
+chmSegmentationFU(lasDir = las_data_dir,
+                  cellsz=c(1,3,5),
+                  perc=37,
+                  fowsz=3,
+                  fowfi="mean",
+                  proj="+init=epsg:25832",
+                  path=getwd(),
+                  Fp)
+
 # view it
 mapview::mapview(crownsFT) + 
 mapview::mapview(crownsRL) + 

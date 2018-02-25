@@ -22,12 +22,12 @@ if (Sys.info()["sysname"] == "Windows") {
     Fusion <-"LC_CTYPE=de_DE.utf8 wine /home/creu/.wine/dosdevices/c:/FUSION/"
     #--> workaround because Fusion does not acept the pathes
     #    so we copy the files to the current setwd()
-    setwd(gi_run)
-    cat("\ncopy ",lasfiles,gi_run,"\n")
-    file.copy(paste0(gi_input,lasfiles),getwd())
-    gi_input<-""
-    gi_run <- ""
-    gi_output <-""
+    #setwd(gi_run)
+    #cat("\ncopy ",lasfiles,gi_run,"\n")
+    #file.copy(paste0(gi_input,lasfiles),getwd())
+    #gi_input<-""
+    #gi_run <- ""
+    #gi_output <-""
   }
   else
     stop("for running a windows executable you need to install wine\n")
