@@ -65,24 +65,26 @@ chmSegmentation <- function(treePos = NULL,
   gdal <- giLinks$gdal
   saga <- giLinks$saga
   sagaCmd<-saga$sagaCmd
-  
+  RSAGA::rsaga.env(path =saga$sagaPath,modules = saga$sagaModPath)
   
   param_list <- paste0(path_run,seed_params,".sgrd;",collapse = "")
   
   # Start final segmentation algorithm as provided by SAGA's seeded Region Growing segmentation (imagery_segmentation 3)
   # TODO sensitivity analysis of the parameters
-  ret <- system(paste0(sagaCmd, " imagery_segmentation 3 ",
-                       " -SEEDS "    ,path_run,"treePos.sgrd",
-                       " -FEATURES '", param_list,
-                       "' -SEGMENTS ",path_run,"crowns.shp",
-                       " -LEAFSIZE " ,leafsize,
-                       " -NORMALIZE ",normalize,
-                       " -NEIGHBOUR ",neighbour, 
-                       " -METHOD "   ,method,
-                       " -SIG_1 "    ,thVarFeature,
-                       " -SIG_2 "    ,thVarSpatial,
-                       " -THRESHOLD ",thSimilarity),
-                intern = TRUE)
+  
+  
+  RSAGA::rsaga.geoprocessor(lib = "imagery_segmentation", module = 3,
+                            param = list(SEEDS = paste(path_run,"treePos.sgrd", sep = ""),
+                                         FEATURES = param_list,
+                                         SEGMENTS = paste(path_run,"crowns.shp", sep = ""),
+                                         LEAFSIZE = leafsize,
+                                         NORMALIZE = normalize,
+                                         NEIGHBOUR = neighbour, 
+                                         METHOD   =  method,
+                                         SIG_1    =  thVarFeature,
+                                         SIG_2    =  thVarSpatial,
+                                         THRESHOLD = thSimilarity),
+                            intern = TRUE)
   
   # fill holes inside the crowns (simple approach)
   # TODO better segmentation
@@ -449,6 +451,7 @@ chmSegmentationFU=function(lasDir =NULL,
       info <- read.csv(paste0(lasFile,".csv"))
       #fix extent
       info2<-missingExtents(info)
+      #TODO  fix error in las files if (as.numeric(info[[2]][3])) fixLas()
       #--> define extent for further calculation
       extent<-paste(as.numeric(info2$MinX),as.numeric(info2$MinY),as.numeric(info2$MaxX),as.numeric(info2$MaxY))
       extnumeric<-c(as.numeric(info2$MinX),as.numeric(info2$MinY),as.numeric(info2$MaxX),as.numeric(info2$MaxY))
@@ -456,78 +459,61 @@ chmSegmentationFU=function(lasDir =NULL,
       extent<- paste(ext@xmin,ext@ymin,ext@xmax,ext@ymax)
     }
     
-    system(paste0(paste0(fusionCmd,"clipdata.exe", " /class:2 ",lasFile," clip_",lasFile," "), extent))
-    dellist=append(dellist,paste0("clip_",lasFile," "))
-    lasFile<- paste0("clip_",lasFile," ")
+    system(paste0(paste0(fusionCmd,"clipdata.exe", " /class:2 ",lasFile," ",lasFile,"_groundpts.las "), extent))
+    dellist=append(dellist,paste0(lasFile,"_groundpts.las "))
+    lasFile<- paste0(lasFile,"_groundpts.las")
     for (curWin in movingWin){
       for (actual_grid_size in grid_size){
-        
-        system(paste0(fusionCmd,"gridsurfacecreate.exe ",
-                      lasFile,"_",actual_grid_size,".dtm ",
-                      actual_grid_size,
-                      " M M 1 32 0 0 ",
-                      lasFile)
-        )
+        system(paste0(fusionCmd,"gridsurfacecreate.exe ", lasFile,"_",actual_grid_size,"m_gridsurf.dtm "
+                      ,actual_grid_size," M M 1 32 0 0 ",lasFile))
         dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"m_gridsurf.dtm "))
-        
-        system(paste0(fusionCmd, "CanopyModel.exe ","/ground:",lasFile,"_",actual_grid_size," ",
+        system(paste0(fusionCmd, "CanopyModel.exe ","/ground:",lasFile,"_",actual_grid_size,"m_gridsurf.dtm ",
                       "/smooth:",curWin," ","/peaks ",
-                      lasFile,"_",
-                      actual_grid_size,
-                      "_CHM.dtm ",
-                      actual_grid_size,
-                      " M M 1 32 0 0 ",
-                      lasFile)
-        )
-        dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_CHM.dtm "))
-        
-        system(paste0(fusionCmd,"DTM2ASCII.exe ",
-                      lasFile,"_",
-                      actual_grid_size,
-                      "_CHM.dtm ",
-                      lasFile,"_",
-                      actual_grid_size,
-                      "_CHM.asc")
-        )
+                      lasFile,"_",actual_grid_size,"m_CHM.dtm ",actual_grid_size," M M 1 32 0 0 ",lasFile))
+        dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"m_CHM.dtm "))
+        system(paste0(fusionCmd,"DTM2ASCII.exe ",lasFile,"_",actual_grid_size,"m_CHM.dtm ",lasFile,"_",
+                      actual_grid_size,"m_CHM.asc"))
         dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"m_CHM.asc"))
-        
-        system(paste0(fusionCmd,"gridmetrics.exe ",
-                      lasFile,"_",
-                      actual_grid_size,
-                      "m_gridsurf.dtm ",
-                      0," " ,
-                      1," ",
-                      lasFile,"_",
-                      actual_grid_size,
-                      "m_stattab.csv ",
-                      lasFile))
-        
-        system(paste0(fusionCmd,"csv2grid.exe ",
-                      lasFile,"_",
-                      actual_grid_size,
-                      "m_stattab_all_returns_intensity_stats.csv ",
-                      fusionPercentile," ",
-                      lasFile,"_",
-                      actual_grid_size,
-                      "m_",fusionPercentile,
-                      "fusionPercentile.asc")
-        )
-        dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"m_",fusionPercentile,"fusionPercentile.asc"))
-        system(paste0(fusionCmd, "TreeSeg.exe "," /shape ",
-                      lasFile,"_",
-                      actual_grid_size,
-                      "m_CHM.dtm ",
-                      lasFile,"_",
-                      actual_grid_size,
-                      "m_",
-                      fusionPercentile,
-                      "fusionPercentile.tif ",
-                      lasFile,"_",
-                      actual_grid_size, 
-                      "_treeseg_",
-                      fusionPercentile,
-                      "fusionPercentile.csv ")
-        )
+        tempo=raster::raster(paste0(lasFile,"_",actual_grid_size, "m_CHM.asc"))
+        raster::projection(tempo) <- sp::CRS("+init=epsg:25832")
+        raster::writeRaster(tempo,paste0(lasFile,"_",actual_grid_size,"m_CHM."),format="GTiff",overwrite=TRUE)
+        system(paste0(fusionCmd,"gridmetrics.exe ",lasFile,"_",actual_grid_size,"m_gridsurf.dtm ",0," " ,
+                      1," ",lasFile,"_",actual_grid_size,"m_stattab.csv ",lasFile))
+        for (l in fusionPercentile){
+          system(paste0(fusionCmd,"csv2grid.exe ",lasFile,"_",actual_grid_size,
+                        "m_stattab_all_returns_intensity_stats.csv ",l," ",lasFile,"_",actual_grid_size,"m_",l,
+                        "fusionPercentile.asc"))
+          dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"m_",l,"fusionPercentile.asc"))
+          tempo=raster::raster(paste0(lasFile,"_",actual_grid_size,"m_",l, "fusionPercentile.asc"))
+          raster::projection(tempo) <- sp::CRS(proj4)
+          tempo=raster::focal(tempo,w=matrix(1,curWin,curWin),fun=focalStatFun)
+          raster::writeRaster(tempo,paste0(lasFile,"_",actual_grid_size,"m_",l,"fusionPercentile."),format="GTiff",overwrite=TRUE)
+          system(paste0(fusionCmd, "TreeSeg.exe ","/shape ",
+                        lasFile,"_",actual_grid_size,"m_CHM.dtm ",lasFile,"_",actual_grid_size,"m_",l,"fusionPercentile.tif ",
+                        lasFile,"_",actual_grid_size, "_treeseg_",l,"fusionPercentile.csv "))
+          dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile", "_Basin_Map.asc"))
+          dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile", "_Max_Height_Map.asc"))
+          tempo_basin=raster::raster(paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile", "_Basin_Map.asc"))
+          raster::projection(tempo_basin) <- sp::CRS(proj4)
+          raster::writeRaster(tempo_basin,paste0(lasFile,"_",actual_grid_size,"_",l,"_Basin_Map."),format="GTiff",overwrite=TRUE)
+          tempo=raster::raster(paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile", "_Max_Height_Map.asc"))
+          raster::projection(tempo) <- sp::CRS(proj4)
+          raster::writeRaster(tempo,paste0(lasFile,"_",actual_grid_size,"_",l,"_Max_Height_Map."),format="GTiff",overwrite=TRUE)
+          dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_Polygons.shp"))
+          dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_Polygons.dbf"))
+          dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_Polygons.shx"))
+          shapes_basin <- rgdal::readOGR(paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_Polygons.shp"))
+          raster::projection(shapes_basin) <- sp::CRS(proj4)
+          rgdal::writeOGR(shapes_basin,dsn=paste0(lasFile,"_",actual_grid_size,"m_",l,"fusionPercentile","_Polygons_class", ".shp"),
+                          driver = "ESRI Shapefile",layer="treesize")
+          dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_HighPoints.shp"))
+          dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_HighPoints.dbf"))
+          dellist=append(dellist,paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_HighPoints.shx"))
+          shapes_hpoints <- rgdal::readOGR(paste0(lasFile,"_",actual_grid_size,"_treeseg_",l,"fusionPercentile","_HighPoints.shp"))
+          raster::projection(shapes_hpoints) <- sp::CRS(proj4)
+          rgdal::writeOGR(shapes_hpoints,dsn=paste0(lasFile,"_",actual_grid_size,"m_",l,"fusionPercentile","_HighPoints_class", ".shp"),
+                          driver = "ESRI Shapefile",layer="treepoint")
+        }
       }
     }
   }
@@ -540,5 +526,5 @@ chmSegmentationFU=function(lasDir =NULL,
     file.remove(i)
   }
   dellist=list()
-  return(list(rbasin,hpoints,pbasin))
+  return(list(shapes_basin,shapes_hpoints,tempo_basin))
 }
