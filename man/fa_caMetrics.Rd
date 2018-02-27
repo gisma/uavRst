@@ -8,3 +8,8 @@ fa_caMetrics(crownarea, funNames = c("length", "elongation",
   "eccentricityboundingbox", "solidity", "eccentricityeigen", "calliper",
   "rectangularity", "circularityharalick", "convexity"))
 }
+\arguments{
+\item{crownarea}{sp polygon object}
+
+\item{funNames}{("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")}
+}

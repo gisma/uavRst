@@ -12,7 +12,7 @@ require(uavRst)
 # define project folder
 projRootDir <- "~/proj/uav/thesis/finn"
 # lidar data folder
-las_data_dir <- "~/proj/uav/thesis/finn/data/lidar/"
+las_data_dir <- "~/proj/uav/thesis/finn/data/sequoia/"
 # proj subfolders
 projFolders = c("data/","data/ref/","output/","run/","las/")
 # export folders as global

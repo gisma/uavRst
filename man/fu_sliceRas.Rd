@@ -13,6 +13,8 @@ fu_sliceRas(lasFiles = NULL, zrange = NULL, zrnames = NULL,
 
 \item{zrange}{default is \code{list(c(0,3), c(3,15))} list vector pairs describing the vertical slice}
 
+\item{zrnames}{}
+
 \item{paramList}{default is \code{c("1 M M 1 32 0 0 ")}list of parameters for info see clipdata.exe manual}
 
 \item{res}{resolution for raster operations}

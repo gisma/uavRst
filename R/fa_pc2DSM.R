@@ -20,11 +20,15 @@ if (!isGeneric('fa_pc2DSM')) {
 #'@param saga_spline_level_max default is 9 number ob spline iterations
 #'@param otb_gauss_radius default is \code{0.5} radius of otb smoothing filter in meter
 #'@param dsm_minalt default is \code{0}, minimum DTM altitude accepted
-#'@param dsm_minalt default is \code{4000}, maximum DTM altitude accepted
 #'@param dsm_area default \code{FALSE} generate polygon of valid DSM data 
 #'@param proj4  default is EPSG \code{32632} any valid proj4 string that is assumingly the correct one
 #'@param gisdbase_exist default is  \code{FALSE} switch if gisdbase is created or  linked only
 #'@param giLinks            list of GI tools cli pathes  default is NULL
+#'@param grass_lidar_method
+#'@param grass_lidar_pth
+#'@param dsm_maxalt 
+#'@param path_lastools
+
 
 #'
 #'

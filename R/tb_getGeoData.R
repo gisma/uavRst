@@ -182,6 +182,15 @@ if (!isGeneric('getGeodata')) {
 #'\url{http://www.openstreetmap.org}\cr
 #'\url{http://doi.pangaea.de/10.1594/PANGAEA.845883}\cr
 #'
+#'
+#'@import raster
+#'@import osmar
+#'@import sp
+#'@import maptools
+#'@import curl
+#'@import doParallel
+#'@import foreach
+#'@import gdalUtils
 
 
 #'@export getGeodata
@@ -243,14 +252,7 @@ if (!isGeneric('getGeodata')) {
 
 
 getGeodata <- function(name='GADM', download=TRUE, path='', ...) {
-  require(raster)
-  require(osmar)
-  require(sp)
-  require(maptools)
-  require(curl)
-  require(doParallel)
-  require(foreach)
-  require(gdalUtils)
+
   path <- .getDataPath(path)
   if (name=='GADM') {
     .GADM(..., download=download, path=path)

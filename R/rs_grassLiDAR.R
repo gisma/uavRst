@@ -53,14 +53,16 @@
 #' # create a DEM based on the class 2 Minimum returns
 #' require(curl)
 #' # get a laz file from Mr. Isenburg
-#' res <- curl::curl_download(url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz",
+#' url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz"
+#' res <- curl::curl_download(url=url,
 #'                            destfile="test.laz",  quiet = TRUE, mode = "wb")
 #' # convert it to las
 #' lasTool(tool="las2las","test.laz")
 #' # extract extension for setting up GRASS region
 #' ext<-lasTool(lasDir = "test.las")
 #' # set up GRASS
-#' result<-link2GI::linkGRASS7(spatial_params = c(ext[2],ext[1],ext[4],ext[3],proj4),resolution = gridsize)
+#' result<-link2GI::linkGRASS7(spatial_params = c(ext[2],ext[1],ext[4],ext[3],proj4),
+#'                              resolution = gridsize)
 #' # use the r.in.lidar tool to generate a pseudo surface model
 #' r_in_lidar(input = paste0(getwd(),"/test.las"),
 #'            output = "testdem",
@@ -140,9 +142,9 @@ r_in_lidar<- function(input=NULL,
       cat("\n5) resulting DEM raster is used further on as reference\n")
       
       cat("\nstep 1) ")
-      lasTool(tool = "las2txt", lasDir = input)
+      lasTool(tool = "las2txt", lasFile = input)
       cat("\nstep 2) get extent of the original las file")
-      ext<-lasTool(lasDir = paste0(gi_input, lasfiles[j]))
+      ext<-lasTool(lasFile = input)
       cat("\nstep 3) reset the region")
       rgrass7::execGRASS('g.region',
                          flags = c('quiet','d'),

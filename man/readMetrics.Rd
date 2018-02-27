@@ -46,13 +46,16 @@ calculate elevation and intensity based metrics an write out selected metrics to
 \examples{
 \dontrun{
  GridList<-readAscGridMetrics(lasFiles = lasFiles, heightClasses = heights)
-
 }
 
 
 \dontrun{
 
-GridMetrics(lasFiles = lasFiles, res = gridsize, heightClassList = h, metrics = 31, heightbreak=0.2 )
+GridMetrics(lasFiles = lasFiles, 
+                res = gridsize, 
+    heightClassList = h, 
+    metrics = 31, 
+    heightbreak=0.2 )
 }
 
 

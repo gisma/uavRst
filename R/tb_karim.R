@@ -515,42 +515,27 @@ xpolystat <- function(x = NULL,
 #' @param links character links
 #' @param linkItems character list of c("saga","grass7","otb","gdal")
 #'  @param simple boolean true  make all
-#'  @param sagaArgs sagaArgs = "default_SAGA = NULL, searchLocation = 'default',ver_select = FALSE, quiet = TRUE, returnPaths = TRUE",
-#'  @param grassArgs grassArgs = "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist = FALSE, gisdbase = NULL,location = NULL, spatial_params = NULL, resolution = NULL,quiet = TRUE, returnPaths = FALSE")
-#' @param  otbArgs otbArgs =   "bin_OTB = NULL, root_OTB = NULL, type_OTB = NULL,searchLocation = NULL, ver_select = FALSE, quiet = TRUE,returnPaths = TRUE"
-#'@param  gdalArgs gdalArgs =  "quiet = TRUE, returnPaths = TRUE"
+#'  @param sagaArgs sagaArgs
+#'  @param grassArgs grassArgs 
+#' @param  otbArgs otbArgs 
+#'@param  gdalArgs gdalArgs 
 #' @export
 linkBuilder <- function(links=NULL, 
                         simple = TRUE,
                         linkItems = c("saga","grass7","otb","gdal"),
-                        sagaArgs = "default_SAGA = NULL, 
-                                    searchLocation = 'default',
-                                    ver_select = FALSE, 
-                                    quiet = TRUE, 
-                                    returnPaths = TRUE",
-                        grassArgs = "x = NULL, 
-                                     default_GRASS7 = NULL, 
-                                     search_path = NULL,
-                                     ver_select = FALSE, 
-                                     gisdbase_exist = FALSE, 
-                                     gisdbase = NULL,
-                                     location = NULL, 
-                                     spatial_params = NULL, 
-                                     resolution = NULL,
-                                     quiet = TRUE, 
-                                     returnPaths = FALSE",
-                        otbArgs =   "bin_OTB = NULL, 
-                                     root_OTB = NULL, 
-                                     type_OTB = NULL,
-                                     searchLocation = NULL, 
-                                     ver_select = FALSE, 
-                                     quiet = TRUE,
-                                     returnPaths = TRUE",
+                        sagaArgs = "default",
+                        grassArgs = "default",
+                        otbArgs =   "default", 
                         gdalArgs =  "quiet = TRUE, 
                                      returnPaths = TRUE"
                         
 
                         ){
+  if (sagaArgs == "default") sagaArgs <- "default_SAGA = NULL, searchLocation = 'default', ver_select = FALSE, quiet = TRUE, returnPaths = TRUE"
+  if (grassArgs == "default") grassArgs <- "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist = FALSE, gisdbase = NULL,
+                                     location = NULL, spatial_params = NULL, resolution = NULL, quiet = TRUE, returnPaths = FALSE"
+  if (otbArgs == "default") otbArgs <- "bin_OTB = NULL, root_OTB = NULL, type_OTB = NULL, searchLocation = NULL, ver_select = FALSE"
+  if (gdalArgs == "default") gdalArgs <- "quiet = TRUE, returnPaths = TRUE"
   if (is.null(links) && (simple)){
     link<-list()
     for (links in linkItems) {

@@ -32,15 +32,17 @@ fa_pc2DSM(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
 
 \item{dsm_minalt}{default is \code{0}, minimum DTM altitude accepted}
 
+\item{dsm_maxalt}{}
+
 \item{dsm_area}{default \code{FALSE} generate polygon of valid DSM data}
 
 \item{proj4}{default is EPSG \code{32632} any valid proj4 string that is assumingly the correct one}
 
 \item{gisdbase_exist}{default is  \code{FALSE} switch if gisdbase is created or  linked only}
 
-\item{giLinks}{list of GI tools cli pathes  default is NULL}
+\item{path_lastools}{}
 
-\item{dsm_minalt}{default is \code{4000}, maximum DTM altitude accepted}
+\item{giLinks}{list of GI tools cli pathes  default is NULL}
 }
 \description{
 Create a Digital Surface Model from a UAV generated point cloud. return fa_pc2DSM basically returns a  DSM

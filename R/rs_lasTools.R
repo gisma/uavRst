@@ -75,9 +75,9 @@ lasTool <- function(  tool="lasinfo",
   # check las / laz files laz will be preferred
   lasFileNames <- list.files(pattern = "[.]las$", path = lasFile, full.names = TRUE)
   lazFileNames <- list.files(pattern = "[.]laz$", path = lasFile, full.names = TRUE)
-  #if (length(lazFileNames) > 0 ) extFN <- substr(extension(basename(lazFileNames[1])),2,4)
-  #else if (length(lasFileNames) > 0) extFN <- substr(extension(basename(lasFileNames[1])),2,4)
-  #else stop("no valid las or laz files found...\n")
+  if (length(lazFileNames) > 0 ) extFN <- substr(extension(basename(lazFileNames[1])),2,4)
+  else if (length(lasFileNames) > 0) extFN <- substr(extension(basename(lasFileNames[1])),2,4)
+  else stop("no valid las or laz files found...\n")
 
   #sp_param <- uavRst:::getSpatialLASInfo(lasFile)
 

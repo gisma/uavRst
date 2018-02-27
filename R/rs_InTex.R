@@ -470,6 +470,7 @@ setMethod("otbTexturesHaralick",
 #' @param ram reserved memory in MB
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
+#' @param outDir output Directory
 #' @author Chris Reudenbach
 #' @export otbLocalStat
 #' @examples 
@@ -533,6 +534,7 @@ otbLocalStat<- function(input=NULL,
 #' @param ram reserved memory in MB
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
+#' @param outDir output Directory
 
 #' @author Chris Reudenbach
 #' @export otbEdge
@@ -602,6 +604,7 @@ otbEdge<- function(input=NULL,
 #' @param ram reserved memory in MB
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
+#' @param outDir output Directory 
 
 #' @author Chris Reudenbach
 #' @export otbGrayMorpho
@@ -666,6 +669,7 @@ otbGrayMorpho<- function(input=NULL,
 #' @note please provide a GeoTiff file
 #' @param dem of GeoTiff containing one channel DEM
 #' @param item index to be calculated default are c("slope", "aspect","TRI","TPI","Roughness")
+#' @param outDir output Directory
 #' @export gdalDEMParam
 #' @examples 
 #' \dontrun{

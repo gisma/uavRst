@@ -59,9 +59,9 @@ using stats will cover mean and variance while dissimilarity is highly correlate
 
 \item{currentDataFolder}{NULL folder to image (and shape) data}
 
-\item{cleanTiffs}{TRUE logical switch for deleting the calculated tifs default is TRUE}
+\item{currentIdxFolder}{NULL folder for saving the results}
 
-\item{currentidxFolder}{NULL folder for saving the results}
+\item{cleanTiffs}{TRUE logical switch for deleting the calculated tifs default is TRUE}
 }
 \description{
 The calcex function covers step 1 of the  usecaseRGBClassify workflow for a random forest based classification of visible imagery.

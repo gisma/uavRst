@@ -38,6 +38,8 @@ height of \code{treePos}.}
 
 \item{seed_params}{vector. of characters corresponding with the used attributes. The altitude values from surface model \code{c("chm")} is mandantory.}
 
+\item{majority_radius}{numeric filter for smoothing default is 3.000}
+
 \item{giLinks}{list. of GI tools cli pathes}
 }
 \description{

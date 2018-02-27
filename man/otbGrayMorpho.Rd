@@ -28,6 +28,8 @@ otbGrayMorpho(input = NULL, out = "morpho", ram = "8192",
 
 \item{retRaster}{boolean if TRUE a raster stack is returned}
 
+\item{outDir}{output Directory}
+
 \item{verbose}{switch for system messages default is FALSE}
 }
 \description{

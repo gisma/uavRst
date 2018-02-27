@@ -15,6 +15,8 @@ getCounts(ids = c(1, 2), position = NULL, imageFiles = NULL,
 
 \item{imageFiles}{image files}
 
+\item{buffersize}{size in meters around position}
+
 \item{out_prefix}{out prefix string}
 
 \item{ext}{extension}

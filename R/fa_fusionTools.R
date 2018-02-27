@@ -180,7 +180,6 @@ GroundSurfaceCreate<-function(lasFiles, res ){
 #'@examples
 #'\dontrun{
 #'  GridList<-readAscGridMetrics(lasFiles = lasFiles, heightClasses = heights)
-#'
 #'}
 #'
 #'
@@ -214,7 +213,11 @@ GroundSurfaceCreate<-function(lasFiles, res ){
 #' @examples
 #'\dontrun{
 #'
-#'GridMetrics(lasFiles = lasFiles, res = gridsize, heightClassList = h, metrics = 31, heightbreak=0.2 )
+#'GridMetrics(lasFiles = lasFiles, 
+#'                 res = gridsize, 
+#'     heightClassList = h, 
+#'     metrics = 31, 
+#'     heightbreak=0.2 )
 #'}
 #'
 #'

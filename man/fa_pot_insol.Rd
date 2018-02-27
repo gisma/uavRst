@@ -17,6 +17,8 @@ fa_pot_insol(x = NULL, svf_radius = 10000, svf_method = 0,
 
 \item{svf_dlevel}{multi scale factor default is 3.0 minimum is 1.25}
 
+\item{svf_ndirs}{}
+
 \item{pi_solarconst}{(W/m**2) default is 1367.0,}
 
 \item{pi_units}{units for output radiation values. default is 0 (kWh/m**2) available are: 1 (kJ/m**2) 2 J/cm**2,}

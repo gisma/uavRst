@@ -73,8 +73,9 @@ if (!isGeneric('extractTrainData')) {
 #'
 #'@param rasterStack  default is \code{NULL} rasterstack wcontaining all image data
 #'@param trainPlots default is \code{NULL}  sp object providing training geometries
-#'@param trainDataFn default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file
-#'
+#'@param imgFN default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file
+#'@param bnames names of the bands
+#'@import crayon
 
 #'
 #'@export extractTrainData
@@ -93,7 +94,7 @@ extractTrainData<-function(rasterStack  = NULL,
                            trainPlots     = NULL,
                            bnames = NULL,
                            imgFN) {
-  require(crayon)
+  
   catNote <- blue $ bold
 
   
@@ -463,7 +464,7 @@ makebNames <- function(rgbi    = NA,
 #' @param colorSpaces        RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
 #' @param kernel            size of kernel for filtering and statistics default is  3
 #' @param currentDataFolder  NULL folder to image (and shape) data
-#' @param  currentidxFolder  NULL folder for saving the results
+#' @param  currentIdxFolder  NULL folder for saving the results
 #' @param  cleanTiffs  TRUE logical switch for deleting the calculated tifs default is TRUE
 #' @examples 
 #' \dontrun{

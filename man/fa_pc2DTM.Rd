@@ -23,7 +23,7 @@ fa_pc2DTM(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
 
 \item{bulge}{default is 1.5. 'A parameter to filter spikes it is set to a step_size/10 and then clamped into the range from 1.0 to 2.0}
 
-\item{level_max}{number ob spline iterations}
+\item{level_max}{default is 3, Maximum number of spline iterations highly suggested to take odd numbers. As higher as more detailed (spurious).}
 
 \item{step_size}{default is 25 meter. LAStools key words if \code{city},\code{town},\code{metro},\code{nature},\code{wilderness} or experiment with free values}
 
@@ -35,6 +35,8 @@ fa_pc2DTM(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
 
 \item{dtm_area}{default \code{FALSE} generate polygon of valid DTM data}
 
+\item{projFolder}{}
+
 \item{proj4}{default is EPSG 32632 any valid proj4 string that is assumingly the correct one}
 
 \item{path_lastools}{directory for the windows lastools}
@@ -42,10 +44,6 @@ fa_pc2DTM(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
 \item{cores}{number of cores that will be used}
 
 \item{giLinks}{list of GI tools cli pathes  default is NULL}
-
-\item{level_max}{default is 3, Maximum number of spline iterations highly suggested to take odd numbers. As higher as more detailed (spurious).}
-
-\item{dtm_minalt}{default is \code{4000}, maximum DTM altitude accepted}
 }
 \description{
 Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.  

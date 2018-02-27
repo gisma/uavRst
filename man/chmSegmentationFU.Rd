@@ -9,6 +9,8 @@ chmSegmentationFU(lasDir = NULL, grid_size = 0.5, fusionPercentile = 37,
   path = getwd(), fusionCmd = "C:/FUSION/", extent = NULL)
 }
 \arguments{
+\item{grid_size}{integer. Cellsize for creating .dtm of las-point-cloud}
+
 \item{fusionPercentile}{integer. n-th percentile of canopy heigth for heightbreak of Tree Segmentation (see Details)}
 
 \item{movingWin}{integer. Cellsize for focal window (see Details)}
@@ -22,9 +24,9 @@ For example mean, modal, min or max}
 
 \item{fusionCmd}{character. Directory for FUSION tools [Example: fusionCmd = "D:/FUSION/"]}
 
-\item{lasList}{filename (.las-file) or list of filenames (.txt-file)}
+\item{extent}{cutting extent}
 
-\item{cellcz}{integer. Cellsize for creating .dtm of las-point-cloud}
+\item{lasDIR}{filename (.las-file) or list of filenames (.txt-file)}
 }
 \description{
 Method to create a Tree Segmentation using different FUSION tools. 

@@ -36,7 +36,7 @@ fa_basicTreeCrownFilter<- function(crownFn,
                                    crownSTDW = NULL,
                                    opt = NULL,
                                    TAopt = NULL,
-                                   proj4string="+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs") {
+                                   proj4string="+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs") {
   # read crown vector data set
   if (class(crownFn)=="character")  
     crownarea <- rgdal::readOGR(path_run,"crowns", verbose = FALSE)

@@ -22,6 +22,7 @@
 #'@param thSimilarity   mumeric. similarity threshold 
 #'@param seed_params    vector. of characters corresponding with the used attributes. The altitude values from surface model \code{c("chm")} is mandantory. 
 #'@param giLinks        list. of GI tools cli pathes  
+#'@param majority_radius numeric filter for smoothing default is 3.000
 #'@export 
 #'@examples
 #'\dontrun{
@@ -154,6 +155,7 @@ chmSegmentation <- function(treePos = NULL,
 #' All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 #' height of \code{treePos}.
 #' @param format string. Format of the function's output. Can be set to either 'raster' or 'polygons'.
+#' @param verbose quiet (1)
 #' 
 #' @import ForestTools
 #' 
@@ -266,15 +268,17 @@ chmSegmentationRL <- function(treePos = NULL,
 #'                        th_local_max = 5,
 #'                        max_crown_diam = 20)
 #'                        }
-#' @param treePos numeric. \code{matrix} or \code{data.frame} with three columns (tree xy coordinates and height).
-#' number of crown segments equal to the number of treetops.
+
+
 #' @param chm Canopy height model in \link[raster]{raster} or \link[raster]{SpatialGridDataFrame} file format. Should be the same that was used to create
 #' the input for \code{treePos}.
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
 #' height of \code{treePos}.
-#' @param EPSG The EPSG code of the reference system of the CHM raster image.
+#' @param EPSG_code The EPSG code of the reference system of the CHM raster image.
 #' @param movingWin Size (in pixels) of the moving window to detect local maxima.
 #' @param minTreeAlt Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
+#' @param TRESHSeed seeding threshold
+#' @param TRESHCrown crowns threshold
 #' @import itcSegment
 #' @export chmSegmentationITC
 #' @examples 
@@ -326,8 +330,8 @@ chmSegmentationITC <- function(chm =NULL,
 #'@description Method to create a Tree Segmentation using different FUSION tools. 
 #'  The Tree Segmentation can be created from LAS-files and creates raster and shapefile output.
 
-#'@param lasList filename (.las-file) or list of filenames (.txt-file)
-#'@param cellcz integer. Cellsize for creating .dtm of las-point-cloud
+#'@param lasDIR filename (.las-file) or list of filenames (.txt-file)
+#'@param grid_size integer. Cellsize for creating .dtm of las-point-cloud
 #'@param fusionPercentile integer. n-th percentile of canopy heigth for heightbreak of Tree Segmentation (see Details)
 #'@param movingWin integer. Cellsize for focal window (see Details)
 #'@param focalStatFun function. The function focalStatFun should take multiple numbers and return a single number.
@@ -335,6 +339,8 @@ chmSegmentationITC <- function(chm =NULL,
 #'@param proj4 character proj4 string
 #'@param path character. Set working directory [Example: path = "D:/TreeSeg/"]
 #'@param fusionCmd  character. Directory for FUSION tools [Example: fusionCmd = "D:/FUSION/"]
+#'@param extent cutting extent
+
 #'
 #'@details The "Create Tree Segmentation" (chmSegmentationFU) function works with a watershed segmentation algorithm (Vicent & Soille 1991). Basis for the calculation of "basins" is a canopy height model (CHM) and not point data files. From the input (.las-files) a canopy surface model using LIDAR point cloud ist created by the CanopyModel application from FUSION in .dtm format. The tool uses the returns with the highest elevation to compute the surface model. The applied /ground switch produces a canopy height model (CHM) by subtracting the earth surface model from the return elevation. A focal window with different arguments is used to calculate focal ("moving window") values for the neighborhood of focal cells. The Tree Segmentation is created by the chmSegmentationFU aplication from FUSION which used the filtered canopy heigth model and the heightbreak to calculate basins. The tool produces a metrics file in .csv-format, a shapefile containing high points and basin metrics, also another shapefile containing basin (crown) outline and a .tif raster map including basins.\cr\cr
 #'\itemize{

@@ -5,10 +5,8 @@
 \title{creates all link2GI links}
 \usage{
 linkBuilder(links = NULL, simple = TRUE, linkItems = c("saga", "grass7",
-  "otb", "gdal"),
-  sagaArgs = "default_SAGA = NULL, \\n                                    searchLocation = 'default',\\n                                    ver_select = FALSE, \\n                                    quiet = TRUE, \\n                                    returnPaths = TRUE",
-  grassArgs = "x = NULL, \\n                                     default_GRASS7 = NULL, \\n                                     search_path = NULL,\\n                                     ver_select = FALSE, \\n                                     gisdbase_exist = FALSE, \\n                                     gisdbase = NULL,\\n                                     location = NULL, \\n                                     spatial_params = NULL, \\n                                     resolution = NULL,\\n                                     quiet = TRUE, \\n                                     returnPaths = FALSE",
-  otbArgs = "bin_OTB = NULL, \\n                                     root_OTB = NULL, \\n                                     type_OTB = NULL,\\n                                     searchLocation = NULL, \\n                                     ver_select = FALSE, \\n                                     quiet = TRUE,\\n                                     returnPaths = TRUE",
+  "otb", "gdal"), sagaArgs = "default", grassArgs = "default",
+  otbArgs = "default",
   gdalArgs = "quiet = TRUE, \\n                                     returnPaths = TRUE")
 }
 \arguments{
@@ -16,12 +14,12 @@ linkBuilder(links = NULL, simple = TRUE, linkItems = c("saga", "grass7",
 
 \item{linkItems}{character list of c("saga","grass7","otb","gdal")
 @param simple boolean true  make all
-@param sagaArgs sagaArgs = "default_SAGA = NULL, searchLocation = 'default',ver_select = FALSE, quiet = TRUE, returnPaths = TRUE",
-@param grassArgs grassArgs = "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist = FALSE, gisdbase = NULL,location = NULL, spatial_params = NULL, resolution = NULL,quiet = TRUE, returnPaths = FALSE")}
+@param sagaArgs sagaArgs
+@param grassArgs grassArgs}
 
-\item{otbArgs}{otbArgs =   "bin_OTB = NULL, root_OTB = NULL, type_OTB = NULL,searchLocation = NULL, ver_select = FALSE, quiet = TRUE,returnPaths = TRUE"}
+\item{otbArgs}{otbArgs}
 
-\item{gdalArgs}{gdalArgs =  "quiet = TRUE, returnPaths = TRUE"}
+\item{gdalArgs}{gdalArgs}
 }
 \description{
 converts SAGA raster to R raster object

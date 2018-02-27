@@ -12,7 +12,9 @@ extractTrainData(rasterStack = NULL, trainPlots = NULL, bnames = NULL,
 
 \item{trainPlots}{default is \code{NULL}  sp object providing training geometries}
 
-\item{trainDataFn}{default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file}
+\item{bnames}{names of the bands}
+
+\item{imgFN}{default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file}
 }
 \description{
 extracts training data from a raster stack.return extractTrainData returns a dataframe with all training data

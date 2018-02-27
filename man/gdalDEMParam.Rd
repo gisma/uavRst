@@ -10,6 +10,8 @@ gdalDEMParam(dem, item = NULL)
 \item{dem}{of GeoTiff containing one channel DEM}
 
 \item{item}{index to be calculated default are c("slope", "aspect","TRI","TPI","Roughness")}
+
+\item{outDir}{output Directory}
 }
 \description{
 calculate gdal derived DEM params

@@ -7,7 +7,7 @@
 fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, minCrownArea = 5,
   maxCrownArea = 100, minTreeAltParam = "chmQ50", crownSTDW = NULL,
   opt = NULL, TAopt = NULL,
-  proj4string = "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+  proj4string = "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs")
 }
 \arguments{
 \item{crownFn}{filname of OGR comliant vector file}

@@ -19,6 +19,8 @@ All \code{chm} pixels beneath this value will be masked out. Note that this valu
 height of \code{treePos}.}
 
 \item{format}{string. Format of the function's output. Can be set to either 'raster' or 'polygons'.}
+
+\item{verbose}{quiet (1)}
 }
 \description{
 'ForestTools' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Very fast algorithm based on the imagr watershed algorithm.

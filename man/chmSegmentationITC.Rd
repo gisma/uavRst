@@ -12,17 +12,18 @@ chmSegmentationITC(chm = NULL, EPSG_code = 3064, movingWin = 7,
 \item{chm}{Canopy height model in \link[raster]{raster} or \link[raster]{SpatialGridDataFrame} file format. Should be the same that was used to create
 the input for \code{treePos}.}
 
+\item{EPSG_code}{The EPSG code of the reference system of the CHM raster image.}
+
 \item{movingWin}{Size (in pixels) of the moving window to detect local maxima.}
+
+\item{TRESHSeed}{seeding threshold}
+
+\item{TRESHCrown}{crowns threshold}
 
 \item{minTreeAlt}{Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.}
 
 \item{maxCrownArea}{numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
 height of \code{treePos}.}
-
-\item{treePos}{numeric. \code{matrix} or \code{data.frame} with three columns (tree xy coordinates and height).
-number of crown segments equal to the number of treetops.}
-
-\item{EPSG}{The EPSG code of the reference system of the CHM raster image.}
 }
 \description{
 Segmentation of individual tree crowns as polygons based on a LiDAR derived canopy height model. 

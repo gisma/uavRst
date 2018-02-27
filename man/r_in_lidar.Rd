@@ -103,14 +103,16 @@ Creates raster* objects from a LiDAR derived  point cloud based on regular las f
 # create a DEM based on the class 2 Minimum returns
 require(curl)
 # get a laz file from Mr. Isenburg
-res <- curl::curl_download(url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz",
+url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz"
+res <- curl::curl_download(url=url,
                            destfile="test.laz",  quiet = TRUE, mode = "wb")
 # convert it to las
 lasTool(tool="las2las","test.laz")
 # extract extension for setting up GRASS region
 ext<-lasTool(lasDir = "test.las")
 # set up GRASS
-result<-link2GI::linkGRASS7(spatial_params = c(ext[2],ext[1],ext[4],ext[3],proj4),resolution = gridsize)
+result<-link2GI::linkGRASS7(spatial_params = c(ext[2],ext[1],ext[4],ext[3],proj4),
+                             resolution = gridsize)
 # use the r.in.lidar tool to generate a pseudo surface model
 r_in_lidar(input = paste0(getwd(),"/test.las"),
            output = "testdem",

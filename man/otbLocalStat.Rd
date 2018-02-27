@@ -20,6 +20,8 @@ otbLocalStat(input = NULL, out = "localStat", ram = "8192", radius = 3,
 
 \item{retRaster}{boolean if TRUE a raster stack is returned}
 
+\item{outDir}{output Directory}
+
 \item{verbose}{switch for system messages default is FALSE}
 }
 \description{

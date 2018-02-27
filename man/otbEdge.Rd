@@ -25,6 +25,8 @@ otbEdge(input = NULL, out = "edge", ram = "8192", filter = "gradient",
 
 \item{retRaster}{boolean if TRUE a raster stack is returned}
 
+\item{outDir}{output Directory}
+
 \item{verbose}{switch for system messages default is FALSE}
 }
 \description{
