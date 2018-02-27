@@ -510,7 +510,16 @@ xpolystat <- function(x = NULL,
   return(stat)
 }
 
-
+#' creates all link2GI links
+#' @description converts SAGA raster to R raster object
+#' @param links character links
+#' @param linkItems character list of c("saga","grass7","otb","gdal")
+#'  @param simple boolean true  make all
+#'  @param sagaArgs sagaArgs = "default_SAGA = NULL, searchLocation = 'default',ver_select = FALSE, quiet = TRUE, returnPaths = TRUE",
+#'  @param grassArgs grassArgs = "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist = FALSE, gisdbase = NULL,location = NULL, spatial_params = NULL, resolution = NULL,quiet = TRUE, returnPaths = FALSE")
+#' @param  otbArgs otbArgs =   "bin_OTB = NULL, root_OTB = NULL, type_OTB = NULL,searchLocation = NULL, ver_select = FALSE, quiet = TRUE,returnPaths = TRUE"
+#'@param  gdalArgs gdalArgs =  "quiet = TRUE, returnPaths = TRUE"
+#' @export
 linkBuilder <- function(links=NULL, 
                         simple = TRUE,
                         linkItems = c("saga","grass7","otb","gdal"),
