@@ -184,7 +184,6 @@ if (!isGeneric('getGeodata')) {
 #'
 #'
 #'@import raster
-#'@import osmar
 #'@import sp
 #'@import maptools
 #'@import curl

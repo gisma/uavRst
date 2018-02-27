@@ -27,8 +27,7 @@
 #' result$stats
 #' @import pROC
 #' @export classificationStats
-#' @aliases classificationStats
-#' @seealso \code{\link{regressionStats}}
+
 
 classificationStats <- function(prd, obs, prob=NULL, plot=FALSE) {
   tab <- (table(prd,obs))/100

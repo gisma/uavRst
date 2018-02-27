@@ -8,7 +8,7 @@
 #' \cr
 #' \emph{Maintainer:} Chris Reudenbach \email{reudenbach@@uni-marburg.de}
 #'
-#' @import stringr zoo foreach sp raster htmlwidgets htmltools Rcpp rgeos rgdal gdalUtils tools maptools mapview doParallel velox CAST 
+#' @import stringr zoo foreach sp raster htmlwidgets htmltools Rcpp rgeos rgdal gdalUtils tools maptools doParallel velox CAST 
 #' @importFrom geosphere bearing
 #' @importFrom geosphere distGeo
 #' @importFrom geosphere destPoint
@@ -34,7 +34,7 @@
 #' @importFrom lidR tree_detection
 #' @import methods
 #' @import RSAGA
-#' @import osmar
+
 #' @import reshape2
 #' @import rgrass7
 #'

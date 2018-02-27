@@ -185,13 +185,14 @@ getCounts<- function(ids=c(1,2),
 #' @param bandNames band names 
 #' 
 #' @export predictRGB 
-#' @examples
-#' 
-# predictRGB(imageFiles=imagestack,
-#             model = model_final,
-#             in_prefix = "index_",
-#             out_prefix = "classified_",
-#             bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI")) 
+#' @examples 
+#' \dontrun{
+#' predictRGB(imageFiles=imagestack,
+#'             model = model_final,
+#'             in_prefix = "index_",
+#'             out_prefix = "classified_",
+#'             bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI")) 
+#'}
 
 predictRGB <- function(imageFiles=NULL,
                        model = NULL,

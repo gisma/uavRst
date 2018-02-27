@@ -1,12 +1,24 @@
 ---
-title: "uavRst - Unmanned aerial Vehicle Remote Sensing Tools "
+title: "Unmanned Aerial Vehicle Remote Sensing Tools"
 author: "Chris Reudenbach"
-date: "October 10, 2016"
+date: '`r Sys.Date()`'
 output:
-  html_document:
+  pdf_document:
+    latex_engine: xelatex
     toc: yes
-    self_contained: no
+  html_document:
+    theme: united
+    toc: yes
+  rmarkdown: default
+vignette: >
+  %\VignetteIndexEntry{Unmanned Aerial Vehicle Remote SensingTools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}{inputenc}\
 ---
+```{r echo=FALSE}
+knitr::opts_chunk$set(collapse = TRUE)
+```
+
 
 ![](http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png) (CC-BY-NC-SA)
 

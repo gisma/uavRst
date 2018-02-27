@@ -8,7 +8,7 @@ treePosFT(chm = NULL, winFun = function(x) {     0.5 * ((x^2) * 0.009 +
   2.51) }, minTreeAlt = 2, maxCrownArea = maxCrownArea, verbose = TRUE)
 }
 \arguments{
-\item{chm}{Canopy height model in \link[raster]{raster}, \code{lasmetrics}, \code{matrix} or  object of \code{class LAS}.
+\item{chm}{Canopy height model in \code{raster}, \code{lasmetrics}, \code{matrix} or  object of \code{class LAS}.
 Should be the same that was used to create
 the input for \code{treePos}.}
 

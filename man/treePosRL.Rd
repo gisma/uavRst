@@ -7,7 +7,7 @@
 treePosRL(chm = NULL, movingWin = 7, minTreeAlt = 2)
 }
 \arguments{
-\item{chm}{Canopy height model in \link[raster]{raster} or \link[raster]{SpatialGridDataFrame} file format. Should be the same that was used to create
+\item{chm}{Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 the input for \code{treePos}.}
 
 \item{movingWin}{Size (in pixels) of the moving window to detect local maxima.}

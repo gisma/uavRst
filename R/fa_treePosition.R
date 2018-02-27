@@ -131,7 +131,7 @@ treePos <- function(chm = NULL,
 #' @description Detects and computes the location and height of individual trees within 
 #' the LiDAR-derived Canopy Height Model (CHM). The algorithm implemented in this function 
 #' is local maximum with a fixed window size. Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
-#' @param chm Canopy height model in \link[raster]{raster} or \link[raster]{SpatialGridDataFrame} file format. Should be the same that was used to create
+#' @param chm Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 #' the input for \code{treePos}.
 #' @param movingWin Size (in pixels) of the moving window to detect local maxima.
 #' @param minTreeAlt Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
@@ -160,7 +160,7 @@ treePosRL <- function(chm =NULL,
 #' called for gridded objects, works on images with a matrix-based algorithm and the second one, called for 
 #' point clouds, works at the point cloud level without any rasterization. Jean-Romain Roussel and David Auty:
 #' R package \href{https://CRAN.R-project.org/package=lidR}{lidR}\cr
-#' @param chm Canopy height model in \link[raster]{raster}, \code{lasmetrics}, \code{matrix} or  object of \code{class LAS}.
+#' @param chm Canopy height model in \code{raster}, \code{lasmetrics}, \code{matrix} or  object of \code{class LAS}.
 #' Should be the same that was used to create
 #' the input for \code{treePos}.
 #' @param movingWin Size (in pixels) of the moving window to detect local maxima.
@@ -191,7 +191,7 @@ treePoslidR <- function(chm =NULL,
 #' @description Implements the variable window filter algorithm (Popescu & Wynne, 2004) 
 #' for detecting treetops from a canopy height model. Andrew Plowright:
 #' R package \href{https://CRAN.R-project.org/package=ForestTools}{ForestTools}\cr
-#' @param chm Canopy height model in \link[raster]{raster}, \code{lasmetrics}, \code{matrix} or  object of \code{class LAS}.
+#' @param chm Canopy height model in \code{raster}, \code{lasmetrics}, \code{matrix} or  object of \code{class LAS}.
 #' Should be the same that was used to create
 #' the input for \code{treePos}.
 #' @param winFun	function. The function that determines the size of the window at any given 

@@ -13,5 +13,5 @@
   invisible()
 }
 
-requireNamespace(c("osmar", "randomForest" ,"raster" ,"sp","sf","rgrass7","tools"))
+requireNamespace(c( "randomForest" ,"raster" ,"sp","sf","rgrass7","tools"))
 s<-sessionInfo()

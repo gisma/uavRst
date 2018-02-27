@@ -34,9 +34,6 @@ result <- classificationStats(pred_vals, obs_vals, plot=TRUE)
 result$plot
 result$stats
 }
-\seealso{
-\code{\link{regressionStats}}
-}
 \author{
 Hanna Meyer and Tim Appelhans
 }
