@@ -15,7 +15,11 @@ fa_pot_insol(x = NULL, svf_radius = 10000, svf_method = 0,
 
 \item{svf_radius}{search radius in map units default is 10000.0, set to zero for ignoring,}
 
+\item{svf_method}{default is 0 (multiscale) NOTE much slower than 1 (sectors),}
+
 \item{svf_dlevel}{multi scale factor default is 3.0 minimum is 1.25}
+
+\item{svf_ndirs}{number of sectors default is 8.0 minimum is 3.0}
 
 \item{pi_solarconst}{(W/m**2) default is 1367.0,}
 
@@ -36,10 +40,6 @@ fa_pot_insol(x = NULL, svf_radius = 10000, svf_method = 0,
 \item{pi_hour_step}{= 1.0,}
 
 \item{pi_lumped}{= 70.0}
-
-\item{sfv_method}{default is 0 (multiscale) NOTE much slower than 1 (sectors),}
-
-\item{sfv_ndirs}{number of sectors default is 8.0 minimum is 3.0}
 }
 \description{
 calculate statitiscs of polygon based raster extraction. return returns all calculations as SAGA Grid for statistical analysis

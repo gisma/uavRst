@@ -8,11 +8,15 @@ sp_point(lon, lat, ID = "point",
   proj4 = "+proj=longlat +datum=WGS84 +no_defs", export = FALSE)
 }
 \arguments{
+\item{lon}{lon of first point}
+
+\item{lat}{lat of first point}
+
 \item{ID}{name of point}
 
-\item{export}{write shafefile default = F}
+\item{proj4}{proj4 string}
 
-\item{p1}{coordinate of first point}
+\item{export}{write shafefile default = F}
 }
 \description{
 create an spatialpointobject from 1 points, optional export as shapefile

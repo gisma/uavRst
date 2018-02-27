@@ -26,6 +26,8 @@ treePos(chm = NULL, minTreeAlt = 10, minTreeAltParam = "chmQ20",
 \item{thresh}{default is 0.05,  # threshold for join difference in m}
 
 \item{split}{default  is TRUE switch if splitting of the polygons is called}
+
+\item{giLinks}{list. of GI tools cli pathes}
 }
 \description{
 Find potential tree positions using a canopy height model using a iterative watershed algorithm. return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices

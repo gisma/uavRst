@@ -129,7 +129,7 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 #' OTB wrapper for Haralick's simple, advanced and higher order texture features
 #'@description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image. A list of RasterStacks containing the texture parameters for each 
 #' combination of channel and filter  
-#' @param x A \code{\link{Raster*}} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands
+#' @param x A \code{Raster*} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands
 #' @param output_name string pattern vor individual naming of the output file(s)
 #' @param parameters.xyrad list with the x and y radius in pixel indicating the kernel sizes for which the textures are calculated
 #' @param parameters.xyoff  vector containg the directional offsets. Valid combinations are: list(c(1,1),c(1,0),c(0,1),c(1,-1))
@@ -187,7 +187,8 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 
 #' @author Chris Reudenbach, Thomas Nauss
 #' @note 
-#' The following Haralick textures are largely comparable to the results as derived by the \code{\link{glcm}} package. Find more information about the these common texture indices at the tutorial site of
+#' The following Haralick textures are largely comparable to the results as derived by the \code{\link{glcm}} package. 
+#' Find more information about the these common texture indices at the tutorial site of
 #' \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Mryka Hall-Beyer}\cr
 #' 
 #' @name otbTexturesHaralick

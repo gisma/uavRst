@@ -20,6 +20,7 @@ if (!isGeneric('treePos')) {
 #'@param join        default is 2,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff
 #'@param thresh      default is 0.05,  # threshold for join difference in m
 #'@param split default  is TRUE switch if splitting of the polygons is called
+#'@param giLinks        list. of GI tools cli pathes  
 
 #'
 #'
@@ -198,6 +199,7 @@ treePoslidR <- function(chm =NULL,
 #' and return the desired radius of the circular search window when centered on that pixel.
 #' @param minTreeAlt Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. 
+#' @param verbose quiet (1)
 #' height of \code{treePos}.
 #' @import rLiDAR
 #' @export treePosFT

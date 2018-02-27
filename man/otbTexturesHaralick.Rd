@@ -36,6 +36,8 @@ combination of channel and filter}
 
 \item{texture}{type of filter "all" for all, alternative one of "simple" "advanced" "higher"}
 
+\item{path_output}{path outut}
+
 \item{return_raster}{boolean if TRUE a raster stack is returned}
 
 \item{parameters.xyrad}{list with the x and y radius in pixel indicating the kernel sizes for which the textures are calculated}
@@ -53,10 +55,6 @@ combination of channel and filter}
 \item{ram}{reserved memory in MB}
 
 \item{output_name}{string pattern vor individual naming of the output file(s)}
-
-\item{n_grey}{Number of grey values.}
-
-\item{parallel}{A logical value indicating whether parameters are calculated parallely or not}
 }
 \description{
 OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image.

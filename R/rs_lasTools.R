@@ -15,7 +15,7 @@
 #'@param cores number of cores that will be used
 #'@param proj4  default is EPSG 32632 any valid proj4 string that is assumingly the correct one
 #'@param rscale rscale
-#'@param stepoverlap
+#'@param stepoverlap stepoverlap
 
 #'
 #'

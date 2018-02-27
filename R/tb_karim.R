@@ -49,7 +49,7 @@ if (!isGeneric('xyz2tif')) {
 #' @description
 #' Read xyz data and generate a raster  \code{Raster*} object.  
 #' 
-#' @param xyzfn ASCII tect file with xyz values
+#' @param xyzFN ASCII tect file with xyz values
 #' @param epsgCode "25832"
 
 #' 
@@ -151,6 +151,7 @@ h_comp_ll_proj4 <- function(x) {
 #' create an spatiallineobject from 2 points, optional export as shapefile
 #' @param p1 coordinate of first point
 #' @param p2 coordinate of second point
+#' @param proj4 proj4 string
 #' @param ID id of line
 #' @param export write shafefile default = F 
 #' @export
@@ -170,8 +171,10 @@ sp_line <- function(p1,
 #' create an spatialpointobject from 1 points
 #' @description
 #' create an spatialpointobject from 1 points, optional export as shapefile
-#' @param p1 coordinate of first point
+#' @param lat lat of first point
+#' @param lon lon of first point
 #' @param ID name of point
+#' @param proj4 proj4 string
 #' @param export write shafefile default = F 
 #' @export
 #' 

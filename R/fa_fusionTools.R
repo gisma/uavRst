@@ -167,22 +167,6 @@ GroundSurfaceCreate<-function(lasFiles, res ){
 
 
 
-#'@name readMetrics
-#'@title lists only the desired densityMetrics asc from outputfolder
-#'
-#'@description
-#'lists only the desired densityMetrics asc from outputfolder
-#'
-#'@author Chris Reudenbach,Jannis Gottwald
-#'
-#'@param lasFiles  default is \code{NULL} list of the las file(s)
-#'@param heightClasses default is \code{list(c(0,2,5,10,30))}
-#'@examples
-#'\dontrun{
-#'  GridList<-readAscGridMetrics(lasFiles = lasFiles, heightClasses = heights)
-#'}
-#'
-#'
 
 
 
@@ -196,7 +180,7 @@ GroundSurfaceCreate<-function(lasFiles, res ){
 #'
 #'
 #'@param lasFiles  default is \code{NULL} list of the las file(s)
-#'@param heightClasses default is \code{list(c(0,2,5,10,30))}
+
 #'@param heightbreak lower heightbreak
 #'@param res  default is \code{NULL} cellsize
 #'@param metrics  default is  \code{list(c(0,2,5,10,30))} list of metric indexes indexes given
@@ -208,6 +192,7 @@ GroundSurfaceCreate<-function(lasFiles, res ){
 #' will be calculated for strata
 #'@param instrata optional paramter \code{list(c(0,2,5,10,30))}, intensity based metrics
 #' will be calculated for strata
+#' @param heightClassList height classes list default is \code{list(c(0,2,5,10,30))}
 #'@param proj4  any valid proj4 string that is assumingly the correct one default is \code{"+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"}
 
 #' @examples

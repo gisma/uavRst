@@ -19,6 +19,8 @@ textureVariables(x, nrasters = 1:nlayers(x), kernelSize = c(3),
 
 \item{stats}{string vector of parameters to be calculated.see \code{\link{glcm}}}
 
+\item{shift}{=list(c(0,1), c(1,1), c(1,0),c(1,-1))}
+
 \item{parallel}{logical value indicating whether parameters are calculated parallel or not}
 
 \item{n_grey}{number of grey values. see \code{\link{glcm}}}

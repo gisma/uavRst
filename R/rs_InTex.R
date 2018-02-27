@@ -17,6 +17,7 @@
 #' @param max_x for each channel the maximum value which can occur. If NULL then the maximum value from the rasterLayer is used.
 #' This functions calls the glcm function from \link{glcm} with standard settings
 #' and returns list of RasterStacks containing the texture parameters for each combination of channel and kernelSize  
+#' @param  shift =list(c(0,1), c(1,1), c(1,0),c(1,-1))
 #' @author Hanna Meyer
 #' 
 #' @note More information at the texture tutorial site of
@@ -137,8 +138,6 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 #' @param output_name string pattern vor individual naming of the output file(s)
 #' @param parameters.xyrad list with the x and y radius in pixel indicating the kernel sizes for which the textures are calculated
 #' @param parameters.xyoff  vector containg the directional offsets. Valid combinations are: list(c(1,1),c(1,0),c(0,1),c(1,-1))
-#' @param n_grey Number of grey values. 
-#' @param parallel A logical value indicating whether parameters are calculated parallely or not
 #' @param parameters.minmax   minimum/maximum gray value which can occur. 
 #' @param parameters.nbbin number of gray level bins (classes)
 #' @param texture type of filter "all" for all, alternative one of "simple" "advanced" "higher"
@@ -146,6 +145,7 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 #' @param ram reserved memory in MB
 #' @param return_raster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
+#' @param path_output path outut
   
 #' @references Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.
 #' IEEE Transactions on Systems, Man and Cybernetics. SMC-3(6):610-620.\cr

@@ -7,47 +7,6 @@
 #'@author Chris Reudenbach,Thomas Nauss, Jannis Gottwald
 #'
 #'@param r.in.lidar [-penosgijdv] 
-##' @param input=name LAS input file LiDAR input files in LAS format (*.las or *.laz)
-##' @param output=name Name for output raster map
-##' @param file=name File containing names of LAS input files LiDAR input files in LAS format (*.las or *.laz)
-##' @param method=string Statistic to use for raster values Options: n, min, max, range, sum, mean, stddev, variance, coeff_var, median, percentile, skewness, trimmean Default: mean
-##' @param n: Number of points in cell
-##' @param min: Minimum value of point values in cell
-##' @param max: Maximum value of point values in cell
-##' @param range: Range of point values in cell
-##' @param sum: Sum of point values in cell
-##' @param mean: Mean (average) value of point values in cell
-##' @param stddev: Standard deviation of point values in cell
-##' @param variance: Variance of point values in cell
-##' @param coeff_var: Coefficient of variance of point values in cell
-##' @param median: Median value of point values in cell
-##' @param percentile: pth (nth) percentile of point values in cell
-##' @param skewness: Skewness of point values in cell
-##' @param trimmean: Trimmed mean of point values in cell
-##' @param type=string Type of raster map to be created Storage type for resultant raster map Options: CELL, FCELL, DCELL Default: FCELL
-##' @param CELL: Integer
-##' @param FCELL: Single precision floating point
-##' @param DCELL: Double precision floating point
-##' @param base_raster=name Subtract raster values from the Z coordinates The scale for Z is applied beforehand, the range filter for Z afterwards
-##' @param zrange=min,max Filter range for Z data (min,max) Applied after base_raster transformation step
-##' @param zscale=float Scale to apply to Z data  Default: 1.0
-##' @param intensity_range=min,max Filter range for intensity values (min,max) intensity_scale=float Scale to apply to intensity values Default: 1.0
-##' @param percent=integer Percent of map to keep in memory Options: 1-100 Default: 100
-##' @param pth=integer pth percentile of the values Options: 1-100
-##' @param trim=float  Discard given percentage of the smallest and largest values Discard <trim> percent of the smallest and <trim> percent of the largest observations Options: 0-50
-##' @param resolution=float Output raster resolution
-##' @param return_filter=string Only import points of selected return type If not specified, all points are imported Options: first, last, mid
-##' @param class_filter=integer[,integer,...] Only import points of selected class(es) Input is comma separated integers. If not specified, all points are imported.
-##' @param -p Print LAS file info and exit
-##' @param -e Use the extent of the input for the raster extent Set internally computational region extents based on the point cloud
-##' @param -n Set computation region to match the new raster map Set computation region to match the 2D extent and resolution of the newly created new raster map
-##' @param -o Override projection check (use current location's projection) Assume that the dataset has same projection as the current location
-##' @param -s Scan data file for extent then exit
-##' @param -g In scan mode, print using shell script style
-##' @param -i Use intensity values rather than Z values Uses intensity values everywhere as if they would be Z coordinates
-##' @param -j Use Z values for filtering, but intensity values for statistics
-##' @param -d Use base raster resolution instead of computational region For getting values from base raster, use its actual resolution instead of computational region resolution
-##' @param -v Use only valid points Points invalid according to APSRS LAS specification will be filtered out
 #'@param input input
 #'@param output output
 #'@param file file 

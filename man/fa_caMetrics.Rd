@@ -13,3 +13,6 @@ fa_caMetrics(crownarea, funNames = c("length", "elongation",
 
 \item{funNames}{("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")}
 }
+\description{
+calculate morphometric features of polygons
+}

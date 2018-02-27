@@ -13,9 +13,9 @@ if (!isGeneric('fa_pot_insol')) {
 #'
 #'@param x  spatial raster object
 #'@param svf_radius search radius in map units default is 10000.0, set to zero for ignoring,
-#'@param sfv_method default is 0 (multiscale) NOTE much slower than 1 (sectors), 
+#'@param svf_method default is 0 (multiscale) NOTE much slower than 1 (sectors), 
 #'@param svf_dlevel  multi scale factor default is 3.0 minimum is 1.25
-#'@param sfv_ndirs number of sectors default is 8.0 minimum is 3.0
+#'@param svf_ndirs number of sectors default is 8.0 minimum is 3.0
 #'@param pi_solarconst (W/m**2) default is 1367.0, 
 #'@param pi_units  units for output radiation values. default is 0 (kWh/m**2) available are: 1 (kJ/m**2) 2 J/cm**2, 
 #'@param pi_shadow default is 1 (fat), choose 0 (slim) to trace grid node's shadow, 1 (fat) to trace the whole cell's shadow, or 2 (none) to ignore shadowing effects. The first is slightly faster but might show some artifacts

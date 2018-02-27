@@ -31,7 +31,7 @@ lasTool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
 
 \item{rscale}{rscale}
 
-\item{stepoverlap}{}
+\item{stepoverlap}{stepoverlap}
 
 \item{cores}{number of cores that will be used}
 }
