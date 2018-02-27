@@ -31,7 +31,7 @@
 #' @importFrom rLiDAR FindTreesCHM
 #' @importFrom rLiDAR ForestCAS
 #' @import pROC
-#' @import lidR
+#' @importFrom lidR tree_detection
 #' @import methods
 #' @import RSAGA
 #' @import osmar

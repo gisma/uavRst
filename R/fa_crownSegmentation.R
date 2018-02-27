@@ -386,7 +386,8 @@ chmSegmentationITC <- function(chm =NULL,
 #'  
 #'  EPSG \url{http://spatialreference.org/}
 #'}
-#'@examples{
+#'@examples
+#' \dontrun{
 #'  ## NOT RUN 
 #'  ## i=list.files(path,pattern=".las$", full.names=FALSE)
 #'  ## chmSegmentationFU(lasList=i,
