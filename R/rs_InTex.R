@@ -669,7 +669,7 @@ otbGrayMorpho<- function(input=NULL,
 #' @note please provide a GeoTiff file
 #' @param dem of GeoTiff containing one channel DEM
 #' @param item index to be calculated default are c("slope", "aspect","TRI","TPI","Roughness")
-#' @param outDir output Directory
+
 #' @export gdalDEMParam
 #' @examples 
 #' \dontrun{

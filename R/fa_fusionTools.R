@@ -336,6 +336,7 @@ for (i in 1:length(lasFiles)){
 #'@param paramList default is \code{c("1 M M 1 32 0 0 ")}list of parameters for info see clipdata.exe manual
 #'@param res resolution for raster operations
 #'@param proj4  any valid proj4 string that is assumingly the correct one default is \code{"+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"}
+#'@param zrnames
 #'
 #'@examples
 #'\dontrun{

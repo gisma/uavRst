@@ -330,7 +330,7 @@ chmSegmentationITC <- function(chm =NULL,
 #'@description Method to create a Tree Segmentation using different FUSION tools. 
 #'  The Tree Segmentation can be created from LAS-files and creates raster and shapefile output.
 
-#'@param lasDIR filename (.las-file) or list of filenames (.txt-file)
+#'@param lasDir filename (.las-file) or list of filenames (.txt-file)
 #'@param grid_size integer. Cellsize for creating .dtm of las-point-cloud
 #'@param fusionPercentile integer. n-th percentile of canopy heigth for heightbreak of Tree Segmentation (see Details)
 #'@param movingWin integer. Cellsize for focal window (see Details)

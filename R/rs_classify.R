@@ -130,6 +130,7 @@ extractTrainData<-function(rasterStack  = NULL,
 #' @param ext extension
 #' @param path   output path
 #' @param dropChars chars to drop
+#' @param buffersize size in meters around position
 #' 
 #' @export getCounts
 #' @examples  
@@ -237,13 +238,13 @@ predictRGB <- function(imageFiles=NULL,
 #' @param spaceVar      name of the spcetime splitting vatiable as given by the header of the training data table
 #' @param names         all names of the dataframe header 
 #' @param noLoc         number of locations to leave out usually nuber of dicrete trainings locations/images
-#' @param metric        accuracy metrics for ffs for classification  default is \code{"kappa"}
 #' @param pVal          used part of the training data  default is \code{ 0.5}
 #' @param prefin        name pattern used for model default is \code{"final_"}
 #' @param preffs        name pattern used for ffs default is \code{"ffs_"}
 #' @param modelSaveName name pattern used for saving the model default is \code{"model.RData" }
 #' @param seed          number for seeding
-#' @param nrclu         number of cluster to be used
+#' @param nrClu         number of cluster to be used
+#' @param sumFunction
 #' 
 #' @export ffsTrainModel
 #' @examples  
