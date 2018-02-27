@@ -39,6 +39,16 @@ r_packages:
   - latticeExtra
   - crayon
   - osmar
+  - ForestTools
+  - itcSegment
+  - rLiDAR
+  - pROC
+  - lidR
+  - methods
+  - RSAGA
+  - reshape2
+  - rgrass7
+  - RSAGA
 
 sudo: required
 
