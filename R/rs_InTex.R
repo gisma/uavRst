@@ -21,7 +21,7 @@
 #' @author Hanna Meyer
 #' 
 #' @note More information at the texture tutorial site of
-#' \link{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}(Mryka Hall-Beyer)
+#' \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Mryka Hall-Beyer}
 #' Keep in mind that:\cr
 #' Homogeneity is correlated with Contrast,  r = -0.80
 #' Homogeneity is correlated with Dissimilarity, r = -0.95
@@ -32,15 +32,15 @@
 #' GLCM Mean and Correlation are more independent. For the same image,
 #' GLCM Mean shows  r< 0.1 with any of the other texture measures demonstrated in this tutorial.
 #' GLCM Correlation shows  r<0.5 with any other measure.
-#' for a review of a lot of feature extraction algorithms look at:\href{http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
+#' for a review of a lot of feature extraction algorithms look at: \href{http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
 #' glcm<-> haralick c("mean"  advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
-#' using stats will cover mean and variance while dissimilarity is highly correlated to  Homogeneity data. For a nice introduction look at: \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Hallbey}
+#' using stats will cover mean and variance while dissimilarity is highly correlated to  Homogeneity data. For a nice introduction look at: \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Hallbey}.
 #' 
 #' @export textureVariables
 #' @examples 
 #' \dontrun{
 #' ## example on how to calculate texture from a list of channels
-#' 
+#'
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
@@ -134,7 +134,7 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 #' OTB wrapper for Haralick's simple, advanced and higher order texture features. return A list of RasterStacks containing the texture parameters for each 
 #' combination of channel and filter
 #'@description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image.
-#' @param x A \code{\link{Raster*}} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands
+#' @param x A \code{Raster*} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands
 #' @param output_name string pattern vor individual naming of the output file(s)
 #' @param parameters.xyrad list with the x and y radius in pixel indicating the kernel sizes for which the textures are calculated
 #' @param parameters.xyoff  vector containg the directional offsets. Valid combinations are: list(c(1,1),c(1,0),c(0,1),c(1,-1))
@@ -195,7 +195,7 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 
 #' @author Chris Reudenbach, Thomas Nauss
 #' @note 
-#' The following Haralick textures are largely comparable to the results as derived by the \code{\link{glcm}} package. Find more information about the these common texture indices at the tutorial site of
+#' The following Haralick textures are largely comparable to the results as derived by the \code{glcm} package. Find more information about the these common texture indices at the tutorial site of
 #' \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Mryka Hall-Beyer}\cr
 #' 
 #' @name otbTexturesHaralick

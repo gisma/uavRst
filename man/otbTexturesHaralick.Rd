@@ -32,7 +32,7 @@ combination of channel and filter}
   verbose = FALSE, ram = "8192")
 }
 \arguments{
-\item{x}{A \code{\link{Raster*}} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands}
+\item{x}{A \code{Raster*} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands}
 
 \item{texture}{type of filter "all" for all, alternative one of "simple" "advanced" "higher"}
 
@@ -68,7 +68,7 @@ OTB wrapper for calculating Haralick's simple, advanced and higher order texture
 OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel
 }
 \note{
-The following Haralick textures are largely comparable to the results as derived by the \code{\link{glcm}} package. Find more information about the these common texture indices at the tutorial site of
+The following Haralick textures are largely comparable to the results as derived by the \code{glcm} package. Find more information about the these common texture indices at the tutorial site of
 \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Mryka Hall-Beyer}\cr
 }
 \examples{

@@ -39,7 +39,7 @@ for the use of textureVariables a glcm wrapper function
       a raster* object is required
 
 More information at the texture tutorial site of
-\link{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}(Mryka Hall-Beyer)
+\href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Mryka Hall-Beyer}
 Keep in mind that:\cr
 Homogeneity is correlated with Contrast,  r = -0.80
 Homogeneity is correlated with Dissimilarity, r = -0.95
@@ -50,9 +50,9 @@ Entropy is correlated with ASM,  r= -0.87
 GLCM Mean and Correlation are more independent. For the same image,
 GLCM Mean shows  r< 0.1 with any of the other texture measures demonstrated in this tutorial.
 GLCM Correlation shows  r<0.5 with any other measure.
-for a review of a lot of feature extraction algorithms look at:\href{http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
+for a review of a lot of feature extraction algorithms look at: \href{http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
 glcm<-> haralick c("mean"  advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
-using stats will cover mean and variance while dissimilarity is highly correlated to  Homogeneity data. For a nice introduction look at: \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Hallbey}
+using stats will cover mean and variance while dissimilarity is highly correlated to  Homogeneity data. For a nice introduction look at: \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Hallbey}.
 }
 \examples{
 \dontrun{
