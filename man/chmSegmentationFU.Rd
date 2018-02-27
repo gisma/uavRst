@@ -62,10 +62,17 @@ The "Create Tree Segmentation" (chmSegmentationFU) function works with a watersh
 }
 }
 \examples{
-{
+\dontrun{
  ## NOT RUN 
  ## i=list.files(path,pattern=".las$", full.names=FALSE)
- ## chmSegmentationFU(lasList=i,grid_size=c(1,3,5),fusionPercentile=37,movingWin=3,focalStatFun="mean",proj4="+init=epsg:25832",path,fusionCmd)
+ ## chmSegmentationFU(lasList=i,
+                      grid_size=c(1,3,5),
+                      fusionPercentile=37,
+                      movingWin=3,
+                      focalStatFun="mean",
+                      proj4="+init=epsg:25832",
+                      path,
+                      fusionCmd)
 }
 }
 \references{

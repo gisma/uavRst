@@ -9,7 +9,7 @@ chmSegmentationITC(chm = NULL, EPSG_code = 3064, movingWin = 7,
   maxCrownArea = 100)
 }
 \arguments{
-\item{chm}{Canopy height model in \link[raster]{raster} or \link[raster]{SpatialGridDataFrame} file format. Should be the same that was used to create
+\item{chm}{Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 the input for \code{treePos}.}
 
 \item{EPSG_code}{The EPSG code of the reference system of the CHM raster image.}

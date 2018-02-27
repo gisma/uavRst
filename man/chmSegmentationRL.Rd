@@ -11,7 +11,7 @@ chmSegmentationRL(treePos = NULL, chm = NULL, maxCrownArea = 150,
 \item{treePos}{numeric. \code{matrix} or \code{data.frame} with three columns (tree xy coordinates and height).
 number of crown segments equal to the number of treetops.}
 
-\item{chm}{Canopy height model in \link[raster]{raster} or \link[raster]{SpatialGridDataFrame} file format. Should be the same that was used to create
+\item{chm}{Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 the input for \code{treePos}.}
 
 \item{maxCrownArea}{numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.

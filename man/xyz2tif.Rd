@@ -9,7 +9,7 @@ xyz2tif(xyzFN = NULL, epsgCode = "25832")
 \arguments{
 \item{epsgCode}{"25832"}
 
-\item{YXZfn}{ASCII tect file with xyz values}
+\item{xyzfn}{ASCII tect file with xyz values}
 }
 \description{
 Read xyz data and generate a raster  \code{Raster*} object.

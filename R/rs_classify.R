@@ -243,8 +243,8 @@ predictRGB <- function(imageFiles=NULL,
 #' @param preffs        name pattern used for ffs default is \code{"ffs_"}
 #' @param modelSaveName name pattern used for saving the model default is \code{"model.RData" }
 #' @param seed          number for seeding
-#' @param nrClu         number of cluster to be used
-#' @param sumFunction
+#' @param noClu         number of cluster to be used
+#' @param sumFunction sumfunction
 #' 
 #' @export ffsTrainModel
 #' @examples  
@@ -344,6 +344,7 @@ ffsTrainModel<-function(   trainingDF   = NULL,
 #' @param  stat band names 
 #' @param morpho band names 
 #' @param edge band names 
+#' @param RGBtrans RGBtrans
 #' 
 #' @export makebNames 
 

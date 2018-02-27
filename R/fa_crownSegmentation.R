@@ -11,7 +11,7 @@
 #' All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 #' height of \code{treePos}.
 #'@param minTreeAltParam default is "chmQ20"
-#'@param chm Canopy height model in \link[raster]{raster} format. Should be the same that was used to create
+#'@param chm Canopy height model in \code{raster} format. Should be the same that was used to create
 #' the input for \code{treePos}.
 #'@param leafsize       integer. bin size of grey value sampling range from 1 to 256 
 #'@param normalize      integer.  logical switch if data will be normalized (1) 
@@ -147,9 +147,9 @@ chmSegmentation <- function(treePos = NULL,
 #' fast and straightforward watershed segmentation based on 'ForestTools'
 #' @description  'ForestTools' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Very fast algorithm based on the imagr watershed algorithm.
 #' Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools}{'ForestTools'}
-#' @param treePos \link[sp]{SpatialPointsDataFrame}. The point locations of treetops. The function will generally produce a
+#' @param treePos \code{SpatialPointsDataFrame}. The point locations of treetops. The function will generally produce a
 #' number of crown segments equal to the number of treetops.
-#' @param chm Canopy height model in \link[raster]{raster} format. Should be the same that was used to create
+#' @param chm Canopy height model in \code{raster} format. Should be the same that was used to create
 #' the input for \code{treePos}.
 #' @param minTreeAlt numeric. The minimum height value for a \code{CHM} pixel to be considered as part of a crown segment.
 #' All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
@@ -207,7 +207,7 @@ chmSegmentationFT <- function(treePos = NULL,
 #' 
 #' @param treePos numeric. \code{matrix} or \code{data.frame} with three columns (tree xy coordinates and height).
 #' number of crown segments equal to the number of treetops.
-#' @param chm Canopy height model in \link[raster]{raster} or \link[raster]{SpatialGridDataFrame} file format. Should be the same that was used to create
+#' @param chm Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 #' the input for \code{treePos}.
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
 #' height of \code{treePos}.
@@ -270,7 +270,7 @@ chmSegmentationRL <- function(treePos = NULL,
 #'                        }
 
 
-#' @param chm Canopy height model in \link[raster]{raster} or \link[raster]{SpatialGridDataFrame} file format. Should be the same that was used to create
+#' @param chm Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 #' the input for \code{treePos}.
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
 #' height of \code{treePos}.
@@ -389,7 +389,14 @@ chmSegmentationITC <- function(chm =NULL,
 #'@examples{
 #'  ## NOT RUN 
 #'  ## i=list.files(path,pattern=".las$", full.names=FALSE)
-#'  ## chmSegmentationFU(lasList=i,grid_size=c(1,3,5),fusionPercentile=37,movingWin=3,focalStatFun="mean",proj4="+init=epsg:25832",path,fusionCmd)
+#'  ## chmSegmentationFU(lasList=i,
+#'                       grid_size=c(1,3,5),
+#'                       fusionPercentile=37,
+#'                       movingWin=3,
+#'                       focalStatFun="mean",
+#'                       proj4="+init=epsg:25832",
+#'                       path,
+#'                       fusionCmd)
 #'}
 #'@export
 #'

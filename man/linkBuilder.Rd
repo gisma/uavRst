@@ -12,10 +12,13 @@ linkBuilder(links = NULL, simple = TRUE, linkItems = c("saga", "grass7",
 \arguments{
 \item{links}{character links}
 
-\item{linkItems}{character list of c("saga","grass7","otb","gdal")
-@param simple boolean true  make all
-@param sagaArgs sagaArgs
-@param grassArgs grassArgs}
+\item{simple}{boolean true  make all}
+
+\item{linkItems}{character list of c("saga","grass7","otb","gdal")}
+
+\item{sagaArgs}{sagaArgs}
+
+\item{grassArgs}{grassArgs}
 
 \item{otbArgs}{otbArgs}
 

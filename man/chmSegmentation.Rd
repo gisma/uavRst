@@ -13,7 +13,7 @@ chmSegmentation(treePos = NULL, chm = NULL, minTreeAlt = 2,
 \arguments{
 \item{treePos}{spatial raster object}
 
-\item{chm}{Canopy height model in \link[raster]{raster} format. Should be the same that was used to create
+\item{chm}{Canopy height model in \code{raster} format. Should be the same that was used to create
 the input for \code{treePos}.}
 
 \item{minTreeAlt}{numeric. The minimum height value for a \code{chm} pixel to be considered as part of a crown segment.

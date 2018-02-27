@@ -49,7 +49,7 @@ if (!isGeneric('xyz2tif')) {
 #' @description
 #' Read xyz data and generate a raster  \code{Raster*} object.  
 #' 
-#' @param YXZfn ASCII tect file with xyz values
+#' @param xyzfn ASCII tect file with xyz values
 #' @param epsgCode "25832"
 
 #' 
@@ -515,11 +515,12 @@ xpolystat <- function(x = NULL,
 #' @description converts SAGA raster to R raster object
 #' @param links character links
 #' @param linkItems character list of c("saga","grass7","otb","gdal")
-#'  @param simple boolean true  make all
-#'  @param sagaArgs sagaArgs
-#'  @param grassArgs grassArgs 
-#' @param  otbArgs otbArgs 
-#'@param  gdalArgs gdalArgs 
+#' @param simple boolean true  make all
+#' @param sagaArgs sagaArgs
+#' @param grassArgs grassArgs 
+#' @param otbArgs otbArgs 
+#' @param gdalArgs gdalArgs 
+
 #' @export
 linkBuilder <- function(links=NULL, 
                         simple = TRUE,

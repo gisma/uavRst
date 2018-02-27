@@ -8,10 +8,10 @@ chmSegmentationFT(treePos = NULL, chm = NULL, minTreeAlt = 2,
   format = "polygons", verbose = FALSE)
 }
 \arguments{
-\item{treePos}{\link[sp]{SpatialPointsDataFrame}. The point locations of treetops. The function will generally produce a
+\item{treePos}{\code{SpatialPointsDataFrame}. The point locations of treetops. The function will generally produce a
 number of crown segments equal to the number of treetops.}
 
-\item{chm}{Canopy height model in \link[raster]{raster} format. Should be the same that was used to create
+\item{chm}{Canopy height model in \code{raster} format. Should be the same that was used to create
 the input for \code{treePos}.}
 
 \item{minTreeAlt}{numeric. The minimum height value for a \code{CHM} pixel to be considered as part of a crown segment.

@@ -24,7 +24,7 @@ ffsTrainModel(trainingDF = NULL, predictors = c("R", "G", "B"),
 
 \item{noLoc}{number of locations to leave out usually nuber of dicrete trainings locations/images}
 
-\item{sumFunction}{}
+\item{sumFunction}{sumfunction}
 
 \item{pVal}{used part of the training data  default is \code{ 0.5}}
 
@@ -38,7 +38,7 @@ ffsTrainModel(trainingDF = NULL, predictors = c("R", "G", "B"),
 
 \item{seed}{number for seeding}
 
-\item{nrClu}{number of cluster to be used}
+\item{noClu}{number of cluster to be used}
 }
 \description{
 ffsTrainModel is a wrapper function for a simple use of the forwatrd feature sselection approach 

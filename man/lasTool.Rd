@@ -29,11 +29,11 @@ lasTool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
 
 \item{proj4}{default is EPSG 32632 any valid proj4 string that is assumingly the correct one}
 
+\item{rscale}{rscale}
+
+\item{stepoverlap}{}
+
 \item{cores}{number of cores that will be used}
-
-\item{gisdbase_path}{default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
-
-\item{path_lastools}{directory for the windows lastools}
 }
 \description{
 using lasLib from R. returns lasR basically returns a DTM

@@ -12,9 +12,13 @@ leafDraw(mapCenter = NULL, zoom = 15, line = TRUE, rectangle = TRUE,
   cex = 10, lwd = 2, alpha = 0.6, opacity = 0.7)
 }
 \arguments{
+\item{mapCenter}{c(lat,lon) central point of the leaflet map}
+
 \item{zoom}{initial zoom level}
 
 \item{line}{enable the draw tool line tool}
+
+\item{rectangle}{enable the draw polygon tool}
 
 \item{poly}{enable the draw polygon tool}
 
@@ -30,13 +34,19 @@ leafDraw(mapCenter = NULL, zoom = 15, line = TRUE, rectangle = TRUE,
 
 \item{overlay}{optional sp object}
 
+\item{features}{features}
+
 \item{preset}{character defaut is "NULL" full draw version, "uav" for flightarea digitizing, "ext" for rectangles}
 
 \item{locPreset}{character default is "muf" for Marburg University Forest, others are "tra" Traddelstein, "hag" Hagenstein, "baw" Bayerwald.}
 
-\item{mapcenter}{c(lat,lon) central point of the leaflet map}
+\item{cex}{cex}
 
-\item{intersection}{enable/disable th possibility to overlay lines or polygons}
+\item{lwd}{lwd}
+
+\item{alpha}{alpha}
+
+\item{opacity}{opacity}
 }
 \description{
 leafDraw is based on the leaflet draw plugin. It provides a bunch of leaflet maps as base layers for digitizing vector features.

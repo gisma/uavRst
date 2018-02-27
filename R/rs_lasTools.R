@@ -6,9 +6,7 @@
 #'@author Chris Reudenbach
 #'@param tool default is \code{lasinfo}   additionally xou may choose las2las, lasmerge, lasground_new, las2dem, las2txt
 #'@param lasFile  default is \code{NULL} path  to the laz/las file(s)
-#'@param gisdbase_path default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
 #'@param grid_size  resolution of the DTM raster
-#'@param path_lastools directory for the windows lastools
 #'@param thin_with_grid default 0.5 meter. Grid stepsize for data thinning
 #'@param keep_class default is 2. Default ground class of las/laz conform data
 #'@param bulge  default is 1.5. 'A parameter to filter spikes it is set to a step_size/10 and then clamped into the range from 1.0 to 2.0
@@ -16,7 +14,8 @@
 #'@param sub_size = "8", default is 8 meter. LAStools key words if \code{extra_coarse},\code{coarse},\code{fine},\code{extra_fine},\code{ultra_fine},\code{hyper_fine} or experiment with free values
 #'@param cores number of cores that will be used
 #'@param proj4  default is EPSG 32632 any valid proj4 string that is assumingly the correct one
-
+#'@param rscale rscale
+#'@param stepoverlap
 
 #'
 #'

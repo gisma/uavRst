@@ -17,6 +17,8 @@ makebNames(rgbi = NA, haratxt = NA, stat = FALSE, morpho = NA,
 \item{morpho}{band names}
 
 \item{edge}{band names}
+
+\item{RGBtrans}{RGBtrans}
 }
 \description{
 create name vector corresponding to the training image stack

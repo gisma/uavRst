@@ -11,6 +11,40 @@ r_in_lidar(input = NULL, output = NULL, file = NULL, method = NULL,
   class_filter = NULL, flags = c("e", "n", "overwrite", "o"))
 }
 \arguments{
+\item{input}{input}
+
+\item{output}{output}
+
+\item{file}{file}
+
+\item{method}{method}
+
+\item{type}{type}
+
+\item{base_raster}{base_raster}
+
+\item{zrange}{zrange}
+
+\item{zscale}{zscale}
+
+\item{intensity_range}{intensity_range}
+
+\item{intensity_scale}{intensity_scale}
+
+\item{percent}{percent}
+
+\item{pth}{pth}
+
+\item{trim}{trim}
+
+\item{resolution}{resolution}
+
+\item{return_filter}{return_filter}
+
+\item{class_filter}{class filter}
+
+\item{flags}{flags}
+
 \item{r.in.lidar}{[-penosgijdv]}
 
 \item{input=name}{LAS input file LiDAR input files in LAS format (*.las or *.laz)}
