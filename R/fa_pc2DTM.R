@@ -27,8 +27,8 @@ if (!isGeneric('fa_pc2DTM')) {
 #'@param cores number of cores that will be used
 #'@param proj4  default is EPSG 32632 any valid proj4 string that is assumingly the correct one
 #'@param giLinks            list of GI tools cli pathes  default is NULL
-#'@param dtm_maxalt
-#'@param projFolder
+#'@param dtm_maxalt dtm maximum altitude
+#'@param projFolder project folder
 
 
 

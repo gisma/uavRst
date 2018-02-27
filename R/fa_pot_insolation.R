@@ -26,8 +26,8 @@ if (!isGeneric('fa_pot_insol')) {
 #'@param pi_hour_range_max = 24.0,
 #'@param pi_hour_step = 1.0, 
 #'@param pi_lumped = 70.0
-#'@param svf_method
-#'@param svf_ndirs
+#'@param svf_method svf_method
+#'@param svf_ndirs svf_ndirs
 
 #'
 #'

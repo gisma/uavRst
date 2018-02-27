@@ -24,10 +24,10 @@ if (!isGeneric('fa_pc2DSM')) {
 #'@param proj4  default is EPSG \code{32632} any valid proj4 string that is assumingly the correct one
 #'@param gisdbase_exist default is  \code{FALSE} switch if gisdbase is created or  linked only
 #'@param giLinks            list of GI tools cli pathes  default is NULL
-#'@param grass_lidar_method
-#'@param grass_lidar_pth
-#'@param dsm_maxalt 
-#'@param path_lastools
+#'@param grass_lidar_method stat method
+#'@param grass_lidar_pth percentile
+#'@param dsm_maxalt  dsm maximum altitude
+#'@param path_lastools path to lastools
 
 
 #'

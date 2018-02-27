@@ -33,9 +33,11 @@ fa_pc2DTM(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
 
 \item{dtm_minalt}{default is \code{0}, minimum DTM altitude accepted}
 
+\item{dtm_maxalt}{dtm maximum altitude}
+
 \item{dtm_area}{default \code{FALSE} generate polygon of valid DTM data}
 
-\item{projFolder}{}
+\item{projFolder}{project folder}
 
 \item{proj4}{default is EPSG 32632 any valid proj4 string that is assumingly the correct one}
 

@@ -15,9 +15,11 @@ fa_pot_insol(x = NULL, svf_radius = 10000, svf_method = 0,
 
 \item{svf_radius}{search radius in map units default is 10000.0, set to zero for ignoring,}
 
+\item{svf_method}{svf_method}
+
 \item{svf_dlevel}{multi scale factor default is 3.0 minimum is 1.25}
 
-\item{svf_ndirs}{}
+\item{svf_ndirs}{svf_ndirs}
 
 \item{pi_solarconst}{(W/m**2) default is 1367.0,}
 

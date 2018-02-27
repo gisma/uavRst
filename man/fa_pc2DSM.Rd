@@ -24,6 +24,10 @@ fa_pc2DSM(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
 
 \item{grid_size}{resolution for raster operations}
 
+\item{grass_lidar_method}{stat method}
+
+\item{grass_lidar_pth}{percentile}
+
 \item{saga_spline_level_max}{default is 9 number ob spline iterations}
 
 \item{otb_gauss_radius}{default is \code{0.5} radius of otb smoothing filter in meter}
@@ -32,7 +36,7 @@ fa_pc2DSM(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
 
 \item{dsm_minalt}{default is \code{0}, minimum DTM altitude accepted}
 
-\item{dsm_maxalt}{}
+\item{dsm_maxalt}{dsm maximum altitude}
 
 \item{dsm_area}{default \code{FALSE} generate polygon of valid DSM data}
 
@@ -40,7 +44,7 @@ fa_pc2DSM(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
 
 \item{gisdbase_exist}{default is  \code{FALSE} switch if gisdbase is created or  linked only}
 
-\item{path_lastools}{}
+\item{path_lastools}{path to lastools}
 
 \item{giLinks}{list of GI tools cli pathes  default is NULL}
 }
