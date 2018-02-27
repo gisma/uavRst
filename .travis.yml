@@ -53,6 +53,7 @@ r_packages:
 sudo: required
 
 dist: trusty
+r_check_args: "--no-tests"
 
 
 before_install:
