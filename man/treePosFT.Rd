@@ -18,7 +18,9 @@ and return the desired radius of the circular search window when centered on tha
 
 \item{minTreeAlt}{Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.}
 
-\item{maxCrownArea}{numeric. A single value of the maximum individual tree crown radius expected. 
+\item{maxCrownArea}{numeric. A single value of the maximum individual tree crown radius expected.}
+
+\item{verbose}{quiet (1)
 height of \code{treePos}.}
 }
 \description{
