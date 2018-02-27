@@ -52,7 +52,7 @@ Imports:
     methods,
     RSAGA,
     reshape2,
-    rgrass7
+    rgrass7 
 Suggests: knitr,
     rmarkdown,
     mapview

@@ -818,7 +818,13 @@ ccodes <- function() {
 .OSMp <- function(extent,key,val,taglist,download, path) {
   # use the download.file function to access online content. note we change already the filename and
   # we also pass the .php extension of the download address
-
+  
+  import::from(osmar, corner_bbox)
+  import::from(osmar, get_osm)
+  import::from(osmar, osmsource_api)
+  import::from(osmar, tags)
+  import::from(osmar, find)
+  import::from(osmar, node)  
   # define the spatial extend of the OSM data we want to retrieve
   osm.extend <- osmar::corner_bbox(extent[1],extent[3],extent[2],extent[4])
 
