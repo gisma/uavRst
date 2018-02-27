@@ -4,13 +4,10 @@
 \alias{xyz2tif}
 \title{Read and Convert xyz DEM/DSM Data as typically provided by the Authorities}
 \usage{
-xyz2tif(xyzFN = NUL, epsgCode = "25832")
+xyz2tif(xyzFN = NULL, epsgCode = "25832")
 }
 \arguments{
 \item{txtFn}{ASCII tect file with xyz values}
-}
-\value{
-a geoT
 }
 \description{
 Read xyz data and generate a raster  \code{Raster*} object.

@@ -16,9 +16,6 @@ latticeCombineGrid(trellis.list, between = list(y = 0.3, x = 0.3),
 
 \item{...}{additional arguments passed to \code{\link{c.trellis}}}
 }
-\value{
-a single lattice plot object
-}
 \description{
 this function combines multiple lattice plot objects in a facetted
 grid. Note that the global plot settings (e.g. xlim, ylim, ...) 
@@ -28,6 +25,7 @@ This is particularly useful when looping over large amounts of data
 using \code{\link{lapply}} (see examples).
 }
 \examples{
+\dontrun{
 #load data
 #Use a probability map assuming high potential for city expansion is just 
 #resulting from proximity to current urban area:
@@ -59,6 +57,7 @@ print(p)
 #change layout
 p2 <- latticeCombineGrid(plist, layout = c(1, 3))
 print(p2)
+}
 
 }
 \seealso{

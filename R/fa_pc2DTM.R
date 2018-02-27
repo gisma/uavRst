@@ -9,7 +9,7 @@ if (!isGeneric('fa_pc2DTM')) {
 #'
 #'@description
 #' Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.  
-#'
+#' fa_pc2DTM basically returns a DTM
 #'@author Chris Reudenbach
 #'
 #'@param lasDir  default is \code{NULL} path  to the laz/las file(s)
@@ -31,7 +31,7 @@ if (!isGeneric('fa_pc2DTM')) {
 #'@param giLinks            list of GI tools cli pathes  default is NULL
 
 
-#'@return fa_pc2DTM basically returns a DTM
+
 #'
 #'
 #'@export fa_pc2DTM

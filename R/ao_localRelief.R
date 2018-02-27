@@ -7,7 +7,7 @@ if (!isGeneric('ao_pc2Hillshade')) {
 #'@title Create a hillshading model l from a UAV generated point cloud 
 #'
 #'@description
-#' Create a hillshading model l from a UAV generated point cloud 
+#' Create a hillshading model l from a UAV generated point cloud. return ao_pc2Hillshade basically returns a  DSM
 #'
 #'@author Chris Reudenbach
 #'
@@ -27,8 +27,6 @@ if (!isGeneric('ao_pc2Hillshade')) {
 #'                   g Logarithmic scaling of the color table\cr
 #'                   f Do not perform histogram equalization on the color table
 
-
-#'@return ao_pc2Hillshade basically returns a  DSM
 #'
 #'
 #'@export ao_pc2Hillshade

@@ -6,11 +6,11 @@ if (!isGeneric('h_read_gpx ')) {
 
 #' Read GPX file
 #' 
-#' Read a GPX file. By default, it reads all possible GPX layers, and only returns shapes for layers that have any features.
+#' Read a GPX file. By default, it reads all possible GPX layers, and only returns shapes for layers that have any features. if the layer has any features a sp object is returned.
 #' 
 #' @param file a GPX filename (including directory)
 #' @param layers vector of GPX layers. Possible options are \code{"waypoints"}, \code{"tracks"}, \code{"routes"}, \code{"track_points"}, \code{"route_points"}. By dedault, all those layers are read.
-#' @return  if the layer has any features a sp object is returned.
+
 #' @export h_read_gpx
 #' @note cloned from tmap
 #' 
@@ -48,9 +48,6 @@ if (!isGeneric('h_xyz2tif')) {
 #' Read xyz data and generate a raster  \code{Raster*} object.  
 #' 
 #' @param txtFn ASCII tect file with xyz values
-
-#' @return 
-#' a geoT
 #' 
 #' 
 

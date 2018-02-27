@@ -12,11 +12,9 @@ h_read_gpx(file, layers = c("waypoints", "tracks", "routes", "track_points",
 
 \item{layers}{vector of GPX layers. Possible options are \code{"waypoints"}, \code{"tracks"}, \code{"routes"}, \code{"track_points"}, \code{"route_points"}. By dedault, all those layers are read.}
 }
-\value{
-if the layer has any features a sp object is returned.
-}
 \description{
 Read a GPX file. By default, it reads all possible GPX layers, and only returns shapes for layers that have any features.
+if the layer has any features a sp object is returned.
 }
 \note{
 cloned from tmap

@@ -12,7 +12,7 @@ require(uavRst)
 # define project folder
 projRootDir <- "~/proj/uav/thesis/finn"
 # lidar data folder
-las_data_dir <- "~/proj/uav/thesis/finn/data/sequoia/"
+las_data_dir <- "~/proj/uav/thesis/finn/data/lidar/"
 # proj subfolders
 projFolders = c("data/","data/ref/","output/","run/","las/")
 # export folders as global
@@ -37,7 +37,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 plot2<-raster::shapefile(paste0(path_data,"ref/plot_UTM.shp"))
 
 # link all CLI stuff
-giLinks<-uavRst:::linkBuilder()
+giLinks<-linkBuilder()
 
 # clean dirs
 
@@ -67,7 +67,7 @@ dtm <- uavRst::fa_pc2DTM(lasDir = las_data_dir,
                          giLinks = giLinks)
 
 # take the rsulting raster files
-dsmR <- dsm[[1]]
+dsmR <- dsm[[1]] 
 dtmR <- dtm[[1]]
 
 # crop them to the test area
@@ -137,7 +137,7 @@ crownsFT <- uavRst::chmSegmentationFT(treePos = tPos,
                         verbose = TRUE)
 
 
-### rLiDAR approach
+### rLiDAR approach 
 crownsRL <- uavRst::chmSegmentationRL(chm=chmR, 
                                     treePos=tPos, 
                                     maxCrownArea=maxCrownArea, 

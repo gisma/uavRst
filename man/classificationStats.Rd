@@ -16,15 +16,13 @@ classificationStats(prd, obs, prob = NULL, plot = FALSE)
 \item{plot}{logical, whether to produce a visualisation of the results.
 Defaults to FALSE}
 }
-\value{
-If \code{plot = FALSE} (the default), a data frame. 
-If \code{plot = TRUE}, a list with components \code{stats} - data frame
-and \code{plot} - a trellis plot object.
-}
 \description{
 this function calculates prediction performance statistics
 between vectors of predicted and observed values. Users may also create 
 a dotplot visualising the results.
+If \code{plot = FALSE} (the default), a data frame. 
+If \code{plot = TRUE}, a list with components \code{stats} - data frame
+and \code{plot} - a trellis plot object
 }
 \examples{
 #create two random vectors with classes "yes" and "no" to simulate a model
@@ -35,7 +33,6 @@ obs_vals <- factor(sample(c("Yes","No"), 50, replace = TRUE),levels=c("Yes","No"
 result <- classificationStats(pred_vals, obs_vals, plot=TRUE)
 result$plot
 result$stats
-
 }
 \seealso{
 \code{\link{regressionStats}}

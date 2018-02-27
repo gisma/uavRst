@@ -11,15 +11,12 @@ latticeCombineLayer(trellis.list, ...)
 
 \item{...}{additional arguments passed to \code{\link{as.layer}}}
 }
-\value{
-a single lattice plot object
-}
 \description{
 this function combines multiple lattice plot objects drawing 
 each as a layer on top of the previous plots. Note that the 
 global plot settings (e.g. xlim, ylim, ...) is taken from the 
 first object. This is particularly useful when looping over large amounts of data
-using \code{\link{lapply}} (see examples).
+using \code{\link{lapply}} (see examples). Returns a single lattice plot object
 }
 \examples{
 library(latticeExtra)

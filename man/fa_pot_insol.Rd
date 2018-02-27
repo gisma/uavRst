@@ -41,11 +41,8 @@ fa_pot_insol(x = NULL, svf_radius = 10000, svf_method = 0,
 
 \item{sfv_ndirs}{number of sectors default is 8.0 minimum is 3.0}
 }
-\value{
-returns all calculations as SAGA Grid for statistical analysis
-}
 \description{
-calculate statitiscs of polygon based raster extraction
+calculate statitiscs of polygon based raster extraction. return returns all calculations as SAGA Grid for statistical analysis
 }
 \examples{
 \dontrun{

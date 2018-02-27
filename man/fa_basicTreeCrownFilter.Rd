@@ -28,11 +28,8 @@ fa_basicTreeCrownFilter(crownFn, minTreeAlt = 10, minCrownArea = 5,
 
 \item{proj4string}{proj4 string}
 }
-\value{
-fa_basicTreeCrownFilterbasically returns SPDF  with the crown polygons and all calculated parameters
-}
 \description{
-applies basic filtering of crown polygons using altitude, area and other optional thresholds
+applies basic filtering of crown polygons using altitude, area and other optional thresholds. return fa_basicTreeCrownFilterbasically returns SPDF  with the crown polygons and all calculated parameters
 }
 \author{
 Chris Reudenbach

@@ -6,7 +6,8 @@
 \title{lists only the desired densityMetrics asc from outputfolder}
 \usage{
 GridMetrics(lasFiles, res, heightClassList, metrics, heightbreak, buffer,
-  cellbuffer, strata, instrata)
+  cellbuffer, strata, instrata,
+  proj4 = "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
 }
 \arguments{
 \item{lasFiles}{default is \code{NULL} list of the las file(s)}
@@ -28,6 +29,8 @@ will be calculated for strata}
 
 \item{instrata}{optional paramter \code{list(c(0,2,5,10,30))}, intensity based metrics
 will be calculated for strata}
+
+\item{proj4}{any valid proj4 string that is assumingly the correct one default is \code{"+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"}}
 
 \item{heightClasses}{default is \code{list(c(0,2,5,10,30))}}
 

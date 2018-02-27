@@ -37,11 +37,8 @@ f Do not perform histogram equalization on the color table}
 
 \item{path_lastools}{directory for the windows lastools}
 }
-\value{
-ao_pc2Hillshade basically returns a  DSM
-}
 \description{
-Create a hillshading model l from a UAV generated point cloud
+Create a hillshading model l from a UAV generated point cloud. return ao_pc2Hillshade basically returns a  DSM
 }
 \examples{
 \dontrun{

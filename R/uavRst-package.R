@@ -25,6 +25,18 @@
 #' @import latticeExtra
 #' @import crayon sf
 #' @importFrom utils modifyList
+#' @importFrom ForestTools SegmentCrowns
+#' @importFrom ForestTools TreeTopFinder
+#' @importFrom itcSegment itcIMG
+#' @importFrom rLiDAR FindTreesCHM
+#' @importFrom rLiDAR ForestCAS
+#' @import pROC
+#' @import lidR
+#' @import methods
+#' @import RSAGA
+#' @import osmar
+#' @import reshape2
+#' @import rgrass7
 #'
 #' @useDynLib uavRst
 #' @keywords package

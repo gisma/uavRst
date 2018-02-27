@@ -42,11 +42,8 @@ fa_pc2DSM(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
 
 \item{dsm_minalt}{default is \code{4000}, maximum DTM altitude accepted}
 }
-\value{
-fa_pc2DSM basically returns a  DSM
-}
 \description{
-Create a Digital Surface Model from a UAV generated point cloud
+Create a Digital Surface Model from a UAV generated point cloud. return fa_pc2DSM basically returns a  DSM
 }
 \examples{
 \dontrun{

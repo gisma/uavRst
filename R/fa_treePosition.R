@@ -7,7 +7,7 @@ if (!isGeneric('treePos')) {
 #'@title Find potential tree positions using a canopy height model
 #'
 #'@description
-#' Find potential tree positions using a canopy height model using a iterative watershed algorithm 
+#' Find potential tree positions using a canopy height model using a iterative watershed algorithm. return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 #'
 #'@author Chris Reudenbach
 #'
@@ -20,9 +20,7 @@ if (!isGeneric('treePos')) {
 #'@param join        default is 2,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff
 #'@param thresh      default is 0.05,  # threshold for join difference in m
 #'@param split default  is TRUE switch if splitting of the polygons is called
-#'
 
-#'@return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 #'
 #'
 #'@export treePos

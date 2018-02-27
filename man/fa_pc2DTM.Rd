@@ -47,11 +47,9 @@ fa_pc2DTM(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
 
 \item{dtm_minalt}{default is \code{4000}, maximum DTM altitude accepted}
 }
-\value{
-fa_pc2DTM basically returns a DTM
-}
 \description{
-Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.
+Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.  
+fa_pc2DTM basically returns a DTM
 }
 \examples{
 \dontrun{

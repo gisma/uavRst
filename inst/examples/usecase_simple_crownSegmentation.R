@@ -60,7 +60,7 @@ setwd(path_run)
 gdal <- link2GI::linkGDAL()
 saga <- link2GI::linkSAGA()
 otb <- link2GI::linkOTB()
-makGlobalVar("path_OTB",otb$pathOTB)
+link2GI::makGlobalVar("path_OTB",otb$pathOTB)
 # ----- calculate DSM DTM & CHM  ---------------------------------------------------
 
 # CREATE dtm & dsm

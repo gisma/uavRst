@@ -6,7 +6,7 @@ rs_basicClassify<-function(rasterLayer=c("b1","b2","b3","RI","CI","BI"),training
   
   files<-paste0(rasterLayer,".tif")
   img<- brick(lapply(files, raster))
-  writeraster(img,filename = "brick.tif",overwrite=TRUE)
+  raster::writeRaster(img,filename = "brick.tif",overwrite=TRUE)
   # read training data
   trainData <- shapefile(trainingfN)
   sp::proj4string(trainData)<- CRS("+proj=longlat +datum=WGS84 +no_defs")
@@ -44,7 +44,7 @@ rs_basicClassify<-function(rasterLayer=c("b1","b2","b3","RI","CI","BI"),training
   beginCluster()
   preds_rf <- clusterR(img, raster::predict, args = list(model = modFit_rf))
   endCluster() 
-  writeRaster(preds_rf,filename = "~/predict2.tif",overwrite=TRUE)
+  raster::writeRaster(preds_rf,filename = "~/predict2.tif",overwrite=TRUE)
   
 }
 
@@ -54,7 +54,7 @@ rs_basicClassify<-function(rasterLayer=c("b1","b2","b3","RI","CI","BI"),training
 gdalsplit<-function(fn){
   directory<-dirname(fn)  
   for (i in seq(1:3)){
-    gdal_translate(fn,paste0(directory,"/b",i,".tif"),b=i)
+    gdalUtils::gdal_translate(fn,paste0(directory,"/b",i,".tif"),b=i)
   }
 }
 
@@ -67,7 +67,7 @@ if (!isGeneric('extractTrainData')) {
 #'@title extracts training data from a raster stack
 #'
 #'@description
-#' extracts training data from a raster stack
+#' extracts training data from a raster stack.return extractTrainData returns a dataframe with all training data
 #'
 #'@author Chris Reudenbach
 #'
@@ -76,7 +76,6 @@ if (!isGeneric('extractTrainData')) {
 #'@param trainDataFn default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file
 #'
 
-#'@return extractTrainData returns a dataframe with all training data
 #'
 #'@export extractTrainData
 #'@examples
@@ -247,7 +246,7 @@ predictRGB <- function(imageFiles=NULL,
 #' 
 #' @export ffsTrainModel
 #' @examples  
-#' #' \dontrun{
+#' \dontrun{
 #' result<-  ffsTrainModel(trainingDF =trainingDF,
 #'                      predictors   = c("R","G","B"),
 #'                      response     = "ID",
@@ -323,7 +322,7 @@ ffsTrainModel<-function(   trainingDF   = NULL,
   # take resulting predictors 
   predictors <- data_train[,names(ffs_model$trainingData)[-length(names(ffs_model$trainingData))]]
   # and run final tuning 
-  model_final <- train(predictors,
+  model_final <- caret::train(predictors,
                        data_train[,response],
                        method = "rf",
                        metric=metric,

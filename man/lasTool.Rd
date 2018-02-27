@@ -35,11 +35,8 @@ lasTool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
 
 \item{path_lastools}{directory for the windows lastools}
 }
-\value{
-lasR basically returns a DTM
-}
 \description{
-using lasLib from R
+using lasLib from R. returns lasR basically returns a DTM
 }
 \examples{
 \dontrun{

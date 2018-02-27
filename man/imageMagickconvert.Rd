@@ -24,7 +24,7 @@ Calculates color space transformations of the images
 Imagemagick is used for the calculation of the transformations. Please provide a valid Tiff file
 }
 \examples{
-#' \dontrun{
+\dontrun{
 url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
 res <- curl::curl_download(url, "testdata.zip")
 unzip(res,junkpaths = TRUE,overwrite = TRUE)

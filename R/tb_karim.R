@@ -7,10 +7,10 @@ if (!isGeneric('h_read_gpx ')) {
 #' Read GPX file
 #' 
 #' Read a GPX file. By default, it reads all possible GPX layers, and only returns shapes for layers that have any features.
-#' 
+#' if the layer has any features a sp object is returned.
 #' @param file a GPX filename (including directory)
 #' @param layers vector of GPX layers. Possible options are \code{"waypoints"}, \code{"tracks"}, \code{"routes"}, \code{"track_points"}, \code{"route_points"}. By dedault, all those layers are read.
-#' @return  if the layer has any features a sp object is returned.
+
 #' @export h_read_gpx
 #' @note cloned from tmap
 #' 
@@ -51,8 +51,6 @@ if (!isGeneric('xyz2tif')) {
 #' 
 #' @param txtFn ASCII tect file with xyz values
 
-#' @return 
-#' a geoT
 #' 
 #' 
 
@@ -77,7 +75,7 @@ if (!isGeneric('xyz2tif')) {
 #' @export xyz2tif
 #' 
 
-xyz2tif <- function(xyzFN=NUL,  epsgCode ="25832"){
+xyz2tif <- function(xyzFN=NULL,  epsgCode ="25832"){
   # read data 
   xyz<-data.table::fread(xyzFN)
   cat("write it to",paste0(dirname(xyzFN),"/",tools::file_path_sans_ext(basename(xyzFN)),".tif"),"\n")
@@ -230,7 +228,7 @@ extractMaxPosPoly <- function(x,lN, poly_split=TRUE){
   
   # read vector input data the sf way
   sf_dcs <- sf::st_read(paste0(path_run,lN,".shp"),quiet = TRUE)
-  dcs <- as(sf_dcs, "Spatial")
+  dcs <-  methods::as(sf_dcs, "Spatial")
   
   # retrieve unique NAME 
   ids <- unique(dcs@data$NAME)
@@ -324,7 +322,7 @@ extractMaxPosPoly <- function(x,lN, poly_split=TRUE){
 #' @export
 #' 
 h_grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
-  linkGRASS7()
+  link2GI::linkGRASS7()
   rgrass7::execGRASS("r.out.gdal",
                      flags     = c("c","overwrite","quiet"),
                      createopt = "TFW=YES,COMPRESS=LZW",
@@ -418,7 +416,7 @@ h_fun_whichmax <- function(mask,value) {
 #'calculate decriptive stats of raster values of underlying a polygon
 #'
 #'@description
-#' calculate statitiscs of polygon based raster extraction
+#' calculate statitiscs of polygon based raster extraction. returns a spatialpolygon dataframe containing decriptive statistics
 #'
 #'@author Chris Reudenbach
 #'
@@ -434,7 +432,7 @@ h_fun_whichmax <- function(mask,value) {
 #'@param stddev 0 1 switch
 #'@param quantile number of quantile
 #'
-#'@return returns a spatialpolygon dataframe containing decriptive statistics
+
 #'
 #'
 #'@export xpolystat

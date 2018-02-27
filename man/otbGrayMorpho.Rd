@@ -2,7 +2,7 @@
 % Please edit documentation in R/rs_InTex.R
 \name{otbGrayMorpho}
 \alias{otbGrayMorpho}
-\title{Calculates Gray scale morphological operations for a given kernel size}
+\title{Calculates Gray scale morphological operations for a given kernel size.}
 \usage{
 otbGrayMorpho(input = NULL, out = "morpho", ram = "8192",
   filter = "dilate", structype = "ball", structype.ball.xradius = 5,
@@ -30,17 +30,14 @@ otbGrayMorpho(input = NULL, out = "morpho", ram = "8192",
 
 \item{verbose}{switch for system messages default is FALSE}
 }
-\value{
-list of geotiffs containing thelocal statistics for each channel
-}
 \description{
-Calculates Gray scale morphological operations for a given kernel size
+Calculates Gray scale morphological operations for a given kernel size. return list of geotiffs containing thelocal statistics for each channel
 }
 \note{
 the otb is used for filtering. please provide a GeoTiff file
 }
 \examples{
-#' \dontrun{
+\dontrun{
 url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
 res <- curl::curl_download(url, "testdata.zip")
 unzip(res,junkpaths = TRUE,overwrite = TRUE)

@@ -29,7 +29,7 @@ Calculates local statistics for a given kernel size
 the otb is used for the calculation of the statistics. Please provide a GeoTiff file
 }
 \examples{
-#' \dontrun{
+\dontrun{
 url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
 res <- curl::curl_download(url, "testdata.zip")
 unzip(res,junkpaths = TRUE,overwrite = TRUE)

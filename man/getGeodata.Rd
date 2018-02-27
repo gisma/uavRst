@@ -24,9 +24,6 @@ getGeodata(name = "GADM", download = TRUE, path = "", ...)
 
 \item{...}{Additional required (!) parameters. These are data set specific.}
 }
-\value{
-A spatial object (Raster* or Spatial*)
-}
 \description{
 Robert J. Hijmans getData() from the raster package is well known and highly used. The only disadvantage is that it currently doesn't support a bunch of great additional and/or improved/newer data sets.  getGeodata provides some more actual or better choices for climate and DEM data as well as some easy to use interfaces to OSM and other crowd sourced data compilations.
 The main issue of the functionis to offer an easy to use access to a wider range of free to access data sets that may improve significantly the quality of typical ecological and other spatial analysis approaches by an straightforward utilization of data.

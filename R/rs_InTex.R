@@ -37,7 +37,7 @@
 #' 
 #' @export textureVariables
 #' @examples 
-#' #' \dontrun{
+#' \dontrun{
 #' ## example on how to calculate texture from a list of channels
 #' 
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
@@ -130,7 +130,8 @@ if ( !isGeneric("otbTexturesHaralick") ) {
     standardGeneric("otbTexturesHaralick"))
 }
 
-#' OTB wrapper for Haralick's simple, advanced and higher order texture features
+#' OTB wrapper for Haralick's simple, advanced and higher order texture features. return A list of RasterStacks containing the texture parameters for each 
+#' combination of channel and filter
 #'@description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image.
 #' @param x A \code{\link{Raster*}} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands
 #' @param output_name string pattern vor individual naming of the output file(s)
@@ -145,8 +146,7 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 #' @param ram reserved memory in MB
 #' @param return_raster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
-#' @return A list of RasterStacks containing the texture parameters for each 
-#' combination of channel and filter  
+  
 #' @references Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.
 #' IEEE Transactions on Systems, Man and Cybernetics. SMC-3(6):610-620.\cr
 #' \href{https://www.orfeo-toolbox.org/packages/OTBSoftwareGuide.pdf}{Orfeo Toolbox Sofware Guide, 2016}\cr
@@ -473,7 +473,7 @@ setMethod("otbTexturesHaralick",
 #' @author Chris Reudenbach
 #' @export otbLocalStat
 #' @examples 
-#' #' \dontrun{
+#' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
@@ -520,8 +520,9 @@ otbLocalStat<- function(input=NULL,
 }
 
 
-#' Calculates edges for a given kernel size
-#' 
+#' Calculates edges for a given kernel size. 
+#' @description Calculates edges for a given kernel size. return list of geotiffs containing thelocal statistics for each channel 
+
 #' @note the otb is used for filtering. please provide a GeoTiff file
 #' @param input of GeoTiff containing 1 ore more gray value band(s)
 #' @param out the output mono band image containing the edge features
@@ -532,11 +533,11 @@ otbLocalStat<- function(input=NULL,
 #' @param ram reserved memory in MB
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
-#' @return list of geotiffs containing thelocal statistics for each channel 
+
 #' @author Chris Reudenbach
 #' @export otbEdge
 #' @examples 
-#' #' \dontrun{
+#' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
@@ -588,8 +589,8 @@ otbEdge<- function(input=NULL,
   return(retStack)
 }
 
-#' Calculates Gray scale morphological operations for a given kernel size
-#' 
+#' Calculates Gray scale morphological operations for a given kernel size. 
+#' @description Calculates Gray scale morphological operations for a given kernel size. return list of geotiffs containing thelocal statistics for each channel  
 #' @note the otb is used for filtering. please provide a GeoTiff file
 #' @param input of GeoTiff containing 1 ore more gray value bands
 #' @param out the output mono band image containing the edge features
@@ -601,11 +602,11 @@ otbEdge<- function(input=NULL,
 #' @param ram reserved memory in MB
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
-#' @return list of geotiffs containing thelocal statistics for each channel 
+
 #' @author Chris Reudenbach
 #' @export otbGrayMorpho
 #' @examples 
-#' #' \dontrun{
+#' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
@@ -667,7 +668,7 @@ otbGrayMorpho<- function(input=NULL,
 #' @param item index to be calculated default are c("slope", "aspect","TRI","TPI","Roughness")
 #' @export gdalDEMParam
 #' @examples 
-#' #' \dontrun{
+#' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
@@ -943,7 +944,7 @@ rgbIndices <- function(red,green,blue,
 #' @param verbose be quiet
 #' @export imageMagickconvert
 #' @examples 
-#' #' \dontrun{
+#' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)

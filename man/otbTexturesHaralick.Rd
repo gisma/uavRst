@@ -7,7 +7,8 @@
 \alias{otbTexturesHaralick,RasterLayer-method}
 \alias{otbTexturesHaralick,RasterStack-method}
 \alias{otbTexturesHaralick,character-method}
-\title{OTB wrapper for Haralick's simple, advanced and higher order texture features}
+\title{OTB wrapper for Haralick's simple, advanced and higher order texture features. return A list of RasterStacks containing the texture parameters for each 
+combination of channel and filter}
 \usage{
 \S4method{otbTexturesHaralick}{RasterBrick}(x, texture = "all",
   path_output = NULL, return_raster = TRUE, parameters.xyrad = list(c(1,
@@ -56,10 +57,6 @@
 \item{n_grey}{Number of grey values.}
 
 \item{parallel}{A logical value indicating whether parameters are calculated parallely or not}
-}
-\value{
-A list of RasterStacks containing the texture parameters for each 
-combination of channel and filter
 }
 \description{
 OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image.

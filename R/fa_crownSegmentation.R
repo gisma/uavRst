@@ -11,7 +11,7 @@
 #' All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 #' height of \code{treePos}.
 #'@param minTreeAltParam default is "chmQ20"
-#' @param chm Canopy height model in \link[raster]{raster} format. Should be the same that was used to create
+#'@param chm Canopy height model in \link[raster]{raster} format. Should be the same that was used to create
 #' the input for \code{treePos}.
 #'@param leafsize       integer. bin size of grey value sampling range from 1 to 256 
 #'@param normalize      integer.  logical switch if data will be normalized (1) 
@@ -239,7 +239,7 @@ chmSegmentationRL <- function(treePos = NULL,
                             loc = xyz, 
                             maxcrown = maxcrown, 
                             exclusion =exclusion)
-  canopy[[1]]@proj4string <- chmR@crs
+  canopy[[1]]@proj4string <- chm@crs
   # Writing Shapefile
   rgdal::writeOGR(obj = canopy[[1]],
                   dsn = paste0(path_output, "crowns_LR"),
@@ -387,7 +387,7 @@ chmSegmentationITC <- function(chm =NULL,
 #'}
 #'@export
 #'
-chmSegmentationFU=function(lasDir =NULL,
+chmSegmentationFU <- function(lasDir =NULL,
                            grid_size = 0.5,
                            fusionPercentile=37,
                            movingWin=3,
@@ -441,14 +441,14 @@ chmSegmentationFU=function(lasDir =NULL,
     # calculate extents etc...
     
     #--> Fusion catalog if not allready exists
-    if (is.null(ext)){
+    if (is.null(extent)){
       command<-fusionCmd
       command<-paste0(command, "catalog.exe")
       command<-paste0(command," ", lasFile )
       command<-paste0(command," ", lasFile,".html"   )
       system(command)
       #--> extract extent info
-      info <- read.csv(paste0(lasFile,".csv"))
+      info <- utils::read.csv(paste0(lasFile,".csv"))
       #fix extent
       info2<-missingExtents(info)
       #TODO  fix error in las files if (as.numeric(info[[2]][3])) fixLas()

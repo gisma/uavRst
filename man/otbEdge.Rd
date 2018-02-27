@@ -2,7 +2,7 @@
 % Please edit documentation in R/rs_InTex.R
 \name{otbEdge}
 \alias{otbEdge}
-\title{Calculates edges for a given kernel size}
+\title{Calculates edges for a given kernel size.}
 \usage{
 otbEdge(input = NULL, out = "edge", ram = "8192", filter = "gradient",
   filter.touzi.xradius = 1, filter.touzi.yradius = 1, channel = NULL,
@@ -27,17 +27,14 @@ otbEdge(input = NULL, out = "edge", ram = "8192", filter = "gradient",
 
 \item{verbose}{switch for system messages default is FALSE}
 }
-\value{
-list of geotiffs containing thelocal statistics for each channel
-}
 \description{
-Calculates edges for a given kernel size
+Calculates edges for a given kernel size. return list of geotiffs containing thelocal statistics for each channel
 }
 \note{
 the otb is used for filtering. please provide a GeoTiff file
 }
 \examples{
-#' \dontrun{
+\dontrun{
 url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
 res <- curl::curl_download(url, "testdata.zip")
 unzip(res,junkpaths = TRUE,overwrite = TRUE)

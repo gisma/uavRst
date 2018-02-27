@@ -1,7 +1,7 @@
 #' lasR Using a bit of lastools from R
 #'
 #'@description
-#' using lasLib from R
+#' using lasLib from R. returns lasR basically returns a DTM
 #'
 #'@author Chris Reudenbach
 #'@param tool default is \code{lasinfo}   additionally xou may choose las2las, lasmerge, lasground_new, las2dem, las2txt
@@ -17,7 +17,7 @@
 #'@param cores number of cores that will be used
 #'@param proj4  default is EPSG 32632 any valid proj4 string that is assumingly the correct one
 
-#'@return lasR basically returns a DTM
+
 #'
 #'
 #'@export
@@ -108,7 +108,7 @@ lasTool <- function(  tool="lasinfo",
                   ignore.stderr = TRUE
     )
     # get extent of merged file
-    sp_param <- uavRst:::getSpatialLASInfo(lasinfo,paste0(path_run,"full_point_cloud.las"))
+    sp_param <- getSpatialLASInfo(lasinfo,paste0(path_run,"full_point_cloud.las"))
 
     # add proj4 string manually
     sp_param[5] <- proj4

@@ -7,7 +7,7 @@ if (!isGeneric('fa_tree_segementation')) {
 #'@title Tree segementation based on a CHM
 #'
 #'@description
-#' Tree segementation based on a CHM
+#' Tree segementation based on a CHM basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 #'
 #'@author Chris Reudenbach
 #'
@@ -28,7 +28,7 @@ if (!isGeneric('fa_tree_segementation')) {
 #'@param majority_radius default is 5.000
 #'@param seeding default  is TRUE switch if seeding is called
 
-#'@return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
+#' 
 #'
 #'
 #'@export fa_tree_segementation

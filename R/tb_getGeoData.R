@@ -27,8 +27,6 @@ if (!isGeneric('getGeodata')) {
 #'@param ... Additional required (!) parameters. These are data set specific. 
 #'@author Robert J. Hijmans, Chris Reudenbach \email{giswerk@@gis-ma.org}
 #'
-#'@return A spatial object (Raster* or Spatial*)
-#'
 #'@section Well Known Data Sets:
 #'\subsection{GADM}{
 #'

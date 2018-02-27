@@ -52,7 +52,7 @@ For the uav based RGB/NIR imagery it provides an optimized preconfiguration for 
 }
 \examples{
  
-#' \dontrun{
+\dontrun{
 result<-  ffsTrainModel(trainingDF =trainingDF,
                      predictors   = c("R","G","B"),
                      response     = "ID",

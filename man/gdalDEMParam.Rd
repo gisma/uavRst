@@ -18,7 +18,7 @@ calculate gdal derived DEM params
 please provide a GeoTiff file
 }
 \examples{
-#' \dontrun{
+\dontrun{
 url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
 res <- curl::curl_download(url, "testdata.zip")
 unzip(res,junkpaths = TRUE,overwrite = TRUE)

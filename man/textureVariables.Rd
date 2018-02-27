@@ -53,7 +53,7 @@ glcm<-> haralick c("mean"  advanced1, "variance" advanced2 , "homogeneity"simple
 using stats will cover mean and variance while dissimilarity is highly correlated to  Homogeneity data. For a nice introduction look at: \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Hallbey}
 }
 \examples{
-#' \dontrun{
+\dontrun{
 ## example on how to calculate texture from a list of channels
 
 url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"

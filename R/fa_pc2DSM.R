@@ -7,7 +7,7 @@ if (!isGeneric('fa_pc2DSM')) {
 #'@title Create a Digital Surface Model from a UAV generated point cloud 
 #'
 #'@description
-#' Create a Digital Surface Model from a UAV generated point cloud 
+#' Create a Digital Surface Model from a UAV generated point cloud. return fa_pc2DSM basically returns a  DSM
 #'
 #'@author Chris Reudenbach
 #'
@@ -26,8 +26,6 @@ if (!isGeneric('fa_pc2DSM')) {
 #'@param gisdbase_exist default is  \code{FALSE} switch if gisdbase is created or  linked only
 #'@param giLinks            list of GI tools cli pathes  default is NULL
 
-
-#'@return fa_pc2DSM basically returns a  DSM
 #'
 #'
 #'@export fa_pc2DSM
@@ -174,7 +172,7 @@ fa_pc2DSM <- function(lasDir = NULL,
   if (type_smooth == "otb_gauss") {
     otb_gauss_radius <- as.character(as.numeric(otb_gauss_radius)/as.numeric(grid_size))
     otb <- link2GI::linkOTB()
-    link2GI:::makGlobalVar("path_OTB",otb$pathOTB)
+    link2GI::makGlobalVar("path_OTB",otb$pathOTB)
     module  <- "otbcli_Smoothing"
     command <- paste0(path_OTB, module)
     command <- paste0(command, " -in ",path_output,"filled_point_cloud_dsm.tif")

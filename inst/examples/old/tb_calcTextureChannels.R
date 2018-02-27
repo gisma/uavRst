@@ -33,7 +33,7 @@
 #' GLCM Correlation shows  r<0.5 with any other measure.
 #' @export textureVariables
 #' @examples 
-#' #' \dontrun{
+#' \dontrun{
 #' ## example on how to calculate texture from a list of channels
 #' 
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
@@ -88,7 +88,7 @@ textureVariables <- function(x,
       if (parallel){
         glcm_filter[[j]]<-foreach::foreach(i=nrasters,
                                   .packages= c("glcm","raster"))%dopar%{
-                                    glcm(x[[i]], 
+                                    glcm::glcm(x[[i]], 
                                          window = c(kernelSize[j], kernelSize[j]), 
                                          shift=shift,
                                          statistics=stats,n_grey=n_grey,
@@ -98,7 +98,7 @@ textureVariables <- function(x,
       } else {
         glcm_filter[[j]]<-foreach::foreach(i=nrasters,
                                   .packages= c("glcm","raster"))%do%{
-                                    raster::mask(glcm(x[[i]], 
+                                    raster::mask(glcm::glcm(x[[i]], 
                                               window = c(kernelSize[j], kernelSize[j]), 
                                               shift=shift,
                                               statistics=stats,n_grey=n_grey,
@@ -108,7 +108,7 @@ textureVariables <- function(x,
       }
       names(glcm_filter[[j]])<-names(x)[nrasters]
     } else {
-      glcm_filter[[j]]<-raster::mask(glcm(x, window = c(kernelSize[j], kernelSize[j]), 
+      glcm_filter[[j]]<-raster::mask(glcm::glcm(x, window = c(kernelSize[j], kernelSize[j]), 
                                   shift=shift,
                                   statistics=stats,n_grey=n_grey,
                                   min_x=min_x,max_x=max_x,
@@ -127,7 +127,8 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 }
 
 #' OTB wrapper for Haralick's simple, advanced and higher order texture features
-#'@description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image.
+#'@description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image. A list of RasterStacks containing the texture parameters for each 
+#' combination of channel and filter  
 #' @param x A \code{\link{Raster*}} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands
 #' @param output_name string pattern vor individual naming of the output file(s)
 #' @param parameters.xyrad list with the x and y radius in pixel indicating the kernel sizes for which the textures are calculated
@@ -141,8 +142,7 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 #' @param ram reserved memory in MB
 #' @param return_raster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
-#' @return A list of RasterStacks containing the texture parameters for each 
-#' combination of channel and filter  
+
 #' @references Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.
 #' IEEE Transactions on Systems, Man and Cybernetics. SMC-3(6):610-620.\cr
 #' \href{https://www.orfeo-toolbox.org/packages/OTBSoftwareGuide.pdf}{Orfeo Toolbox Sofware Guide, 2016}\cr
@@ -466,7 +466,7 @@ setMethod("otbTexturesHaralick",
 #' @author Chris Reudenbach
 #' @export otbLocalStat
 #' @examples 
-#' #' \dontrun{
+#' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
@@ -514,7 +514,7 @@ otbLocalStat<- function(input=NULL,
 
 
 #' Calculates edges for a given kernel size
-#' 
+#' @description list of geotiffs containing thelocal statistics for each channel
 #' @note the otb is used for filtering. please provide a GeoTiff file
 #' @param input of GeoTiff containing 1 ore more gray value band(s)
 #' @param out the output mono band image containing the edge features
@@ -525,11 +525,10 @@ otbLocalStat<- function(input=NULL,
 #' @param ram reserved memory in MB
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
-#' @return list of geotiffs containing thelocal statistics for each channel 
 #' @author Chris Reudenbach
 #' @export otbEdge
 #' @examples 
-#' #' \dontrun{
+#' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
@@ -594,11 +593,11 @@ otbEdge<- function(input=NULL,
 #' @param ram reserved memory in MB
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
-#' @return list of geotiffs containing thelocal statistics for each channel 
+#' @description list of geotiffs containing thelocal statistics for each channel
 #' @author Chris Reudenbach
 #' @export otbGrayMorpho
 #' @examples 
-#' #' \dontrun{
+#' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)

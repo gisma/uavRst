@@ -4,17 +4,14 @@
 #' this function calculates prediction performance statistics
 #' between vectors of predicted and observed values. Users may also create 
 #' a dotplot visualising the results.
-#' 
+#' If \code{plot = FALSE} (the default), a data frame. 
+#' If \code{plot = TRUE}, a list with components \code{stats} - data frame
+#' and \code{plot} - a trellis plot object
 #' @param prd factor vector of predicted values with two levels
 #' @param obs factor vector of observed values with two levels
 #' @param prob optional. Predicted probabilities for the first class
 #' @param plot logical, whether to produce a visualisation of the results.
 #' Defaults to FALSE
-#' 
-#' @return
-#' If \code{plot = FALSE} (the default), a data frame. 
-#' If \code{plot = TRUE}, a list with components \code{stats} - data frame
-#' and \code{plot} - a trellis plot object.
 #' 
 #' @author
 #' Hanna Meyer and Tim Appelhans
@@ -28,7 +25,7 @@
 #' result <- classificationStats(pred_vals, obs_vals, plot=TRUE)
 #' result$plot
 #' result$stats
-#' 
+#' @import pROC
 #' @export classificationStats
 #' @aliases classificationStats
 #' @seealso \code{\link{regressionStats}}
@@ -50,8 +47,7 @@ classificationStats <- function(prd, obs, prob=NULL, plot=FALSE) {
   HSS <- (TP*TN-FP*FN)/(((TP+FN)*(FN+TN)+(TP+FP)*(FP+TN))/2)
   HKD <- (TP/(TP+FN))-(FP/(FP+TN))
   if (!is.null(prob)){
-    require(pROC)
-    AUC <- as.numeric(roc(obs,prob)$auc)
+    AUC <- as.numeric(pROC::roc(obs,prob)$auc)
     df_all <- data.frame(bias,PFD,FAR,POD,CSI,ETS,HSS,HKD,AUC)
     names(df_all) <- c("Bias","PFD","FAR","POD","CSI","ETS","HSS","HKD","AUC")
   }else{
@@ -210,13 +206,13 @@ envinmr.theme <- function(win.fontfamily = NULL,
 #' each as a layer on top of the previous plots. Note that the 
 #' global plot settings (e.g. xlim, ylim, ...) is taken from the 
 #' first object. This is particularly useful when looping over large amounts of data
-#' using \code{\link{lapply}} (see examples).
+#' using \code{\link{lapply}} (see examples). Returns a single lattice plot object
 #' 
 #' @param trellis.list a list containing lattice plot objects
 #' @param ... additional arguments passed to \code{\link{as.layer}}
 #' 
-#' @return
-#' a single lattice plot object
+
+
 #' 
 #' @author
 #' Tim Appelhans
@@ -268,8 +264,8 @@ latticeCombineLayer <- function(trellis.list, ...) {
 #' @param as.table if TRUE (default) drawing is top left to bottom right
 #' @param ... additional arguments passed to \code{\link{c.trellis}}
 #' 
-#' @return
-#' a single lattice plot object
+
+
 #' 
 #' @author
 #' Tim Appelhans
@@ -278,6 +274,7 @@ latticeCombineLayer <- function(trellis.list, ...) {
 #' \code{\link{c.trellis}}
 #' 
 #' @examples
+#'\dontrun{
 #' #load data
 #' #Use a probability map assuming high potential for city expansion is just 
 #' #resulting from proximity to current urban area:
@@ -309,6 +306,7 @@ latticeCombineLayer <- function(trellis.list, ...) {
 #' #change layout
 #' p2 <- latticeCombineGrid(plist, layout = c(1, 3))
 #' print(p2)
+#' }
 #' 
 #' @export latticeCombineGrid
 #' @aliases latticeCombineGrid

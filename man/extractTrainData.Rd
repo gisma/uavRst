@@ -14,11 +14,8 @@ extractTrainData(rasterStack = NULL, trainPlots = NULL, bnames = NULL,
 
 \item{trainDataFn}{default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file}
 }
-\value{
-extractTrainData returns a dataframe with all training data
-}
 \description{
-extracts training data from a raster stack
+extracts training data from a raster stack.return extractTrainData returns a dataframe with all training data
 }
 \examples{
 \dontrun{

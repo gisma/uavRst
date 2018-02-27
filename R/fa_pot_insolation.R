@@ -7,7 +7,7 @@ if (!isGeneric('fa_pot_insol')) {
 #'@title calculate statitiscs of polygon based raster extraction
 #'
 #'@description
-#' calculate statitiscs of polygon based raster extraction
+#' calculate statitiscs of polygon based raster extraction. return returns all calculations as SAGA Grid for statistical analysis
 #'
 #'@author Chris Reudenbach
 #'
@@ -27,7 +27,6 @@ if (!isGeneric('fa_pot_insol')) {
 #'@param pi_hour_step = 1.0, 
 #'@param pi_lumped = 70.0
 
-#'@return returns all calculations as SAGA Grid for statistical analysis
 #'
 #'
 #'@export fa_pot_insol

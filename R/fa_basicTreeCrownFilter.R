@@ -7,7 +7,7 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 #'@title basic filtering of crown polygons using altitude, area and other optional thresholds 
 #'
 #'@description
-#' applies basic filtering of crown polygons using altitude, area and other optional thresholds 
+#' applies basic filtering of crown polygons using altitude, area and other optional thresholds. return fa_basicTreeCrownFilterbasically returns SPDF  with the crown polygons and all calculated parameters
 #'
 
 #'@author Chris Reudenbach
@@ -23,10 +23,6 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 #'@param opt threshold value for optional filter default is NULL
 #'@param proj4string proj4 string 
 
-
-
-
-#'@return fa_basicTreeCrownFilterbasically returns SPDF  with the crown polygons and all calculated parameters
 #'
 #'
 #'@export fa_basicTreeCrownFilter

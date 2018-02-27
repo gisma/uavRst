@@ -63,9 +63,9 @@ projfolder<-file.path(rootDir,projDir,.Platform$file.sep,fsep = .Platform$file.s
 res<- sapply(list.files(pattern="[.]R$",path=paste0(projfolder,"/fun"),full.names=TRUE),FUN=source)
 
 # workaround to use uavRst
-makGlobalVar("path_run",gi_run)
-makGlobalVar("path_tmp",gi_run)
-makGlobalVar("path_output",gi_output)
+link2GI::makGlobalVar("path_run",gi_run)
+link2GI::makGlobalVar("path_tmp",gi_run)
+link2GI::makGlobalVar("path_output",gi_output)
 
 # delete run dir
 unlink(paste0(path_run,"*"), force = TRUE)

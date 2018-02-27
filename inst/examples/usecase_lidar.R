@@ -32,7 +32,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          path_prefix = path_prefix)
 
 # link all CLI stuff
-giLinks<-uavRst:::linkBuilder()
+giLinks<-linkBuilder()
 # expand las folder
 las_data_dir<-path.expand(las_data_dir)
 
@@ -87,8 +87,8 @@ classFilter<-13
 
 # list of height pairs as used for vertical slicing the las data
 zrList <- list(c(0,5,10,15,20,50))
-zrange<- uavRst:::makenames(zrList)[[2]]
-zrnames<- uavRst:::makenames(zrList)[[1]]
+zrange<- makenames(zrList)[[2]]
+zrnames<- makenames(zrList)[[1]]
 
 # list of statistic calculation for more info see r.in.lidar help
 statList <- list("max", "median","range")
@@ -117,12 +117,12 @@ m_vdr <- m_fhd <-vdr <- fhd <- zrLayer <- statLayer <- hdl1<- hdl2<- gapl<- list
 for (j in 1:(length(lasfiles))) {
   
   # get extent of the lasfile
-  ext<-uavRst:::lasTool(lasFile= paste0(las_data_dir, lasfiles[j]))
+  ext<-lasTool(lasFile= paste0(las_data_dir, lasfiles[j]))
   # create a corresponding GRASS location
   link2GI::linkGRASS7(gisdbase = path_data, location = "las",spatial_params = c(ext[2],ext[1],ext[4],ext[3],proj4),resolution = gridsize,returnPaths = T,gisdbase_exist = T)
   
   # create a straightforward dem 
-  uavRst:::r_in_lidar(input = paste0(las_data_dir,lasfiles[j]), 
+  r_in_lidar(input = paste0(las_data_dir,lasfiles[j]), 
                       output = paste0("dem_",j),
                       method = "min",
                       resolution = gridsize,
@@ -132,14 +132,14 @@ for (j in 1:(length(lasfiles))) {
   # write GRASS to TIF
   raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("dem_",j))),paste0(path_data,"dem_",j), overwrite=TRUE,format="GTiff")
   # fill data gaps 
-  uavRst:::fillGaps(path_data,paste0("dem_",j))
+  fillGaps(path_data,paste0("dem_",j))
   
   # for each height slice do then
   for ( i in 1:(length(zrnames))) {
     
     # slice las file according to height breaks and reduce the altitude by subtracting the base raster
     # NOTE the v flag allows only for valid points
-    uavRst:::r_in_lidar(input = paste0(las_data_dir,lasfiles[j]), 
+    r_in_lidar(input = paste0(las_data_dir,lasfiles[j]), 
                         output = zrnames[i],
                         method = "n",
                         base_raster = paste0("dem_",j),
@@ -183,9 +183,9 @@ for (j in 1:(length(lasfiles))) {
   
   cat(": starting calculation of indices...\n")
   # calculate FHD foliage height density  -> diversityindeces.R
-  fhd[[j]]<- uavRst:::fun_fhd(zrLayer[[j]])
+  fhd[[j]]<- fun_fhd(zrLayer[[j]])
   
   # calculate VDR vertical density ratio -> diversityindeces.R
-  vdr[[j]]<- uavRst:::fun_vdr(statLayer[[j]][[3]],statLayer[[j]][[2]])
+  vdr[[j]]<- fun_vdr(statLayer[[j]][[3]],statLayer[[j]][[2]])
 }
 

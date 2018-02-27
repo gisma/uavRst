@@ -30,11 +30,8 @@ xpolystat(x = NULL, spdf = NULL, count = 1, min = 1, max = 1,
 
 \item{quantile}{number of quantile}
 }
-\value{
-returns a spatialpolygon dataframe containing decriptive statistics
-}
 \description{
-calculate statitiscs of polygon based raster extraction
+calculate statitiscs of polygon based raster extraction. returns a spatialpolygon dataframe containing decriptive statistics
 }
 \examples{
 \dontrun{
