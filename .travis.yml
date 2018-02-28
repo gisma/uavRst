@@ -4,8 +4,7 @@ sudo: required
 warnings_are_errors: false
 
 r_packages:
-  -lidR  
-  - covr
+  - lidR  
   - stringr
   - foreach
   - sp
@@ -19,7 +18,6 @@ r_packages:
   - geosphere
   - tools
   - maptools
-  - mapview
   - log4r
   - caret
   - igraph
