@@ -1,152 +1,52 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r
 sudo: required
- 
+warnings_are_errors: false
+
+r_packages:
+-lidR  
 
 r_build_args: "--no-build-vignettes"
 r_check_args: "--no-build-vignettes --as-cran"
 
-warnings_are_errors: false
 
-
-# DO NOT CHANGE THE CODE BELOW
-before_install: R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); tic::prepare_all_stages(); tic::before_install()'
-install: R -q -e 'tic::install()'
-after_install: R -q -e 'tic::after_install()'
-before_script: R -q -e 'tic::before_script()'
-script: R -q -e 'tic::script()'
-after_success: R -q -e 'tic::after_success()'
-after_failure: R -q -e 'tic::after_failure()'
-
-matrix:
-  allow_failures: 
-    - env: DEPLOY=true LTR_Linux=true
-  include:
-    # deploy pkgdown docs
-    - os: linux
-      dist: trusty
-      sudo: required
-      latex: false
-      # jdk: oraclejdk9
-      r_check_args: "--no-tests"
-      env: DEPLOY=true LTR_Linux=true
-      before_deploy: R -q -e 'tic::before_deploy();remotes::install_github("pat-s/pkgdown")'
-      deploy:
-          provider: script
-          script: R -q -e 'tic::deploy()'
-          on:
-            all_branches: true
-      after_deploy: R -q -e 'tic::after_deploy()'
-      after_script: R -q -e 'tic::after_script()'
-
-    # build QGIS OLD_LTR on Linux
-    - os: linux
-      dist: trusty
-      sudo: required
-      latex: false
-      jdk: oraclejdk9
-      env: 
-        - OLD_LTR_Linux=true
-        
-    # build QGIS LTR on Linux
-    - os: linux
-      dist: trusty
-      sudo: required
-      latex: false
-      jdk: oraclejdk9
-      env: LTR_Linux=true
-
-      
-    ### build QGIS LTR on macOS
-    - os: osx
-      osx_image: xcode8.3
-      latex: false
-      sudo: required
-      env: OLD_LTR_mac=true
-    ### build QGIS DEV on macOS
-    - os: osx
-      osx_image: xcode8.3
-      latex: false
-      sudo: required
-      env: LTR_mac=true
-
-# if we install everything from ubuntugis-unstable PPA, we get GDAL2 but only QGIS 2.14.3
-# if we install everything from ubuntugis-ltr deb, we get most recent QGIS but only GDAL1 -> error in tests 
-# because GDAL2 is required 
 before_install:
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get -y --force-yes update -qq; fi
-  - if [[ "${OLD_LTR_Linux}" ]]; then sudo sh -c 'echo "deb http://qgis.org/ubuntugis-ltr trusty main" >> /etc/apt/sources.list'; fi
-  - if [[ "${OLD_LTR_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-ltr trusty main " >> /etc/apt/sources.list'; fi
-  
-  - if [[ "${LTR_Linux}" ]]; then sudo sh -c 'echo "deb http://qgis.org/ubuntugis trusty main" >> /etc/apt/sources.list'; fi
-  - if [[ "${LTR_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis trusty main " >> /etc/apt/sources.list'; fi
-  
-  - if [[ "${NIGHTLY_Linux}" ]]; then sudo sh -c 'echo "deb http://qgis.org/ubuntugis-nightly trusty main" >> /etc/apt/sources.list'; fi
-  - if [[ "${NIGHTLY_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-nightly trusty main " >> /etc/apt/sources.list'; fi
-  # for newest geos version from ubuntugis ppa
-  - if [[ "${NIGHTLY_Linux}" ]]; then sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu trusty main " >> /etc/apt/sources.list'; fi
-  - if [[ "${NIGHTLY_Linux}" ]]; then sudo sh -c 'echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu trusty main" >> /etc/apt/sources.list'; fi
-  
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then wget -O - http://qgis.org/downloads/qgis-2017.gpg.key | gpg --import; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then gpg --fingerprint CAEB3DC3BDF7FB45 && gpg --export --armor CAEB3DC3BDF7FB45 | sudo apt-key add -; fi
-  
-  # remove postgresql installations causing upgrade errors otherwise
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.1; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.2; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.3; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.4; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.5; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.6; fi
-  
-  # install gdal, saga and proj4 from ubuntugis ppa (gdal2.1)
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable; fi
 
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update && sudo apt upgrade -y --allow-unauthenticated; fi # if you already have gdal 1.11 installed
-  - if [[ "${NIGHTLY_Linux}" ]]; then sudo apt install libgeos-c1v5; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt install gdal-bin libgdal-dev python-gdal python3-gdal libudunits2-dev saga; fi
-    
-  # we need to fake gdal-abi-2-1-3 as qgis won't find it otherwise because it searches for gdal20
-  # see https://gis.stackexchange.com/questions/216780/cannot-install-qgis-2-18-from-repository-on-debian-stretch-package-gdal-abi-2
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update -y && sudo apt-get install equivs; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then chmod ugo+x inst/travis/gdal-abi.sh; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then ./inst/travis/gdal-abi.sh; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo equivs-build gdal-abi.control && sudo sudo dpkg -i gdal-abi-2-1-0_2.1.0_all.deb && sudo rm -rf gdal-abi-2-1-0_2.1.0_all.deb && sudo rm -rf gdal-abi.control; fi
-    
-  # install latest qgis-ltr using aptitude to resolve dependencies
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update && sudo aptitude install -y qgis python-qgis; fi  
-  
-  # make directory writable for osgeo4mac installations
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then sudo chown -R $(whoami) /usr/local; fi
-  
-  # account for conflicting numpy installations https://github.com/travis-ci/travis-ci/issues/6688
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then /usr/bin/yes | pip2 uninstall numpy; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install numpy; fi
-  
-  # tap osgeo4mac tap
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac && brew tap homebrew/science; fi
-   
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install saga-gis-lts; fi
-  
-  # install required python packages
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip2 install psycopg2 && pip2 install matplotlib && pip2 install pyparsing; fi
+  - sudo sh -c 'echo "deb http://qgis.org/ubuntugis trusty main" >> /etc/apt/sources.list'
+  - sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis trusty main " >> /etc/apt/sources.list'
+  - wget -O - http://qgis.org/downloads/qgis-2017.gpg.key | gpg --import
+  - gpg --fingerprint CAEB3DC3BDF7FB45 && gpg --export --armor CAEB3DC3BDF7FB45 | sudo apt-key add -
+  - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable  
+  - sudo apt-get --yes --force-yes update -qq
+  - sudo apt-get install -y  gdal-bin libgdal-dev python-gdal python3-gdal libudunits2-dev saga
+  - sudo apt-get install -y  libdebian-installer4 libgif4 sbsigntool libjpeg-progs libjpeg8
+  - sudo apt-get install -y  build-essential autoconf libtool pkg-config 
+  - sudo apt-get install -y  libqt4-network libqt4-dbus python-qt4 python-qt4-gl libgle3 python-dev
+  - sudo apt-get install -y  libgdal1-dev binutils libproj-dev gdal-bin geotiff-bin
+  - sudo apt-get install -y  r-base  libxslt1-dev zlib1g-dev
+  - sudo apt-get install -y  libevent-dev liblas-bin liblas-dev 
+  - sudo apt-get install -y  libimage-exiftool-perl dcraw gpsbabel
+  - sudo apt-get install -y  grass  
+  - sudo apt-get install -y   
+  - sudo apt-get install -y  libgd-gd2-perl libv8-3.14-dev 
 
-  # install qgis
-  - if [[ "${OLD_LTR_mac}" ]]; then brew cask uninstall --force oclint && sudo rm -rf /usr/local/gfortran/bin/gfortran && brew install grass7 && brew unlink grass7 && brew install qgis2-ltr; fi
-  - if [[ "${LTR_mac}" ]]; then brew cask uninstall --force oclint && sudo rm -rf /usr/local/gfortran/bin/gfortran && brew install grass7 && brew unlink grass7 && brew install qgis2; fi
-  
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2; fi
-  - R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); remotes::install_github("pat-s/pkgdown"); tic::prepare_all_stages(); tic::before_install()'
-  
-# imitate a X virtual display -> https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
+  # install tmap dependencies
+  - sudo apt-get install --yes libprotobuf-dev protobuf-compiler libv8-3.14-dev
+  # install tmap dependencies; for 16.04 libjq-dev this ppa is needed:
+  - sudo add-apt-repository -y ppa:opencpu/jq
+  - sudo apt-get --yes --force-yes update -qq
+  - sudo apt-get install libjq-dev
+  # units/udunits2 dependency:
+  - sudo apt-get install --yes libudunits2-dev
+  # sf dependencies:
+  - sudo apt-get install --yes libproj-dev libgeos-dev libgdal-dev
 before_script:
   - "export DISPLAY=:99.0"
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then sh -e /etc/init.d/xvfb start; fi
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok )& fi
+  - sh -e /etc/init.d/xvfb start
+  
   - sleep 3 # give xvfb some time to start
   
-  # reinstall rgdal because binary installation on osx has from linking to libgdal.dylib
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "install.packages('devtools'); devtools::install_github('edzer/sfr')"; fi
-
+  
 
  
 
