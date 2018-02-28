@@ -685,7 +685,7 @@ gdalDEMParam<- function(dem,
   if (is.null(item)){
     items<-c("slope", "aspect","TRI","TPI","Roughness")
   }
-  s<-raster(fn)
+  s<-raster(dem)
   y<-yres(s)
   x<-xres(s)
   gdalwarp(dem,'dem2.tif',

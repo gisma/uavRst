@@ -247,7 +247,7 @@ fa_pc2DTM <- function(lasDir = NULL,
   dtmA <- methods::as(raster::extent(dtm), "SpatialPolygons")
   if (dtm_area) {
     dtm2 <- dtm > -Inf
-    tmp <- raster::aggregate(dtm2,fact = 1 / gridsize)
+    tmp <- raster::aggregate(dtm2,fact = 1 / grid_size)
     dtmdA  <- rasterToPolygons(tmp)
     dtmdA  <- rgeos::gUnaryUnion(dtmdA)
     #dtmdA <- rasterToPolygons(dtm2, dissolve=TRUE)

@@ -15,7 +15,6 @@ getGeodata(name = "GADM", download = TRUE, path = "", ...)
 \code{worldclim},\cr
 \code{schmatzPangea},\cr
 \code{harrylist}, \cr
-\code{OSM}, \cr
 \code{tiroldem}.\cr}
 
 \item{download}{Logical \code{TRUE} data will be downloaded if not locally available}
@@ -25,7 +24,7 @@ getGeodata(name = "GADM", download = TRUE, path = "", ...)
 \item{...}{Additional required (!) parameters. These are data set specific.}
 }
 \description{
-Robert J. Hijmans getData() from the raster package is well known and highly used. The only disadvantage is that it currently doesn't support a bunch of great additional and/or improved/newer data sets.  getGeodata provides some more actual or better choices for climate and DEM data as well as some easy to use interfaces to OSM and other crowd sourced data compilations.
+Robert J. Hijmans getData() from the raster package is well known and highly used. The only disadvantage is that it currently doesn't support a bunch of great additional and/or improved/newer data sets.  getGeodata provides some more actual or better choices for climate and DEM data as well as some easy to use interfaces to other crowd sourced data compilations.
 The main issue of the functionis to offer an easy to use access to a wider range of free to access data sets that may improve significantly the quality of typical ecological and other spatial analysis approaches by an straightforward utilization of data.
 You may download the data individually but by default all data will be downloaded georeferenced and converted in \link{raster} or \link{sp} objects.
 }
@@ -145,15 +144,6 @@ The list of allowd items is (long): \cr
 If  \code{name=}'harrylist' you will download and clean the complete list\cr
    \code{getGeodata('harrylist')}\cr \cr
 }
-\subsection{OSM Point Data}{
-\code{OSMp} is the OSM Point Data from the current OSM database\cr
-If  \code{name}='OSMp' you must provide lat_min,lat_max,lon_min,lon_max for the boundig box. Additionally you must set  the switch 'all' to \code{FALSE} if you just want to download a specified item. Then you have to  provide the content of the desired items in the 'key' and 'val' argument. According to this combination you have to provide a tag list containing the Tags of the element c('name','ele').\cr\cr
-   \code{getGeodata('OSMp', 
-                      extent=c(11.35547,11.40009,47.10114,47.13512), 
-                      key='natural',
-                      val='peak',
-                      taglist=c('name','ele'))}\cr \cr
-}
 
 \subsection{Digital Elevation Model of Tyrolia}{
 
@@ -212,12 +202,6 @@ r<- getGeodata('tiroldem',
                   item=c('IBK_DGM10','IL_DGM10','IM_DGM10'), 
                   merge =TRUE)
 
-# get arbitrary OSM point data
-r<- getGeodata('OSMp', 
-                  extent=c(11.35547,11.40009,47.10114,47.13512), 
-                  key='natural',
-                  val='saddle',
-                  taglist=c('name','ele','direction'))
 
 # get Harald Breitkreutz' summit list
 r<- getGeodata('harrylist', 

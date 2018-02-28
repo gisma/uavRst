@@ -6,23 +6,31 @@
 # 
 # load package for linking  GI tools
 require(link2GI)
+
 require(uavRst)
 
 # define project settings, data folders etc
 # define project folder
 projRootDir <- "~/proj/uav/thesis/finn"
+
 # lidar data folder
-las_data_dir <- "~/proj/uav/thesis/finn/data/sequoia/"
+las_data_dir <- "~/proj/uav/thesis/finn/data/lidar/"
+
 # proj subfolders
 projFolders = c("data/","data/ref/","output/","run/","las/")
+
 # export folders as global
 global = TRUE
+
 # with folder name plus following prefix
 path_prefix = "path_"
+
 # proj4 string of ALL data
 proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "
 extent <- c(477393.,477460. ,5631938. , 5632003.)
 ext<- raster::extent(as.numeric(extent))
+
+lidardata=FALSE
 
 maxCrownArea = 150
 minTreeAlt = 2
@@ -46,7 +54,6 @@ raster::rasterOptions(tmpdir=path_run)
 
 # set working directory
 setwd(path_run)
-
 
 # ----- calculate DSM DTM & CHM FROM UAV POINT CLOUDS-----------------------------------------------
 
@@ -73,6 +80,8 @@ dtmR <- dtm[[1]]
 # crop them to the test area
 dsmR<-raster::crop(dsmR,ext)
 dtmR<-raster::crop(dtmR,ext)
+
+chm<-raster::crop(mos1,ext)
 #raster::plot(dsmR)
 #raster::plot(dtmR)
 
@@ -92,8 +101,7 @@ saveRDS(chmR,file = paste0(path_output,"chmR.rds"))
 
 
 
-
-
+if (lidardata) chmR<- lidarchm
 # ----  start crown analysis ------------------------
 
 ### generic uavRST approach
@@ -162,7 +170,9 @@ crownsFusion<- chmSegmentationFU(lasDir = las_data_dir,
                   fusionCmd = NULL,
                   extent = ext)
 
-# view it
+crownsFusion[[3]]
+
+
 mapview::mapview(crownsFT) + 
 mapview::mapview(crownsRL) + 
 mapview::mapview(crownsITC,zcol ="Height_m") +

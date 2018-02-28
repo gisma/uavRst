@@ -316,7 +316,7 @@ latticeCombineGrid <- function(trellis.list,
                                ...) {
   
   outLayout <- function(x, y) {
-    lattice:::update.trellis(latticeExtra:::c.trellis(x, y, ...), 
+    update.trellis(c.trellis(x, y, ...), 
                              between = between, as.table = as.table)
   }
   

@@ -199,11 +199,12 @@ predictRGB <- function(imageFiles=NULL,
                        in_prefix = "index_",
                        out_prefix = "classified_",
                        bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis")) {
-  
+  po = path_output
+  i = 1:length(imageFiles)
   cat("\n::: start prediction aka classifikation...\n")
   cl <- parallel::makeCluster(parallel::detectCores())
   doParallel::registerDoParallel	(cl)
-  foreach::foreach(i = 1:length(imageFiles),po =path_output) %dopar% {
+  foreach::foreach(i,po) %dopar% {
     #for (i in 1:length(imageFiles)) {
     require(raster)  
     require(randomForest)
@@ -326,13 +327,13 @@ ffsTrainModel<-function(   trainingDF   = NULL,
   predictors <- data_train[,names(ffs_model$trainingData)[-length(names(ffs_model$trainingData))]]
   # and run final tuning 
   model_final <- caret::train(predictors,
-                       data_train[,response],
-                       method = "rf",
-                       metric=metric,
-                       returnResamp = "all",
-                       importance =TRUE,
-                       tuneLength = length(predictors),
-                       trControl = ctrl)
+                              data_train[,response],
+                              method = "rf",
+                              metric=metric,
+                              returnResamp = "all",
+                              importance =TRUE,
+                              tuneLength = length(predictors),
+                              trControl = ctrl)
   parallel::stopCluster(cl)
   
   return(list(ffs_model,model_final))
@@ -507,7 +508,7 @@ makebNames <- function(rgbi    = NA,
 #'               currentDataFolder = path_data_training,
 #'               currentIdxFolder  = path_data_training_idx)
 #'}
-#'               
+#' @import crayon               
 #' @export calcex
 
 
@@ -534,7 +535,7 @@ calcex<- function ( useTrainData      = TRUE,
                     currentDataFolder = NULL,
                     currentIdxFolder  = NULL,
                     cleanTiffs        = TRUE){
-  require(crayon)
+  
   catHead  <- black $ bgGreen
   catErr <- red $ bold
   catNote <- blue $ bold
@@ -671,13 +672,13 @@ calcex<- function ( useTrainData      = TRUE,
         }
         # if calc haralick
         if (hara){
-          for (haras in haraType){
-            cat(catNote(":::: processing haralick... ",haras,"\n"))
+          for (haraT in haraType){
+            cat(catNote(":::: processing haralick... ",haraT,"\n"))
             uavRst::otbTexturesHaralick(x = fbFN,
                                         output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),
-                                        texture = haras)
+                                        texture = haraT)
             flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,"hara_",basename(imageFiles[i])),"*")))
-            bnames <-append(bnames,paste0(makebNames(hara = haras),"_",filterBand))
+            bnames <-append(bnames,paste0(makebNames(hara = haraT),"_",filterBand))
           }
         }
         # delete single channel for synthetic channel calculation

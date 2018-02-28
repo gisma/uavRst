@@ -199,7 +199,7 @@ GroundSurfaceCreate<-function(lasFiles, res ){
 #'\dontrun{
 #'
 #'GridMetrics(lasFiles = lasFiles, 
-#'                 res = gridsize, 
+#'                 res = res, 
 #'     heightClassList = h, 
 #'     metrics = 31, 
 #'     heightbreak=0.2 )
@@ -339,7 +339,7 @@ fu_sliceRas<- function(lasFiles = NULL,
                        proj4 = "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 ) {
 
-  paramList <- c(paste(as.character(gridsize),"M M 1 32 0 0 "))
+  paramList <- c(paste(as.character(res),"M M 1 32 0 0 "))
   densityList<-list()
   densityList<-vector("list", length(lasFiles))
   density<-raster::stack()

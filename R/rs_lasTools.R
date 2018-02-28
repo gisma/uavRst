@@ -16,6 +16,9 @@
 #'@param proj4  default is EPSG 32632 any valid proj4 string that is assumingly the correct one
 #'@param rscale rscale
 #'@param stepoverlap stepoverlap
+#'@param xoff xoff
+#'@param yoff yoff
+#'@param outpath outpath
 
 #'
 #'
@@ -41,14 +44,18 @@ lasTool <- function(  tool="lasinfo",
                       proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                       rscale= "0.01 0.01 0.01",
                       stepoverlap=2,
-                      cores = "2") {
+                      cores = "2",
+                      xoff = 0,
+                      yoff = 0, 
+                      outpath = NULL) {
   
-
+  if (is.null(outpath)) outpath <- path.expand(getwd())
+  outpath <- path.expand(outpath)
 
   # some basic checks
   if (is.null(lasFile)) stop("no directory containing las/laz files provided...\n")
   lasFile <- path.expand(lasFile)
-
+  extFN<-tools::file_ext(lasFile)
   # if not provided take the onboard laslib
 
 
@@ -65,18 +72,21 @@ lasTool <- function(  tool="lasinfo",
   # create cmd strings
   lasinfo       <- paste(cmd,"lasinfo-cli.exe",sep = "/")
   las2las       <- paste(cmd,"las2las-cli.exe",sep = "/")
+  las2laz       <- paste(cmd,"las2las-cli.exe",sep = "/")
   lasmerge      <- paste(cmd,"lasmerge-cli.exe",sep = "/")
   lasground_new <- paste(cmd,"lasground_new-cli.exe",sep = "/")
   las2dem       <- paste(cmd,"las2dem-cli.exe",sep = "/")
   las2txt       <- paste(cmd,"las2txt-cli.exe",sep = "/")
+  txt2las       <- paste(cmd,"txt2las-cli.exe",sep = "/")
+  lasrepair     <- paste(cmd,"las2las-cli.exe",sep = "/")
   lasoverage    <- paste(cmd,"lasoverage.exe",sep = "/")
 
   # check las / laz files laz will be preferred
-  lasFileNames <- list.files(pattern = "[.]las$", path = lasFile, full.names = TRUE)
-  lazFileNames <- list.files(pattern = "[.]laz$", path = lasFile, full.names = TRUE)
-  if (length(lazFileNames) > 0 ) extFN <- substr(extension(basename(lazFileNames[1])),2,4)
-  else if (length(lasFileNames) > 0) extFN <- substr(extension(basename(lasFileNames[1])),2,4)
-  else stop("no valid las or laz files found...\n")
+#  lasFileNames <- list.files(pattern = "[.]las$", path = lasFile, full.names = TRUE)
+#  lazFileNames <- list.files(pattern = "[.]laz$", path = lasFile, full.names = TRUE)
+#  if (length(lazFileNames) > 0 ) extFN <- substr(extension(basename(lazFileNames[1])),2,4)
+#  else if (length(lasFileNames) > 0) extFN <- substr(extension(basename(lasFileNames[1])),2,4)
+#  else stop("no valid las or laz files found...\n")
 
   #sp_param <- uavRst:::getSpatialLASInfo(lasFile)
 
@@ -98,17 +108,30 @@ lasTool <- function(  tool="lasinfo",
   # merge all files
   if (tool == "lasmerge"){
     cat("\nNOTE: You are dealing with a huge UAV generated point cloud data set.\n      so take time and keep relaxed... :-)\n")
-
+    # remove old temp merge file
+    file.remove(paste0(outpath,"full_point_cloud.las"))
+    # get input file list 
+    lasfiles<-list.files(paste0(lasFile),pattern=".las$", full.names=TRUE) 
+    # merge files
     ret <- system(paste0(lasmerge,
                          " -i ",lasFile,"/*.las",
                          " -olas",
-                         " -o ",path_run,"full_point_cloud.las"),
+                         " -o ",outpath,"full_point_cloud.las"),
                   intern = TRUE,
                   ignore.stderr = TRUE
     )
     # get extent of merged file
-    sp_param <- getSpatialLASInfo(lasinfo,paste0(path_run,"full_point_cloud.las"))
-
+    sp_param <- getSpatialLASInfo(lasinfo,paste0(outpath,"full_point_cloud.las"))
+    # create name of merged file
+    name<- paste(sp_param ,collapse=" ")
+    tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
+    fn<-gsub(tmp,pattern = "[.]",replacement = "_")
+    # rename merged file
+    file.rename(from = paste0(outpath,"full_point_cloud.las"),
+                to = paste0(outpath,"merged_",fn,".las"))
+    # delete input   
+    file.remove(lasfiles)
+    
     # add proj4 string manually
     sp_param[5] <- proj4
   }
@@ -119,16 +142,31 @@ lasTool <- function(  tool="lasinfo",
     ret <- system(paste0(las2las,
                          " -i ",lasFile,
 #                         " -odix  ",
-                         " -odir ",path_run,
+                         " -odir ",outpath,
                          " -o","las",
-                         " -keep_class ",keep_class
-#                         " -thin_with_grid ",thin_with_grid
+                         " -keep_class ",keep_class,
+                         " -thin_with_grid ",thin_with_grid
 ),
                   intern = TRUE,
                   ignore.stderr = TRUE
     )
   }
 
+  if (tool=="las2laz"){
+    ### reduce data amount
+    cat("\n:: converting laz to las..\n")
+    ret <- system(paste0(las2las,
+                         " -i ",lasFile,
+                         #                         " -odix  ",
+                         " -odir ",outpath,
+                         " -o","las"
+                         #                         " -keep_class ",keep_class
+                         #                         " -thin_with_grid ",thin_with_grid
+    ),
+    intern = TRUE,
+    ignore.stderr = TRUE
+    )
+  }
   #### starting lastools classification
 
   if (tool == "lasground"){
@@ -156,7 +194,7 @@ lasTool <- function(  tool="lasinfo",
                          " -ocut 3 ",
                          " -odix _dtm ",
                          " -otif ",
-                         " -odir ",path_output,
+                         " -odir ",outpath,
                          " -cores ",cores),
                   intern = TRUE,
                   ignore.stderr = TRUE
@@ -172,6 +210,19 @@ lasTool <- function(  tool="lasinfo",
                   ignore.stderr = TRUE
     )
   }
+  if (tool == "txt2las"){
+    cat(" export  xyz to las - this may take a while...\n")
+    ret <- system(paste0(txt2las,
+                         " -i ",lasFile,
+                         " -parse xyzrRGB",
+                         " -o out.las",
+                         " -sep komma"),
+                  intern = TRUE,
+                  ignore.stderr = TRUE
+    )
+  }
+  #txt2las -i lidar.zip -o lidar.laz -parse ssxyz -utm 14T
+  
   if (tool == "lasinfo"){
     ret <- system(paste0(lasinfo,
                          " -i ",lasFile,
@@ -189,10 +240,26 @@ lasTool <- function(  tool="lasinfo",
     tmp <- unlist(strsplit(stringr::str_trim(tmp[2]), " "))
     spatial_params[3] <- tmp[1]
     spatial_params[4] <- tmp[2]
-    #spatial_params[5] <- grep(pattern = "+proj", ret, value = TRUE)
-
+    
+    tmp <- spatial_params %in% c("0.00", "-Inf", "Inf", "NAN")
+    if (TRUE %in% tmp){
+      
+      if (as.numeric(spatial_params[1]) <= as.numeric("0.00") || as.numeric(spatial_params[2]) <= as.numeric("0.00") ){
+        spatial_params[1] <-as.numeric(spatial_params[3]) - 999.99
+        spatial_params[2] <- as.numeric(spatial_params[4]) -999.99
+      }
+      
+      if (as.numeric(spatial_params[3]) <= as.numeric("0.00") || as.numeric(spatial_params[4]) <= as.numeric("0.00") ){
+        spatial_params[3] <-as.numeric(spatial_params[1]) + 999.99
+        spatial_params[4] <- as.numeric(spatial_params[2]) +999.99
+      }
+      lasTool(tool = "lasrepair", lasFile = lasFile, xoff= spatial_params[1],yoff=spatial_params[2])
+      cat("\n::: NOTE: Something wrong with the las extent tried to repair...")
+    }
+    
+    
     return(unlist(spatial_params))}
-
+  
    if (tool == "rescale"){
   ret <- system(paste0(las2las,
                        " -i ",lasFile,
@@ -203,8 +270,22 @@ lasTool <- function(  tool="lasinfo",
                 ignore.stderr = TRUE
   )
 
+  
    }
 
+  if (tool == "lasrepair"){
+    
+    ret <- system(paste0(las2las,
+                         " -i ",lasFile,
+                         " -olas ",
+                         " -keep_tile ",  xoff, " ",yoff," 10000 "
+                         ),
+                  intern = TRUE,
+                  ignore.stderr = TRUE
+    )
+    file.remove(lasFile)
+    file.rename(from = paste0(tools::file_path_sans_ext(lasFile),"_1.las"),to = lasFile)
+  }  
   if (tool=="lasoverage") {
     ret <- system(paste0(lasoverage,
                          " -i ",lasFile,
@@ -242,6 +323,8 @@ getSpatialLASInfo <- function(lasinfo,lasFN){
   spatial_params[4] <- tmp[2]
   #spatial_params[5] <- grep(pattern = "+proj", ret, value = TRUE)
   
+  
+
   return(unlist(spatial_params))
 }
 

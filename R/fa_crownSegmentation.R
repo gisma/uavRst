@@ -402,14 +402,14 @@ chmSegmentationITC <- function(chm =NULL,
 #'@export
 #'
 chmSegmentationFU <- function(lasDir =NULL,
-                           grid_size = 0.5,
-                           fusionPercentile=37,
-                           movingWin=3,
-                           focalStatFun="mean",
-                           proj4="+init=epsg:25832",
-                           path = getwd(),
-                           fusionCmd = "C:/FUSION/",
-                           extent=NULL){
+                              grid_size = 0.5,
+                              fusionPercentile=37,
+                              movingWin=3,
+                              focalStatFun="mean",
+                              proj4="+init=epsg:25832",
+                              path = getwd(),
+                              fusionCmd = "C:/FUSION/",
+                              extent=NULL){
   
   output=""
   results="output\\"
@@ -470,7 +470,7 @@ chmSegmentationFU <- function(lasDir =NULL,
       extent<-paste(as.numeric(info2$MinX),as.numeric(info2$MinY),as.numeric(info2$MaxX),as.numeric(info2$MaxY))
       extnumeric<-c(as.numeric(info2$MinX),as.numeric(info2$MinY),as.numeric(info2$MaxX),as.numeric(info2$MaxY))
     } else {
-      extent<- paste(ext@xmin,ext@ymin,ext@xmax,ext@ymax)
+      extent<- paste(extent@xmin,extent@ymin,extent@xmax,extent@ymax)
     }
     
     system(paste0(paste0(fusionCmd,"clipdata.exe", " /class:2 ",lasFile," ",lasFile,"_groundpts.las "), extent))

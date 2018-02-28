@@ -6,7 +6,8 @@
     utils::globalVariables(
     c("path_input","path_data","path_fun","path_idx","path_data_training","path_output_index",
       "path_OTB","path_output","path_run","path_tmp","sagaCmd","projRootDir","zipfn",
-      "k","v","Fusion")    
+      "Fusion","projViewOutput","mergeTrellisLegends","getFunctionOrName","construct.legend",
+      "needAutoKey","limits.and.aspect","cond.orders","glcm")    
     
     )
   

@@ -462,8 +462,8 @@ xpolystat <- function(x = NULL,
   #cat(":: run statistics...\n")
   # calculate chm statistics for each crown 
   
-    saga <- link2GI::linkSAGA()
-    sagaCmd<-saga$sagaCmd
+  saga <- link2GI::linkSAGA()
+  sagaCmd<-saga$sagaCmd
   
   if (class(spdf)!="character")     {
     rgdal::writeOGR(obj    = spdf,
@@ -534,8 +534,8 @@ linkBuilder <- function(links=NULL,
                         gdalArgs =  "quiet = TRUE, 
                                      returnPaths = TRUE"
                         
-
-                        ){
+                        
+){
   if (sagaArgs == "default") sagaArgs <- "default_SAGA = NULL, searchLocation = 'default', ver_select = FALSE, quiet = TRUE, returnPaths = TRUE"
   if (grassArgs == "default") grassArgs <- "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist = FALSE, gisdbase = NULL,
                                      location = NULL, spatial_params = NULL, resolution = NULL, quiet = TRUE, returnPaths = FALSE"
@@ -614,4 +614,29 @@ extractTrainPixelValues<- function(imgStack=NULL,trainData=NULL,responseCol=NULL
 Mode <- function(x) {
   ux <- unique(x)
   ux[which.max(tabulate(match(x, ux)))]
+}
+
+### getPopupStyle creates popup style =================================================
+getPopupStyle <- function() {
+  # htmlTemplate <- paste(
+  #   "<html>",
+  #   "<head>",
+  #   "<style>",
+  #   "#popup",
+  #   "{font-family: Arial, Helvetica, sans-serif;width: 20%;border-collapse: collapse;}",
+  #   "#popup td {font-size: 1em;border: 0px solid #85ADFF;padding: 3px 20px 3px 3px;}",
+  #   "#popup tr.alt td {color: #000000;background-color: #F0F5FF;}",
+  #   "#popup tr.coord td {color: #000000;background-color: #A8E6A8;}",
+  #   "div.scrollableContainer {max-height: 200px;max-width: 100%;overflow-y: auto;overflow-x: auto;margin: 0px;background: #D1E0FF;}",
+  #   "</style>",
+  #   "</head>",
+  #   "<body>",
+  #   "<div class='scrollableContainer'>",
+  #   "<table class='popup scrollable'>",
+  #   "<table id='popup'>")
+  # return(htmlTemplate)
+  fl <- system.file("templates/popup.brew", package = "mapview")
+  pop <- readLines(fl)
+  end <- grep("<%=pop%>", pop)
+  return(paste(pop[1:(end-2)], collapse = ""))
 }

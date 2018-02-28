@@ -41,7 +41,7 @@ calculate elevation and intensity based metrics an write out selected metrics to
 \dontrun{
 
 GridMetrics(lasFiles = lasFiles, 
-                res = gridsize, 
+                res = res, 
     heightClassList = h, 
     metrics = 31, 
     heightbreak=0.2 )

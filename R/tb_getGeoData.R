@@ -6,7 +6,7 @@ if (!isGeneric('getGeodata')) {
 #'
 #'@title Retrieves online geodata and converts it to raster/sp objects
 #'
-#'@description Robert J. Hijmans getData() from the raster package is well known and highly used. The only disadvantage is that it currently doesn't support a bunch of great additional and/or improved/newer data sets.  getGeodata provides some more actual or better choices for climate and DEM data as well as some easy to use interfaces to OSM and other crowd sourced data compilations.
+#'@description Robert J. Hijmans getData() from the raster package is well known and highly used. The only disadvantage is that it currently doesn't support a bunch of great additional and/or improved/newer data sets.  getGeodata provides some more actual or better choices for climate and DEM data as well as some easy to use interfaces to other crowd sourced data compilations.
 #' The main issue of the functionis to offer an easy to use access to a wider range of free to access data sets that may improve significantly the quality of typical ecological and other spatial analysis approaches by an straightforward utilization of data.
 #' You may download the data individually but by default all data will be downloaded georeferenced and converted in \link{raster} or \link{sp} objects.
 #'
@@ -19,7 +19,7 @@ if (!isGeneric('getGeodata')) {
 #'\code{worldclim},\cr
 #'\code{schmatzPangea},\cr
 #'\code{harrylist}, \cr
-#'\code{OSM}, \cr
+
 #'\code{tiroldem}.\cr
 
 #'@param download Logical \code{TRUE} data will be downloaded if not locally available
@@ -141,15 +141,6 @@ if (!isGeneric('getGeodata')) {
 #'If  \code{name=}'harrylist' you will download and clean the complete list\cr
 #'    \code{getGeodata('harrylist')}\cr \cr
 #'}
-#'\subsection{OSM Point Data}{
-#' \code{OSMp} is the OSM Point Data from the current OSM database\cr
-#'If  \code{name}='OSMp' you must provide lat_min,lat_max,lon_min,lon_max for the boundig box. Additionally you must set  the switch 'all' to \code{FALSE} if you just want to download a specified item. Then you have to  provide the content of the desired items in the 'key' and 'val' argument. According to this combination you have to provide a tag list containing the Tags of the element c('name','ele').\cr\cr
-#'    \code{getGeodata('OSMp', 
-#'                       extent=c(11.35547,11.40009,47.10114,47.13512), 
-#'                       key='natural',
-#'                       val='peak',
-#'                       taglist=c('name','ele'))}\cr \cr
-#'}
 #'
 #'\subsection{Digital Elevation Model of Tyrolia}{
 #'
@@ -181,7 +172,6 @@ if (!isGeneric('getGeodata')) {
 #'\url{https://www.tirol.gv.at/data/datenkatalog/geographie-und-planung/digitales-gelaendemodell-tirol/}\cr
 #'\url{http://www.openstreetmap.org}\cr
 #'\url{http://doi.pangaea.de/10.1594/PANGAEA.845883}\cr
-#'
 #'
 #'@import raster
 #'@import sp
@@ -229,12 +219,7 @@ if (!isGeneric('getGeodata')) {
 #'                   item=c('IBK_DGM10','IL_DGM10','IM_DGM10'), 
 #'                   merge =TRUE)
 #'
-#' # get arbitrary OSM point data
-#' r<- getGeodata('OSMp', 
-#'                   extent=c(11.35547,11.40009,47.10114,47.13512), 
-#'                   key='natural',
-#'                   val='saddle',
-#'                   taglist=c('name','ele','direction'))
+
 #'
 #' # get Harald Breitkreutz' summit list
 #' r<- getGeodata('harrylist', 
@@ -261,8 +246,6 @@ getGeodata <- function(name='GADM', download=TRUE, path='', ...) {
     .harrylist(..., download=download, path=path)
   } else if (name=='tiroldem') {
     .tiroldem(..., download=download, path=path)
-  } else if (name=='OSMp') {
-    .OSMp(..., download=download, path=path)
   } else if (name=='alt') {
     .raster(..., name=name, download=download, path=path)
   } else if (name=='schmatzPangea') {
@@ -320,7 +303,7 @@ ccodes <- function() {
   #	}
   cs <- ccodes()
   try (cs <- toupper(cs))
-
+  
   iso3 <- substr(toupper(country), 1, 3)
   if (iso3 %in% cs[,2]) {
     return(iso3)
@@ -364,12 +347,12 @@ ccodes <- function() {
 
 .GADM <- function(country, level, download, path) {
   #	if (!file.exists(path)) {  dir.create(path, recursive=T)  }
-
+  
   country <- .getCountry(country)
   if (missing(level)) {
     stop('provide a "level=" argument; levels can be 0, 1, or 2 for most countries, and higer for some')
   }
-
+  
   filename <- paste(path, country, '_adm', level, ".RData", sep="")
   if (!file.exists(filename)) {
     if (download) {
@@ -423,28 +406,28 @@ ccodes <- function() {
   vars <- c('tmin', 'tmax', 'prec', 'bio')
   stopifnot(var %in% vars)
   var <- c('tn', 'tx', 'pr', 'bi')[match(var, vars)]
-
+  
   model <- toupper(model)
   models <- c('AC', 'BC', 'CC', 'CE', 'CN', 'GF', 'GD', 'GS', 'HD', 'HG', 'HE', 'IN', 'IP', 'MI', 'MR', 'MC', 'MP', 'MG', 'NO')
   stopifnot(model %in% models)
-
+  
   rcps <- c(26, 45, 60, 85)
   stopifnot(rcp %in% rcps)
   stopifnot(year %in% c(50, 70))
-
+  
   m <- matrix(c(0,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0,1,0,1,1,1,0,0,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol=4)
   i <- m[which(model==models), which(rcp==rcps)]
   if (!i) {
     warning('this combination of rcp and model is not available')
     return(invisible(NULL))
   }
-
+  
   path <- paste(path, '/cmip5/', res, 'm/', sep='')
   dir.create(path, recursive=TRUE, showWarnings=FALSE)
-
+  
   zip <- tolower(paste(model, rcp, var, year, '.zip', sep=''))
   theurl <- paste('http://biogeo.ucdavis.edu/data/climate/cmip5/', res, 'm/', zip, sep='')
-
+  
   zipfile <- paste(path, zip, sep='')
   if (var == 'bi') {
     n <- 19
@@ -481,7 +464,7 @@ ccodes <- function() {
   stopifnot(var %in% c('tmean', 'tmin', 'tmax', 'prec', 'bio', 'alt'))
   path <- paste(path, 'wc', res, '/', sep='')
   dir.create(path, showWarnings=FALSE)
-
+  
   if (res==0.5) {
     lon <- min(180, max(-180, lon))
     lat <- min(90, max(-60, lat))
@@ -815,61 +798,7 @@ ccodes <- function() {
 
 
 
-.OSMp <- function(extent,key,val,taglist,download, path) {
-  # use the download.file function to access online content. note we change already the filename and
-  # we also pass the .php extension of the download address
-  
-  import::from(osmar, corner_bbox)
-  import::from(osmar, get_osm)
-  import::from(osmar, osmsource_api)
-  import::from(osmar, tags)
-  import::from(osmar, find)
-  import::from(osmar, node)  
-  # define the spatial extend of the OSM data we want to retrieve
-  osm.extend <- osmar::corner_bbox(extent[1],extent[3],extent[2],extent[4])
 
-  # download all osm data inside this area, note we have to declare the api interface with source
-  cat('Retrieving OSM data. Be patient...')
-  osm <- osmar::get_osm(osm.extend, source = osmar::osmsource_api())
-  # find the first attribute key&val
-  node.id <- osmar::find(osm, osmar::node(osmar::tags(k == key & v == val)))
-
-  # find downwards (according to the osmar object level hierarchy)
-  # all other items that have the same attributes
-  all.nodes <- osmar::find_down(osm, osmar::node(node.id))
-
-  ### to keep it clear and light we make subsets corresponding to the identified objects of all  data
-  .sub <- subset(osm, node_ids = all.nodes$node_ids)
-
-  # now we need to extract the corresponding variables and values separately
-  # create sub-subsets of the tags 'name' and 'ele' and attrs 'lon' , 'lat'
-
-  .coords<- subset(.sub$nodes$attrs[c('id',"lon", "lat")],)
-  i=1
-  for(elements in taglist){
-    .tmp<- subset(.sub$nodes$tags,(k==elements ))[,-2]
-    names(.tmp)[2]<-elements
-    if (i==1){
-      .stmp<- merge(.coords,.tmp, by="id",all.x=TRUE)
-      i=i+1
-    }else{
-      .stmp<- merge(.stmp,.tmp, by="id",all.x=TRUE)
-    }
-  }
-
-  # clean the df and rename the cols
-  m.df<-.stmp
-  colnames(m.df)<- c("osmID","Longitude","Latitude","Name","Altitude")
-
-  # convert the osm.peak df to a SpatialPoints object and assign reference system
-  coordinates(m.df) <- ~Longitude+Latitude
-  proj4string(m.df)<- CRS("+proj=longlat +datum=WGS84 +no_defs")
-  # save to shapefile
-  writePointsShape(m.df,"OSMNode.shp")
-
-  # return Spatial Point Object projected in target projection and clipped by the DEM extent
-  return(m.df)
-}
 
 .schmatz <- function(item, startTime=1,endTime=1, layer=NULL, path, download=TRUE) {
   validItems<-c('prec_eu_wc_30s', 'tave_eu_wcpi_30s', 'tmax_eu_wcpi_30s',  'tmin_eu_wcpi_30s',

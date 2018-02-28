@@ -118,5 +118,4 @@ res <- calcex( useTrainData      = TRUE,
               currentDataFolder = path_data_training,
               currentIdxFolder  = path_data_training_idx)
 }
-              
 }

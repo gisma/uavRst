@@ -67,6 +67,7 @@ r_in_lidar<- function(input=NULL,
                       flags = c("e","n","overwrite","o")) {
   ### TODO some strange effects with zrange and file are passed by
   file=NULL
+  input<-path.expand(input)
   if (!is.null(zrange)){
     rgrass7::execGRASS("r.in.lidar",
               input = input,
@@ -94,7 +95,7 @@ r_in_lidar<- function(input=NULL,
     
   } else if (!is.null(class_filter)) {
     
-
+   
     # (step 0) during r.in.lidar check if an error occure
     m<-try(rgrass7::execGRASS("r.in.lidar",
                      input = input,
@@ -108,37 +109,42 @@ r_in_lidar<- function(input=NULL,
                      ignore.stderr = FALSE))
     
     if (class(m)=="try-error") {
-      cat("\nno correct las extent - try to correct...\n")
-      cat("\nwork around for broken extent headers")
-      cat("\nif GRASS can not allocate a magical hugfe raster the following may help:")
-      cat("\n1) export las file to ASCII xyz -> gettting the real minx maxx miny maxy values by parsing")
-      cat("\n2) get the the extent from lasinfo tool")
-      cat("\n3) reset the GRASS region to this extent and resolution")
-      cat("\n4) use r.in.xyz to import the DEM data")
-      cat("\n5) resulting DEM raster is used further on as reference\n")
-      
-      cat("\nstep 1) ")
-      lasTool(tool = "las2txt", lasFile = input)
-      cat("\nstep 2) get extent of the original las file")
-      ext<-lasTool(lasFile = input)
-      cat("\nstep 3) reset the region")
-      rgrass7::execGRASS('g.region',
-                         flags = c('quiet','d'),
-                         n = ext[4],
-                         s = ext[2],
-                         e = ext[3],
-                         w = ext[1],
-                         res = as.character(resolution))
-      cat("\nstep 4) import raster from xyz ASCII\n")
-      m<-try(rgrass7::execGRASS("r.in.xyz",
-                                input = paste0(tools::file_path_sans_ext(input),".txt"),
-                                output = output,
-                                flags = c("i","overwrite"),
-                                method = method,
-                                separator="comma",
-                                echoCmd=FALSE,
-                                intern = TRUE,
-                                ignore.stderr = TRUE))
+      cat("\nno correct las extent - already tried to correct...\n")
+      # cat("\nwork around for broken extent headers")
+      # cat("\nif GRASS can not allocate a magical hugfe raster the following may help:")
+      # cat("\n1) export las file to ASCII xyz -> gettting the real minx maxx miny maxy values by parsing")
+      # cat("\n2) get the the extent from lasinfo tool")
+      # cat("\n3) reset the GRASS region to this extent and resolution")
+      # cat("\n4) use r.in.xyz to import the DEM data")
+      # cat("\n5) resulting DEM raster is used further on as reference\n")
+      # 
+      # cat("\nstep 1) ")
+      # lasTool(tool = "las2txt", lasFile = input)
+      # cat("\nstep 2) get extent of the original las file")
+      # ext<-lasTool(lasFile = input)
+      # xmin <-as.numeric(ext[3]) -999.99
+      # ymin <- as.numeric(ext[4]) -999.99
+      # ext<- c(xmin,ymin,ext[3],ext[4])
+      # 
+      # 
+      # cat("\nstep 3) reset the region")
+      # rgrass7::execGRASS('g.region',
+      #                    flags = c('quiet','d'),
+      #                    n = ext[4],
+      #                    s = ext[2],
+      #                    e = ext[3],
+      #                    w = ext[1],
+      #                    res = as.character(resolution))
+      # cat("\nstep 4) import raster from xyz ASCII\n")
+      # m<-try(rgrass7::execGRASS("r.in.xyz",
+      #                           input = paste0(tools::file_path_sans_ext(input),".txt"),
+      #                           output = output,
+      #                           flags = c("i","overwrite"),
+      #                           method = method,
+      #                           separator="comma",
+      #                           echoCmd=FALSE,
+      #                           intern = TRUE,
+      #                           ignore.stderr = TRUE))
     }     
   }
   

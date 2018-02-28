@@ -8,7 +8,8 @@ lasTool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
   keep_class = "2", bulge = "1.5", step_size = "city",
   sub_size = "ultra_fine", grid_size = "1.0",
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
-  rscale = "0.01 0.01 0.01", stepoverlap = 2, cores = "2")
+  rscale = "0.01 0.01 0.01", stepoverlap = 2, cores = "2", xoff = 0,
+  yoff = 0, outpath = NULL)
 }
 \arguments{
 \item{tool}{default is \code{lasinfo}   additionally xou may choose las2las, lasmerge, lasground_new, las2dem, las2txt}
@@ -34,6 +35,12 @@ lasTool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
 \item{stepoverlap}{stepoverlap}
 
 \item{cores}{number of cores that will be used}
+
+\item{xoff}{xoff}
+
+\item{yoff}{yoff}
+
+\item{outpath}{outpath}
 }
 \description{
 using lasLib from R. returns lasR basically returns a DTM
