@@ -4,55 +4,11 @@ sudo: required
 warnings_are_errors: false
 
 r_packages:
-  - covr
-  - stringr
-  - foreach
-  - sp
-  - sf
-  - htmlwidgets
-  - htmltools
-  - Rcpp
-  - rgdal
-  - rgeos
-  - gdalUtils
-  - geosphere
-  - tools
-  - maptools
-  - mapview
-  - log4r
-  - caret
-  - igraph
-  - zoo
-  - data.table
-  - parallel
-  - spatial.tools
-  - velox
-  - link2GI
-  - doParallel
-  - CAST
-  - curl
-  - glcm
-  - inline
-  - raster
-  - lattice
-  - latticeExtra
-  - crayon
-  - osmar
-  - ForestTools
-  - itcSegment
-  - rLiDAR
-  - pROC
-  - lidR
-  - methods
-  - RSAGA
-  - reshape2
-  - rgrass7
-  - RSAGA
+  
 
 r_build_args: "--no-build-vignettes"
 r_check_args: "--no-build-vignettes --as-cran"
 
-dist: trusty
 
 before_install:
 
@@ -86,5 +42,5 @@ before_install:
   - sudo apt-get install --yes libproj-dev libgeos-dev libgdal-dev
 
 
- - Rscript -e 'library(covr); codecov()'
+ 
 
