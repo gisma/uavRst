@@ -53,7 +53,7 @@ r_packages:
 sudo: required
 
 dist: trusty
-r_check_args: "--no-tests"
+r_check_args: "--no-tests --no-vignettes"
 
 
 before_install:
@@ -88,5 +88,6 @@ before_install:
   - sudo apt-get install --yes libproj-dev libgeos-dev libgdal-dev
 
 warnings_are_errors: false
+
  - Rscript -e 'library(covr); codecov()'
 
