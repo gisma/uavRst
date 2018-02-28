@@ -1,8 +1,7 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
-language: r		 
-r:
-  - release
-  - oldrel
+language: r
+sudo: required
+warnings_are_errors: false
 
 r_packages:
   - covr
@@ -50,11 +49,10 @@ r_packages:
   - rgrass7
   - RSAGA
 
-sudo: required
+r_build_args: "--no-build-vignettes"
+r_check_args: "--no-build-vignettes --as-cran"
 
 dist: trusty
-r_check_args: "--no-tests --no-vignettes"
-
 
 before_install:
 
@@ -87,7 +85,6 @@ before_install:
   # sf dependencies:
   - sudo apt-get install --yes libproj-dev libgeos-dev libgdal-dev
 
-warnings_are_errors: false
 
  - Rscript -e 'library(covr); codecov()'
 
