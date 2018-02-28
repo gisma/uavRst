@@ -88,5 +88,6 @@ before_install:
   - sudo apt-get install --yes libproj-dev libgeos-dev libgdal-dev
 
 warnings_are_errors: false
+r_check_args: "--no-vignettes"
  - Rscript -e 'library(covr); codecov()'
 
