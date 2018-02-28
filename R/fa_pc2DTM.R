@@ -46,22 +46,22 @@ if (!isGeneric('fa_pc2DTM')) {
 #'}
 
 fa_pc2DTM <- function(lasDir = NULL,
-                   gisdbase_path = NULL,
-                   thin_with_grid = "0.5",
-                   keep_class = "2",
-                   bulge = "1.5",
-                   level_max = "9" ,
-                   step_size = "city",
-                   sub_size = "ultra_fine",
-                   grid_size = "0.5", 
-                   dtm_minalt = 0,
-                   dtm_maxalt = 4000,
-                   dtm_area = FALSE,
-                   projFolder = c("data/","output/","run/","las/"),
-                   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
-                   path_lastools = NULL,
-                   cores = "3",
-                   giLinks = NULL) {
+                      gisdbase_path = NULL,
+                      thin_with_grid = "0.5",
+                      keep_class = "2",
+                      bulge = "1.5",
+                      level_max = "9" ,
+                      step_size = "city",
+                      sub_size = "ultra_fine",
+                      grid_size = "0.5", 
+                      dtm_minalt = 0,
+                      dtm_maxalt = 4000,
+                      dtm_area = FALSE,
+                      projFolder = c("data/","output/","run/","las/"),
+                      proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
+                      path_lastools = NULL,
+                      cores = "3",
+                      giLinks = NULL) {
   
   if (is.null(giLinks)){
     giLinks <- linkBuilder()
@@ -82,7 +82,7 @@ fa_pc2DTM <- function(lasDir = NULL,
       cmd <- paste("wine ",path_lastools <- paste(system.file(package = "uavRst"), "LAStools", sep = "/"))
     }
   }
- 
+  
   # create cmd strings
   las2las       <- paste(cmd,"las2las-cli.exe",sep = "/")
   lasmerge      <- paste(cmd,"lasmerge-cli.exe",sep = "/")
@@ -202,8 +202,8 @@ fa_pc2DTM <- function(lasDir = NULL,
   
   # import to saga as point cloud
   
-    saga <- link2GI::linkSAGA()
-    sagaCmd<-saga$sagaCmd
+  saga <- link2GI::linkSAGA()
+  sagaCmd<-saga$sagaCmd
   
   ret <- system(paste0(sagaCmd,' io_shapes 16 ',
                        ' -POINTS ', path_run,'pointcloud',

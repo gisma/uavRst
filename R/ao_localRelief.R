@@ -40,15 +40,15 @@ if (!isGeneric('ao_pc2Hillshade')) {
 #'
 
 ao_pc2Hillshade <- function(lasDir = NULL,
-                   gisdbase_path = NULL,
-                   GRASSlocation = "tmp/",
-                   projFolder = c("data/","output/","run/","las/"),
-                   grid_size = "1.0", 
-                   param_list = c("i","v", "n", "g","f","overwrite","quiet"),
-                   spline_level_max = "9" ,
-                   proj4 = "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
-                   gisdbase_exist = FALSE,
-                   path_lastools = NULL) {
+                            gisdbase_path = NULL,
+                            GRASSlocation = "tmp/",
+                            projFolder = c("data/","output/","run/","las/"),
+                            grid_size = "1.0", 
+                            param_list = c("i","v", "n", "g","f","overwrite","quiet"),
+                            spline_level_max = "9" ,
+                            proj4 = "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
+                            gisdbase_exist = FALSE,
+                            path_lastools = NULL) {
   
   # some basic checks 
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
@@ -129,8 +129,8 @@ ao_pc2Hillshade <- function(lasDir = NULL,
                             ignore.stderr = TRUE
   )
   
-
-
+  
+  
   cat(":: calculate local relief ...\n")
   ret <- rgrass7::execGRASS("r.local.relief",
                             flags  = param_list,
@@ -149,6 +149,6 @@ ao_pc2Hillshade <- function(lasDir = NULL,
   # write GRASS to TIF
   raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("hillshade"))),paste0(path_output,"hillshade"), overwrite=TRUE,format="GTiff")
   #hillshade <- h_grass2tif(runDir = path_output, layer = "hillshade",returnRaster = TRUE)
-  
+  hillshade<-raster::raster(rgrass7::readRAST(paste0("hillshade")))
   return(hillshade)  
 }

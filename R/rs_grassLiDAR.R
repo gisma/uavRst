@@ -70,43 +70,43 @@ r_in_lidar<- function(input=NULL,
   input<-path.expand(input)
   if (!is.null(zrange)){
     rgrass7::execGRASS("r.in.lidar",
-              input = input,
-              output = output,
-              flags = flags,
-              resolution = resolution,
-              method = method,
-              base_raster = base_raster,
-              zrange = zrange,
-              class_filter =class_filter,
-              echoCmd=TRUE,
-              intern = FALSE,
-              ignore.stderr = FALSE)
+                       input = input,
+                       output = output,
+                       flags = flags,
+                       resolution = resolution,
+                       method = method,
+                       base_raster = base_raster,
+                       zrange = zrange,
+                       class_filter =class_filter,
+                       echoCmd=TRUE,
+                       intern = FALSE,
+                       ignore.stderr = FALSE)
   } else if (!is.null(return_filter)){
     rgrass7::execGRASS("r.in.lidar",
-              input = input,
-              output = output,
-              flags = flags,
-              resolution = resolution,
-              method = method,
-              return_filter =return_filter,
-              echoCmd=TRUE,
-              intern = FALSE,
-              ignore.stderr = FALSE)
+                       input = input,
+                       output = output,
+                       flags = flags,
+                       resolution = resolution,
+                       method = method,
+                       return_filter =return_filter,
+                       echoCmd=TRUE,
+                       intern = FALSE,
+                       ignore.stderr = FALSE)
     
   } else if (!is.null(class_filter)) {
     
-   
+    
     # (step 0) during r.in.lidar check if an error occure
     m<-try(rgrass7::execGRASS("r.in.lidar",
-                     input = input,
-                     output = output,
-                     flags = flags,
-                     resolution = resolution,
-                     method = method,
-                     class_filter =class_filter,
-                     echoCmd=FALSE,
-                     intern = TRUE,
-                     ignore.stderr = FALSE))
+                              input = input,
+                              output = output,
+                              flags = flags,
+                              resolution = resolution,
+                              method = method,
+                              class_filter =class_filter,
+                              echoCmd=FALSE,
+                              intern = TRUE,
+                              ignore.stderr = FALSE))
     
     if (class(m)=="try-error") {
       cat("\nno correct las extent - already tried to correct...\n")

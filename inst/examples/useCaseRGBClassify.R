@@ -66,17 +66,17 @@ if (startCalcex){
                  prefixrunFN       = prefixrunFN,
                  suffixTrainGeom   = "",
                  prefixTrainGeom   = "index_", 
-                # indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"), 
+                 # indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"), 
                  RGBTrans          = TRUE,
                  colorSpaces       = c("CIELab","XYZ","YUV"),
                  #channels          = c("red"),# "green", "blue"),  
                  hara              = FALSE,
-                # haraType          = c("simple"), #,"advanced","higher"),   
+                 # haraType          = c("simple"), #,"advanced","higher"),   
                  stat              = TRUE, 
                  edge              = TRUE, 
-                # edgeType          = c("gradient","sobel","touzi"), 
+                 # edgeType          = c("gradient","sobel","touzi"), 
                  morpho            = TRUE, 
-                # morphoType        = c("dilate","erode","opening","closing"), 
+                 # morphoType        = c("dilate","erode","opening","closing"), 
                  kernel            = 3, 
                  currentDataFolder = currentDataFolder,
                  currentIdxFolder  = currentIdxFolder)
@@ -95,9 +95,9 @@ if (startTrain){
   
   # load raw training dataframe
   if (!(exists)("trainDF"))
-  trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))  
+    trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))  
   if (!(exists)("bnames"))
-  load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
+    load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
   # add leading Title "ID" and tailing title "FN"
   names(trainDF)<-append("ID",append(bnames,"FN"))
   
@@ -129,12 +129,12 @@ if (startTrain){
   # if parallel process was interuppted and not finished correctly the resulting R sessions will be killed
   system("kill -9 $(pidof R)")
   
-
+  
   saveRDS(result, file = paste0(path_output,prefixrunFN,"_",pVal,"_model_final",".rds"))
   model_final=result[[2]]
   perf <- model_final$pred[model_final$pred$mtry==model_final$bestTune$mtry,]
   # scores for categorical 
-  skills <- classificationStats(perf$pred,perf$obs, plot = T) 
+  #skills <- classificationStats(perf$pred,perf$obs, plot = T) 
   #plot(skills)
   # linear model for numeric
   # summary(lm(as.numeric(as.character(perf$pred))~as.numeric(as.character(perf$obs))))

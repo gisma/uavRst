@@ -37,7 +37,7 @@ trainingDF <- uavRst::extractTrainData(rasterStack  = trainStack,
                                ) 
 
 #saveRDS(trainingDF,path=paste0(path_output,runname,"_trainingDF.RData"))
-  
+
 cat(":: extraction...finsihed \n")
 
 

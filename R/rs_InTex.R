@@ -92,32 +92,32 @@ textureVariables <- function(x,
     if (class (x)=="RasterStack"||class (x)=="RasterBrick"){  
       if (parallel){
         glcm_filter[[j]]<-foreach::foreach(i=nrasters,
-                                  .packages= c("glcm","raster"))%dopar%{
-                                    glcm(x[[i]], 
-                                         window = c(kernelSize[j], kernelSize[j]), 
-                                         shift=shift,
-                                         statistics=stats,n_grey=n_grey,
-                                         min_x=min_x[i],max_x=max_x[i],
-                                         na_opt="center")
-                                  } 
+                                           .packages= c("glcm","raster"))%dopar%{
+                                             glcm(x[[i]], 
+                                                  window = c(kernelSize[j], kernelSize[j]), 
+                                                  shift=shift,
+                                                  statistics=stats,n_grey=n_grey,
+                                                  min_x=min_x[i],max_x=max_x[i],
+                                                  na_opt="center")
+                                           } 
       } else {
         glcm_filter[[j]]<-foreach::foreach(i=nrasters,
-                                  .packages= c("glcm","raster"))%do%{
-                                    raster::mask(glcm(x[[i]], 
-                                              window = c(kernelSize[j], kernelSize[j]), 
-                                              shift=shift,
-                                              statistics=stats,n_grey=n_grey,
-                                              min_x=min_x[i],max_x=max_x[i],
-                                              na_opt="center"), x[[i]])
-                                  }
+                                           .packages= c("glcm","raster"))%do%{
+                                             raster::mask(glcm(x[[i]], 
+                                                               window = c(kernelSize[j], kernelSize[j]), 
+                                                               shift=shift,
+                                                               statistics=stats,n_grey=n_grey,
+                                                               min_x=min_x[i],max_x=max_x[i],
+                                                               na_opt="center"), x[[i]])
+                                           }
       }
       names(glcm_filter[[j]])<-names(x)[nrasters]
     } else {
       glcm_filter[[j]]<-raster::mask(glcm(x, window = c(kernelSize[j], kernelSize[j]), 
-                                  shift=shift,
-                                  statistics=stats,n_grey=n_grey,
-                                  min_x=min_x,max_x=max_x,
-                                  na_opt="center"), x)
+                                          shift=shift,
+                                          statistics=stats,n_grey=n_grey,
+                                          min_x=min_x,max_x=max_x,
+                                          na_opt="center"), x)
     }   
   }
   doParallel::stopImplicitCluster()
@@ -146,7 +146,7 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 #' @param return_raster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
 #' @param path_output path outut
-  
+
 #' @references Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.
 #' IEEE Transactions on Systems, Man and Cybernetics. SMC-3(6):610-620.\cr
 #' \href{https://www.orfeo-toolbox.org/packages/OTBSoftwareGuide.pdf}{Orfeo Toolbox Sofware Guide, 2016}\cr
@@ -690,12 +690,12 @@ gdalDEMParam<- function(dem,
   x<-xres(s)
   gdalwarp(dem,'dem2.tif',
            te=paste(extent(s)[1],
-           ' ',
-           extent(s)[3],
-           ' ',
-           extent(s)[2],
-           ' ',
-           extent(s)[4]),
+                    ' ',
+                    extent(s)[3],
+                    ' ',
+                    extent(s)[2],
+                    ' ',
+                    extent(s)[4]),
            tr=paste(x,' ', y),
            overwrite = TRUE,
            multi = TRUE)

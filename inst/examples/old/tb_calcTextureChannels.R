@@ -48,7 +48,7 @@
 #' #plot the results from VIS0.6 channel:
 #' raster::plot(unlist(unlist(glcm$size_3$X4490600_5321400.1)))
 #' }
-#' @seealso \code{\link{glcm}}
+
 
 textureVariables <- function(x,
                              nrasters=1:nlayers(x),
@@ -87,32 +87,32 @@ textureVariables <- function(x,
     if (class (x)=="RasterStack"||class (x)=="RasterBrick"){  
       if (parallel){
         glcm_filter[[j]]<-foreach::foreach(i=nrasters,
-                                  .packages= c("glcm","raster"))%dopar%{
-                                    glcm::glcm(x[[i]], 
-                                         window = c(kernelSize[j], kernelSize[j]), 
-                                         shift=shift,
-                                         statistics=stats,n_grey=n_grey,
-                                         min_x=min_x[i],max_x=max_x[i],
-                                         na_opt="center")
-                                  } 
+                                           .packages= c("glcm","raster"))%dopar%{
+                                             glcm::glcm(x[[i]], 
+                                                        window = c(kernelSize[j], kernelSize[j]), 
+                                                        shift=shift,
+                                                        statistics=stats,n_grey=n_grey,
+                                                        min_x=min_x[i],max_x=max_x[i],
+                                                        na_opt="center")
+                                           } 
       } else {
         glcm_filter[[j]]<-foreach::foreach(i=nrasters,
-                                  .packages= c("glcm","raster"))%do%{
-                                    raster::mask(glcm::glcm(x[[i]], 
-                                              window = c(kernelSize[j], kernelSize[j]), 
-                                              shift=shift,
-                                              statistics=stats,n_grey=n_grey,
-                                              min_x=min_x[i],max_x=max_x[i],
-                                              na_opt="center"), x[[i]])
-                                  }
+                                           .packages= c("glcm","raster"))%do%{
+                                             raster::mask(glcm::glcm(x[[i]], 
+                                                                     window = c(kernelSize[j], kernelSize[j]), 
+                                                                     shift=shift,
+                                                                     statistics=stats,n_grey=n_grey,
+                                                                     min_x=min_x[i],max_x=max_x[i],
+                                                                     na_opt="center"), x[[i]])
+                                           }
       }
       names(glcm_filter[[j]])<-names(x)[nrasters]
     } else {
       glcm_filter[[j]]<-raster::mask(glcm::glcm(x, window = c(kernelSize[j], kernelSize[j]), 
-                                  shift=shift,
-                                  statistics=stats,n_grey=n_grey,
-                                  min_x=min_x,max_x=max_x,
-                                  na_opt="center"), x)
+                                                shift=shift,
+                                                statistics=stats,n_grey=n_grey,
+                                                min_x=min_x,max_x=max_x,
+                                                na_opt="center"), x)
     }   
   }
   doParallel::stopImplicitCluster()
@@ -187,7 +187,7 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 
 #' @author Chris Reudenbach, Thomas Nauss
 #' @note 
-#' The following Haralick textures are largely comparable to the results as derived by the \code{\link{glcm}} package. 
+The following Haralick textures are largely comparable to the results as derived by the \code{\link{glcm}} package.
 #' Find more information about the these common texture indices at the tutorial site of
 #' \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Mryka Hall-Beyer}\cr
 #' 

@@ -162,13 +162,13 @@ if (calculateBands) {
       }
       # if calc haralick
       if (hara){
-        for (haras in haraType){
-          cat(":::: processing haralick... ",haras,"\n")
-          uavRst::otbTexturesHaralick(x = fbFN,
-                                      output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),
-                                      texture = haras)
-          bnames <-append(bnames,paste0(makebNames(hara = haras),"_",filterBand))
-        }
+        # for (haras in haraType){
+        cat(":::: processing haralick... ",haras,"\n")
+        uavRst::otbTexturesHaralick(x = fbFN,
+                                    output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),
+                                    texture = haras)
+        bnames <-append(bnames,paste0(makebNames(bandNames = haras),"_",filterBand))
+      }
       }
       # delete single channel for synthetic channel calculation
       file.remove(paste0(filterBand,"_",basename(imageFiles[i])))

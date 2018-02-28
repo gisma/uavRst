@@ -52,7 +52,8 @@ Imports:
     methods,
     RSAGA,
     reshape2,
-    rgrass7 
+    rgrass7,
+    randomForest
 Suggests: knitr,
     rmarkdown,
     mapview

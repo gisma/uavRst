@@ -1,54 +1,4 @@
 
-rs_basicClassify<-function(rasterLayer=c("b1","b2","b3","RI","CI","BI"),trainingfN){
-  
-  # put all raster in a brick
-  img<-NULL
-  
-  files<-paste0(rasterLayer,".tif")
-  img<- brick(lapply(files, raster))
-  raster::writeRaster(img,filename = "brick.tif",overwrite=TRUE)
-  # read training data
-  trainData <- shapefile(trainingfN)
-  sp::proj4string(trainData)<- CRS("+proj=longlat +datum=WGS84 +no_defs")
-  # define response param
-  responseCol <- "class"
-  
-  #extract training Area pixel values
-  dfAll = data.frame(matrix(vector(), nrow = 0, ncol = length(names(img)) + 1))   
-  for (i in 1:length(unique(trainData[[responseCol]]))){                          
-    category <- unique(trainData[[responseCol]])[i]
-    categorymap <- trainData[trainData[[responseCol]] == category,]
-    dataSet <- extract(img, categorymap)
-    dataSet <- lapply(dataSet, function(x){cbind(x, class = as.numeric(rep(category, nrow(x))))})
-    df <- do.call("rbind", dataSet)
-    dfAll <- rbind(dfAll, df)
-  }
-  
-  # split training and test data
-  inTraining <- createDataPartition(dfAll$class, p = .75, list = FALSE)
-  training <- dfAll[ inTraining,]
-  testing  <- dfAll[-inTraining,]
-  
-  nsamples <- 10000
-  sdfAll <- subset(training[sample(1:nrow(training), nsamples), ])
-  
-  # model training  
-  modFit_rf <- train(as.factor(class) ~ b1 + b2 + b3 + RI + CI + BI , 
-                     method = "rf", 
-                     trControl=trainControl(method="repeatedcv", 
-                                            number=10, 
-                                            repeats=5, 
-                                            selectionFunction = "oneSE"),
-                     data = sdfAll)
-  # classify  
-  beginCluster()
-  preds_rf <- clusterR(img, raster::predict, args = list(model = modFit_rf))
-  endCluster() 
-  raster::writeRaster(preds_rf,filename = "~/predict2.tif",overwrite=TRUE)
-  
-}
-
-
 
 # Split rgb
 gdalsplit<-function(fn){
@@ -206,9 +156,9 @@ predictRGB <- function(imageFiles=NULL,
   doParallel::registerDoParallel	(cl)
   foreach::foreach(i,po) %dopar% {
     #for (i in 1:length(imageFiles)) {
-    require(raster)  
-    require(randomForest)
-    require(caret)
+    requireNamespace(raster)  
+    #requireNamespace(randomForest)
+    #require(caret)
     #TODO rasterstack
     fn<-basename(imageFiles[i])
     fnOut <- paste0(po,out_prefix,fn)
@@ -247,7 +197,6 @@ predictRGB <- function(imageFiles=NULL,
 #' @param seed          number for seeding
 #' @param noClu         number of cluster to be used
 #' @param sumFunction sumfunction
-#' 
 #' @export ffsTrainModel
 #' @examples  
 #' \dontrun{
@@ -275,7 +224,6 @@ ffsTrainModel<-function(   trainingDF   = NULL,
                         runtest      = FALSE,
                         seed         = 100,
                         noClu = 3) {
-  
 
   # create subset according to pval
   trainIndex<-caret::createDataPartition(trainingDF$ID, p = pVal, list=FALSE)
@@ -342,7 +290,7 @@ ffsTrainModel<-function(   trainingDF   = NULL,
 #' create name vector corresponding to the training image stack 
 #' 
 #' @param rgbi default is  NA
-#' @param haratxt band names 
+#' @param bandNames band names 
 #' @param  stat band names 
 #' @param morpho band names 
 #' @param edge band names 
@@ -351,27 +299,27 @@ ffsTrainModel<-function(   trainingDF   = NULL,
 #' @export makebNames 
 
 makebNames <- function(rgbi    = NA,
-                       haratxt = NA,
+                       bandNames = NA,
                        stat    = FALSE,
                        morpho  = NA,
                        edge    = NA ,
                        RGBtrans=NA){
   
   if (!is.na(rgbi[1])) bnames <- append(c("red","green","blue"),rgbi)
-  if (!is.na(haratxt)) {
-    if(haratxt == "simple"){
+  if (!is.na(bandNames)) {
+    if(bandNames == "simple"){
       bnames <- c("Energy", "Entropy", "Correlation", 
                   "Inverse_Difference_Moment", "Inertia", 
                   "Cluster_Shade", "Cluster_Prominence",
                   "Haralick_Correlation")
-    } else if(haratxt == "advanced"){
+    } else if(bandNames == "advanced"){
       bnames <- c("Hara_Mean", "Hara_Variance", "Dissimilarity",
                   "Sum_Average", 
                   "Sum_Variance", "Sum_Entropy", 
                   "Difference_of_Variances", 
                   "Difference_of_Entropies", 
                   "IC1", "IC2")
-    } else if(haratxt == "higher"){
+    } else if(bandNames == "higher"){
       bnames <- c("Short_Run_Emphasis", 
                   "Long_Run_Emphasis", 
                   "Grey-Level_Nonuniformity", 
@@ -383,7 +331,7 @@ makebNames <- function(rgbi    = NA,
                   "Short_Run_High_Grey-Level_Emphasis", 
                   "Long_Run_Low_Grey-Level_Emphasis",
                   "Long_Run_High_Grey-Level_Emphasis")
-    } else if(haratxt == "all"){
+    } else if(bandNames == "all"){
       bnames <- c("Energy", "Entropy", "Correlation", 
                   "Inverse_Difference_Moment", "Inertia", 
                   "Cluster_Shade", "Cluster_Prominence",
@@ -672,13 +620,13 @@ calcex<- function ( useTrainData      = TRUE,
         }
         # if calc haralick
         if (hara){
-          for (haraT in haraType){
-            cat(catNote(":::: processing haralick... ",haraT,"\n"))
+          for (type in haraType){
+            cat(catNote(":::: processing haralick... ",type,"\n"))
             uavRst::otbTexturesHaralick(x = fbFN,
                                         output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),
-                                        texture = haraT)
+                                        texture = type)
             flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,"hara_",basename(imageFiles[i])),"*")))
-            bnames <-append(bnames,paste0(makebNames(hara = haraT),"_",filterBand))
+            bnames <-append(bnames,paste0(makebNames(bandNames = type),"_",filterBand))
           }
         }
         # delete single channel for synthetic channel calculation

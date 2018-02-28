@@ -13,12 +13,12 @@
 
 
 missingExtents<-function(catalogTable){
-
+  
   for (i in 3:nrow(catalogTable)){
-
+    
     findrows <- which(catalogTable$MinX ==0|catalogTable$MinY==0|
                         catalogTable$MaxX==0|catalogTable$MaxY==0)
-
+    
     for (j in findrows){
       coor<-substr(catalogTable[j,1],nchar(as.character(catalogTable[j,1]))-10, nchar(as.character(catalogTable[j,1])))
       xmin<-paste0(substr(coor, 1,3), "000")
@@ -26,10 +26,10 @@ missingExtents<-function(catalogTable){
       catalogTable[j,]$MinX=as.numeric(xmin)
       catalogTable[j,]$MinY=as.numeric(ymin)
     }}
-
-
+  
+  
   return(catalogTable)
-
+  
 }
 
 #'@name densityMetrics
@@ -55,7 +55,7 @@ missingExtents<-function(catalogTable){
 
 
 densityMetrics<-function(lasFiles, heightClassList, res){
-
+  
   slices<-paste(unlist(heightClassList), collapse = ",")
   for (i in lasFiles){
     command<-Fusion
@@ -66,7 +66,7 @@ densityMetrics<-function(lasFiles, heightClassList, res){
     command<-paste0(command," ", path_run,i,"densMetrics", ".dtm"   )
     command<-paste0(command," ", path_input, i )
     system(command)
-    }}
+  }}
 
 
 
@@ -88,52 +88,52 @@ densityMetrics<-function(lasFiles, heightClassList, res){
 #'}
 #'
 GroundSurfaceCreate<-function(lasFiles, res ){
-
-
+  
+  
   paramList <- c(paste(as.character(res),"M M 1 32 0 0 "))
-
-
+  
+  
   for (i in 1:length(lasFiles)) {
     ### --> retrieve infomation from las file
-
-
+    
+    
     # calculate extents etc...
-
+    
     #--> Fusion catalog if not allready exists
     if(!file.exists(paste0(path_run, lasFiles[i],".csv"))){
-    command<-Fusion
-    command<-paste0(command, "catalog.exe")
-    command<-paste0(command," ", path_input, basename(lasFiles[i]) )
-    command<-paste0(command," ", path_run,lasFiles[i],".html"   )
-    system(command)
-
-    #--> extract extent info
-    info <- utils::read.csv(paste0(path_run,lasFiles[i],".csv"))
-    #fix extent
-    info2<-missingExtents(info)
-    #TODO  fix error in las files if (as.numeric(info[[2]][3])) fixLas()
-    #--> define extent for further calculation
-    extent<-paste(as.numeric(info2$MinX),as.numeric(info2$MinY),as.numeric(info2$MaxX),as.numeric(info2$MaxY))
-    ext<-c(as.numeric(info2$MinX),as.numeric(info2$MinY),as.numeric(info2$MaxX),as.numeric(info2$MaxY))
-
-
-    #--> Create a .las with groundpoints only
-    command<-Fusion
-    command<-paste0(command, "clipdata.exe")
-    command<-paste0(command," ","/class:2 ")
-    command<-paste0(command," ", path_input, basename(lasFiles[i])   )
-    command<-paste0(command," ", path_run,"ground_",basename(lasFiles[i])   )
-    command<-paste0(command," ", extent)
-    system(command)
-
-    #--> Create the required PLANS DTM format
-    command<-Fusion
-    command<-paste0(command, "gridsurfacecreate.exe")
-    command<-paste0(command," ", path_run,"surf_",basename(lasFiles[i]),".dtm")
-    command<-paste0(command," ", paramList  )
-    command<-paste0(command," ", path_run,"ground_",basename(lasFiles[i])   )
-    system(command)}
-
+      command<-Fusion
+      command<-paste0(command, "catalog.exe")
+      command<-paste0(command," ", path_input, basename(lasFiles[i]) )
+      command<-paste0(command," ", path_run,lasFiles[i],".html"   )
+      system(command)
+      
+      #--> extract extent info
+      info <- utils::read.csv(paste0(path_run,lasFiles[i],".csv"))
+      #fix extent
+      info2<-missingExtents(info)
+      #TODO  fix error in las files if (as.numeric(info[[2]][3])) fixLas()
+      #--> define extent for further calculation
+      extent<-paste(as.numeric(info2$MinX),as.numeric(info2$MinY),as.numeric(info2$MaxX),as.numeric(info2$MaxY))
+      ext<-c(as.numeric(info2$MinX),as.numeric(info2$MinY),as.numeric(info2$MaxX),as.numeric(info2$MaxY))
+      
+      
+      #--> Create a .las with groundpoints only
+      command<-Fusion
+      command<-paste0(command, "clipdata.exe")
+      command<-paste0(command," ","/class:2 ")
+      command<-paste0(command," ", path_input, basename(lasFiles[i])   )
+      command<-paste0(command," ", path_run,"ground_",basename(lasFiles[i])   )
+      command<-paste0(command," ", extent)
+      system(command)
+      
+      #--> Create the required PLANS DTM format
+      command<-Fusion
+      command<-paste0(command, "gridsurfacecreate.exe")
+      command<-paste0(command," ", path_run,"surf_",basename(lasFiles[i]),".dtm")
+      command<-paste0(command," ", paramList  )
+      command<-paste0(command," ", path_run,"ground_",basename(lasFiles[i])   )
+      system(command)}
+    
     else{
       #--> extract extent info
       info <- utils::read.csv(paste0(path_run,lasFiles[i],".csv"))
@@ -143,8 +143,8 @@ GroundSurfaceCreate<-function(lasFiles, res ){
       #--> define extent for further calculation
       extent<-paste(as.numeric(info2$MinX),as.numeric(info2$MinY),as.numeric(info2$MaxX),as.numeric(info2$MaxY))
       ext<-c(as.numeric(info2$MinX),as.numeric(info2$MinY),as.numeric(info2$MaxX),as.numeric(info2$MaxY))
-
-
+      
+      
       #--> Create a .las with groundpoints only
       command<-Fusion
       command<-paste0(command, "clipdata.exe")
@@ -153,7 +153,7 @@ GroundSurfaceCreate<-function(lasFiles, res ){
       command<-paste0(command," ", path_run,"ground_",basename(lasFiles[i])   )
       command<-paste0(command," ", extent)
       system(command)
-
+      
       #--> Create the required PLANS DTM format
       command<-Fusion
       command<-paste0(command, "gridsurfacecreate.exe")
@@ -161,9 +161,9 @@ GroundSurfaceCreate<-function(lasFiles, res ){
       command<-paste0(command," ", paramList  )
       command<-paste0(command," ", path_run,"ground_",basename(lasFiles[i])   )
       system(command)}
-
-    }
+    
   }
+}
 
 
 
@@ -220,10 +220,10 @@ GridMetrics<-function(lasFiles,
   metricsList<-vector("list", length(lasFiles))
   metr<-list()
   #metr<-vector("list", length(lasFiles))
-for (i in 1:length(lasFiles)){
-
-  command<-Fusion
-  command<-paste0(command, "catalog.exe")
+  for (i in 1:length(lasFiles)){
+    
+    command<-Fusion
+    command<-paste0(command, "catalog.exe")
   command<-paste0(command," ", path_input, lasFiles[i] )
   command<-paste0(command," ", path_run, lasFiles[i],".html"   )
   system(command)

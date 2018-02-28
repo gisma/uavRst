@@ -236,7 +236,7 @@ if (!isGeneric('getGeodata')) {
 
 
 getGeodata <- function(name='GADM', download=TRUE, path='', ...) {
-
+  
   path <- .getDataPath(path)
   if (name=='GADM') {
     .GADM(..., download=download, path=path)
@@ -468,7 +468,7 @@ ccodes <- function() {
   if (res==0.5) {
     lon <- min(180, max(-180, lon))
     lat <- min(90, max(-60, lat))
-    rs <- raster(nrows=5, ncols=12, xmn=-180, xmx=180, ymn=-60, ymx=90 )
+    rs <- raster::raster(nrows=5, ncols=12, xmn=-180, xmx=180, ymn=-60, ymx=90 )
     row <- rowFromY(rs, lat) - 1
     col <- colFromX(rs, lon) - 1
     rc <- paste(row, col, sep='')
@@ -521,7 +521,7 @@ ccodes <- function() {
     }
   }
   if (var  == 'alt') {
-    st <- raster(paste(path, bilfiles, sep=''))
+    st <- raster::raster(paste(path, bilfiles, sep=''))
   } else {
     st <- stack(paste(path, bilfiles, sep=''))
   }
@@ -563,7 +563,7 @@ ccodes <- function() {
     }
   }
   if (file.exists(filename)) {
-    rs <- raster(filename)
+    rs <- raster::raster(filename)
   } else {
     #patrn <- paste(country, '.', mskname, name, ".grd", sep="")
     #f <- list.files(path, pattern=patrn)
@@ -572,7 +572,7 @@ ccodes <- function() {
       warning('something went wrong')
       return(NULL)
     } else if (length(f)==1) {
-      rs <- raster(f)
+      rs <- raster::raster(f)
     } else {
       rs <- sapply(f, raster)
       cat('returning a list of RasterLayer objects\n')
@@ -601,7 +601,7 @@ ccodes <- function() {
       if (lat > 60) {lat<- 60}
 
 
-      rs <- raster(nrows=24, ncols=72, xmn=-180, xmx=180, ymn=-60, ymx=60 )
+      rs <- raster::raster(nrows=24, ncols=72, xmn=-180, xmx=180, ymn=-60, ymx=60 )
       rowTile <- rowFromY(rs, lat)
       colTile <- colFromX(rs, lon)
       if (rowTile < 10) { rowTile <- paste('0', rowTile, sep='') }
@@ -906,7 +906,7 @@ ccodes <- function() {
 }
 
 .importAsc<-function(x,z) {
-  y <- raster(x)
+  y <- raster::raster(x)
   projection(y) <- CRS(z)
   return(y)
 }

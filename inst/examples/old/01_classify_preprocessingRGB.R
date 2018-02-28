@@ -72,7 +72,7 @@ rgb_all<- flist<-list()
 # out <- foreach(i = 1:length(rgb),indices = indices) %dopar% {
 #   library(raster)  
 #   library(uavRst)
-  for (i in 1:length(rgb)){
+for (i in 1:length(rgb)){
   rgb_rgbi<-raster::stack(rgb[[i]],uavRst::rgbIndices(rgb[[i]][[1]],rgb[[i]][[2]],rgb[[i]][[3]],indices))
   
   for (filterBand in channels){
@@ -102,7 +102,7 @@ rgb_all<- flist<-list()
   
   # export as geotiff
   fn<-paste0(path_id,"/index_",basename(imageFiles[i]))
-  bnames<-makebNames(rgbi = indices, haratxt = haratype)
+  bnames<-makebNames(rgbi = indices, haraBands = haratype)
   save(bnames,file = paste0(path_id,"/bnames_index_",basename(imageFiles[i]),".RData"))
   names(rgb_all)<-bnames
   raster::writeRaster(rgb_all,fn,overwrite=TRUE)
