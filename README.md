@@ -17,19 +17,11 @@ surveys including battery-dependent task splianantting, save departures, and app
 
 ## Unmanned Aerial Vehicle Remote Sensing Toolbox - uavRst
 
-The ```uavRst``` analysis toolbox package is far from being well organized. Nevertheless it can roughly divided in 4 categories as marked by more or less meaningful prefixes:
-
-  
-  * forest analysis (fa)
-  * image analysis (ia)
-  * archaeology (ao)
-  * useful tools (to)
-
-For running the ```uavRst``` on  your platform you will need a bunch of third party software. The most comfortable way to fulfill most of the requirements is to install QGIS, GRASS- and SAGA-GIS and depending on the choosen tool in addition the Fusion tools for the fusion processing chain of LiDAR data. Following the excellent [installation instructions](https://github.com/jannes-m/RQGIS/blob/master/vignettes/install_guide.Rmd)  of the [RQGIS](https://cran.r-project.org/web/packages/RQGIS/index.html) package will have a good first try to ensure a smooth working environment.
+The ```uavRst``` analysis toolbox package is far from being *mature*. In addition you will need for running the most of the ```uavRst```  functions a bunch of third party software. The most comfortable way to fulfill most of the requirements is to install QGIS, GRASS- and SAGA-GIS and depending on the choosen tool in addition the Fusion tools for the fusion processing chain of LiDAR data. Following the excellent [installation instructions](https://github.com/jannes-m/RQGIS/blob/master/vignettes/install_guide.Rmd)  of the [RQGIS](https://cran.r-project.org/web/packages/RQGIS/index.html) package will have a good first try to ensure a smooth working environment.
 
 The [Fusion toolset](http://forsys.sefs.uw.edu/fusion/fusionlatest.html) is available at the developer homepage. Please download it and install it as usual. Note you have to adapt the Installation folder in the ``controlFusion.txt`` file. If you are running a default installation on Windows you do not need to change the path. 
 
-The [LAStools toolset](http://lastools.org/download/LAStools.zip) is available at the [rapidlasso](https://rapidlasso.com/lastools/) homepage. Please download it and unzip it as usual.
+The [LAStools toolset](http://lastools.org/download/LAStools.zip) is available at the [rapidlasso](https://rapidlasso.com/lastools/) homepage. Please download it and unzip it as usual. For Windows systems it is expected that you put it  at `C:/LASTools` under Linux at `~/apps/LASTools`. 
 
 Note: For running Fusion and LAStools tools under Linux you first need to install wine.
 
