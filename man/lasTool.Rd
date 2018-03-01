@@ -8,8 +8,8 @@ lasTool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
   keep_class = "2", bulge = "1.5", step_size = "city",
   sub_size = "ultra_fine", grid_size = "1.0",
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
-  rscale = "0.01 0.01 0.01", stepoverlap = 2, cores = "2", xoff = 0,
-  yoff = 0, outpath = NULL)
+  rscale = "0.01 0.01 0.01", stepoverlap = NULL, cores = "2", xoff = 0,
+  yoff = 0, outpath = NULL, path_lastools = NULL, verbose = FALSE)
 }
 \arguments{
 \item{tool}{default is \code{lasinfo}   additionally xou may choose las2las, lasmerge, lasground_new, las2dem, las2txt}
@@ -32,7 +32,7 @@ lasTool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
 
 \item{rscale}{rscale}
 
-\item{stepoverlap}{stepoverlap}
+\item{stepoverlap}{Spacing of overlap steps aused in lasoverage default is NULL}
 
 \item{cores}{number of cores that will be used}
 
@@ -41,6 +41,10 @@ lasTool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
 \item{yoff}{yoff}
 
 \item{outpath}{outpath}
+
+\item{path_lastools}{character folder containing the Windows binary files of the LAStools}
+
+\item{verbose}{keep it quiet}
 }
 \description{
 using lasLib from R. returns lasR basically returns a DTM

@@ -102,8 +102,8 @@ ao_pc2Hillshade <- function(lasDir = NULL,
                 ignore.stderr = TRUE
   )
   # get extent of merged file  
-  sp_param <- getSpatialLASInfo(lasinfo,paste0(path_run,"full_point_cloud.las"))
-  
+  #sp_param <- getSpatialLASInfo(lasinfo,paste0(path_run,"full_point_cloud.las"))
+  sp_param <-lasTool(lasFile= paste0(path_run,"full_point_cloud.las"))
   # add proj4 string manually
   sp_param[5] <- proj4
   

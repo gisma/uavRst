@@ -101,7 +101,7 @@ saveRDS(chmR,file = paste0(path_output,"chmR.rds"))
 
 
 
-if (lidardata) chmR<- lidarchm
+if (lidardata) chmR<- chm2
 # ----  start crown analysis ------------------------
 
 ### generic uavRST approach
@@ -111,7 +111,7 @@ tPos <- uavRst::treePos(chmR,
                                 minCrownArea = 1,
                                 maxCrownArea = maxCrownArea,
                                 join = 1, 
-                                thresh = 0.01,
+                                thresh = 0.25,
                                 giLinks = giLinks )
 saveRDS(tPos,file = paste0(path_output,"treePos_iws.rds"))
 # workaround for strange effects with SAGA 
@@ -175,7 +175,7 @@ crownsFusion[[3]]
 
 mapview::mapview(crownsFT) + 
 mapview::mapview(crownsRL) + 
-mapview::mapview(crownsITC,zcol ="Height_m") +
+mapview::mapview(crownsITC,zcol ="Height_m") 
 mapview::mapview(crowns,zcol="chmMAX") +
 mapview::mapview(chmR)
 

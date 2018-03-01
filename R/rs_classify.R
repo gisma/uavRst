@@ -501,8 +501,8 @@ calcex<- function ( useTrainData      = TRUE,
   
   # link GDAL and OTB
   gdal <- link2GI::linkGDAL()
-  link2GI::linkOTB()
-  
+  link<-link2GI::linkOTB()
+  path_OTB <-link$pathOTB
   if ((stat == TRUE || hara == TRUE || edge == TRUE || morpho == TRUE) & path_OTB == "") stop("OTB missing - please check")
   
   ### ----- start preprocessing ---------------------------------------------------
@@ -673,7 +673,7 @@ calcex<- function ( useTrainData      = TRUE,
     # get image and geometry data for training purposes
     imageTrainFiles <- list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE)
     tmp  <- basename(list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE))
-    geomTrainFiles<-paste0(currentDataFolder,substr(tmp,nchar(prefixTrainGeom)+1,nchar(tmp)-(nchar(suffixTrainGeom)+4)),suffixTrainGeom,"shp")
+    geomTrainFiles<-paste0(currentDataFolder,substr(tmp,nchar(prefixTrainGeom)+1,nchar(tmp)-(nchar(suffixTrainGeom)+4)),suffixTrainGeom,".shp")
     
     imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
     geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
