@@ -1,10 +1,13 @@
 Package: uavRst
 Type: Package
 Title: Unmanned Aerial Vehicle Remote Sensing Tools
-Version: 0.3-2
-Date: 2018-02-22
-Authors@R: c(person("Lars", "Opgenoorth", email = "opgenoorth@uni-marburg.de", role = c("aut", "aut")),
-             person("Christoph", "Reudenbach", email = "reudenbach@geo.uni-marburg.de", role = c("cre"))
+Version: 0.3-3
+Date: 2018-03-01
+Authors@R: c(person("Hanna", "Meyer", email = "hanna.meyer@geo.uni-marburg.de", role = c("ctb","aut")),
+             person("Lars", "Opgenoorth", email = "opgenoorth@uni-marburg.de", role = c("ctb")),
+             person("Thomas", "Nauss", email = "nauss@staff.uni-marburg.de", role = c("ctb")),
+             person("Christoph", "Reudenbach", email = "reudenbach@geo.uni-marburg.de", role = c("cre","aut")),
+             person("Environmental Informatics Marburg", role = c("ctb"))
              )
 Encoding: UTF-8
 Maintainer: Chris Reudenbach <reudenbach@uni-marburg.de>
