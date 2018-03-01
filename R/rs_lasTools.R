@@ -128,7 +128,8 @@ lasTool <- function(  tool="lasinfo",
     # execute
     ret <- system(command,intern = FALSE, ignore.stderr = FALSE)  
     # get extent of merged file
-    sp_param <- getSpatialLASInfo(lasinfo,paste0(outpath,"full_point_cloud.las"))
+    #sp_param <- getSpatialLASInfo(lasinfo,paste0(outpath,"full_point_cloud.las"))
+    sp_param <- lasTool(lasFile= paste0(outpath,"full_point_cloud.las"))
     # create name of merged file
     name<- paste(sp_param ,collapse=" ")
     tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
