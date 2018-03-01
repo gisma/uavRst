@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_pot_insolation.R
 \name{fa_pot_insol}
 \alias{fa_pot_insol}
-\title{calculate statitiscs of polygon based raster extraction}
+\title{calculates the amount of incoming solar radiation (insolation)}
 \usage{
 fa_pot_insol(x = NULL, svf_radius = 10000, svf_method = 0,
   svf_dlevel = 3, svf_ndirs = 8, pi_solarconst = 1367, pi_units = 0,
@@ -42,7 +42,7 @@ fa_pot_insol(x = NULL, svf_radius = 10000, svf_method = 0,
 \item{pi_lumped}{= 70.0}
 }
 \description{
-calculate statitiscs of polygon based raster extraction. return returns all calculations as SAGA Grid for statistical analysis
+This function calculates the amount of incoming solar radiation (insolation) depending on slope, aspect, and atmospheric properties
 }
 \examples{
 \dontrun{
@@ -50,6 +50,9 @@ calculate statitiscs of polygon based raster extraction. return returns all calc
 pot_insolation <- fa_pot_insol("chm")
 }
 
+}
+\seealso{
+\href{https://www.rdocumentation.org/packages/RSAGA/versions/0.94-5/topics/rsaga.insolation}{rsaga.insolation}
 }
 \author{
 Chris Reudenbach

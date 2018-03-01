@@ -9,7 +9,7 @@ if (!isGeneric('fa_tree_segementation')) {
 #'@description
 #' Tree segementation based on a CHM basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 #'
-#'@author Chris Reudenbach
+#'@author Christoph Reudenbach
 #'
 #'@param x  spatial raster object
 #'@param minTreeAlt default is 5 

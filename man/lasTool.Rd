@@ -2,14 +2,15 @@
 % Please edit documentation in R/rs_lasTools.R
 \name{lasTool}
 \alias{lasTool}
-\title{lasR Using a bit of lastools from R}
+\title{lasR Using a bit of LAStools from R}
 \usage{
 lasTool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
   keep_class = "2", bulge = "1.5", step_size = "city",
   sub_size = "ultra_fine", grid_size = "1.0",
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
   rscale = "0.01 0.01 0.01", stepoverlap = NULL, cores = "2", xoff = 0,
-  yoff = 0, outpath = NULL, path_lastools = NULL, verbose = FALSE)
+  yoff = 0, outpath = NULL, path_lastools = NULL, verbose = FALSE,
+  cutExtent = NULL, cutSlice = NULL)
 }
 \arguments{
 \item{tool}{default is \code{lasinfo}   additionally xou may choose las2las, lasmerge, lasground_new, las2dem, las2txt}
@@ -45,9 +46,13 @@ lasTool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
 \item{path_lastools}{character folder containing the Windows binary files of the LAStools}
 
 \item{verbose}{keep it quiet}
+
+\item{cutExtent}{NULL}
+
+\item{cutSlice}{NULL}
 }
 \description{
-using lasLib from R. returns lasR basically returns a DTM
+simple wrapper for some LAStools functions
 }
 \examples{
 \dontrun{

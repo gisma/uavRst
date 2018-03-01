@@ -28,7 +28,7 @@ require(uavRst)
 rm(list =ls())
 
 # set processing switches
-startCalcex  = FALSE
+startCalcex  = TRUE
 startTrain   = TRUE
 startPredict = FALSE
 
@@ -40,20 +40,22 @@ prefixrunFN       = "traddel"
 projRootDir <- "~/temp7/GRASS7/"
 
 # create project structure and export global pathes
-link2GI::initProj(projRootDir = projRootDir,
+link<-link2GI::initProj(projRootDir = projRootDir,
                   projFolders = c("data/",
                                   "data/training/",
                                   "data/training/idx/",
                                   "output/",
                                   "run/",
-                                  "fun/") )
+                                  "fun/") 
+                    )
 
 # set current data and results path default is training 
-currentDataFolder = path_data_training
-currentIdxFolder  = path_data_training_idx
+currentDataFolder = link$data_training
+currentIdxFolder  = link$data_training_idx
 
 # set working directory dirty but helpful
-setwd(path_run)
+setwd(link$run)
+path_run<-link$run
 # clean run dir
 unlink(paste0(path_run,"*"), force = TRUE)
 if (startCalcex){

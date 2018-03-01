@@ -48,11 +48,11 @@ r_in_lidar(input = NULL, output = NULL, file = NULL, method = NULL,
 \item{r.in.lidar}{[-penosgijdv]}
 }
 \description{
-Creates raster* objects from a LiDAR derived  point cloud based on regular las formatted data files
+simple wrapper for 'r.in.lidar' to calculate LiDAR derived raster grids. It creates a \code{raster*} object.
 }
 \examples{
 \dontrun{
-# create a DEM based on the class 2 Minimum returns
+# Straightforward approach to generate a DTM based on the class 2 minimum returns of a LiDAR file
 require(curl)
 # get a laz file from Mr. Isenburg
 url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz"
@@ -72,8 +72,10 @@ r_in_lidar(input = paste0(getwd(),"/test.las"),
            resolution = 10,
            class_filter = 2)
 }
-
+}
+\seealso{
+\href{https://grass.osgeo.org/grass70/manuals/r.in.lidar.html}{r.in.lidar help}
 }
 \author{
-Chris Reudenbach,Thomas Nauss, Jannis Gottwald
+Chris Reudenbach
 }

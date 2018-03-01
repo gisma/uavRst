@@ -7,7 +7,7 @@
 #' @title Unmanned Aerial Vehicle Remote Sensing Tools - awesome gis tools to fly
 #' @author Hanna Meyer, Lars Opgenoorth, Chris Reudenbach, Environmental Informatics Marburg \cr
 #' \cr
-#' \emph{Maintainer:} Chris Reudenbach \email{reudenbach@@uni-marburg.de}
+#' \emph{Maintainer:} Christoph Reudenbach \email{reudenbach@@uni-marburg.de}
 #'
 #' @import stringr zoo foreach sp raster htmlwidgets htmltools Rcpp rgeos rgdal gdalUtils tools maptools doParallel velox CAST 
 #' @importFrom geosphere bearing

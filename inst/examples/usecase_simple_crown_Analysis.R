@@ -56,12 +56,12 @@ saga <- link2GI::linkSAGA()
 if (calculate_chm) {
   cat("\n::: calculate DSM DTM and CHM from point cloud data...\n")
   # create DSM
-  dsm <- uavRst::fa_pc2DSM(lasDir = las_data_dir,
+  dsm <- uavRst::pc2dsm(lasDir = las_data_dir,
                            gisdbase_path = projRootDir,
                            otb_gauss_radius ="0.5",
                            grid_size = "0.05")
   # create DTM
-  dtm <- uavRst::fa_pc2DTM(lasDir = las_data_dir,
+  dtm <- uavRst::pc2dtm(lasDir = las_data_dir,
                            gisdbase_path = projRootDir,
                            thin_with_grid = "0.5",
                            level_max = "5" ,

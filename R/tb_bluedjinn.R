@@ -640,3 +640,11 @@ getPopupStyle <- function() {
   end <- grep("<%=pop%>", pop)
   return(paste(pop[1:(end-2)], collapse = ""))
 }
+
+# Split rgb
+gdalsplit<-function(fn){
+  directory<-dirname(fn)  
+  for (i in seq(1:3)){
+    gdalUtils::gdal_translate(fn,paste0(directory,"/b",i,".tif"),b=i)
+  }
+}

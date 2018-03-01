@@ -27,8 +27,9 @@ path_prefix = "path_"
 
 # proj4 string of ALL data
 proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-extent <- c(477393.,477460. ,5631938. , 5632003.)
-ext<- raster::extent(as.numeric(extent))
+cutExtent <- c(477393.,477460. ,5631938. , 5632003.)
+cutExtent <- c(477375.,477475. ,5631910. , 5632010.)
+ext<- raster::extent(as.numeric(cutExtent))
 
 lidardata=FALSE
 
@@ -58,15 +59,16 @@ setwd(path_run)
 # ----- calculate DSM DTM & CHM FROM UAV POINT CLOUDS-----------------------------------------------
 
 # create DSM
-dsm <- uavRst::fa_pc2DSM(lasDir = las_data_dir,
+dsm <- uavRst::pc2dsm(lasDir = las_data_dir,
                          gisdbase_path = projRootDir,
                          otb_gauss_radius ="0.5",
                          grid_size = "0.5",
                          GRASSlocation = "dsm",
                          grass_lidar_method = "mean",
+                         cutExtent = cutExtent,
                          giLinks = giLinks)
 # create DTM
-dtm <- uavRst::fa_pc2DTM(lasDir = las_data_dir,
+dtm <- uavRst::pc2dtm(lasDir = las_data_dir,
                          gisdbase_path = projRootDir,
                          thin_with_grid = "0.5",
                          level_max = "5" ,

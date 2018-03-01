@@ -1,7 +1,7 @@
-#' lasR Using a bit of lastools from R
+#' lasR Using a bit of LAStools from R
 #'
 #'@description
-#' using lasLib from R. returns lasR basically returns a DTM
+#' simple wrapper for some LAStools functions
 #'
 #'@author Chris Reudenbach
 #'@param tool default is \code{lasinfo}   additionally xou may choose las2las, lasmerge, lasground_new, las2dem, las2txt
@@ -21,6 +21,8 @@
 #'@param outpath outpath
 #'@param path_lastools character folder containing the Windows binary files of the LAStools
 #'@param verbose keep it quiet 
+#'@param cutExtent NULL
+#'@param cutSlice NULL
 
 #'
 #'
@@ -51,7 +53,9 @@ lasTool <- function(  tool="lasinfo",
                       yoff = 0, 
                       outpath = NULL,
                       path_lastools = NULL, 
-                      verbose = FALSE) {
+                      verbose = FALSE,
+                      cutExtent = NULL,
+                      cutSlice = NULL) {
   
   if (is.null(outpath)) outpath <- path.expand(getwd())
   outpath <- path.expand(outpath)
@@ -87,6 +91,7 @@ lasTool <- function(  tool="lasinfo",
   txt2las       <- paste(cmd,"txt2las.exe",sep = "/")
   lasrepair     <- paste(cmd,"las2las.exe",sep = "/")
   lasoverage    <- paste(cmd,"lasoverage.exe",sep = "/")
+  lasclip       <- paste(cmd,"lasclip.exe",sep = "/")
   
   # check las / laz files laz will be preferred
   #  lasFileNames <- list.files(pattern = "[.]las$", path = lasFile, full.names = TRUE)
@@ -168,7 +173,32 @@ lasTool <- function(  tool="lasinfo",
     # execute
     ret <- system(command,intern = FALSE, ignore.stderr = FALSE)  
   }
-  
+  # convert laz to las
+  if (tool=="lasclip"){
+    cat("\n:: clipping las data..\n")
+    # build command
+    if(!is.null(cutExtent)){
+    min_x<- cutExtent[1]
+    min_y<- cutExtent[3]
+    max_x<- cutExtent[2]
+    max_y<- cutExtent[4]
+    min_z<- cutSlice[1]
+    max_z<- cutSlice[2]
+    cat(paste(min_x,min_y),paste(max_x,min_y),paste(max_x,max_y),paste(min_x,max_y),paste(min_x,min_y),file =paste0(path_run,"tmp.txt") ,sep = "\n")
+    
+    command <- lasclip
+    command <- paste0(command, " -i ",lasFile)
+    #command <- paste0(command, "-keep_xyz ",min_x," ",min_y," ", min_z, " ", max_x," ", max_y," ", max_z)
+    command <- paste0(command," -poly ",paste0(path_run,"tmp.txt"))
+    
+    command <- paste0(command," -olas")
+    
+    # execute
+    ret <- system(command,intern = FALSE, ignore.stderr = FALSE)  
+    }  else {
+      cat("\n::: no extent or slice provided....")
+    }
+  }
   # classify ground points (LAStools)"
   if (tool == "lasground"){
     cat(":: classify ground points (LAStools) ...\n")

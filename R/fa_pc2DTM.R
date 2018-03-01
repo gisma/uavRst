@@ -1,15 +1,15 @@
 
-if (!isGeneric('fa_pc2DTM')) {
-  setGeneric('fa_pc2DTM', function(x, ...)
-    standardGeneric('fa_pc2DTM'))
+if (!isGeneric('pc2dtm')) {
+  setGeneric('pc2dtm', function(x, ...)
+    standardGeneric('pc2dtm'))
 }
 
-#'@name fa_pc2DTM
+#'@name pc2dtm
 #'@title Create a Digital Terrain Model from a UAV generated point cloud 
 #'
 #'@description
 #' Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.  
-#' fa_pc2DTM basically returns a DTM
+#' 
 #'@author Chris Reudenbach
 #'
 #'@param lasDir  default is \code{NULL} path  to the laz/las file(s)
@@ -26,26 +26,22 @@ if (!isGeneric('fa_pc2DTM')) {
 #'@param dtm_area default \code{FALSE} generate polygon of valid DTM data
 #'@param cores number of cores that will be used
 #'@param proj4  default is EPSG 32632 any valid proj4 string that is assumingly the correct one
-#'@param giLinks            list of GI tools cli pathes  default is NULL
+#'@param giLinks list of GI tools cli pathes  default is NULL
 #'@param dtm_maxalt dtm maximum altitude
-#'@param projFolder project folder
+#'@param projSubFolder subfolders that will be created/linked for R related GRASS processing 
 
-
-
-#'
-#'
-#'@export fa_pc2DTM
+#'@export pc2dtm
 #'
 #'@examples 
 #'\dontrun{
-#' fa_pc2DTM(lasDir =  "~/path/to/lasdata",
+#' pc2dtm(lasDir =  "~/path/to/lasdata",
 #'        gisdbase_path = "~/temp5",
 #'        thin_with_grid = "0.5",
 #'        level_max = "5" ,
 #'        grid_size = "0.5")
 #'}
 
-fa_pc2DTM <- function(lasDir = NULL,
+pc2dtm <- function(lasDir = NULL,
                       gisdbase_path = NULL,
                       thin_with_grid = "0.5",
                       keep_class = "2",
@@ -57,7 +53,7 @@ fa_pc2DTM <- function(lasDir = NULL,
                       dtm_minalt = 0,
                       dtm_maxalt = 4000,
                       dtm_area = FALSE,
-                      projFolder = c("data/","output/","run/","las/"),
+                      projSubFolder = c("data/","output/","run/","las/"),
                       proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                       path_lastools = NULL,
                       cores = "3",
@@ -114,7 +110,7 @@ fa_pc2DTM <- function(lasDir = NULL,
   
   # create project structure and export global pathes
   link2GI::initProj(projRootDir = gisdbase_path, 
-                    projFolders =  projFolder)
+                    projFolders =  projSubFolder)
   
   # set lastool folder
   path_lastools <- path.expand(path_lastools)

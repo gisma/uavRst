@@ -4,11 +4,11 @@ if (!isGeneric('fa_pot_insol')) {
 }
 
 #'@name fa_pot_insol
-#'@title calculate statitiscs of polygon based raster extraction
+#'@title calculates the amount of incoming solar radiation (insolation) 
 #'
 #'@description
-#' calculate statitiscs of polygon based raster extraction. return returns all calculations as SAGA Grid for statistical analysis
-#'
+#' This function calculates the amount of incoming solar radiation (insolation) depending on slope, aspect, and atmospheric properties
+#'@seealso \href{https://www.rdocumentation.org/packages/RSAGA/versions/0.94-5/topics/rsaga.insolation}{rsaga.insolation}
 #'@author Chris Reudenbach
 #'
 #'@param x  spatial raster object

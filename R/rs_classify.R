@@ -1,13 +1,3 @@
-
-
-# Split rgb
-gdalsplit<-function(fn){
-  directory<-dirname(fn)  
-  for (i in seq(1:3)){
-    gdalUtils::gdal_translate(fn,paste0(directory,"/b",i,".tif"),b=i)
-  }
-}
-
 if (!isGeneric('extractTrainData')) {
   setGeneric('extractTrainData', function(x, ...)
     standardGeneric('extractTrainData'))
@@ -112,11 +102,8 @@ getCounts<- function(ids=c(1,2),
       idVal<-as.numeric(vector(length = length(ids)))
       for (j in 1:length(ids)){
         idVal[j] <- sum(ex[ex[2] == ids[j],  2])/j
-        #nogreen <- table(ex[ex[2] == id2,  ])
       }}
-    #  all=nogreen+green  
-    #  gr=green/all
-    #  no=nogreen/all
+
     
     return(c(idVal,basename(fn)))
     #return(c("green"=gr,"nogreen"=no,"all"=all, "plot"=basename(imageFiles[i])))
