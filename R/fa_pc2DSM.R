@@ -104,8 +104,8 @@ pc2dsm <- function(lasDir = NULL,
   # 
   #create cmd strings
   lasmerge      <- paste(cmd,"lasmerge.exe",sep = "/")
-  lasinfo       <- paste(cmd,"/lasinfo.exe",sep = "/")
-  
+  lasinfo       <- paste(cmd,"lasinfo.exe",sep = "/")
+  las2dem       <- paste(cmd,"las2dem.exe",sep = "/")
   # delete content in run directory
   unlink(paste0(path_run,"*"), force = TRUE)
   
@@ -143,8 +143,8 @@ pc2dsm <- function(lasDir = NULL,
     cat("\n:: converting laz to las..\n")
     # build command
     command <- las2dem
-    command <- paste0(command, " -i ",lasFile)
-    command <- paste0(command," -odir ",outpath)
+    command <- paste0(command, " -i ",lasDir)
+    command <- paste0(command," -odir ",path_run)
     command <- paste0(command," -olas")
     
     # execute

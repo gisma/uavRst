@@ -27,8 +27,8 @@ path_prefix = "path_"
 
 # proj4 string of ALL data
 proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-cutExtent <- c(477393.,477460. ,5631938. , 5632003.)
-cutExtent <- c(477375.,477475. ,5631910. , 5632010.)
+# cutExtent <- c(477393.,477460. ,5631938. , 5632003.) # old extent sharply cutted
+cutExtent <- c(477375.,477475. ,5631900. , 5632000.)
 ext<- raster::extent(as.numeric(cutExtent))
 
 lidardata=FALSE
