@@ -115,9 +115,7 @@ pc2dsm <- function(lasDir = NULL,
   las2dem       <- paste(cmd,"las2dem.exe",sep = "/")
   # delete content in run directory
   #unlink(paste0(path_run,"*"), force = TRUE)
-  
-  setwd(path_run)  
-  
+
   # some basic checks 
   
   if(raster::extension(basename(lasDir)) !=".las" & raster::extension(basename(lasDir)) !=".laz") {
@@ -137,7 +135,7 @@ pc2dsm <- function(lasDir = NULL,
     cat("\nNOTE: You are dealing with a huge UAV generated point cloud data set.\n      so take time and keep relaxed... :-)\n")
     cat(":: merge and decompress ",noF," point cloud files...\n")
     ret <- system(paste0(lasmerge,
-                         " -i ",lasDir,"/*.",extFN,
+                         " -i ",lasDir,"*.",extFN,
                          " -olas",
                          " -o ",path_run,"full_point_cloud.las"),
                   intern = TRUE, 
@@ -151,11 +149,12 @@ pc2dsm <- function(lasDir = NULL,
      file.copy(from = lasDir,
                to = paste0(path_run,name),
                overwrite = TRUE)
+
    }
   
   if (!is.null(cutExtent)){
   #lasTool(tool = "lasclip",lasFile = lasfile,cutExtent = cutExtent)
-  las = lidR::readLAS(paste0(path_run,"full_point_cloud.las"))
+  las = lidR::readLAS(paste0(path_run,name))
   las_clip<-lidR::lasclipRectangle(las, as.numeric(cutExtent[1]), as.numeric(cutExtent[3]), as.numeric(cutExtent[2]), as.numeric(cutExtent[4]))
   lidR::writeLAS(las_clip ,paste0(path_run,"cut_point_cloud.las"))
   name<-"cut_point_cloud.las"
