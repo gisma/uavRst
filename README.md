@@ -11,7 +11,7 @@ The [uavR](https://github.com/gisma/uavR) "twins" consist of two packages:
 
 ## Mission Planning - uavRmp
 
-It is strongly encouraged to use the new package for flight planning [uavRmp](https://github.com/gisma/uavRmp) for uav autonomous mission planning. In the first place it is a simple and open source planning tool for monitoring flights of low budget drones based on ```R```. It provide an easy workflow for planning autonomous 
+It is strongly encouraged to use the new package for flight planning [uavRmp](https://github.com/gisma/uavRmp) for uav autonomous mission planning. In the first place it is a simple and open source planning tool for monitoring flights of low budget drones based on ```R```. It provides an easy workflow for planning autonomous 
 surveys including battery-dependent task splianantting, save departures, and approaches of each monitoring chunks. 
 
 
@@ -28,11 +28,11 @@ Note: For running Fusion and LAStools tools under Linux you first need to instal
 In addition you need to install the  ```link2GI``` package. 
 In case of any problems drop an issue or try to use the actual github hosted version of the [link2GI](https://github.com/gisma/link2GI/blob/master/README.md) package. 
 
-Nevertheless all mentioned software packages have to be installed correctly on your the OS. Most of it tested under Windows and Linux and should run....The most easiest way to obtain a fairly good runtime enviroment is to setup Linux as a dual boot system or in a VB. If interested in setting up a clean Xubuntu or Mint Linux and then  use the  [postinstall script](http://giswerk.org/doku.php?do=export_code&id=tutorials:softgis:xubuntu:xubuntugis&codeblock=0setup) for installing most of the stuff. 
+Nevertheless all mentioned software packages have to be installed correctly on your the OS. Most of it tested under Windows and Linux and should run....The most easiest way to obtain a fairly good runtime enviroment is to setup Linux as a dual boot system or in a VB. Set up up a clean Xubuntu or Mint Linux and then  use the  [postinstall script](http://giswerk.org/doku.php?do=export_code&id=tutorials:softgis:xubuntu:xubuntugis&codeblock=0setup) for installing most of the stuff (be surprised because you will have a lot of additional cool CLI stuff mostly dealing with numerical climate modeling). 
 
 A full list of necessary libaries and binaries beyond ```R``` will hopefully (soon) be provided.
 
-Even if honestly working on it it will be still a long run passing the CRAN check, nevertheless it runs fine for now ...
+The CRAN checks are passing and now it is only a question of documentation until it will be submitted... nevertheless it runs fine for now ...
 
 To install from ```github```  you need to have installed the ```devtools``` package.
 
