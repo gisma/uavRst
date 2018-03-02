@@ -12,7 +12,7 @@ if (!isGeneric('ao_pc2Hillshade')) {
 #'@author Chris Reudenbach
 #'
 #'@param lasDir  default is \code{NULL} path  to the laz/las file(s)
-#'@param path_lastools directory for the windows lastools
+#'@param path_lastools character folder containing the Windows binary files of the LAStools
 #'@param gisdbase_path gisdbase will be linked or created depending on \code{gisdbase_exist}
 #'@param GRASSlocation location will be linked or created depending on \code{gisdbase_exist}
 #'@param projFolder subfolders in gisdbase for R related processing 

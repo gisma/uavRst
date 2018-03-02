@@ -5,12 +5,12 @@
 \title{Create a Digital Terrain Model from a UAV generated point cloud}
 \usage{
 pc2dtm(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
-  keep_class = "2", bulge = "1.5", level_max = "9", step_size = "city",
+  keep_class = "2", bulge = "1.5", level_max = "4", step_size = "city",
   sub_size = "ultra_fine", grid_size = "0.5", dtm_minalt = 0,
-  dtm_maxalt = 4000, dtm_area = FALSE, projSubFolder = c("data/",
-  "output/", "run/", "las/"),
-  proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
-  path_lastools = NULL, cores = "3", giLinks = NULL)
+  dtm_maxalt = 4000, dtm_area = FALSE, cutExtent = NULL,
+  projSubFolder = c("data/", "output/", "run/", "las/"),
+  proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs", cores = "3",
+  path_lastools = NULL, giLinks = NULL, verbose = FALSE)
 }
 \arguments{
 \item{lasDir}{default is \code{NULL} path  to the laz/las file(s)}
@@ -37,15 +37,19 @@ pc2dtm(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
 
 \item{dtm_area}{default \code{FALSE} generate polygon of valid DTM data}
 
+\item{cutExtent}{clip area}
+
 \item{projSubFolder}{subfolders that will be created/linked for R related GRASS processing}
 
 \item{proj4}{default is EPSG 32632 any valid proj4 string that is assumingly the correct one}
 
-\item{path_lastools}{directory for the windows lastools}
-
 \item{cores}{number of cores that will be used}
 
+\item{path_lastools}{character folder containing the Windows binary files of the LAStools}
+
 \item{giLinks}{list of GI tools cli pathes  default is NULL}
+
+\item{verbose}{to be quiet (1)}
 }
 \description{
 Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.

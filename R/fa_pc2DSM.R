@@ -31,7 +31,7 @@ if (!isGeneric('pc2dsm')) {
 #'@param grass_lidar_method statistical method to sample the Lidar data
 #'@param grass_lidar_pth grass lidar aggregation column percentile
 #'@param dsm_maxalt  dsm maximum altitude
-#'@param path_lastools path to LAStools binaries
+#'@param path_lastools character folder containing the Windows binary files of the LAStools
 #'@param verbose to be quiet (1)
 #'@param cutExtent clip area
 
@@ -69,7 +69,7 @@ pc2dsm <- function(lasDir = NULL,
                    gisdbase_exist = FALSE,
                    path_lastools = NULL,
                    giLinks =NULL, 
-                   verbose = TRUE) {
+                   verbose = FALSE) {
   
   if (is.null(giLinks)){
     giLinks <- linkBuilder()
@@ -77,7 +77,14 @@ pc2dsm <- function(lasDir = NULL,
   
   gdal <- giLinks$gdal
   saga <- giLinks$saga
+  otb <- giLinks$otb
   sagaCmd<-saga$sagaCmd
+  path_OTB <- otb$pathOTB
+  if (!verbose){
+  GV <- Sys.getenv("GRASS_VERBOSE")
+  Sys.setenv("GRASS_VERBOSE"=0) 
+  ois <- get.ignore.stderrOption()
+  set.ignore.stderrOption(TRUE)}
   
   # get/map the las binary folder and create the base command line
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
@@ -107,7 +114,7 @@ pc2dsm <- function(lasDir = NULL,
   lasinfo       <- paste(cmd,"lasinfo.exe",sep = "/")
   las2dem       <- paste(cmd,"las2dem.exe",sep = "/")
   # delete content in run directory
-  unlink(paste0(path_run,"*"), force = TRUE)
+  #unlink(paste0(path_run,"*"), force = TRUE)
   
   setwd(path_run)  
   
@@ -135,24 +142,17 @@ pc2dsm <- function(lasDir = NULL,
                          " -o ",path_run,"full_point_cloud.las"),
                   intern = TRUE, 
                   ignore.stderr = TRUE
+                  
     )
-  } else { 
-    
-    cat(":: decompress point cloud files...\n")
-    
-    cat("\n:: converting laz to las..\n")
-    # build command
-    command <- las2dem
-    command <- paste0(command, " -i ",lasDir)
-    command <- paste0(command," -odir ",path_run)
-    command <- paste0(command," -olas")
-    
-    # execute
-    ret <- system(command,intern = FALSE, ignore.stderr = FALSE)  
-    
-    
-  }
-  name<-"full_point_cloud.las"
+    name<-"full_point_cloud.las"
+  } 
+   else { 
+     name<-basename(lasDir)
+     file.copy(from = lasDir,
+               to = paste0(path_run,name),
+               overwrite = TRUE)
+   }
+  
   if (!is.null(cutExtent)){
   #lasTool(tool = "lasclip",lasFile = lasfile,cutExtent = cutExtent)
   las = lidR::readLAS(paste0(path_run,"full_point_cloud.las"))
@@ -160,12 +160,19 @@ pc2dsm <- function(lasDir = NULL,
   lidR::writeLAS(las_clip ,paste0(path_run,"cut_point_cloud.las"))
   name<-"cut_point_cloud.las"
   }
+  
   # get extent of merged file  
   sp_param <-lasTool(lasFile= paste0(path_run,name))
-  
+  # rename output file according to the extent
+  fn<- paste(sp_param ,collapse=" ")
+  tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
+  fn<-gsub(tmp,pattern = "[.]",replacement = "_")
+  # copy it to the output folder
+  file.copy(from = paste0(path_run,name),
+            to = paste0(path_output,fn,".las"),
+            overwrite = TRUE)
   # add proj4 string manually
   sp_param[5] <- proj4
-  
   # create and export globally project folder structure
   paths<-link2GI::initProj(projRootDir = gisdbase_path, 
                            GRASSlocation = GRASSlocation, 
@@ -183,7 +190,7 @@ pc2dsm <- function(lasDir = NULL,
   ret <- rgrass7::execGRASS("r.in.lidar",
                             flags  = c("overwrite","quiet","o"),
                             input  = paste0(path_run,name),
-                            output = "point_cloud_dsm",
+                            output = fn,
                             method = grass_lidar_method,
                             pth = grass_lidar_pth,
                             resolution = as.numeric(grid_size),
@@ -195,50 +202,51 @@ pc2dsm <- function(lasDir = NULL,
   
   cat(":: convert raw DSM to GeoTiff \n")
   #h_grass2tif(runDir = path_output, layer = "point_cloud_dsm")
-  raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("point_cloud_dsm"))),paste0(path_output,"point_cloud_dsm"), overwrite=TRUE,format="GTiff")
-  cat(":: preliminary fill of gaps... \n")
+  raster::writeRaster(raster::raster(rgrass7::readRAST(fn)),paste0(path_run,fn), overwrite=TRUE,format="GTiff")
+  cat(":: fill no data... \n")
   #uavRst:::fillGaps(path_output,paste0("point_cloud_dsm.tif "))  
   ret <- system(paste0("gdal_fillnodata.py ",
-                       path_output,"point_cloud_dsm.tif ",
-                       path_output,"filled_point_cloud_dsm.tif"),intern = TRUE)
+                       path_run,fn,".tif ",
+                       path_run,fn,".tif"),intern = TRUE)
   
-  gdalUtils::gdalwarp(paste0(path_output,"point_cloud_dsm.tif"), 
-                      paste0(path_run,"point_cloud_dsm.sdat"), 
-                      overwrite = TRUE,  
-                      of = 'SAGA',
-                      verbose = FALSE) 
+
   cat(":: smoothing the gap filled DSM... \n")
   # otb gaussian smooth
   if (type_smooth != "no_smoothing") { 
     if (type_smooth == "otb_gauss") {
       otb_gauss_radius <- as.character(as.numeric(otb_gauss_radius)/as.numeric(grid_size))
-      otb <- link2GI::linkOTB()
-      link2GI::makGlobalVar("path_OTB",otb$pathOTB)
       module  <- "otbcli_Smoothing"
       command <- paste0(path_OTB, module)
-      command <- paste0(command, " -in ",path_output,"filled_point_cloud_dsm.tif")
-      command <- paste0(command, " -out ", path_output, "/dsm.tif")
+      command <- paste0(command, " -in ",path_run,fn,".tif")
+      command <- paste0(command, " -out ", path_run,"dsm_",fn,".tif")
       command <- paste0(command, " -ram 4096")
       command <- paste0(command, " -type gaussian")
       command <- paste0(command, " -type.gaussian.radius ",otb_gauss_radius) #(in pixel)
-      ret <- system(command, intern = TRUE)  
-      dsm <- raster::raster(paste0(path_output, "/dsm.tif"))
+      ret <- system(command, intern = TRUE,ignore.stdout = TRUE,ignore.stderr = TRUE)  
+      dsm <- raster::raster(paste0(path_run,fn,".tif"))
     }
     if (type_smooth == "saga_spline") {
+      #
+      gdalUtils::gdalwarp(paste0(path_run,fn,".tif"), 
+                          paste0(path_run,fn,".sdat"), 
+                          overwrite = TRUE,  
+                          of = 'SAGA',
+                          verbose = FALSE) 
       # saga spline interpolation of the alt values
       cat(":: iterative spline smooth of dsm... \n")
       ret <- system(paste0(sagaCmd,' grid_spline 5 ',
-                           ' -GRID ', path_run,'filled_point_cloud_dsm.sgrd',
+                           ' -GRID ', path_run,fn,'.sgrd',
                            ' -TARGET_DEFINITION 0',
-                           ' -TARGET_OUT_GRID ',path_run,"spline_filled_point_cloud_dsm.sgrd",
+                           ' -TARGET_OUT_GRID ',path_run,"dsm_",fn,".sgrd",
                            ' -TARGET_USER_SIZE ',grid_size,
                            ' -METHOD 1',
                            ' -EPSILON 0.0001',
                            ' -LEVEL_MAX ',saga_spline_level_max),
                     intern = TRUE, 
+                    ignore.stdout =  TRUE,
                     ignore.stderr = TRUE)
-      dsm <- gdalUtils::gdalwarp(paste0(path_run,"spline_filled_point_cloud_dsm.sdat"), 
-                                 paste0(path_output,"dsm.tif"), 
+      dsm <- gdalUtils::gdalwarp(paste0(path_run,"dsm_",fn,".sdat"), 
+                                 paste0(path_run,"dsm_",fn,".tif"), 
                                  t_srs = proj4,
                                  output_Raster = TRUE,
                                  overwrite = TRUE,  
@@ -248,7 +256,7 @@ pc2dsm <- function(lasDir = NULL,
   cat(":: calculate metadata ... \n")
   dsm[dsm <= dsm_minalt] <- NA
   dsm[dsm > dsm_maxalt] <- NA
-  raster::writeRaster(dsm, paste0(path_output, "dsm.tif"), overwrite = TRUE)
+  raster::writeRaster(dsm, paste0(path_output,"dsm_",fn,".tif"), overwrite = TRUE)
   e <- extent(dsm)
   dsmA <- as(e, 'SpatialPolygons')  
   if (dsm_area) {
@@ -259,7 +267,10 @@ pc2dsm <- function(lasDir = NULL,
     #dsmdA <- rasterToPolygons(dsm2, dissolve=TRUE)
   }
   else dsmdA <- NULL
+  if (!verbose)  {
+    Sys.setenv("GRASS_VERBOSE"=GV)
+    set.ignore.stderrOption(ois)
+    }  
   
-  
-  return(list(dsm,dsmA,dsmdA))
+  return(list(dsm,dsmA,dsmdA,paste0(fn,".",extFN)))
 }

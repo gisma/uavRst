@@ -35,7 +35,7 @@ f Do not perform histogram equalization on the color table}
 
 \item{gisdbase_exist}{switch if gisdbase is created or  linked only}
 
-\item{path_lastools}{directory for the windows lastools}
+\item{path_lastools}{character folder containing the Windows binary files of the LAStools}
 }
 \description{
 Create a hillshading model l from a UAV generated point cloud. return ao_pc2Hillshade basically returns a  DSM

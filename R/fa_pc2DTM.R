@@ -15,7 +15,7 @@ if (!isGeneric('pc2dtm')) {
 #'@param lasDir  default is \code{NULL} path  to the laz/las file(s)
 #'@param gisdbase_path default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
 #'@param grid_size  resolution of the DTM raster
-#'@param path_lastools directory for the windows lastools
+#'@param path_lastools character folder containing the Windows binary files of the LAStools
 #'@param thin_with_grid default 0.5 meter. Grid stepsize for data thinning 
 #'@param keep_class default is 2. Default ground class of las/laz conform data 
 #'@param bulge  default is 1.5. 'A parameter to filter spikes it is set to a step_size/10 and then clamped into the range from 1.0 to 2.0
@@ -29,6 +29,8 @@ if (!isGeneric('pc2dtm')) {
 #'@param giLinks list of GI tools cli pathes  default is NULL
 #'@param dtm_maxalt dtm maximum altitude
 #'@param projSubFolder subfolders that will be created/linked for R related GRASS processing 
+#'@param verbose to be quiet (1)
+#'@param cutExtent clip area
 
 #'@export pc2dtm
 #'
@@ -46,49 +48,61 @@ pc2dtm <- function(lasDir = NULL,
                       thin_with_grid = "0.5",
                       keep_class = "2",
                       bulge = "1.5",
-                      level_max = "9" ,
+                      level_max = "4" ,
                       step_size = "city",
                       sub_size = "ultra_fine",
                       grid_size = "0.5", 
                       dtm_minalt = 0,
                       dtm_maxalt = 4000,
                       dtm_area = FALSE,
+                   cutExtent = NULL,
                       projSubFolder = c("data/","output/","run/","las/"),
                       proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
-                      path_lastools = NULL,
                       cores = "3",
-                      giLinks = NULL) {
+                   path_lastools = NULL,
+                   giLinks =NULL, 
+                   verbose = FALSE) {
+  
   
   if (is.null(giLinks)){
     giLinks <- linkBuilder()
   }
   gdal <- giLinks$gdal
   saga <- giLinks$saga
-  sagaCmd<-saga$sagaCmd 
+  otb <- giLinks$otb
+  sagaCmd<-saga$sagaCmd
+  path_OTB <- otb$pathOTB
+  if (!verbose){
+    GV <- Sys.getenv("GRASS_VERBOSE")
+    Sys.setenv("GRASS_VERBOSE"=0) 
+    ois <- get.ignore.stderrOption()
+    set.ignore.stderrOption(TRUE)}
   
-  # some basic checks 
+  # get/map the las binary folder and create the base command line
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
   lasDir <- path.expand(lasDir)
-  
-  
-  if (is.null(path_lastools)) {
-    if (Sys.info()["sysname"] == "Windows") {
-      cmd <- path_lastools <- paste(system.file(package = "uavRst"), "LAStools", sep = "/")
-    } else {
-      cmd <- paste("wine ",path_lastools <- paste(system.file(package = "uavRst"), "LAStools", sep = "/"))
-    }
+  if (Sys.info()["sysname"] == "Windows") {
+    #cmd <- path_lastools <- paste(system.file(package = "uavRst"), "LAStools", sep="/")/LAStools/bin
+    if (is.null(path_lastools)) {cmd <- path_lastools <- "C:/LAStools/bin"
+    if (verbose) cat("\n You did not provide a path to your LAStool binary folder. Assuming C:/LAStools/bin\n")}
+  } else {
+    #cmd <- paste("wine ",path_lastools <- paste(system.file(package = "uavRst"), "LAStools",  sep="/"))
+    if (is.null(path_lastools)) {cmd <- path_lastools <- paste0("wine ",path.expand("~/apps/LAStools/bin"))
+    if (verbose) cat("\n You did not provide a path to your LAStool binary folder. Assuming wine ~/apps/LAStools/bin\n")}
+    
   }
   
   # create cmd strings
-  las2las       <- paste(cmd,"las2las-cli.exe",sep = "/")
-  lasmerge      <- paste(cmd,"lasmerge-cli.exe",sep = "/")
-  lasground_new <- paste(cmd,"lasground_new-cli.exe",sep = "/")
-  las2dem       <- paste(cmd,"las2dem-cli.exe",sep = "/")
-  las2txt       <- paste(cmd,"las2txt-cli.exe",sep = "/")
+  las2las       <- paste(cmd,"las2las.exe",sep = "/")
+  lasmerge      <- paste(cmd,"lasmerge.exe",sep = "/")
+  lasground_new <- paste(cmd,"lasground_new.exe",sep = "/")
+  las2dem       <- paste(cmd,"las2dem.exe",sep = "/")
+  las2txt       <- paste(cmd,"las2txt.exe",sep = "/")
   
   # check las / laz files laz will be preferred
-  lasFileNames <- list.files(pattern = "[.]las$", path = lasDir, full.names = TRUE)
-  lazFileNames <- list.files(pattern = "[.]laz$", path = lasDir, full.names = TRUE)
+  tmplasDir<-dirname(lasDir)
+  lasFileNames <- list.files(pattern = "[.]las$", path = tmplasDir, full.names = TRUE)
+  lazFileNames <- list.files(pattern = "[.]laz$", path = tmplasDir, full.names = TRUE)
   if (length(lazFileNames) > 0 ) extFN <- substr(extension(basename(lazFileNames[1])),2,4)
   else if (length(lasFileNames) > 0) extFN <- substr(extension(basename(lasFileNames[1])),2,4)
   else stop("no valid las or laz files found...\n")
@@ -115,16 +129,72 @@ pc2dtm <- function(lasDir = NULL,
   # set lastool folder
   path_lastools <- path.expand(path_lastools)
   
-  unlink(paste0(path_run,"*"), force = TRUE)
+  #unlink(paste0(path_run,"*"), force = TRUE)
   
   setwd(path_run)
   
   
+  if(raster::extension(basename(lasDir)) !=".las" & raster::extension(basename(lasDir)) !=".laz") {
+    # check las / laz files laz will be preferred
+    lasFileNames <- list.files(pattern = "[.]las$", path = lasDir, full.names = TRUE)
+    lazFileNames <- list.files(pattern = "[.]laz$", path = lasDir, full.names = TRUE)
+    if (length(lazFileNames) > 0 ) {
+      extFN <- substr(raster::extension(basename(lazFileNames[1])),2,4)
+      noF <- length(lazFileNames)
+    }
+    else if (length(lasFileNames) > 0) {
+      extFN <- substr(raster::extension(basename(lasFileNames[1])),2,4)
+      noF <- length(lasFileNames)
+    }
+    else stop("no valid las or laz files found...\n")
+    # merge all files
+    cat("\nNOTE: You are dealing with a huge UAV generated point cloud data set.\n      so take time and keep relaxed... :-)\n")
+    cat(":: merge and decompress ",noF," point cloud files...\n")
+    ret <- system(paste0(lasmerge,
+                         " -i ",lasDir,"/*.",extFN,
+                         " -olas",
+                         " -o ",path_run,"full_point_cloud.las"),
+                  intern = TRUE, 
+                  ignore.stderr = TRUE
+    )
+    name<-"full_point_cloud.las"
+  } else { 
+    
+    name<-basename(lasDir)
+    file.copy(from = lasDir,
+              to = paste0(path_run,name),
+              overwrite = TRUE)
+    
+    
+  }
+
+  if (!is.null(cutExtent)){
+    #lasTool(tool = "lasclip",lasFile = lasfile,cutExtent = cutExtent)
+    las = lidR::readLAS(paste0(path_run,"full_point_cloud.las"))
+    las_clip<-lidR::lasclipRectangle(las, as.numeric(cutExtent[1]), as.numeric(cutExtent[3]), as.numeric(cutExtent[2]), as.numeric(cutExtent[4]))
+    lidR::writeLAS(las_clip ,paste0(path_run,"cut_point_cloud.las"))
+    name<-"cut_point_cloud.las"
+  }
+  # get extent of merged file  
+  sp_param <-lasTool(lasFile= paste0(path_run,name))
+  
+  # rename output file according to the extent
+  fn<- paste(sp_param ,collapse=" ")
+  tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
+  fn<-gsub(tmp,pattern = "[.]",replacement = "_")
+  # copy it to the output folder
+  file.copy(from = paste0(path_run,name),
+            to = paste0(path_output,fn,".las"),
+            overwrite = TRUE)
+  
+  # add proj4 string manually
+  sp_param[5] <- proj4
+  
   ### reduce data amount
   cat("\n:: reducing the point density...\n")
   ret <- system(paste0(las2las,
-                       " -i ",lasDir,"/*.",extFN,
-                       " -odix _red2 ",
+                       " -i ",path_run,name,
+                       " -odix _reduced ",
                        " -odir ",path_run,
                        " -o",extFN,
                        " -keep_class ",keep_class,
@@ -134,38 +204,39 @@ pc2dtm <- function(lasDir = NULL,
   )
   
   # merge all files
-  cat(":: merge point cloud files ...\n")
-  ret <- system(paste0(lasmerge,
-                       " -i ",path_run,"/*_red2.",extFN,
-                       " -o ",path_run,"out.",extFN),
-                intern = TRUE, 
-                ignore.stderr = TRUE
-  )
+  # cat(":: merge point cloud files ...\n")
+  # ret <- system(paste0(lasmerge,
+  #                      " -i ",path_run,"/*_red2.",extFN,
+  #                      " -o ",path_run,"out.",extFN),
+  #               intern = TRUE, 
+  #               ignore.stderr = TRUE
+  # )
   
   #### starting lastools classification 
   # run lasground 
   cat(":: classify ground points (LAStools) ...\n")
   ret <- system(paste0(lasground_new,
-                       " -i ",path_run,"out.",extFN,
+                       " -i ",path_run,tools::file_path_sans_ext(name),"_reduced.",extFN,
                        " -all_returns ",
                        " -bulge ", bulge,
                        " -skip_files",
                        " -step ", step,
                        " -sub ", sub,
-                       " -odix g -o",extFN,
+                       " -odix _ground -o",extFN,
                        " -cores ",cores),
                 intern = FALSE,
                 ignore.stderr = TRUE
   )
   
+  
   # create lastools  DTM
   ret <- system(paste0(las2dem,
-                       " -i ",path_run,"*g.",extFN,
+                       " -i ",path_run,"*ground.",extFN,
                        " -keep_class 2",
                        " -extra_pass",
                        " -step ",grid_size,
                        " -ocut 3 ",
-                       " -odix _dtm ",
+                       " -odix _las2dtm_DTM ",
                        " -otif ",
                        " -odir ",path_output,
                        " -cores ",cores),
@@ -176,7 +247,7 @@ pc2dtm <- function(lasDir = NULL,
   
   # export las file to text file
   ret <- system(paste0(las2txt,
-                       " -i ",path_run,"*g.",extFN,
+                       " -i ",path_run,"*ground.",extFN,
                        " -parse xyzrRGB",
                        " -sep komma"),
                 intern = TRUE, 
@@ -198,12 +269,12 @@ pc2dtm <- function(lasDir = NULL,
   
   # import to saga as point cloud
   
-  saga <- link2GI::linkSAGA()
-  sagaCmd<-saga$sagaCmd
-  
+  #saga <- link2GI::linkSAGA()
+  #sagaCmd<-saga$sagaCmd
+  txtfile <- lasFileNames <- list.files(pattern = "ground[.]txt$", path = path_run, full.names = TRUE) 
   ret <- system(paste0(sagaCmd,' io_shapes 16 ',
                        ' -POINTS ', path_run,'pointcloud',
-                       ' -FILE  ', path_run,'outg.txt',
+                       ' -FILE  ', txtfile,
                        ' -XFIELD 1',
                        ' -YFIELD 2',
                        ' -FIELDS "4;5;6;7"',
@@ -237,7 +308,7 @@ pc2dtm <- function(lasDir = NULL,
   cat(":: calculate metadata ... \n")
   dtm[dtm <= dtm_minalt] <- NA
   dtm[dtm > dtm_maxalt] <- NA
-  raster::writeRaster(dtm, paste0(path_output, "dtm.tif"),overwrite = TRUE)
+  raster::writeRaster(dtm, paste0(path_output,fn, "_dtm.tif"),overwrite = TRUE)
   e <- extent(dtm)
   dtmA <- as(e, 'SpatialPolygons')  
   dtmA <- methods::as(raster::extent(dtm), "SpatialPolygons")
@@ -248,5 +319,9 @@ pc2dtm <- function(lasDir = NULL,
     dtmdA  <- rgeos::gUnaryUnion(dtmdA)
     #dtmdA <- rasterToPolygons(dtm2, dissolve=TRUE)
   } else { dtmdA <- NULL}
-  return(list(dtm,dtmA,dtmdA))
+  if (!verbose)  {
+    Sys.setenv("GRASS_VERBOSE"=GV)
+    set.ignore.stderrOption(ois)
+  }  
+  return(list(dtm,dtmA,dtmdA,paste0(fn,".",extFN)))
 }
