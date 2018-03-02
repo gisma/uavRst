@@ -13,7 +13,7 @@ lasTool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
   cutExtent = NULL, cutSlice = NULL)
 }
 \arguments{
-\item{tool}{default is \code{lasinfo}   additionally xou may choose las2las, lasmerge, lasground_new, las2dem, las2txt}
+\item{tool}{default is \code{lasinfo}   additionally xou may choose lasrepair, lasthin,  lasmerge, lasground_new, las2dem, las2txt, lasoverage, lasclip}
 
 \item{lasFile}{default is \code{NULL} path  to the laz/las file(s)}
 

@@ -20,7 +20,7 @@ if (!isGeneric('pc2dsm')) {
 #'@param GRASSlocation location will be linked or created depending on \code{gisdbase_exist}
 #'@param projSubFolder subfolders that will be created/linked for R related GRASS processing 
 #'@param grid_size resolution for raster operations 
-#'@param type_smooth  default is \code{otb_gauss} alternatives are \code{saga_spline} or for no smoothing at all \code{no_smoothing}
+#'@param type_smooth  default is \code{gauss} alternatives are \code{spline} or for no smoothing at all \code{no}
 #'@param saga_spline_level_max default is 9 number ob spline iterations
 #'@param otb_gauss_radius default is \code{0.5} radius of otb smoothing filter in meter
 #'@param dsm_minalt default is \code{0}, minimum DTM altitude accepted
@@ -55,12 +55,12 @@ pc2dsm <- function(lasDir = NULL,
                    gisdbase_path = NULL,
                    GRASSlocation = "tmp/",
                    projSubFolder = c("data/","output/","run/","las/"),
-                   grid_size = "0.5", 
+                   grid_size = "0.25", 
                    grass_lidar_method = "mean",
                    grass_lidar_pth = 90,
-                   saga_spline_level_max = "5" ,
+                   saga_spline_level_max = "4" ,
                    otb_gauss_radius = "0.5",
-                   type_smooth = "otb_gauss",
+                   type_smooth = "gauss",
                    dsm_minalt = 0,
                    dsm_maxalt = 4000,
                    dsm_area = FALSE,
@@ -146,9 +146,10 @@ pc2dsm <- function(lasDir = NULL,
   } 
    else { 
      name<-basename(lasDir)
-     file.copy(from = lasDir,
-               to = paste0(path_run,name),
-               overwrite = TRUE)
+     if (!file.exists(paste0(path_run,name)))
+       file.copy(from = lasDir,
+                 to = paste0(path_run,name),
+                 overwrite = TRUE,)
 
    }
   
@@ -207,12 +208,12 @@ pc2dsm <- function(lasDir = NULL,
   ret <- system(paste0("gdal_fillnodata.py ",
                        path_run,fn,".tif ",
                        path_run,fn,".tif"),intern = TRUE)
-  
+  dsm <- raster::raster(paste0(path_run,fn,".tif"))
 
   cat(":: smoothing the gap filled DSM... \n")
   # otb gaussian smooth
-  if (type_smooth != "no_smoothing") { 
-    if (type_smooth == "otb_gauss") {
+  if (type_smooth != "no") { 
+    if (type_smooth == "gauss") {
       otb_gauss_radius <- as.character(as.numeric(otb_gauss_radius)/as.numeric(grid_size))
       module  <- "otbcli_Smoothing"
       command <- paste0(path_OTB, module)
@@ -222,9 +223,9 @@ pc2dsm <- function(lasDir = NULL,
       command <- paste0(command, " -type gaussian")
       command <- paste0(command, " -type.gaussian.radius ",otb_gauss_radius) #(in pixel)
       ret <- system(command, intern = TRUE,ignore.stdout = TRUE,ignore.stderr = TRUE)  
-      dsm <- raster::raster(paste0(path_run,fn,".tif"))
+      dsm <- raster::raster(paste0(path_run,"dsm_",fn,".tif"))
     }
-    if (type_smooth == "saga_spline") {
+    if (type_smooth == "spline") {
       #
       gdalUtils::gdalwarp(paste0(path_run,fn,".tif"), 
                           paste0(path_run,fn,".sdat"), 
@@ -271,5 +272,5 @@ pc2dsm <- function(lasDir = NULL,
     set.ignore.stderrOption(ois)
     }  
   
-  return(list(dsm,dsmA,dsmdA,paste0(fn,".",extFN)))
+  return(list(dsm,dsmA,dsmdA,paste0(fn,".las")))
 }

@@ -51,7 +51,7 @@ pc2dtm <- function(lasDir = NULL,
                       level_max = "4" ,
                       step_size = "city",
                       sub_size = "ultra_fine",
-                      grid_size = "0.5", 
+                      grid_size = "0.25", 
                       dtm_minalt = 0,
                       dtm_maxalt = 4000,
                       dtm_area = FALSE,
@@ -161,16 +161,17 @@ pc2dtm <- function(lasDir = NULL,
   } else { 
     
     name<-basename(lasDir)
+    if (!file.exists(paste0(path_run,name)))
     file.copy(from = lasDir,
               to = paste0(path_run,name),
-              overwrite = TRUE)
+              overwrite = TRUE,)
     
     
   }
 
   if (!is.null(cutExtent)){
     #lasTool(tool = "lasclip",lasFile = lasfile,cutExtent = cutExtent)
-    las = lidR::readLAS(paste0(path_run,"full_point_cloud.las"))
+    las = lidR::readLAS(paste0(path_run,name))
     las_clip<-lidR::lasclipRectangle(las, as.numeric(cutExtent[1]), as.numeric(cutExtent[3]), as.numeric(cutExtent[2]), as.numeric(cutExtent[4]))
     lidR::writeLAS(las_clip ,paste0(path_run,"cut_point_cloud.las"))
     name<-"cut_point_cloud.las"
@@ -203,15 +204,7 @@ pc2dtm <- function(lasDir = NULL,
                 ignore.stderr = TRUE
   )
   
-  # merge all files
-  # cat(":: merge point cloud files ...\n")
-  # ret <- system(paste0(lasmerge,
-  #                      " -i ",path_run,"/*_red2.",extFN,
-  #                      " -o ",path_run,"out.",extFN),
-  #               intern = TRUE, 
-  #               ignore.stderr = TRUE
-  # )
-  
+
   #### starting lastools classification 
   # run lasground 
   cat(":: classify ground points (LAStools) ...\n")

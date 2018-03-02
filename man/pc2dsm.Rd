@@ -5,10 +5,10 @@
 \title{Create a Digital Surface Model from a UAV generated point cloud}
 \usage{
 pc2dsm(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
-  projSubFolder = c("data/", "output/", "run/", "las/"), grid_size = "0.5",
+  projSubFolder = c("data/", "output/", "run/", "las/"), grid_size = "0.25",
   grass_lidar_method = "mean", grass_lidar_pth = 90,
-  saga_spline_level_max = "5", otb_gauss_radius = "0.5",
-  type_smooth = "otb_gauss", dsm_minalt = 0, dsm_maxalt = 4000,
+  saga_spline_level_max = "4", otb_gauss_radius = "0.5",
+  type_smooth = "gauss", dsm_minalt = 0, dsm_maxalt = 4000,
   dsm_area = FALSE, cutExtent = NULL,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
   gisdbase_exist = FALSE, path_lastools = NULL, giLinks = NULL,
@@ -33,7 +33,7 @@ pc2dsm(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
 
 \item{otb_gauss_radius}{default is \code{0.5} radius of otb smoothing filter in meter}
 
-\item{type_smooth}{default is \code{otb_gauss} alternatives are \code{saga_spline} or for no smoothing at all \code{no_smoothing}}
+\item{type_smooth}{default is \code{gauss} alternatives are \code{spline} or for no smoothing at all \code{no}}
 
 \item{dsm_minalt}{default is \code{0}, minimum DTM altitude accepted}
 

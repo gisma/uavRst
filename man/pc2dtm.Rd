@@ -6,7 +6,7 @@
 \usage{
 pc2dtm(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
   keep_class = "2", bulge = "1.5", level_max = "4", step_size = "city",
-  sub_size = "ultra_fine", grid_size = "0.5", dtm_minalt = 0,
+  sub_size = "ultra_fine", grid_size = "0.25", dtm_minalt = 0,
   dtm_maxalt = 4000, dtm_area = FALSE, cutExtent = NULL,
   projSubFolder = c("data/", "output/", "run/", "las/"),
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs", cores = "3",

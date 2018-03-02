@@ -1,4 +1,4 @@
-# ---  example control script for lidar data 
+# ---  example control script for  basic lidar data based metrics and resulting indices
 #
 # -------------------------- setup the environment ----------------------------
 
@@ -6,11 +6,8 @@
 rm(list =ls())
 
 # library requirements
-library(rgrass7)
+require(rgrass7)
 
-# switch if you want to correct las files for overlap and scaling issues
-correctLas = FALSE
-lidardata = TRUE
 # define root project folder
 projRootDir <- "~/proj/uav/thesis/finn"
 
@@ -45,31 +42,8 @@ giLinks<-linkBuilder()
 las_data_dir<-path.expand(las_data_dir)
 
 
-# ------------------------ Optional LAS File correction------------------------
+lasfiles<-list.files(las_data_dir,pattern="[.]las?", full.names=FALSE) 
 
-if (correctLas && lidardata){
-  cat(":: reducing overlap patterns...\n")
-  lasTool("lasoverage",paste0(las_data_dir, lasfiles[j]))
-  cat(":: rescaling las files...\n")
-  lasTool("rescale",paste0(las_data_dir,"o_", lasfiles[j]))
-  lasfiles<-list.files(paste0(las_data_dir),pattern="s_o_", full.names=FALSE) 
-  
-  # for corrected las files classFilter has to be 13 
-  # if running uncorrected lasfiles set it to 2
-  classFilter<-13
-}
-# ------------------------ Optional LAS File correction------------------------
-
-# check if extent is ok
-if (lidardata){
-for (i  in 1:length(lasfiles)){ 
-  lasTool(lasFile= paste0(las_data_dir, lasfiles[i]))
-}
-# decompress and merge  point cloud files
-lasTool(tool="las2laz" , lasFile =paste0(las_data_dir,"*"),outpath=las_data_dir)
-lasTool(tool="lasmerge" , lasFile =las_data_dir, outpath=las_data_dir)
-lasfiles<-list.files(paste0(las_data_dir),pattern="merge", full.names=FALSE) 
-}
 
 # list of height pairs as used for vertical slicing the las data
 zrList <- list(c(0,5,10,15,20,50))
@@ -98,7 +72,7 @@ cat(": starting calculations...\n")
 
 # define some list variables
 m_vdr <- m_fhd <-vdr <- fhd <- zrLayer <- statLayer <- hdl1<- hdl2<- gapl<- list() 
-
+classFilter<-13
 # for each existing las file do
 for (j in 1:(length(lasfiles))) {
   # get extent of the lasfile

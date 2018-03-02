@@ -4,7 +4,7 @@
 #' simple wrapper for some LAStools functions
 #'
 #'@author Chris Reudenbach
-#'@param tool default is \code{lasinfo}   additionally xou may choose las2las, lasmerge, lasground_new, las2dem, las2txt
+#'@param tool default is \code{lasinfo}   additionally xou may choose lasrepair, lasthin,  lasmerge, lasground_new, las2dem, las2txt, lasoverage, lasclip
 #'@param lasFile  default is \code{NULL} path  to the laz/las file(s)
 #'@param grid_size  resolution of the DTM raster
 #'@param thin_with_grid default 0.5 meter. Grid stepsize for data thinning
@@ -82,7 +82,7 @@ lasTool <- function(  tool="lasinfo",
   # create cmd strings according to the "keywords"
   lasinfo       <- paste(cmd,"lasinfo.exe",sep = "/")
   getSpacing    <- paste(cmd,"lasinfo.exe",sep = "/")
-  las2las       <- paste(cmd,"las2las.exe",sep = "/")
+  lasthin       <- paste(cmd,"las2las.exe",sep = "/")
   laz2las       <- paste(cmd,"las2las.exe",sep = "/")
   lasmerge      <- paste(cmd,"lasmerge.exe",sep = "/")
   lasground_new <- paste(cmd,"lasground_new.exe",sep = "/")
@@ -148,11 +148,12 @@ lasTool <- function(  tool="lasinfo",
     sp_param[5] <- proj4
   }
   ### reduce data amount  
-  if (tool=="las2las"){
+  if (tool=="lasthin"){
     cat("\n:: reducing points by factor",thin_with_grid," ...\n")
     # build command
-    command <- las2dem
+    command <- lasthin
     command <- paste0(command, " -i ",lasFile)
+    command <- paste0(command," -odix _reduced")
     command <- paste0(command," -odir ",outpath)
     command <- paste0(command," -olas")
     command <- paste0(command," -keep_class ",keep_class)
@@ -160,6 +161,8 @@ lasTool <- function(  tool="lasinfo",
     
     # execute
     ret <- system(command,intern = FALSE, ignore.stderr = FALSE)  
+    
+    
   }
   # convert laz to las
   if (tool=="laz2las"){
@@ -312,7 +315,7 @@ lasTool <- function(  tool="lasinfo",
   # rescales the file to a broader numeric scale   
   if (tool == "rescale"){
     
-    command <- las2las
+    command <- lasthin
     command <- paste0(command," -i ",lasFile)
     command <- paste0(command," -rescale 0.01 0.01 0.01 ")
     command <- paste0(command," -auto_reoffset ")
@@ -324,7 +327,7 @@ lasTool <- function(  tool="lasinfo",
   # rewrite las file and header according to a new offset
   if (tool == "lasrepair"){
     # build command
-    command <- las2las
+    command <- lasrepair
     command <- paste0(command, " -i ",lasFile)
     command <- paste0(command," -olas ")
     command <- paste0(command," -keep_tile", xoff, " ",yoff," 10000 ")
