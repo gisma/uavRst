@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-GPL%20%28%3E=%203%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
 
 # Unmanned Aerial Vehicle Remote Sensing Tools
-The [uavR](https://github.com/gisma/uavR) "package family" is divided in in two packages:
+The [uavR](https://github.com/gisma/uavR) "twins" consist of two packages:
 
   * mission planning ```uavRmp``` (already on [CRAN](https://cran.r-project.org/web/packages/uavRmp/index.html))
   * remote sensing toolbox ```uavRst```
