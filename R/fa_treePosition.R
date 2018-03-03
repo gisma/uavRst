@@ -53,8 +53,8 @@ treePos <- function(chm = NULL,
   gdal <- giLinks$gdal
   saga <- giLinks$saga
   sagaCmd<-saga$sagaCmd
-  raster::writeRaster(chm,paste0("chm.sdat"),overwrite = TRUE,NAflag = 0)
-  raster::writeRaster(chm,paste0("chm.tif"),overwrite = TRUE,NAflag = 0)
+  raster::writeRaster(chm,paste0(path_run,"chm.sdat"),overwrite = TRUE,NAflag = 0)
+  raster::writeRaster(chm,paste0(path_run,"chm.tif"),overwrite = TRUE,NAflag = 0)
   #r2saga(chm,"chm")
 
     cat(":: run pre-segmentation...\n")
@@ -101,7 +101,7 @@ treePos <- function(chm = NULL,
     ts <-  extractMaxPosPoly(paste0(path_run,"chm.tif"),"dummyCrownSegment",poly_split = split)
     # create raw zero mask
     treePos <- ts[[1]] * chm
-    raster::writeRaster(treePos,"treePos0.sdat",overwrite = TRUE,NAflag = 0)
+    raster::writeRaster(treePos,paste0(path_run,"treePos0.sdat"),overwrite = TRUE,NAflag = 0)
     #r2saga(treePos,"treePos0")
     # extract stats
     

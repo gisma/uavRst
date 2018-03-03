@@ -471,7 +471,7 @@ xpolystat <- function(x = NULL,
                     driver = "ESRI Shapefile", 
                     dsn    = path_run, 
                     overwrite_layer = TRUE)
-    spdf<-"spdf.shp"
+    spdf<-paste0("spdf.shp")
   }
   
   for (i in seq(1:length(x))) {
