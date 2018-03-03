@@ -16,7 +16,7 @@ The [`uavRmp`](https://github.com/gisma/uavRmp) package provides functions for r
 
 ## Unmanned Aerial Vehicle Remote Sensing Toolbox - uavRst
 
-The `uavRst`analysis toolbox package is far from being *mature*. You will need using most of the `uavRst`  functions a bunch of third party software. The most comfortable way to fulfill these requirements is to install `QGIS`, `GRASS`- and `SAGA-GIS`. Following the excellent [installation instructions](https://github.com/jannes-m/RQGIS/blob/master/vignettes/install_guide.Rmd)  provided by the  [`RQGIS`](https://CRAN.R-project.org/package=RQGIS) team will give you a good first try to ensure a smooth working environment.
+The `uavRst`analysis toolbox package is far from being *mature*. You will need for most of the `uavRst`  functions a bunch of third party software. The most comfortable way to fulfill these requirements is to install `QGIS`, `GRASS`- and `SAGA-GIS`. Following the excellent [installation instructions](https://github.com/jannes-m/RQGIS/blob/master/vignettes/install_guide.Rmd)  provided by the  [`RQGIS`](https://CRAN.R-project.org/package=RQGIS) team will give you a good first try to ensure a smooth working environment.
 
  Most of the LiDAR related operations can be done by the great R package [`lidR`](https://CRAN.R-project.org/package=rlidR). However for some of the basic point cloud related operations you will need to install the `LAStool` software. The [`LAStools`](http://lastools.org/download/LAStools.zip)  toolset is available at the [rapidlasso](https://rapidlasso.com/lastools/) homepage. Please download it and unzip it as usual. For Windows systems it is by default expected that you put it  at `C:/LASTools`, running  Linux at `~/apps/LASTools`. 
  
