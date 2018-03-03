@@ -225,13 +225,13 @@ extractMaxPosPoly <- function(x,lN, poly_split=TRUE){
   # read raster input data 
   if (poly_split) {system(paste0("rm -rf ",paste0(path_tmp,"split")))}
   dem <- raster::raster(x)
-  fn <- spatial.tools::create_blank_raster(reference_raster=dem,filename = paste0(path_tmp,lN,"raw"))
+  fn <- spatial.tools::create_blank_raster(reference_raster=dem,filename = paste0(path_tmp,basename(lN),"raw"))
   mask <- raster::raster(fn)
   maskx <- velox::velox(mask)
   # chmx <- velox::velox(dem)
   
   # read vector input data the sf way
-  sf_dcs <- sf::st_read(paste0(path_run,lN,".shp"),quiet = TRUE)
+  sf_dcs <- sf::st_read(paste0(lN,".shp"),quiet = TRUE)
   dcs <-  methods::as(sf_dcs, "Spatial")
   
   # retrieve unique NAME 
@@ -239,13 +239,15 @@ extractMaxPosPoly <- function(x,lN, poly_split=TRUE){
   
   if (poly_split) {
     cat("     split polygons...\n")
+    cat("     analyze",length(ids) ,"polygons\n")
+    cat("     assuming 0.25 cm resolution and an average of 25 sqm/polygon\n       calculaton time is approx.:  ",floor(length(ids)/60)," min\n")
     dir.create(paste0(path_tmp,"split"),recursive=TRUE)
     
     # split polygon with respect to the NAME attribute
     parallel::mclapply(ids,function(x){
       rn <- as.character(x)
-      gdalUtils::ogr2ogr(src_datasource_name = paste0(path_run,lN,".shp"),
-                         dst_datasource_name = paste0(path_tmp,"split/",lN,"_",rn,".shp"),
+      gdalUtils::ogr2ogr(src_datasource_name = paste0(lN,".shp"),
+                         dst_datasource_name = paste0(path_tmp,"split/",basename(lN),"_",rn,".shp"),
                          where = paste0("NAME='",rn,"'")
                          , nln = rn)
     },
@@ -254,8 +256,7 @@ extractMaxPosPoly <- function(x,lN, poly_split=TRUE){
   # parallel retrival of maxpos
   
   cat("     max height coords search...\n")
-  cat("     analyze",length(ids) ,"polygons\n")
-  cat("     assuming 5 cm resolution and an average of 15 sqm per polygon\n     the analysis will approx run until",format(Sys.time() + length(ids), " %X "),"\n")
+  
   ret_max_pos <-  parallel::mclapply(ids,function(x) {
     
     # assign vars
@@ -269,7 +270,7 @@ extractMaxPosPoly <- function(x,lN, poly_split=TRUE){
     raster::rasterOptions(tmpdir=paste0(path_tmp,rn)) 
     
     # read single polygon sf is even in this construct times faster
-    sf_shp <- sf::st_read(paste0(path_tmp,"split/",lN,"_",rn,".shp"),quiet = TRUE)
+    sf_shp <- sf::st_read(paste0(path_tmp,"split/",basename(lN),"_",rn,".shp"),quiet = TRUE)
     shp <- as(sf_shp, "Spatial")
     
     # reclass VALUE to 1
@@ -308,7 +309,7 @@ extractMaxPosPoly <- function(x,lN, poly_split=TRUE){
   max_pos@data$id<- as.numeric(max_pos@data$id)
   # create seeds file for rasterizing max_pos
   # re-convert to raster format
-  fn <- spatial.tools::create_blank_raster(reference_raster=dem,filename = paste0(path_tmp,lN,"raw"))
+  fn <- spatial.tools::create_blank_raster(reference_raster=dem,filename = paste0(path_tmp,basename(lN),"raw"))
   mask <- raster::raster(fn)
   seeds <- raster::rasterize(max_pos,mask,field="id")
   seeds[seeds >= 0] <- 1
@@ -478,7 +479,7 @@ xpolystat <- function(x = NULL,
     cat(":: calculate ",x[i], " statistics\n")
     ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
                           " -GRIDS ",path_run,x[i],".sgrd",
-                          " -POLYGONS ",path_run,spdf,
+                          " -POLYGONS ",spdf,
                           " -NAMING 1",
                           " -METHOD 2",
                           " -COUNT ", count,

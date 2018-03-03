@@ -44,14 +44,14 @@ las_data_dir<-path.expand(las_data_dir)
 
 # ------------------------ LAS File correction------------------------
 
-  cat(":: reducing overlap patterns...\n")
-  lasTool("lasoverage",paste0(las_data_dir, lasfiles[j]))
-  cat(":: rescaling las files...\n")
-  lasTool("rescale",paste0(las_data_dir,"o_", lasfiles[j]))
-  lasfiles<-list.files(paste0(las_data_dir),pattern="s_o_", full.names=FALSE) 
-  # for corrected las files classFilter has to be 13 
-  # if running uncorrected lasfiles set it to 2
-  classFilter<-13
+cat(":: reducing overlap patterns...\n")
+lasTool("lasoverage",paste0(las_data_dir, lasfiles[j]))
+cat(":: rescaling las files...\n")
+lasTool("rescale",paste0(las_data_dir,"o_", lasfiles[j]))
+lasfiles<-list.files(paste0(las_data_dir),pattern="s_o_", full.names=FALSE) 
+# for corrected las files classFilter has to be 13 
+# if running uncorrected lasfiles set it to 2
+classFilter<-13
 
 # check if extent is ok if not try to correct
 for (i  in 1:length(lasfiles)) lasTool(lasFile= paste0(las_data_dir, lasfiles[i]))

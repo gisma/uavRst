@@ -83,7 +83,7 @@ treePos <- function(chm = NULL,
     
     # 
     cat(":: find max height position...\n")
-    dummycrownsStat <- uavRst::xpolystat(c("chm"), spdf ="dummyCrownSegment.shp")
+    dummycrownsStat <- uavRst::xpolystat(c("chm"), spdf =paste0(path_run,"dummyCrownSegment.shp"))
 
     trees_crowns <- fa_basicTreeCrownFilter(crownFn = dummycrownsStat,
                                             minTreeAlt = minTreeAlt,
@@ -98,7 +98,7 @@ treePos <- function(chm = NULL,
                     overwrite_layer = TRUE)
     
     cat(":: find max height position...\n")
-    ts <-  extractMaxPosPoly(paste0(path_run,"chm.tif"),"dummyCrownSegment",poly_split = split)
+    ts <-  extractMaxPosPoly(paste0(path_run,"chm.tif"),paste0(path_run,"dummyCrownSegment"),poly_split = split)
     # create raw zero mask
     treePos <- ts[[1]] * chm
     raster::writeRaster(treePos,paste0(path_run,"treePos0.sdat"),overwrite = TRUE,NAflag = 0)

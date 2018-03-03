@@ -403,8 +403,9 @@ makebNames <- function(rgbi    = NA,
 #' @param colorSpaces        RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
 #' @param kernel            size of kernel for filtering and statistics default is  3
 #' @param currentDataFolder  NULL folder to image (and shape) data
-#' @param  currentIdxFolder  NULL folder for saving the results
-#' @param  cleanTiffs  TRUE logical switch for deleting the calculated tifs default is TRUE
+#' @param currentIdxFolder  NULL folder for saving the results
+#' @param cleanTiffs  TRUE logical switch for deleting the calculated tifs default is TRUE
+#' @param giLinks        list. of GI tools cli pathes  
 #' @examples 
 #' \dontrun{
 #' require(uavRst)
@@ -469,7 +470,8 @@ calcex<- function ( useTrainData      = TRUE,
                     kernel            = 3, 
                     currentDataFolder = NULL,
                     currentIdxFolder  = NULL,
-                    cleanTiffs        = TRUE){
+                    cleanTiffs        = TRUE,
+                    giLinks = NULL){
   
   catHead  <- black $ bgGreen
   catErr <- red $ bold

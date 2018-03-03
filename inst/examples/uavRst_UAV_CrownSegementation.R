@@ -1,6 +1,4 @@
 # use cases for UAV data based crown segmentation
-# from an uav derived point cloud data set
-# NOTE the ortho image is obligatory
 
 # ---- define global parameters -----------------------------------------------
 # 
@@ -16,6 +14,9 @@ projRootDir <- "~/proj/uav/thesis/finn"
 # lidar data  can be a foldr or a file
 las_data <- "~/proj/uav/thesis/finn/output/477375_000_5631900_000_477475_000_5632000_000.las"
 
+url <- "https://github.com/gisma/gismaData/raw/master/uavRst/lidar_477375_00_5631900_00_477475_00_5632000_00.las"
+res <- curl::curl_download(url, "~/proj/uav/thesis/finn/output/lasdata.las")
+las_data<-paste0(path_output,"lasdata.las")
 # proj subfolders
 projFolders = c("data/","data/ref/","output/","run/","las/")
 
@@ -53,24 +54,24 @@ raster::rasterOptions(tmpdir=path_run)
 
 # set working directory
 setwd(path_run)
-
+actual_grid_size<-0.5
 # ----- calculate DSM DTM & CHM FROM UAV POINT CLOUDS-----------------------------------------------
 #las_data<-"~/proj/uav/thesis/finn/output/477375_00_5631900_00_477475_00_5632000_00.las"
 # create DSM
 dsm <- uavRst::pc2dsm(lasDir = las_data,
                       gisdbase_path = projRootDir,
-                      otb_gauss_radius ="4.1",
-                      grid_size = "1.0",
+                      type_smooth = "gauss",
+                      grid_size = ".5",
                       GRASSlocation = "dsm",
-                      grass_lidar_method = "max",
+                      grass_lidar_method = "mean",
                       cutExtent = cutExtent,
                       giLinks = giLinks)
 # create DTM
-dtm <- uavRst::pc2dtm(lasDir = paste0(path_run,dsm[[4]]),
+dtm <- uavRst::pc2dtm(lasDir = las_data,
                       gisdbase_path = projRootDir,
-                      thin_with_grid = "0.5",
+                      thin_with_grid = ".5",
                       level_max = "4" ,
-                      grid_size = "0.25",
+                      grid_size = "0.5",
                       cutExtent = cutExtent,
                       giLinks = giLinks)
 
@@ -105,10 +106,9 @@ saveRDS(chmR,file = paste0(path_output,"chmR.rds"))
 # call seeding process
 tPos <- uavRst::treePos(chmR,
                         minTreeAlt = minTreeAlt,
-                        minCrownArea = 1,
                         maxCrownArea = maxCrownArea,
                         join = 1, 
-                        thresh = 0.25,
+                        thresh = 0.35,
                         giLinks = giLinks )
 saveRDS(tPos,file = paste0(path_output,"treePos_iws.rds"))
 # workaround for strange effects with SAGA 
@@ -127,7 +127,7 @@ crowns <- uavRst::chmSegmentation( treePos = tPos,
                                    normalize = 0,
                                    method = 0,
                                    neighbour = 0,
-                                   majority_radius = 8,
+                                   majority_radius = 5,
                                    thVarFeature = 1.,
                                    thVarSpatial = 1.,
                                    thSimilarity = 0.003,

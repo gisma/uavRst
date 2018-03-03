@@ -19,35 +19,35 @@
 
 # -------------------------------------------------------------------------------------------------
 # get the last version if not done so far
-#devtools::install_github("gisma/uavRst", ref = "master")
-require(uavRst)
-# same with link2GI
-#devtools::install_github("gisma/link2GI", ref = "master")
-
 # clean everything
 rm(list =ls())
+devtools::install_github("gisma/link2GI", ref = "master")
+require(uavRst)
+require(raster)
+require(mapview)
+require(link2GI)
+
+# proj subfolders
+prefixrunFN       = "traddel"
+# define project folder
+projRootDir <- "~/temp7/GRASS7/"
+
+paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("data/","data/training/","data/training/idx/",
+                                         "output/","run/","fun/") ,
+                         global = TRUE,
+                         path_prefix = "path_")
+
+# get some colors
+pal = mapview::mapviewPalette("mapviewTopoColors")
+
+# make the folders and linkages
+giLinks<-uavRst::linkBuilder()
 
 # set processing switches
 startCalcex  = TRUE
 startTrain   = TRUE
 startPredict = FALSE
-
-# simple and maybe sufficient give your training run  a unique name 
-# to be integrated in results DF and file 
-prefixrunFN       = "traddel"
-
-# define project folder
-projRootDir <- "~/temp7/GRASS7/"
-
-# create project structure and export global pathes
-link<-link2GI::initProj(projRootDir = projRootDir,
-                  projFolders = c("data/",
-                                  "data/training/",
-                                  "data/training/idx/",
-                                  "output/",
-                                  "run/",
-                                  "fun/") 
-                    )
 
 # set current data and results path default is training 
 currentDataFolder = link$data_training
@@ -56,8 +56,10 @@ currentIdxFolder  = link$data_training_idx
 # set working directory dirty but helpful
 setwd(link$run)
 path_run<-link$run
+
 # clean run dir
 unlink(paste0(path_run,"*"), force = TRUE)
+
 if (startCalcex){
   # start calculation of synthetic bands and extraction of the training data
   # note otions are commented due to the fact that the maximum is default
@@ -81,7 +83,8 @@ if (startCalcex){
                  # morphoType        = c("dilate","erode","opening","closing"), 
                  kernel            = 3, 
                  currentDataFolder = currentDataFolder,
-                 currentIdxFolder  = currentIdxFolder)
+                 currentIdxFolder  = currentIdxFolder,
+                 giLinks = giLinks)
 }
 # ------------------  TRAIN
 

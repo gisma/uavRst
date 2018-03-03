@@ -15,7 +15,7 @@ calcex(useTrainData = TRUE, calculateBands = FALSE, extractTrain = TRUE,
   "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), RGBTrans = TRUE,
   colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ",
   "YUV"), kernel = 3, currentDataFolder = NULL, currentIdxFolder = NULL,
-  cleanTiffs = TRUE)
+  cleanTiffs = TRUE, giLinks = NULL)
 }
 \arguments{
 \item{useTrainData}{logical switch for choosing training data (which needs much more/all possible channels) or classification data the necessary ones # useTrainData switch to decide if using training images or classification data (FALSE) default = TRUE}
@@ -62,6 +62,8 @@ using stats will cover mean and variance while dissimilarity is highly correlate
 \item{currentIdxFolder}{NULL folder for saving the results}
 
 \item{cleanTiffs}{TRUE logical switch for deleting the calculated tifs default is TRUE}
+
+\item{giLinks}{list. of GI tools cli pathes}
 }
 \description{
 The calcex function covers step 1 of the  usecaseRGBClassify workflow for a random forest based classification of visible imagery.
