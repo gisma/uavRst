@@ -32,6 +32,11 @@ Nevertheless all mentioned software packages have to be installed correctly on y
 
 A full list of necessary libaries and binaries beyond ```R``` will hopefully (soon) be provided.
 
+## Wiki
+You will find some tutorials and examples at the [uavRst Wiki](https://github.com/gisma/uavRst/wiki). Please feel free to participate.
+
+## CRAN
+
 The CRAN checks are passing and now it is only a question of documentation until it will be submitted... nevertheless it runs fine for now ...
 
 To install from ```github```  you need to have installed the ```devtools``` package.
