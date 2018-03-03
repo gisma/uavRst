@@ -43,9 +43,3 @@ To install from ```github```  you need to have installed the ```devtools``` pack
 ```R
 devtools::install_github("gisma/uavRst", ref = "master")
 ```
-
-If you want to install all dependencies (may take a while) use:
-
-```R
-devtools::install_github("gisma/uavRst", ref = "master", dependencies = TRUE)
-```
