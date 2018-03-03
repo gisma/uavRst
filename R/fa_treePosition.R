@@ -55,7 +55,7 @@ treePos <- function(chm = NULL,
   sagaCmd<-saga$sagaCmd
   raster::writeRaster(chm,paste0(path_run,"chm.sdat"),overwrite = TRUE,NAflag = 0)
   raster::writeRaster(chm,paste0(path_run,"chm.tif"),overwrite = TRUE,NAflag = 0)
-  #r2saga(chm,"chm")
+  
 
     cat(":: run pre-segmentation...\n")
     # first segment run is a simple watershed segmentation just for deriving more reliable treePoss 
@@ -85,7 +85,7 @@ treePos <- function(chm = NULL,
     cat(":: find max height position...\n")
     dummycrownsStat <- uavRst::xpolystat(c("chm"), spdf =paste0(path_run,"dummyCrownSegment.shp"))
 
-    trees_crowns <- fa_basicTreeCrownFilter(crownFn = dummycrownsStat,
+    trees_crowns <- simpleCrownFilter(crownFn = dummycrownsStat,
                                             minTreeAlt = minTreeAlt,
                                             minCrownArea = minCrownArea,
                                             maxCrownArea = maxCrownArea,
@@ -102,7 +102,7 @@ treePos <- function(chm = NULL,
     # create raw zero mask
     treePos <- ts[[1]] * chm
     raster::writeRaster(treePos,paste0(path_run,"treePos0.sdat"),overwrite = TRUE,NAflag = 0)
-    #r2saga(treePos,"treePos0")
+    
     # extract stats
     
     # reclass extracted treePoss to minTreeAlt

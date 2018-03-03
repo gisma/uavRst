@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_fusionTools.R
 \name{fu_sliceRas}
 \alias{fu_sliceRas}
-\title{Create a raster* object from a LiDAR generated point cloud}
+\title{Fusion wrappper to create a raster* object from a LiDAR point cloud}
 \usage{
 fu_sliceRas(lasFiles = NULL, zrange = NULL, zrnames = NULL,
   paramList = c("1 M M 1 32 0 0 "), res = 10,

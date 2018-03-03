@@ -131,7 +131,7 @@ chmSegmentation <- function(treePos = NULL,
                   driver= "ESRI Shapefile",
                   overwrite=TRUE)
   # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
-  tree_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"statRawCrowns.shp"),
+  tree_crowns <- uavRst::simpleCrownFilter(crownFn = paste0(path_run,"statRawCrowns.shp"),
                                                  minTreeAlt = minTreeAlt,
                                                  minCrownArea = 0,
                                                  maxCrownArea = 250,

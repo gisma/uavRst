@@ -71,8 +71,8 @@ densityMetrics<-function(lasFiles, heightClassList, res){
 
 
 
-#'@name GroundSurfaceCreate
-#'@title Create a DEM raster* object from a LiDAR generated point cloud
+#'@name createGroundSurface
+#'@title Fusion wrapper for creating a DEM raster* object from LiDAR  point clouds
 #'
 #'@description
 #' Create a DEM raster* object from a LiDAR generated point cloud based on regular las format files
@@ -84,10 +84,10 @@ densityMetrics<-function(lasFiles, heightClassList, res){
 #'@examples
 #'\dontrun{
 #' # create a DSM based on a uav point cloud
-#' GroundSurfaceCreate(lasFiles = lasFiles, res=10)
+#' createGroundSurface(lasFiles = lasFiles, res=10)
 #'}
 #'
-GroundSurfaceCreate<-function(lasFiles, res ){
+createGroundSurface<-function(lasFiles, res ){
   
   
   paramList <- c(paste(as.character(res),"M M 1 32 0 0 "))
@@ -309,7 +309,7 @@ GridMetrics<-function(lasFiles,
 
 
 #'@name fu_sliceRas
-#'@title Create a raster* object from a LiDAR generated point cloud
+#'@title Fusion wrappper to create a raster* object from a LiDAR point cloud
 #'
 #'@description
 #' Create a raster* object from a LiDAR generated point cloud based on regular las format files

@@ -1,13 +1,13 @@
-if (!isGeneric('ao_pc2Hillshade')) {
-  setGeneric('ao_pc2Hillshade', function(x, ...)
-    standardGeneric('ao_pc2Hillshade'))
+if (!isGeneric('local_relief')) {
+  setGeneric('local_relief', function(x, ...)
+    standardGeneric('local_relief'))
 }
 
-#'@name ao_pc2Hillshade
+#'@name local_relief
 #'@title Create a hillshading model l from a UAV generated point cloud 
 #'
 #'@description
-#' Create a hillshading model l from a UAV generated point cloud. return ao_pc2Hillshade basically returns a  DSM
+#' Create a hillshading model l from a UAV generated point cloud. return local_relief basically returns a  DSM
 #'
 #'@author Chris Reudenbach
 #'
@@ -29,17 +29,17 @@ if (!isGeneric('ao_pc2Hillshade')) {
 
 #'
 #'
-#'@export ao_pc2Hillshade
+#'@export local_relief
 #'@examples
 #'\dontrun{
 #' # create a hillshade based on a las/laz point clouds 
-#'   hs <- uavRst::ao_pc2Hillshade(lasDir =  "~/proj/Monte_Bernorio/las/",
+#'   hs <- uavRst::local_relief(lasDir =  "~/proj/Monte_Bernorio/las/",
 #'                              gisdbase_path = "~/temp55/GRASS7",
 #'                              grid_size = "1.0")
 #'}
 #'
 
-ao_pc2Hillshade <- function(lasDir = NULL,
+local_relief <- function(lasDir = NULL,
                             gisdbase_path = NULL,
                             GRASSlocation = "tmp/",
                             projFolder = c("data/","output/","run/","las/"),

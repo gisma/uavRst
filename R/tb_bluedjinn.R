@@ -324,9 +324,9 @@ extractMaxPosPoly <- function(x,lN, poly_split=TRUE){
 #' @param layer name GRASS raster
 #' @param returnRaster return GRASS raster as an R raster object default = FALSE
 
-#' @export
+
 #' 
-h_grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
+grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
   link2GI::linkGRASS7()
   rgrass7::execGRASS("r.out.gdal",
                      flags     = c("c","overwrite","quiet"),
@@ -342,8 +342,8 @@ h_grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
 #' @description converts OGR to GRASS vector 
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
-#' @export
-h_shape2grass <- function(runDir = NULL, layer = NULL) {
+
+shape2grass <- function(runDir = NULL, layer = NULL) {
   # import point locations to GRASS
   rgrass7::execGRASS('v.in.ogr',
                      flags  = c('o',"overwrite","quiet"),
@@ -356,8 +356,8 @@ h_shape2grass <- function(runDir = NULL, layer = NULL) {
 #' @description converts GRASS vector to shape file
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
-#' @export
-h_grass2shape <- function(runDir = NULL, layer = NULL){
+
+grass2shape <- function(runDir = NULL, layer = NULL){
   rgrass7::execGRASS("v.out.ogr",
                      flags  = c("overwrite","quiet"),
                      input  = layer,
@@ -367,41 +367,11 @@ h_grass2shape <- function(runDir = NULL, layer = NULL){
 }
 
 
-#' converts SAGA raster to R raster object
-#' @description converts SAGA raster to R raster object
-#' @param fn filname without extension
-#' @param ext extent of the raster in R notation
-#' @export
-saga2r<- function(fn,ext) {
-  gdalUtils::gdalwarp(paste0(path_run,fn,".sdat"), 
-                      paste0(path_run,fn,".tif"), 
-                      overwrite = TRUE,  
-                      verbose = FALSE)
-  x<-raster::raster(paste0(path_run,fn,".tif"))
-  x@extent <- ext
-  # convert to SAGA
-  return(x)
-}
 
-#' converts SAGA raster to R raster object
-#' @description converts SAGA raster to R raster object
-#' @param x raster object
-#' @param fn filname without extension
-#' @export
-r2saga <- function(x,fn) {
-  
-  raster::writeRaster(x,paste0(path_run,fn,".tif"),overwrite = TRUE)
-  # convert to SAGA
-  
-  
-  gdalUtils::gdalwarp(paste0(path_run,fn,".tif"), 
-                      paste0(path_run,fn,".sdat"), 
-                      overwrite = TRUE,  
-                      of = 'SAGA',
-                      verbose = FALSE)
-}
 
-h_fun_multiply <- function(x)
+
+
+funMultiply <- function(x)
 {
   # Note that x is received by the function as a 3-d array:
   band1 <- x[,,1]
@@ -413,7 +383,7 @@ h_fun_multiply <- function(x)
   
   return(result)
 }
-h_fun_whichmax <- function(mask,value) { 
+funWhichmax <- function(mask,value) { 
   raster::xyFromCell(value,which.max(mask * value))
 }
 

@@ -1,13 +1,13 @@
-if (!isGeneric('fa_basicTreeCrownFilter')) {
-  setGeneric('fa_basicTreeCrownFilter', function(x, ...)
-    standardGeneric('fa_basicTreeCrownFilter'))
+if (!isGeneric('simpleCrownFilter')) {
+  setGeneric('simpleCrownFilter', function(x, ...)
+    standardGeneric('simpleCrownFilter'))
 }
 
-#'@name fa_basicTreeCrownFilter
+#'@name simpleCrownFilter
 #'@title basic filtering of crown polygons using altitude, area and other optional thresholds 
 #'
 #'@description
-#' applies basic filtering of crown polygons using altitude, area and other optional thresholds. return fa_basicTreeCrownFilterbasically returns SPDF  with the crown polygons and all calculated parameters
+#' applies basic filtering of crown polygons using altitude, area and other optional thresholds. return simpleCrownFilterbasically returns SPDF  with the crown polygons and all calculated parameters
 #'
 
 #'@author Chris Reudenbach
@@ -25,10 +25,10 @@ if (!isGeneric('fa_basicTreeCrownFilter')) {
 
 #'
 #'
-#'@export fa_basicTreeCrownFilter
+#'@export simpleCrownFilter
 
 
-fa_basicTreeCrownFilter<- function(crownFn,
+simpleCrownFilter<- function(crownFn,
                                    minTreeAlt = 10, 
                                    minCrownArea = 5, 
                                    maxCrownArea =100,

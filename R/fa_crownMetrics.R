@@ -1,10 +1,10 @@
 
-if (!isGeneric('fa_caMetrics')) {
-  setGeneric('fa_caMetrics', function(x, ...)
-    standardGeneric('fa_caMetrics'))
+if (!isGeneric('polyMetrics')) {
+  setGeneric('polyMetrics', function(x, ...)
+    standardGeneric('polyMetrics'))
 }
 
-#'@name fa_caMetrics
+#'@name polyMetrics
 #'@title calculate morphometric features of polygons
 #'@description calculate morphometric features of polygons. calculate some crown related metrics return the metrics as a spatialpointdataframe/spatialpolygondataframe
 #'@seealso  \href{https://CRAN.R-project.org/package=Momocs}{Momocs}
@@ -13,8 +13,8 @@ if (!isGeneric('fa_caMetrics')) {
 #'@param crownarea sp polygon object
 #'@param funNames ("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")
 #'
-#'@export fa_caMetrics
-fa_caMetrics<- function(crownarea, 
+#'@export polyMetrics
+polyMetrics<- function(crownarea, 
                         funNames = c("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")){
   cat("calculate crown-metrics for ",nrow(crownarea)," polygons... \n")
   polys <- crownarea@polygons

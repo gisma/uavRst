@@ -4,7 +4,7 @@
 # textureVariables provides a good practice example for using 
 # the R capabilities of paralell tasking 
 # 
-#' This functions calls the glcm package with standard settings 
+#' Calls the glcm package with useful settings 
 #' @note for the use of textureVariables a glcm wrapper function 
 #'       a raster* object is required
 #' @param x rasterLayer or a rasterStack containing different channels

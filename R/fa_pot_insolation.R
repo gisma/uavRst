@@ -1,9 +1,9 @@
-if (!isGeneric('fa_pot_insol')) {
-  setGeneric('fa_pot_insol', function(x, ...)
-    standardGeneric('fa_pot_insol'))
+if (!isGeneric('potInsolation')) {
+  setGeneric('potInsolation', function(x, ...)
+    standardGeneric('potInsolation'))
 }
 
-#'@name fa_pot_insol
+#'@name potInsolation
 #'@title calculates the amount of incoming solar radiation (insolation) 
 #'
 #'@description
@@ -29,14 +29,14 @@ if (!isGeneric('fa_pot_insol')) {
 
 #'
 #'
-#'@export fa_pot_insol
+#'@export potInsolation
 #'@examples
 #'\dontrun{
 #' # potential insolation based on a CHM
-#' pot_insolation <- fa_pot_insol("chm")
+#' pot_insolation <- potInsolation("chm")
 #'}
 #'
-fa_pot_insol <- function(x = NULL,
+potInsolation <- function(x = NULL,
                           svf_radius=10000.000000, 
                           svf_method=0, 
                           svf_dlevel=3.000000, 

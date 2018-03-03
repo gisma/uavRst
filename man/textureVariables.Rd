@@ -2,7 +2,7 @@
 % Please edit documentation in R/rs_InTex.R
 \name{textureVariables}
 \alias{textureVariables}
-\title{This functions calls the glcm package with standard settings}
+\title{Calls the glcm package with useful settings}
 \usage{
 textureVariables(x, nrasters = 1:nlayers(x), kernelSize = c(3),
   stats = c("mean", "variance", "homogeneity", "contrast", "dissimilarity",
@@ -32,7 +32,7 @@ This functions calls the glcm function from \link{glcm} with standard settings
 and returns list of RasterStacks containing the texture parameters for each combination of channel and kernelSize}
 }
 \description{
-This functions calls the glcm package with standard settings
+Calls the glcm package with useful settings
 }
 \note{
 for the use of textureVariables a glcm wrapper function 
