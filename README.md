@@ -36,7 +36,7 @@ You will find some tutorials and examples at the [uavRst Wiki](https://github.co
 
 ## CRAN
 
-The CRAN checks are passing and now it is only a question of documentation until it will be submitted... nevertheless it runs fine for now ...
+The CRAN checks are passing - so it is only a question of documentation and time until it will be submitted... however it runs fine for now ...
 
 To install from ```github```  you need to have installed the ```devtools``` package.
 
