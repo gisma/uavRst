@@ -29,7 +29,7 @@ combination of channel and filter}
   output_name = "hara", path_output = NULL, return_raster = FALSE,
   parameters.xyrad = list(c(1, 1)), parameters.xyoff = list(c(1, 1)),
   parameters.minmax = c(0, 255), parameters.nbbin = 8, channel = NULL,
-  verbose = FALSE, ram = "8192")
+  verbose = FALSE, giLinks = NULL, ram = "8192")
 }
 \arguments{
 \item{x}{A \code{Raster*} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands}
@@ -55,6 +55,8 @@ combination of channel and filter}
 \item{ram}{reserved memory in MB}
 
 \item{output_name}{string pattern vor individual naming of the output file(s)}
+
+\item{giLinks}{list. of GI tools cli pathes}
 }
 \description{
 OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image.

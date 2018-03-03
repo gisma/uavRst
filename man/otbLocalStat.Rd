@@ -5,7 +5,8 @@
 \title{Calculates local statistics for a given kernel size}
 \usage{
 otbLocalStat(input = NULL, out = "localStat", ram = "8192", radius = 3,
-  channel = NULL, retRaster = FALSE, outDir = NULL, verbose = FALSE)
+  channel = NULL, retRaster = FALSE, outDir = NULL, verbose = FALSE,
+  giLinks = NULL)
 }
 \arguments{
 \item{input}{of GeoTiff containing 1 ore more gray value bands}
@@ -23,6 +24,8 @@ otbLocalStat(input = NULL, out = "localStat", ram = "8192", radius = 3,
 \item{outDir}{output Directory}
 
 \item{verbose}{switch for system messages default is FALSE}
+
+\item{giLinks}{list. of GI tools cli pathes}
 }
 \description{
 Calculates local statistics for a given kernel size

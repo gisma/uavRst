@@ -649,3 +649,12 @@ gdalsplit<-function(fn){
     gdalUtils::gdal_translate(fn,paste0(directory,"/b",i,".tif"),b=i)
   }
 }
+
+getCrayon<-function(){
+head <- crayon::black $ bgGreen
+err  <- crayon::red $ bold
+note <- crayon::blue $ bold
+ok   <- crayon::green $ bold
+return(list(note,err,ok,head))
+}
+catOk   <- crayon::green $ bold

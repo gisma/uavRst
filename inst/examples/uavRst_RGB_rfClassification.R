@@ -40,22 +40,21 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 
 # get some colors
 pal = mapview::mapviewPalette("mapviewTopoColors")
-
+c<-uavRst:::getCrayon()
 # make the folders and linkages
 giLinks<-uavRst::linkBuilder()
 
 # set processing switches
 startCalcex  = TRUE
-startTrain   = TRUE
+startTrain   = FALSE
 startPredict = FALSE
 
 # set current data and results path default is training 
-currentDataFolder = link$data_training
-currentIdxFolder  = link$data_training_idx
+currentDataFolder = path_data_training
+currentIdxFolder  = path_data_training_idx
 
 # set working directory dirty but helpful
-setwd(link$run)
-path_run<-link$run
+setwd(path_run)
 
 # clean run dir
 unlink(paste0(path_run,"*"), force = TRUE)
@@ -65,8 +64,8 @@ if (startCalcex){
   # note otions are commented due to the fact that the maximum is default
   # to restrict calculations uncomment and select by editng the param list
   res <- calcex( useTrainData      = TRUE, 
-                 calculateBands    = FALSE, 
-                 extractTrain      = TRUE, 
+                 calculateBands    = TRUE, 
+                 extractTrain      = FALSE, 
                  prefixrunFN       = prefixrunFN,
                  suffixTrainGeom   = "",
                  prefixTrainGeom   = "index_", 

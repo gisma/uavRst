@@ -6,7 +6,7 @@
 \usage{
 otbEdge(input = NULL, out = "edge", ram = "8192", filter = "gradient",
   filter.touzi.xradius = 1, filter.touzi.yradius = 1, channel = NULL,
-  retRaster = FALSE, outDir = NULL, verbose = FALSE)
+  retRaster = FALSE, outDir = NULL, verbose = FALSE, giLinks = NULL)
 }
 \arguments{
 \item{input}{of GeoTiff containing 1 ore more gray value band(s)}
@@ -28,6 +28,8 @@ otbEdge(input = NULL, out = "edge", ram = "8192", filter = "gradient",
 \item{outDir}{output Directory}
 
 \item{verbose}{switch for system messages default is FALSE}
+
+\item{giLinks}{list. of GI tools cli pathes}
 }
 \description{
 Calculates edges for a given kernel size. return list of geotiffs containing thelocal statistics for each channel

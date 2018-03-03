@@ -7,7 +7,7 @@
 otbGrayMorpho(input = NULL, out = "morpho", ram = "8192",
   filter = "dilate", structype = "ball", structype.ball.xradius = 5,
   structype.ball.yradius = 5, channel = NULL, retRaster = FALSE,
-  outDir = NULL, verbose = FALSE)
+  outDir = NULL, verbose = FALSE, giLinks = NULL)
 }
 \arguments{
 \item{input}{of GeoTiff containing 1 ore more gray value bands}
@@ -31,6 +31,8 @@ otbGrayMorpho(input = NULL, out = "morpho", ram = "8192",
 \item{outDir}{output Directory}
 
 \item{verbose}{switch for system messages default is FALSE}
+
+\item{giLinks}{list. of GI tools cli pathes}
 }
 \description{
 Calculates Gray scale morphological operations for a given kernel size. return list of geotiffs containing thelocal statistics for each channel

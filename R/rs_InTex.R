@@ -146,7 +146,8 @@ if ( !isGeneric("otbTexturesHaralick") ) {
 #' @param return_raster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
 #' @param path_output path outut
-
+#' @param giLinks        list. of GI tools cli pathes  
+#' 
 #' @references Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.
 #' IEEE Transactions on Systems, Man and Cybernetics. SMC-3(6):610-620.\cr
 #' \href{https://www.orfeo-toolbox.org/packages/OTBSoftwareGuide.pdf}{Orfeo Toolbox Sofware Guide, 2016}\cr
@@ -350,8 +351,16 @@ setMethod("otbTexturesHaralick",
                    parameters.nbbin=8,
                    channel=NULL,
                    verbose=FALSE,
+                   giLinks = NULL,
                    ram="8192"){
-            otb<- link2GI::linkOTB()
+            
+            
+  
+  if (is.null(giLinks)){
+    giLinks <- linkBuilder()
+  }
+  path_OTB <- giLinks$otb$pathOTB  
+  otb<- otb$pathOTB  
             if(texture == "all"){
               texture <- c("simple", "advanced", "higher")
             }
@@ -471,6 +480,7 @@ setMethod("otbTexturesHaralick",
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
 #' @param outDir output Directory
+#' @param giLinks        list. of GI tools cli pathes  
 #' @author Chris Reudenbach
 #' @export otbLocalStat
 #' @examples 
@@ -488,8 +498,13 @@ otbLocalStat<- function(input=NULL,
                         channel=NULL,
                         retRaster=FALSE,
                         outDir=NULL,
-                        verbose=FALSE){
+                        verbose=FALSE,
+                        giLinks = NULL){
   
+  if (is.null(giLinks)){
+    giLinks <- linkBuilder()
+  }
+  path_OTB <- giLinks$otb$pathOTB
   
   retStack<-list()
   if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
@@ -535,7 +550,7 @@ otbLocalStat<- function(input=NULL,
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
 #' @param outDir output Directory
-
+#' @param giLinks        list. of GI tools cli pathes  
 #' @author Chris Reudenbach
 #' @export otbEdge
 #' @examples 
@@ -556,9 +571,13 @@ otbEdge<- function(input=NULL,
                    channel=NULL,
                    retRaster=FALSE,
                    outDir=NULL,
-                   verbose=FALSE){
-  
-  
+                   verbose=FALSE,
+                   giLinks = NULL){
+    
+    if (is.null(giLinks)){
+      giLinks <- linkBuilder()
+    }
+    path_OTB <- giLinks$otb$pathOTB  
   retStack<-list()
   if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
   for (band in channel) {
@@ -605,7 +624,7 @@ otbEdge<- function(input=NULL,
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
 #' @param outDir output Directory 
-
+#' @param giLinks        list. of GI tools cli pathes  
 #' @author Chris Reudenbach
 #' @export otbGrayMorpho
 #' @examples 
@@ -627,8 +646,13 @@ otbGrayMorpho<- function(input=NULL,
                          channel=NULL,
                          retRaster=FALSE,
                          outDir=NULL,
-                         verbose=FALSE){
+                         verbose=FALSE,
+                         giLinks = NULL){
   
+  if (is.null(giLinks)){
+    giLinks <- linkBuilder()
+  }
+  path_OTB <- giLinks$otb$pathOTB  
   
   retStack<-list()
   

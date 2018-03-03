@@ -473,10 +473,20 @@ calcex<- function ( useTrainData      = TRUE,
                     cleanTiffs        = TRUE,
                     giLinks = NULL){
   
-  catHead  <- black $ bgGreen
-  catErr <- red $ bold
-  catNote <- blue $ bold
-  catOk <- green $ bold
+  if (is.null(giLinks)){
+    giLinks <- linkBuilder()
+  }
+  
+  gdal <- giLinks$gdal
+  saga <- giLinks$saga
+  otb <- giLinks$otb
+  sagaCmd<-saga$sagaCmd
+  path_OTB <- otb$pathOTB
+  
+  catHead <- getCrayon()[[4]]
+  catErr  <- getCrayon()[[2]]
+  catNote <- getCrayon()[[1]]
+  catOk   <- getCrayon()[[3]]
   
   
   if (useTrainData) {
@@ -488,10 +498,7 @@ calcex<- function ( useTrainData      = TRUE,
     currentIdxFolder<- currentIdxFolder #paste0(path_data_idx)
   }
   
-  # link GDAL and OTB
-  gdal <- link2GI::linkGDAL()
-  link<-link2GI::linkOTB()
-  path_OTB <-link$pathOTB
+
   if ((stat == TRUE || hara == TRUE || edge == TRUE || morpho == TRUE) & path_OTB == "") stop("OTB missing - please check")
   
   ### ----- start preprocessing ---------------------------------------------------
@@ -580,7 +587,8 @@ calcex<- function ( useTrainData      = TRUE,
           otbLocalStat(input = fbFN,
                        out = paste0(filterBand,"stat_",basename(imageFiles[i])),
                        ram = "4096",
-                       radius =  kernel)
+                       radius =  kernel,
+                       giLinks=giLinks)
           flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,"stat_",basename(imageFiles[i])),"*")))
           bnames <-append(bnames,paste0(makebNames(stat = TRUE),"_",filterBand))
         }
@@ -590,7 +598,8 @@ calcex<- function ( useTrainData      = TRUE,
             cat(catNote(":::: processing edge... ",edges,"\n"))
             uavRst::otbEdge(input = fbFN,
                             out = paste0(filterBand,edges,basename(imageFiles[i])),
-                            filter = edges)
+                            filter = edges,
+                            giLinks=giLinks)
             
             flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,edges,basename(imageFiles[i])),"*")))
             bnames <-append(bnames,makebNames(edge = paste0(edges,"_",filterBand)))
@@ -602,7 +611,8 @@ calcex<- function ( useTrainData      = TRUE,
             cat(catNote(":::: processing morpho... ",morphos,"\n"))
             uavRst::otbGrayMorpho(input = fbFN,
                                   out = paste0(filterBand,morphos,basename(imageFiles[i])),
-                                  filter = morphos)
+                                  filter = morphos,
+                                  giLinks=giLinks)
             flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,morphos,basename(imageFiles[i])),"*")))
             bnames <-append(bnames,makebNames(edge = paste0(morphos,"_",filterBand)))
           }    
@@ -613,7 +623,8 @@ calcex<- function ( useTrainData      = TRUE,
             cat(catNote(":::: processing haralick... ",type,"\n"))
             uavRst::otbTexturesHaralick(x = fbFN,
                                         output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),
-                                        texture = type)
+                                        texture = type,
+                                        giLinks=giLinks)
             flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,"hara_",basename(imageFiles[i])),"*")))
             bnames <-append(bnames,paste0(makebNames(bandNames = type),"_",filterBand))
           }
