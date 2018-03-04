@@ -11,15 +11,13 @@ if (!isGeneric('treePos')) {
 #'
 #'@author Chris Reudenbach
 #'
-#'@param chm  spatial raster object
-#'@param minTreeAlt default is 5 
-#'@param minTreeAltParam default is "chmQ20"
-#'@param minCrownArea    default is 3 minimum area of crown
-#'@param maxCrownArea    default is 225 maximum area of crown
-#'@param output      default is 0,     # 0=s treePos value 1=segment id
-#'@param join        default is 2,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff
-#'@param thresh      default is 0.05,  # threshold for join difference in m
-#'@param split default  is TRUE switch if splitting of the polygons is called
+#'@param chm  raster* canopy height model 
+#'@param minTreeAlt numeric. minimum height of trees to be integrated in the analysis
+#'@param minTreeAltParam character. code for the percentile that is used as tree height treshold. It is build using the key letters \code{chmQ} and adding the percentile i.e. "10". Default is \code{chmQ20}
+#'@param minCrownArea    numeric. minimum area in square meter (if you use projected data) of the projected tree crowns
+#'@param maxCrownArea    numeric. maximum area in square meter (if you use projected data) of the projected tree crowns
+#'@param join        numeric. Join Segments based on Threshold Value, 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff. see also \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_0.html}{SAGA GIS Help}
+#'@param thresh      numeric. Specify a threshold value as minimum difference between neighboured segments in meter. see also \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_0.html}{SAGA GIS Help}
 #'@param giLinks        list. of GI tools cli pathes  
 
 #'
@@ -36,10 +34,8 @@ treePos <- function(chm = NULL,
                                   minTreeAltParam  = "chmQ20",
                                   minCrownArea     = 3,
                                   maxCrownArea     = 150,
-                                  output      = 1,     # 0= treePos value 1=segment id
                                   join        = 1,     # 0=no join, 1=treePos2saddle diff, 2=treePos2treePos diff
                                   thresh      = 0.10,  # threshold for join difference in m
-                                  split = TRUE,
                                   giLinks = NULL
                                   
 )  {
@@ -55,7 +51,7 @@ treePos <- function(chm = NULL,
   sagaCmd<-saga$sagaCmd
   raster::writeRaster(chm,paste0(path_run,"chm.sdat"),overwrite = TRUE,NAflag = 0)
   raster::writeRaster(chm,paste0(path_run,"chm.tif"),overwrite = TRUE,NAflag = 0)
-  
+  #r2saga(chm,"chm")
 
     cat(":: run pre-segmentation...\n")
     # first segment run is a simple watershed segmentation just for deriving more reliable treePoss 
@@ -64,7 +60,7 @@ treePos <- function(chm = NULL,
                          " -GRID "     ,path_run,"chm.sgrd",
                          " -SEGMENTS " ,path_run,"dummyCrownSegments.sgrd",
                          " -SEEDS "    ,path_run,"treePos.shp",
-                         " -OUTPUT "   ,output, 
+                         " -OUTPUT 0", 
                          " -DOWN 1"    , 
                          " -JOIN "     ,join,
                          " -THRESHOLD ",thresh, 
@@ -85,7 +81,7 @@ treePos <- function(chm = NULL,
     cat(":: find max height position...\n")
     dummycrownsStat <- uavRst::xpolystat(c("chm"), spdf =paste0(path_run,"dummyCrownSegment.shp"))
 
-    trees_crowns <- simpleCrownFilter(crownFn = dummycrownsStat,
+    trees_crowns <- fa_basicTreeCrownFilter(crownFn = dummycrownsStat,
                                             minTreeAlt = minTreeAlt,
                                             minCrownArea = minCrownArea,
                                             maxCrownArea = maxCrownArea,
@@ -98,11 +94,11 @@ treePos <- function(chm = NULL,
                     overwrite_layer = TRUE)
     
     cat(":: find max height position...\n")
-    ts <-  extractMaxPosPoly(paste0(path_run,"chm.tif"),paste0(path_run,"dummyCrownSegment"),poly_split = split)
+    ts <-  extractMaxPosPoly(paste0(path_run,"chm.tif"),paste0(path_run,"dummyCrownSegment"),poly_split = TRUE)
     # create raw zero mask
     treePos <- ts[[1]] * chm
     raster::writeRaster(treePos,paste0(path_run,"treePos0.sdat"),overwrite = TRUE,NAflag = 0)
-    
+    #r2saga(treePos,"treePos0")
     # extract stats
     
     # reclass extracted treePoss to minTreeAlt

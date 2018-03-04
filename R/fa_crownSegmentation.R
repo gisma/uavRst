@@ -12,17 +12,17 @@
 #' height of \code{treePos}.
 #'@param minTreeAltParam default is "chmQ20"
 #'@param chm Canopy height model in \code{raster} format. Should be the same that was used to create
-#' the input for \code{treePos}.
-#'@param leafsize       integer. bin size of grey value sampling range from 1 to 256 
-#'@param normalize      integer.  logical switch if data will be normalized (1) 
-#'@param neighbour      integer.  von Neumanns' neighborhood (0) or Moore's (1) 
-#'@param method         integer. growing algorithm for feature space and position (0) or feature space only (1)
-#'@param thVarSpatial   numeric. spatial variance 
-#'@param thVarFeature   numeric. spatial variance 
-#'@param thSimilarity   mumeric. similarity threshold 
-#'@param seed_params    vector. of characters corresponding with the used attributes. The altitude values from surface model \code{c("chm")} is mandantory. 
+#' the input for \code{treePos}. 
+#'@param leafsize       integer. bin size of grey value sampling range from 1 to 256 see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
+#'@param normalize      integer. logical switch if data will be normalized (1) see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
+#'@param neighbour      integer. von Neumanns' neighborhood (0) or Moore's (1) see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
+#'@param method         integer. growing algorithm for feature space and position (0) or feature space only (1), see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
+#'@param thVarSpatial   numeric. Variance in Feature Space  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
+#'@param thVarFeature   numeric. Variance in Position Space  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
+#'@param thSimilarity   mumeric. Similarity Threshold see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
+#'@param seed_params    character. a list of raster data that is used for the segmentation. The canopy height model \code{c("chm")} is mandantory. see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
 #'@param giLinks        list. of GI tools cli pathes  
-#'@param majority_radius numeric filter for smoothing default is 3.000
+#'@param majority_radius numeric. kernel size for the majority filter out spurious pixel
 #'@export 
 #'@examples
 #'\dontrun{
@@ -131,7 +131,7 @@ chmSegmentation <- function(treePos = NULL,
                   driver= "ESRI Shapefile",
                   overwrite=TRUE)
   # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
-  tree_crowns <- uavRst::simpleCrownFilter(crownFn = paste0(path_run,"statRawCrowns.shp"),
+  tree_crowns <- uavRst::fa_basicTreeCrownFilter(crownFn = paste0(path_run,"statRawCrowns.shp"),
                                                  minTreeAlt = minTreeAlt,
                                                  minCrownArea = 0,
                                                  maxCrownArea = 250,
