@@ -14,6 +14,6 @@ The package provides some  R-GI functionality for dealing with Unmanned Aerial V
 \author{
 Hanna Meyer, Lars Opgenoorth, Chris Reudenbach, Environmental Informatics Marburg \cr
 \cr
-\emph{Maintainer:} Christoph Reudenbach \email{reudenbach@uni-marburg.de}
+\emph{Maintainer:} Chris Reudenbach \email{reudenbach@uni-marburg.de}
 }
 \keyword{package}
