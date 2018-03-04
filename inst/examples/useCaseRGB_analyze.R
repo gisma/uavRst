@@ -30,7 +30,7 @@ position <- shapefile(path.expand("~/temp7/GRASS7/data/cut_positions_classificat
 
 pre="classified_index_"
 #tapply(area(r), r[], sum)
-df1<-getCounts(position = position,
+df1<-get_counts(position = position,
                imageFiles = imageFiles,
                dropChars = 8,
                pre=pre,
@@ -74,7 +74,7 @@ for (i in 1:length(daylist)){
   sds[i]<- sd(df$perc[df$date$yday==daylist[i]],na.rm=T)
   cNg[i]<- sum(df$green[df$date$yday==daylist[i]],na.rm=T)
   cNng[i]<- sum(df$nogreen[df$date$yday==daylist[i]],na.rm=T)
-} 
+}
 dfnames<- c("Date","Julian Day" ,"mean" ,"SD" ,"countItem" ,"countnotItem")
 dfstat <- data.frame(unique(df$date),julday,means,sds,cNg,cNng)
 names(dfstat) <- c(dfnames)
@@ -92,10 +92,10 @@ save(dfstat,file = "resultStatTraddel.RData")
 axisformat<- theme(axis.text.x = element_text(angle = 45, hjust = 1,size = 10),
           axis.text.y = element_text( hjust = 1,size = 10))
 # define scaling for date axis
-br <- unique(df$date) 
+br <- unique(df$date)
 
 # simple green one plot
-p1 <- ggplot(data = df, aes(y = df$perc, x = df$date, group = df$treeplot)) + geom_line(colour="green") 
+p1 <- ggplot(data = df, aes(y = df$perc, x = df$date, group = df$treeplot)) + geom_line(colour="green")
 
 # colored with legend in one plot
 p2 <- ggplot(data = df, aes(y = df$perc, x = df$date, group = df$treeplot, colour = factor(df$treeplot))) +
@@ -103,22 +103,22 @@ p2 <- ggplot(data = df, aes(y = df$perc, x = df$date, group = df$treeplot, colou
   xlab("Date") +
   ylab("Green Coverage %") +
   guides(colour=guide_legend(title="Sample Trees")) +
-  scale_y_continuous(breaks=c(0.2,0.5,0.8,1.0))  + 
-  scale_x_date(breaks=as.Date(br)) + 
+  scale_y_continuous(breaks=c(0.2,0.5,0.8,1.0))  +
+  scale_x_date(breaks=as.Date(br)) +
   axisformat
 
 #  green with legend in one plot
-p3 <- ggplot(data = df, aes(y = df$perc, x = df$date, group = df$treeplot)) + 
-            geom_line(colour="green")  + 
-            xlab("Date") + 
+p3 <- ggplot(data = df, aes(y = df$perc, x = df$date, group = df$treeplot)) +
+            geom_line(colour="green")  +
+            xlab("Date") +
             ylab("Green Coverage %") +
             guides(colour=guide_legend(title="Sample Trees")) +
-            scale_y_continuous(breaks=c(0.2,0.5,0.8,1.0))  + 
-            scale_x_date(breaks=as.Date(br)) + 
+            scale_y_continuous(breaks=c(0.2,0.5,0.8,1.0))  +
+            scale_x_date(breaks=as.Date(br)) +
             axisformat
 
 # panel nach treeplots
-p4 <- p3 + facet_wrap(~df$treeplot) 
+p4 <- p3 + facet_wrap(~df$treeplot)
 
 p4
 

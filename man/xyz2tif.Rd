@@ -25,7 +25,7 @@ unzip(res,
       overwrite = TRUE)
 
 xyz2tif(file.path(getwd(),
-          basename(grep(".g01dgm", 
+          basename(grep(".g01dgm",
           unzip(res,list = TRUE)$Name,value = TRUE))))
 
 plot(raster::raster(paste0(getwd(),"/",file_path_sans_ext(basename(file.path(getwd(),

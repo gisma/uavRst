@@ -4,7 +4,7 @@
 #'
 #' @name uavRst
 #' @docType package
-#' @title Unmanned Aerial Vehicle Remote Sensing Tools - awesome gis tools to fly
+#' @title Unmanned Aerial Vehicle Remote Sensing Tools - awesome gis tools to manipulate and analyze UAV based imagery and point clouds
 #' @author Hanna Meyer, Lars Opgenoorth, Chris Reudenbach, Environmental Informatics Marburg \cr
 #' \cr
 #' \emph{Maintainer:} Christoph Reudenbach \email{reudenbach@@uni-marburg.de}

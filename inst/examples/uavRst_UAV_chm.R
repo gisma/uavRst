@@ -1,6 +1,6 @@
 # use case canopy height model (chm) based on a UAV derived point cloud data set
 # ---- define global parameters -----------------------------------------------
-# 
+#
 # load package for linking  GI tools
 require(link2GI)
 
@@ -41,12 +41,12 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 plot2<-raster::shapefile(paste0(path_data,"ref/plot_UTM.shp"))
 
 # link all CLI stuff
-giLinks<-linkBuilder()
+giLinks<-get_gi()
 
 # clean dirs
 
 unlink(paste0(path_run,"*"), force = TRUE)
-raster::rasterOptions(tmpdir=path_run) 
+raster::rasterOptions(tmpdir=path_run)
 
 # set working directory
 setwd(path_run)
@@ -72,7 +72,7 @@ dtm <- uavRst::pc2dtm(lasDir = paste0(path_run,dsm[[4]]),
                       giLinks = giLinks)
 
 # take the rsulting raster files
-dsmR <- dsm[[1]] 
+dsmR <- dsm[[1]]
 dtmR <- dtm[[1]]
 
 # calculate CHM
@@ -82,4 +82,3 @@ chmR <- dsmR - dtmR
 chmR[chmR<0]<-0
 
 mapview::mapview(chmR)
-  

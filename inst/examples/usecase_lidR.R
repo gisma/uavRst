@@ -11,7 +11,7 @@ dtm = grid_terrain(las_orig, method = "kriging", k = 10L,res = 5)
 dtm = as.raster(dtm)
 plot(dtm)
 
-lasTool(tool="lasthin" , lasFile = lasfile,outpath=path_run,keep_class = 2 , thin_with_grid = 2.)
+lastool(tool="lasthin" , lasFile = lasfile,outpath=path_run,keep_class = 2 , thin_with_grid = 2.)
 lasred<-path.expand("~/proj/uav/thesis/finn/run/477375_000_5631900_000_477475_000_5632000_000_reduced.las")
 las_red = readLAS(lasred)
 # Classify ground points see example # https://github.com/Jean-Romain/lidR/wiki/Rasterizing-perfect-canopy-height-models
@@ -28,7 +28,7 @@ raw<-lidR::grid_metrics(groundReturns,mean(Z), 10)
 #dtm = grid_canopy(raw, res = 0.5, subcircle = 0.2, na.fill = "knnidw", k = 10, p= 10)
 
 
-groundReturns@crs<-raster::crs(proj4)  
+groundReturns@crs<-raster::crs(proj4)
 mapview::mapview(dtm)
 
 # Normalize the dataset
@@ -114,7 +114,7 @@ raster::plot(dtm)
 plot(groundReturns)
 # Normalize the dataset
 # Here no  DTM is used but exact interpolation of each point
-lasnormalize(las = las, 
+lasnormalize(las = las,
              method = "knnidw",
              k = 10L)
 
@@ -146,7 +146,7 @@ contour1 = raster::rasterToPolygons(crowns1, dissolve = TRUE)
 plot(chm1, col = height.colors(50))
 plot(contour1, add = T)
 
-# rapidlasso 
+# rapidlasso
 crowns2 = lastrees(las_clip, "watershed", chm2, th = 4, extra = TRUE)
 # get contours as a SpatialPolygonsDataFrame
 # (take a while to run)

@@ -1,6 +1,6 @@
-#' digitizing vector features using leaflet draw
+#' Digitize and save vector features within your rstudio session (or any browser) 
 #'
-#' @description  leafDraw is based on the leaflet draw plugin. It provides a bunch of leaflet maps as base layers for digitizing vector features. 
+#' @description  digitize is based on the leaflet draw plugin. It provides a bunch of leaflet maps as base layers for digitizing vector features. 
 #'
 #' @note Yu can either save the digitized object to a json file or you ma grab the json string via the clipboard
 #' @param mapCenter c(lat,lon) central point of the leaflet map
@@ -26,21 +26,21 @@
 #' @examples
 #' \dontrun{
 #' # all features
-#' leafDraw()
+#' digitize()
 #' 
 #' # preset for digitizing uav flight areas in Meuse
 #' data(meuse) 
 #' coordinates(meuse) <- ~x+y 
 #' proj4string(meuse) <-CRS("+init=epsg:28992") 
 #' me<-sp::spTransform(meuse,CRSobj = sp::CRS("+init=epsg:4326"))
-#' uavRst::leafDraw(overlay = me, preset = "uav")
+#' uavRst::digitize(overlay = me, preset = "uav")
 #'   
 #' # preset for digitizing extents
-#' leafDraw(preset="ext",overlay = me)
+#' digitize(preset="ext",overlay = me)
 #' }
-#' @export leafDraw
+#' @export digitize
 
-leafDraw <- function(mapCenter=NULL,
+digitize <- function(mapCenter=NULL,
                      zoom=15, 
                      line = TRUE, 
                      rectangle = TRUE, 

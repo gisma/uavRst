@@ -59,9 +59,9 @@ url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz"
 res <- curl::curl_download(url=url,
                            destfile="test.laz",  quiet = TRUE, mode = "wb")
 # convert it to las
-lasTool(tool="las2las","test.laz")
+lastool(tool="las2las","test.laz")
 # extract extension for setting up GRASS region
-ext<-lasTool(lasDir = "test.las")
+ext<-lastool(lasDir = "test.las")
 # set up GRASS
 result<-link2GI::linkGRASS7(spatial_params = c(ext[2],ext[1],ext[4],ext[3],proj4),
                              resolution = gridsize)

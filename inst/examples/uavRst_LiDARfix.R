@@ -36,7 +36,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          path_prefix = path_prefix)
 
 # link all CLI stuff
-giLinks<-linkBuilder()
+giLinks<-get_gi()
 
 # expand las folder
 las_data_dir<-path.expand(las_data_dir)
@@ -45,21 +45,21 @@ las_data_dir<-path.expand(las_data_dir)
 # ------------------------ LAS File correction------------------------
 
 cat(":: reducing overlap patterns...\n")
-lasTool("lasoverage",paste0(las_data_dir, lasfiles[j]))
+lastool("lasoverage",paste0(las_data_dir, lasfiles[j]))
 cat(":: rescaling las files...\n")
-lasTool("rescale",paste0(las_data_dir,"o_", lasfiles[j]))
-lasfiles<-list.files(paste0(las_data_dir),pattern="s_o_", full.names=FALSE) 
-# for corrected las files classFilter has to be 13 
+lastool("rescale",paste0(las_data_dir,"o_", lasfiles[j]))
+lasfiles<-list.files(paste0(las_data_dir),pattern="s_o_", full.names=FALSE)
+# for corrected las files classFilter has to be 13
 # if running uncorrected lasfiles set it to 2
 classFilter<-13
 
 # check if extent is ok if not try to correct
-for (i  in 1:length(lasfiles)) lasTool(lasFile= paste0(las_data_dir, lasfiles[i]))
+for (i  in 1:length(lasfiles)) lastool(lasFile= paste0(las_data_dir, lasfiles[i]))
 
 # decompress and merge  point cloud files
-lasTool(tool="laz2las" , lasFile =paste0(las_data_dir,"*"),outpath=las_data_dir)
-lasTool(tool="lasmerge" , lasFile =las_data_dir, outpath=las_data_dir)
+lastool(tool="laz2las" , lasFile =paste0(las_data_dir,"*"),outpath=las_data_dir)
+lastool(tool="lasmerge" , lasFile =las_data_dir, outpath=las_data_dir)
 # get new list of las files
-lasfiles<-list.files(paste0(las_data_dir),pattern="merge", full.names=FALSE) 
+lasfiles<-list.files(paste0(las_data_dir),pattern="merge", full.names=FALSE)
 
 

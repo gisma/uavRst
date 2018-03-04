@@ -4,7 +4,7 @@
 \name{uavRst}
 \alias{uavRst}
 \alias{uavRst-package}
-\title{Unmanned Aerial Vehicle Remote Sensing Tools - awesome gis tools to fly}
+\title{Unmanned Aerial Vehicle Remote Sensing Tools - awesome gis tools to manipulate and analyze UAV based imagery and point clouds}
 \description{
 Unmanned Aerial Vehicle Remote Sensing Tools
 }
