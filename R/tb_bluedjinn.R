@@ -155,7 +155,7 @@ h_comp_ll_proj4 <- function(x) {
 #' @param ID id of line
 #' @param export write shafefile default = F
 #' @export
-#'
+#' @keywords internal
 sp_line <- function(p1,
                     p2,
                     ID,
@@ -177,7 +177,7 @@ sp_line <- function(p1,
 #' @param proj4 proj4 string
 #' @param export write shafefile default = F
 #' @export
-#'
+#' @keywords internal
 sp_point <- function(lon,
                      lat,
                      ID="point",
@@ -200,7 +200,7 @@ sp_point <- function(lon,
 #' @param line  sp object
 #' @export
 #'
-l_maxpos <- function(dem,line){
+line_maxpos <- function(dem,line){
   mask <- dem
   raster::values(mask) <- NA
   #...update it with the altitude information of the flightline
@@ -323,6 +323,7 @@ poly_maxpos <- function(x,lN, poly_split=TRUE){
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
 #' @param returnRaster return GRASS raster as an R raster object default = FALSE
+#' @keywords internal
 
 
 #'
@@ -342,6 +343,7 @@ grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
 #' @description converts OGR to GRASS vector
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
+#' @keywords internal
 
 shape2grass <- function(runDir = NULL, layer = NULL) {
   # import point locations to GRASS

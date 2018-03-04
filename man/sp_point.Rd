@@ -21,3 +21,4 @@ sp_point(lon, lat, ID = "point",
 \description{
 create an spatialpointobject from 1 points, optional export as shapefile
 }
+\keyword{internal}

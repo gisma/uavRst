@@ -1,13 +1,13 @@
-if (!isGeneric('extract_traindata')) {
-  setGeneric('extract_traindata', function(x, ...)
-    standardGeneric('extract_traindata'))
+if (!isGeneric('get_traindata')) {
+  setGeneric('get_traindata', function(x, ...)
+    standardGeneric('get_traindata'))
 }
 
-#'@name extract_traindata
+#'@name get_traindata
 #'@title extracts training data from a raster stack
 #'
 #'@description
-#' extracts training data from a raster stack.return extract_traindata returns a dataframe with all training data
+#' extracts training data from a raster stack.return get_traindata returns a dataframe with all training data
 #'
 #'@author Chris Reudenbach
 #'
@@ -18,11 +18,11 @@ if (!isGeneric('extract_traindata')) {
 #'@import crayon
 
 #'
-#'@export extract_traindata
+#'@export get_traindata
 #'@examples
 #'\dontrun{
 #'
-#' trainingDF <- extract_traindata(rasterStack  = trainStack,
+#' trainingDF <- get_traindata(rasterStack  = trainStack,
 #'                                training     = training,
 #'                                ids=c(1,2),
 #'                                idLabel= c("green","nogreen"))
@@ -30,7 +30,7 @@ if (!isGeneric('extract_traindata')) {
 #'
 
 
-extract_traindata<-function(rasterStack  = NULL,
+get_traindata<-function(rasterStack  = NULL,
                            trainPlots     = NULL,
                            bnames = NULL,
                            imgFN) {
@@ -670,7 +670,7 @@ calc_ext<- function ( calculateBands    = FALSE,
 
     # extract clean and format training data
 
-    trainDF <- uavRst::extract_traindata(rasterStack  = imageTrainStack,
+    trainDF <- uavRst::get_traindata(rasterStack  = imageTrainStack,
                                         trainPlots = geomTrainStack,
                                         bnames = bnames,
                                         imageTrainFiles

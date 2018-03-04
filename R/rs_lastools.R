@@ -1,4 +1,4 @@
-#' lasR Using a bit of lastools from R
+#' simple wrapper for some LAStools functions 
 #'
 #'@description
 #' simple wrapper for some lastools functions

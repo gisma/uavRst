@@ -14,3 +14,4 @@ shape2grass(runDir = NULL, layer = NULL)
 \description{
 converts OGR to GRASS vector
 }
+\keyword{internal}

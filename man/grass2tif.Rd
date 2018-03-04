@@ -16,3 +16,4 @@ grass2tif(runDir = NULL, layer = NULL, returnRaster = FALSE)
 \description{
 converts GRASS raster to geotiff
 }
+\keyword{internal}

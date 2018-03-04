@@ -2,7 +2,7 @@
 % Please edit documentation in R/rs_lastools.R
 \name{lastool}
 \alias{lastool}
-\title{lasR Using a bit of lastools from R}
+\title{simple wrapper for some LAStools functions}
 \usage{
 lastool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
   keep_class = "2", bulge = "1.5", step_size = "city",

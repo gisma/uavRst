@@ -694,17 +694,17 @@ otbtex_gray<- function(input=NULL,
 #' @param dem of GeoTiff containing one channel DEM
 #' @param item index to be calculated default are c("slope", "aspect","TRI","TPI","Roughness")
 
-#' @export get_gdaldem
+#' @export gdal_dem
 #' @examples
 #' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
-#' gm<-get_gdaldem(dem=paste0(getwd(),"4490600_5321400.tif"))
+#' gm<-gdal_dem(dem=paste0(getwd(),"4490600_5321400.tif"))
 #' raster::plot(gm[[1]])
 #' }
 # calculate gdal derived DEM params
-get_gdaldem<- function(dem,
+gdal_dem<- function(dem,
                         item=NULL) {
   if (is.null(item)){
     items<-c("slope", "aspect","TRI","TPI","Roughness")
