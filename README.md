@@ -20,9 +20,7 @@ The `uavRst`analysis toolbox package is far from being *mature*. You will need f
 
  Most of the LiDAR related operations can be done by the great R package [`lidR`](https://CRAN.R-project.org/package=rlidR). However for some of the basic point cloud related operations you will need to install the `LAStool` software. The [`LAStools`](http://lastools.org/download/LAStools.zip)  toolset is available at the [rapidlasso](https://rapidlasso.com/lastools/) homepage. Please download it and unzip it as usual. For Windows systems it is by default expected that you put it  at `C:/LASTools`, running  Linux at `~/apps/LASTools`. 
  
- For some reference algorithms dealing with crown segementation it you may find it worthwhile to install the [`Fusion`](http://forsys.sefs.uw.edu/fusion/fusionlatest.html)  software package which is available at the developers homepage. Please download it and install it as usual. Note you have to adapt the Installation folder in the ``controlFusion.txt`` file. If you are running a default installation on Windows you do not need to change the path. 
-
-Note: For running Fusion and LAStools tools under Linux you first need to install wine.
+Note: For running LAStools tools under Linux you first need to install wine.
 
 In addition you need to install the  `link2GI` package. 
 In case of any problems drop an issue or try to use the actual github hosted version of the [`link2GI`](https://github.com/gisma/link2GI/blob/master/README.md) package. 
