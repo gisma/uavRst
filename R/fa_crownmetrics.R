@@ -1,4 +1,3 @@
-
 if (!isGeneric('poly_metrics')) {
   setGeneric('poly_metrics', function(x, ...)
     standardGeneric('poly_metrics'))
@@ -10,8 +9,8 @@ if (!isGeneric('poly_metrics')) {
 #'@seealso  \href{https://CRAN.R-project.org/package=Momocs}{Momocs}
 #' \href{https://www.researchgate.net/profile/Paul_Rosin/publication/228382248_Computing_global_shape_measures/links/0fcfd510802e598c31000000.pdf?origin=publication_detail}{Paul Rosin}
 #'
-#'@param crownarea sp polygon object
-#'@param funNames ("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")
+#'@param crownarea sp*  spatialpolygon object
+#'@param funNames character. names of morphometrics to be calculated available are ("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")
 #'
 #'@export poly_metrics
 poly_metrics<- function(crownarea,

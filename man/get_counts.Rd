@@ -9,21 +9,21 @@ get_counts(ids = c(1, 2), position = NULL, imageFiles = NULL,
   path = path_output, dropChars = 0)
 }
 \arguments{
-\item{ids}{ids}
+\item{ids}{numeric. the ids used for the training}
 
-\item{position}{position}
+\item{position}{sp. spatialpoint object containing the centre target positions}
 
-\item{imageFiles}{image files}
+\item{imageFiles}{raster* image/classification file}
 
-\item{buffersize}{size in meters around position}
+\item{buffersize}{numeric radius in meters around position}
 
-\item{out_prefix}{out prefix string}
+\item{out_prefix}{character. out prefix string}
 
-\item{ext}{extension}
+\item{ext}{character extension}
 
-\item{path}{output path}
+\item{path}{character. output path}
 
-\item{dropChars}{chars to drop}
+\item{dropChars}{numeric number of characters that should be dropped at the end of the filename}
 }
 \description{
 counts pixel values according to their classes

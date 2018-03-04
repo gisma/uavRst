@@ -4,20 +4,18 @@ if (!isGeneric('get_traindata')) {
 }
 
 #'@name get_traindata
-#'@title extracts training data from a raster stack
+#'@title extracts training data from a raster stack using vector data as a mask 
 #'
 #'@description
-#' extracts training data from a raster stack.return get_traindata returns a dataframe with all training data
+#' extracts training data from a raster stack and returns a dataframe containing for each pixel all values
 #'
 #'@author Chris Reudenbach
 #'
-#'@param rasterStack  default is \code{NULL} rasterstack wcontaining all image data
-#'@param trainPlots default is \code{NULL}  sp object providing training geometries
-#'@param imgFN default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file
-#'@param bnames names of the bands
+#'@param rasterStack  raster*. default is \code{NULL} rasterstack containing all image data
+#'@param trainPlots   sp*. default is \code{NULL}  sp object providing training geometries
+#'@param imgFN        character.  default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file
+#'@param bnames       character. names of the bands
 #'@import crayon
-
-#'
 #'@export get_traindata
 #'@examples
 #'\dontrun{
@@ -27,15 +25,13 @@ if (!isGeneric('get_traindata')) {
 #'                                ids=c(1,2),
 #'                                idLabel= c("green","nogreen"))
 #'}
-#'
-
 
 get_traindata<-function(rasterStack  = NULL,
                            trainPlots     = NULL,
                            bnames = NULL,
                            imgFN) {
 
-  catNote <- blue $ bold
+  catNote <- crayon::blue $ bold
 
 
   cat(catNote("\n:::: extract trainPlots data...\n"))
@@ -63,14 +59,14 @@ get_traindata<-function(rasterStack  = NULL,
 
 #' counts pixel values according to their classes
 #'
-#' @param ids ids
-#' @param position position
-#' @param  imageFiles image files
-#' @param out_prefix out prefix string
-#' @param ext extension
-#' @param path   output path
-#' @param dropChars chars to drop
-#' @param buffersize size in meters around position
+#' @param ids numeric. the ids used for the training 
+#' @param position sp. spatialpoint object containing the centre target positions  
+#' @param  imageFiles raster* image/classification file 
+#' @param out_prefix character. out prefix string
+#' @param ext character extension
+#' @param path   character. output path
+#' @param dropChars numeric number of characters that should be dropped at the end of the filename
+#' @param buffersize numeric radius in meters around position 
 #'
 #' @export get_counts
 #' @examples
@@ -115,11 +111,11 @@ get_counts<- function(ids=c(1,2),
 
 #' classify images using raster predict
 #'
-#' @param imageFiles imagestacke for classification
-#' @param model classification model
-#' @param  in_prefix in frefix  string
-#' @param out_prefix out prefix string
-#' @param bandNames band names
+#' @param imageFiles raster*. imagestack for classification purposes must contain the required bands as needed by the model
+#' @param model model. classification model
+#' @param  in_prefix character. in frefix  string
+#' @param out_prefix character. out prefix string
+#' @param bandNames character. band names
 #'
 #' @export predict_rgb
 #' @examples
@@ -170,24 +166,24 @@ predict_rgb <- function(imageFiles=NULL,
 #' This is in fact the case while using time space variable vegetation patterns for classification purposes.
 #' For the uav based RGB/NIR imagery it provides an optimized preconfiguration for the classification goals.
 #'
-#' @param trainingDF    dataframe containing training data
-#' @param runtest       logical default is false, if set a external validation will be performed
-#' @param predictors    vector of predictor names as given by the header of the training data table
-#' @param response      name of response variable as given by the header of the training data table
-#' @param spaceVar      name of the spcetime splitting vatiable as given by the header of the training data table
-#' @param names         all names of the dataframe header
-#' @param noLoc         number of locations to leave out usually nuber of dicrete trainings locations/images
-#' @param pVal          used part of the training data  default is \code{ 0.5}
-#' @param prefin        name pattern used for model default is \code{"final_"}
-#' @param preffs        name pattern used for ffs default is \code{"ffs_"}
-#' @param modelSaveName name pattern used for saving the model default is \code{"model.RData" }
-#' @param seed          number for seeding
-#' @param noClu         number of cluster to be used
-#' @param sumFunction sumfunction
+#' @param trainingDF    dataframe. containing training data
+#' @param runtest       logical. default is false, if set a external validation will be performed
+#' @param predictors    character. vector of predictor names as given by the header of the training data table
+#' @param response      character. name of response variable as given by the header of the training data table
+#' @param spaceVar      character. name of the spcetime splitting vatiable as given by the header of the training data table
+#' @param names         character. all names of the dataframe header
+#' @param noLoc         numeric. number of locations to leave out usually nuber of dicrete trainings locations/images
+#' @param pVal          numeric. used part of the training data  default is \code{ 0.5}
+#' @param prefin        character. name pattern used for model default is \code{"final_"}
+#' @param preffs        character. name pattern used for ffs default is \code{"ffs_"}
+#' @param modelSaveName character. name pattern used for saving the model default is \code{"model.RData" }
+#' @param seed          numeric. number for seeding
+#' @param noClu         numeric. number of cluster to be used
+#' @param sumFunction   character function to summarize default is "twoClassSummary"
 #' @export ffs_train
 #' @examples
 #' \dontrun{
-#' result<-  ffs_train(trainingDF =trainingDF,
+#' result<-  ffs_train(trainingDF = trainingDF,
 #'                      predictors   = c("R","G","B"),
 #'                      response     = "ID",
 #'                      spaceVar     = "FN",
@@ -276,12 +272,12 @@ ffs_train<-function(   trainingDF   = NULL,
 
 #' create name vector corresponding to the training image stack
 #'
-#' @param rgbi default is  NA
-#' @param bandNames band names
-#' @param  stat band names
-#' @param morpho band names
-#' @param edge band names
-#' @param RGBtrans RGBtrans
+#' @param rgbi character. codes of the RGB indices 
+#' @param bandNames character.  band names
+#' @param  stat character.  stat codes
+#' @param morpho character.  morpho codes
+#' @param edge character.  edge codes
+#' @param RGBtrans character.  RGBtrans codes
 #' @keywords internal
 #' @export make_bandnames
 
@@ -361,16 +357,13 @@ make_bandnames <- function(rgbi    = NA,
 }
 
 
-#' wrapper to preprocess synthetic raster bands from a given RGB and optionally
-#' extracting values according to training vector data
+#' Convenient function to preprocess synthetic raster bands from a given RGB and optionally
+#' extract the raster values on base of vector data for training purposes
 #' @description
 #' The calc_ext function covers step 1 of the  usecaseRGBClassify workflow for a random forest based classification of visible imagery.
-#' The worflow is divided in 4 steps and can be controlled by using the  processing switches of the example (inst/examples/useCaseRGBclassify.R) script :\cr
-#'   \itemize{
-#'\item \code{startcalc_ext  = TRUE} start extraction. NOTE: you may set more switsches in the call of calc_ext
-#'\item \code{startTrain  = TRUE} start training. NOTE: you may set more switsches in the call of calc_ext
-#'\item \code{startPredict  = TRUE} start prediction. NOTE: you may set more switsches in the call of calc_ext
-#'}
+
+#'@details
+#'
 #' (01) calc_ext() calculation of spectral indices, basic spatial statistics and textures and
 #'               extracting of training values over all channels according to training data\cr\cr
 #' (02) ffs_train() training using random forest and the forward feature selection method \cr
@@ -378,70 +371,67 @@ make_bandnames <- function(rgbi    = NA,
 #' (03) calc_ext() with respect to the selected predictor variables you may calculate
 #'               the requested channels for all rgb data that you want to predict.\cr\cr
 #' (04) prediction startPredict=TRUE\cr\cr
-#' (05) for a basic analysis and results extraction have a look at useCaseRGB_analyze.R (highly preliminary!) \cr\cr
 #'
 
-#' @param calculateBands    logical switch for set on calculation of syntheic bands and indices default = TRUE
-#' @param extractTrain      logical switch for set on extract training data according to training geometries default = TRUE
-#' @param prefixrunFN       prefix of current run default = "train"
-#' @param suffixTrainGeom   suffix of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"
-#' @param prefixTrainGeom   prefix of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index_"
-#' @param channels          optional channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")
-#' @param hara              logical switch for using  HaralickTextureExtraction default = TRUE \cr
+#' @param calculateBands    logical. switch for set on calculation of syntheic bands and indices default = TRUE
+#' @param extractTrain      logical. switch for set on extract training data according to training geometries default = TRUE
+#' @param prefixrunFN       prefix. of current run default = "train"
+#' @param suffixTrainGeom   suffix. of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"
+#' @param prefixTrainGeom   prefix. of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index_"
+#' @param channels          character. channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")
+#' @param hara              logical. switch for using  HaralickTextureExtraction default = TRUE \cr
 #' for a review of a lot of feature extraction algorithms look at:\href{http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
 #' glcm<-> haralick c("mean"  advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
 #' using stats will cover mean and variance while dissimilarity is highly correlated to  Homogeneity data. For a nice introduction look at: \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Hallbey}
 
-#' @param haraType          hara options default is c("simple"), other  options are "advanced"  "higher" "all". NOTE:  "higher" takes a LOT of time
-#' @param stat              logical switch for using statistic default = TRUE the stas are mean,variance, curtosis, skewness
-#' @param edge              logical switch for using edge filtering default = TRUE
-#' @param edgeType          edge options default is c("gradient","sobel","touzi") all options are c("gradient","sobel","touzi")
-#' @param morpho            logical switch for using morphological filtering default = TRUE
-#' @param morphoType        morphological options default is c("dilate","erode","opening","closing") all options are ("dilate","erode","opening","closing")
-#' @param indices           RGB indices default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP")
-#' @param RGBTrans          logical switch for using color space transforming default = TRUE
-#' @param colorSpaces        RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
-#' @param kernel            size of kernel for filtering and statistics default is  3
+#' @param haraType          character. hara options default is c("simple"), other  options are "advanced"  "higher" "all". NOTE:  "higher" takes a LOT of time
+#' @param stat              logical. switch for using statistic default = TRUE the stas are mean,variance, curtosis, skewness
+#' @param edge              logical. switch for using edge filtering default = TRUE
+#' @param edgeType          character. edge options default is c("gradient","sobel","touzi") all options are c("gradient","sobel","touzi")
+#' @param morpho            logical. switch for using morphological filtering default = TRUE
+#' @param morphoType        character. morphological options default is c("dilate","erode","opening","closing") all options are ("dilate","erode","opening","closing")
+#' @param indices           character. RGB indices default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP")
+#' @param RGBTrans          logical. switch for using color space transforming default = TRUE
+#' @param colorSpaces       character.  RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
+#' @param kernel            numeric. size of kernel for filtering and statistics default is  3
 #' @param currentDataFolder  NULL folder to image (and shape) data
 #' @param currentIdxFolder  NULL folder for saving the results
-#' @param cleanTiffs  TRUE logical switch for deleting the calculated tifs default is TRUE
-#' @param giLinks        list. of GI tools cli pathes
+#' @param cleanTiffs  logical. TRUE logical switch for deleting the calculated tifs default is TRUE
+#' @param giLinks     list. GI tools cli pathes
 #' @examples
 #' \dontrun{
 #' require(uavRst)
-#'devtools::install_github("gisma/link2GI", ref = "master")
-#'
+#' devtools::install_github("gisma/link2GI", ref = "master")
+#' 
 #'#---> define environment and settings
-#'# define project folder
-#'projRootDir <- "~/temp7/GRASS7"
+#' projRootDir <- "~/temp7/GRASS7"
 #'
 #'# create project structure and export global pathes
-#'link2GI::initProj(projRootDir = projRootDir,
-#'                  projFolders = c("data/",
-#'                                  "data/training/",
-#'                                  "data/training/idx/",
-#'                                  "output/",
-#'                                  "run/",
-#'                                  "fun/") )
-#'# set working directory
-#'setwd(path_run)
-#'res <- calc_ext( calculateBands    = TRUE,
-#'               extractTrain      = TRUE,
-#'               prefixrunFN       = "traddel",
-#'               suffixTrainGeom   = "TrainingArea",
-#'               prefixTrainGeom   = "index_",
-#'               indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") ,
-#'               channels          = c("red", "green", "blue"),
-#'               hara              = FALSE,
-#'               haraType          = c("simple","advanced","higher"),
-#'               stat              = TRUE,
-#'               edge              = TRUE,
-#'               edgeType          = c("gradient","sobel","touzi"),
-#'               morpho            = TRUE,
-#'               morphoType        = c("dilate","erode","opening","closing"),
-#'               kernel            = 3,
-#'               currentDataFolder = path_data_training,
-#'               currentIdxFolder  = path_data_training_idx)
+#' projRootDir<-tmpDir()
+#' setwd(paste0(projRootDir,"run"))
+#' link2GI::initProj(projRootDir = projRootDir,
+#'                  projFolders = c("data/","data/training/","data/training/idx/",
+#'                                  "output/","run/","fun/"),
+#'                                  global = TRUE,
+#'                                  path_prefix = "path_")
+#'                                  
+#'res <- calc_ext(calculateBands    = TRUE,
+#'                extractTrain      = TRUE,
+#'                prefixrunFN       = "traddel",
+#'                suffixTrainGeom   = "TrainingArea",
+#'                prefixTrainGeom   = "index_",
+#'                indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") ,
+#'                channels          = c("red", "green", "blue"),
+#'                hara              = FALSE,
+#'                haraType          = c("simple","advanced","higher"),
+#'                stat              = TRUE,
+#'                edge              = TRUE,
+#'                edgeType          = c("gradient","sobel","touzi"),
+#'                morpho            = TRUE,
+#'                morphoType        = c("dilate","erode","opening","closing"),
+#'                kernel            = 3,
+#'                currentDataFolder = path_data_training,
+#'                currentIdxFolder  = path_data_training_idx)
 #'}
 #' @import crayon
 #' @export calc_ext

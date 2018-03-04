@@ -4,23 +4,23 @@ if (!isGeneric('local_relief')) {
 }
 
 #'@name local_relief
-#'@title Create a hillshading model l from a UAV generated point cloud
+#'@title Create a hillshading model from LiDAR/UAV generated point cloud
 #'
 #'@description
-#' Create a hillshading model l from a UAV generated point cloud. return local_relief basically returns a  DSM
+#' Create a hillshading model on base of LiDAR/UAV generated point cloud.
 #'
 #'@author Chris Reudenbach
 #'
-#'@param lasDir  default is \code{NULL} path  to the laz/las file(s)
-#'@param path_lastools character folder containing the Windows binary files of the lastools
-#'@param gisdbase_path gisdbase will be linked or created depending on \code{gisdbase_exist}
-#'@param GRASSlocation location will be linked or created depending on \code{gisdbase_exist}
-#'@param projFolder subfolders in gisdbase for R related processing
-#'@param grid_size resolution for raster operations
-#'@param spline_level_max default is 9 number ob spline iterations
-#'@param proj4  default is EPSG 32632 any valid proj4 string that is assumingly the correct one
-#'@param gisdbase_exist switch if gisdbase is created or  linked only
-#'@param param_list  default is c("i","v", "n", "g","f","overwrite","quiet")
+#'@param lasDir  character. default is \code{NULL} path  to the laz/las file(s)
+#'@param path_lastools character. character folder containing the Windows binary files of the lastools
+#'@param gisdbase_path character. gisdbase will be linked or created depending on \code{gisdbase_exist}
+#'@param GRASSlocation character. location will be linked or created depending on \code{gisdbase_exist}
+#'@param projFolder character. subfolders in gisdbase for R related processing
+#'@param grid_size numeric. resolution for raster operations
+#'@param spline_level_max numeric. default is 9 number ob spline iterations
+#'@param proj4  character. default is EPSG 32632 any valid proj4 string that is assumingly the correct one
+#'@param gisdbase_exist logical. switch if gisdbase is created or  linked only
+#'@param param_list  character. default is c("i","v", "n", "g","f","overwrite","quiet")
 #'                   i Save intermediate maps; \cr
 #'                   v Use bspline interpolation to construct the surface Uses v.surf.bspline cubic interpolation instead of r.fillnulls cubic interpolation\cr
 #'                   n Invert colors in the color table \cr

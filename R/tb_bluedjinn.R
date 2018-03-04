@@ -358,6 +358,7 @@ shape2grass <- function(runDir = NULL, layer = NULL) {
 #' @description converts GRASS vector to shape file
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
+#' @keywords internal
 
 grass2shape <- function(runDir = NULL, layer = NULL){
   rgrass7::execGRASS("v.out.ogr",
@@ -488,14 +489,14 @@ poly_stat <- function(x = NULL,
 }
 
 #' creates all link2GI links
-#' @description converts SAGA raster to R raster object
-#' @param links character links
-#' @param linkItems character list of c("saga","grass7","otb","gdal")
-#' @param simple boolean true  make all
-#' @param sagaArgs sagaArgs
-#' @param grassArgs grassArgs
-#' @param otbArgs otbArgs
-#' @param gdalArgs gdalArgs
+#' @description brute force search call of all link2GI link functions
+#' @param links character. links
+#' @param linkItems character. list of c("saga","grass7","otb","gdal")
+#' @param simple logical. true  make all
+#' @param sagaArgs character. full string of sagaArgs
+#' @param grassArgs character. grassArgs full string of grassArgs
+#' @param otbArgs character. full string of otbArgs
+#' @param gdalArgs character. full string of gdalArgs
 
 #' @export
 get_gi <- function(links=NULL,

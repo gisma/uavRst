@@ -9,9 +9,9 @@ poly_metrics(crownarea, funNames = c("length", "elongation",
   "rectangularity", "circularityharalick", "convexity"))
 }
 \arguments{
-\item{crownarea}{sp polygon object}
+\item{crownarea}{sp*  spatialpolygon object}
 
-\item{funNames}{("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")}
+\item{funNames}{character. names of morphometrics to be calculated available are ("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")}
 }
 \description{
 calculate morphometric features of polygons. calculate some crown related metrics return the metrics as a spatialpointdataframe/spatialpolygondataframe

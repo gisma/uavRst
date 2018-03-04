@@ -11,16 +11,15 @@ chmseg_uav(treepos = NULL, chm = NULL, minTreeAlt = 2,
   giLinks = NULL)
 }
 \arguments{
-\item{treepos}{spatial raster object}
+\item{treepos}{raster* object}
 
-\item{chm}{Canopy height model in \code{raster} format. Should be the same that was used to create
-the input for \code{treepos}.}
+\item{chm}{raster*. Canopy height model in \code{raster} format. Should be the same that was used to create the input for \code{treepos}.}
 
 \item{minTreeAlt}{numeric. The minimum height value for a \code{chm} pixel to be considered as part of a crown segment.
 All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 height of \code{treepos}.}
 
-\item{minTreeAltParam}{default is "chmQ20"}
+\item{minTreeAltParam}{character. code for the percentile that is used as tree height treshold. It is build using the key letters \code{chmQ} and adding the percentile i.e. "10". Default is \code{chmQ20}}
 
 \item{leafsize}{integer. bin size of grey value sampling range from 1 to 256 see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}}
 
@@ -43,15 +42,13 @@ height of \code{treepos}.}
 \item{giLinks}{list. of GI tools cli pathes}
 }
 \description{
-Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. After the segementation itself the results are hole filled and optionally filtered by a majority filter in the 3*3 surrounding.
+Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. After the segementation itself the results are hole filled and optionally filtered by a majority filter.
 }
 \examples{
 \dontrun{
 # crown segmentation based on a CHM
  chmseg_FT(x = rasterobj,  "nameofSAGAFile")
 }
-
-
 }
 \author{
 Chris Reudenbach

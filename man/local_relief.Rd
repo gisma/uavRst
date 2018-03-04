@@ -2,7 +2,7 @@
 % Please edit documentation in R/ao_localrelief.R
 \name{local_relief}
 \alias{local_relief}
-\title{Create a hillshading model l from a UAV generated point cloud}
+\title{Create a hillshading model from LiDAR/UAV generated point cloud}
 \usage{
 local_relief(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
   projFolder = c("data/", "output/", "run/", "las/"), grid_size = "1.0",
@@ -12,33 +12,33 @@ local_relief(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
   gisdbase_exist = FALSE, path_lastools = NULL)
 }
 \arguments{
-\item{lasDir}{default is \code{NULL} path  to the laz/las file(s)}
+\item{lasDir}{character. default is \code{NULL} path  to the laz/las file(s)}
 
-\item{gisdbase_path}{gisdbase will be linked or created depending on \code{gisdbase_exist}}
+\item{gisdbase_path}{character. gisdbase will be linked or created depending on \code{gisdbase_exist}}
 
-\item{GRASSlocation}{location will be linked or created depending on \code{gisdbase_exist}}
+\item{GRASSlocation}{character. location will be linked or created depending on \code{gisdbase_exist}}
 
-\item{projFolder}{subfolders in gisdbase for R related processing}
+\item{projFolder}{character. subfolders in gisdbase for R related processing}
 
-\item{grid_size}{resolution for raster operations}
+\item{grid_size}{numeric. resolution for raster operations}
 
-\item{param_list}{default is c("i","v", "n", "g","f","overwrite","quiet")
+\item{param_list}{character. default is c("i","v", "n", "g","f","overwrite","quiet")
 i Save intermediate maps; \cr
 v Use bspline interpolation to construct the surface Uses v.surf.bspline cubic interpolation instead of r.fillnulls cubic interpolation\cr
 n Invert colors in the color table \cr
 g Logarithmic scaling of the color table\cr
 f Do not perform histogram equalization on the color table}
 
-\item{spline_level_max}{default is 9 number ob spline iterations}
+\item{spline_level_max}{numeric. default is 9 number ob spline iterations}
 
-\item{proj4}{default is EPSG 32632 any valid proj4 string that is assumingly the correct one}
+\item{proj4}{character. default is EPSG 32632 any valid proj4 string that is assumingly the correct one}
 
-\item{gisdbase_exist}{switch if gisdbase is created or  linked only}
+\item{gisdbase_exist}{logical. switch if gisdbase is created or  linked only}
 
-\item{path_lastools}{character folder containing the Windows binary files of the lastools}
+\item{path_lastools}{character. character folder containing the Windows binary files of the lastools}
 }
 \description{
-Create a hillshading model l from a UAV generated point cloud. return local_relief basically returns a  DSM
+Create a hillshading model on base of LiDAR/UAV generated point cloud.
 }
 \examples{
 \dontrun{

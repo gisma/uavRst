@@ -12,33 +12,33 @@ ffs_train(trainingDF = NULL, predictors = c("R", "G", "B"),
   seed = 100, noClu = 3)
 }
 \arguments{
-\item{trainingDF}{dataframe containing training data}
+\item{trainingDF}{dataframe. containing training data}
 
-\item{predictors}{vector of predictor names as given by the header of the training data table}
+\item{predictors}{character. vector of predictor names as given by the header of the training data table}
 
-\item{response}{name of response variable as given by the header of the training data table}
+\item{response}{character. name of response variable as given by the header of the training data table}
 
-\item{spaceVar}{name of the spcetime splitting vatiable as given by the header of the training data table}
+\item{spaceVar}{character. name of the spcetime splitting vatiable as given by the header of the training data table}
 
-\item{names}{all names of the dataframe header}
+\item{names}{character. all names of the dataframe header}
 
-\item{noLoc}{number of locations to leave out usually nuber of dicrete trainings locations/images}
+\item{noLoc}{numeric. number of locations to leave out usually nuber of dicrete trainings locations/images}
 
-\item{sumFunction}{sumfunction}
+\item{sumFunction}{character function to summarize default is "twoClassSummary"}
 
-\item{pVal}{used part of the training data  default is \code{ 0.5}}
+\item{pVal}{numeric. used part of the training data  default is \code{ 0.5}}
 
-\item{prefin}{name pattern used for model default is \code{"final_"}}
+\item{prefin}{character. name pattern used for model default is \code{"final_"}}
 
-\item{preffs}{name pattern used for ffs default is \code{"ffs_"}}
+\item{preffs}{character. name pattern used for ffs default is \code{"ffs_"}}
 
-\item{modelSaveName}{name pattern used for saving the model default is \code{"model.RData" }}
+\item{modelSaveName}{character. name pattern used for saving the model default is \code{"model.RData" }}
 
-\item{runtest}{logical default is false, if set a external validation will be performed}
+\item{runtest}{logical. default is false, if set a external validation will be performed}
 
-\item{seed}{number for seeding}
+\item{seed}{numeric. number for seeding}
 
-\item{noClu}{number of cluster to be used}
+\item{noClu}{numeric. number of cluster to be used}
 }
 \description{
 ffs_train is a wrapper function for a simple use of the forwatrd feature sselection approach
@@ -52,7 +52,7 @@ For the uav based RGB/NIR imagery it provides an optimized preconfiguration for 
 }
 \examples{
 \dontrun{
-result<-  ffs_train(trainingDF =trainingDF,
+result<-  ffs_train(trainingDF = trainingDF,
                      predictors   = c("R","G","B"),
                      response     = "ID",
                      spaceVar     = "FN",

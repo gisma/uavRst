@@ -10,15 +10,15 @@ predict_rgb(imageFiles = NULL, model = NULL, in_prefix = "index_",
   "Kurtosis"))
 }
 \arguments{
-\item{imageFiles}{imagestacke for classification}
+\item{imageFiles}{raster*. imagestack for classification purposes must contain the required bands as needed by the model}
 
-\item{model}{classification model}
+\item{model}{model. classification model}
 
-\item{in_prefix}{in frefix  string}
+\item{in_prefix}{character. in frefix  string}
 
-\item{out_prefix}{out prefix string}
+\item{out_prefix}{character. out prefix string}
 
-\item{bandNames}{band names}
+\item{bandNames}{character. band names}
 }
 \description{
 classify images using raster predict

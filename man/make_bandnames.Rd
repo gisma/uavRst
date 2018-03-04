@@ -8,17 +8,17 @@ make_bandnames(rgbi = NA, bandNames = NA, stat = FALSE, morpho = NA,
   edge = NA, RGBtrans = NA)
 }
 \arguments{
-\item{rgbi}{default is  NA}
+\item{rgbi}{character. codes of the RGB indices}
 
-\item{bandNames}{band names}
+\item{bandNames}{character.  band names}
 
-\item{stat}{band names}
+\item{stat}{character.  stat codes}
 
-\item{morpho}{band names}
+\item{morpho}{character.  morpho codes}
 
-\item{edge}{band names}
+\item{edge}{character.  edge codes}
 
-\item{RGBtrans}{RGBtrans}
+\item{RGBtrans}{character.  RGBtrans codes}
 }
 \description{
 create name vector corresponding to the training image stack

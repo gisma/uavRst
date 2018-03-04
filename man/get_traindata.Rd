@@ -2,21 +2,21 @@
 % Please edit documentation in R/rs_classify.R
 \name{get_traindata}
 \alias{get_traindata}
-\title{extracts training data from a raster stack}
+\title{extracts training data from a raster stack using vector data as a mask}
 \usage{
 get_traindata(rasterStack = NULL, trainPlots = NULL, bnames = NULL, imgFN)
 }
 \arguments{
-\item{rasterStack}{default is \code{NULL} rasterstack wcontaining all image data}
+\item{rasterStack}{raster*. default is \code{NULL} rasterstack containing all image data}
 
-\item{trainPlots}{default is \code{NULL}  sp object providing training geometries}
+\item{trainPlots}{sp*. default is \code{NULL}  sp object providing training geometries}
 
-\item{bnames}{names of the bands}
+\item{bnames}{character. names of the bands}
 
-\item{imgFN}{default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file}
+\item{imgFN}{character.  default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file}
 }
 \description{
-extracts training data from a raster stack.return get_traindata returns a dataframe with all training data
+extracts training data from a raster stack and returns a dataframe containing for each pixel all values
 }
 \examples{
 \dontrun{
@@ -26,7 +26,6 @@ trainingDF <- get_traindata(rasterStack  = trainStack,
                                ids=c(1,2),
                                idLabel= c("green","nogreen"))
 }
-
 }
 \author{
 Chris Reudenbach

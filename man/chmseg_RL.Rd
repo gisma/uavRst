@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_crownseg.R
 \name{chmseg_RL}
 \alias{chmseg_RL}
-\title{watershed segmentation based on 'rLiDAR'}
+\title{Watershed segmentation based on 'rLiDAR'}
 \usage{
 chmseg_RL(treepos = NULL, chm = NULL, maxCrownArea = 150,
   exclusion = 0.2)
@@ -11,7 +11,7 @@ chmseg_RL(treepos = NULL, chm = NULL, maxCrownArea = 150,
 \item{treepos}{numeric. \code{matrix} or \code{data.frame} with three columns (tree xy coordinates and height).
 number of crown segments equal to the number of treetops.}
 
-\item{chm}{Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
+\item{chm}{raster*. Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 the input for \code{treepos}.}
 
 \item{maxCrownArea}{numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.

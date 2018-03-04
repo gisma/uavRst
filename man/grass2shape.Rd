@@ -14,3 +14,4 @@ grass2shape(runDir = NULL, layer = NULL)
 \description{
 converts GRASS vector to shape file
 }
+\keyword{internal}

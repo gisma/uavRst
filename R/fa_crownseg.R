@@ -2,17 +2,16 @@
 #'@title seeded region growing tree crown segmentation based on 'SAGA GIS'
 #'
 #'@description
-#' Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. After the segementation itself the results are hole filled and optionally filtered by a majority filter in the 3*3 surrounding.
+#' Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. After the segementation itself the results are hole filled and optionally filtered by a majority filter.
 #'
 #'@author Chris Reudenbach
 #'
-#'@param treepos  spatial raster object
+#'@param treepos  raster* object
 #'@param minTreeAlt  numeric. The minimum height value for a \code{chm} pixel to be considered as part of a crown segment.
 #' All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 #' height of \code{treepos}.
-#'@param minTreeAltParam default is "chmQ20"
-#'@param chm Canopy height model in \code{raster} format. Should be the same that was used to create
-#' the input for \code{treepos}.
+#'@param minTreeAltParam character. code for the percentile that is used as tree height treshold. It is build using the key letters \code{chmQ} and adding the percentile i.e. "10". Default is \code{chmQ20}
+#'@param chm raster*. Canopy height model in \code{raster} format. Should be the same that was used to create the input for \code{treepos}.
 #'@param leafsize       integer. bin size of grey value sampling range from 1 to 256 see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
 #'@param normalize      integer. logical switch if data will be normalized (1) see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
 #'@param neighbour      integer. von Neumanns' neighborhood (0) or Moore's (1) see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
@@ -29,8 +28,6 @@
 #' # crown segmentation based on a CHM
 #'  chmseg_FT(x = rasterobj,  "nameofSAGAFile")
 #'}
-#'
-#'
 
 chmseg_uav <- function(treepos = NULL,
                             chm = NULL,
@@ -144,18 +141,18 @@ chmseg_uav <- function(treepos = NULL,
 
 
 
-#' fast and straightforward watershed segmentation based on 'ForestTools'
+#' Fast and straightforward watershed segmentation based on 'ForestTools'
 #' @description  'ForestTools' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Very fast algorithm based on the imagr watershed algorithm.
 #' Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools}{'ForestTools'}
 #' @param treepos \code{SpatialPointsDataFrame}. The point locations of treetops. The function will generally produce a
 #' number of crown segments equal to the number of treetops.
-#' @param chm Canopy height model in \code{raster} format. Should be the same that was used to create
+#' @param chm raster*. Canopy height model in \code{raster} format. Should be the same that was used to create
 #' the input for \code{treepos}.
 #' @param minTreeAlt numeric. The minimum height value for a \code{CHM} pixel to be considered as part of a crown segment.
 #' All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 #' height of \code{treepos}.
-#' @param format string. Format of the function's output. Can be set to either 'raster' or 'polygons'.
-#' @param verbose quiet (1)
+#' @param format character. Format of the function's output. Can be set to either 'raster' or 'polygons'.
+#' @param verbose quiet FALSE
 #'
 #' @import ForestTools
 #'
@@ -201,13 +198,13 @@ chmseg_FT <- function(treepos = NULL,
   return(crownsFT)
 }
 
-#' watershed segmentation based on 'rLiDAR'
+#' Watershed segmentation based on 'rLiDAR'
 #' @description  'rLiDAR' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Generic segmentation algorithm
 #' Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
 #'
 #' @param treepos numeric. \code{matrix} or \code{data.frame} with three columns (tree xy coordinates and height).
 #' number of crown segments equal to the number of treetops.
-#' @param chm Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
+#' @param chm raster*. Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 #' the input for \code{treepos}.
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
 #' height of \code{treepos}.
@@ -253,7 +250,7 @@ chmseg_RL <- function(treepos = NULL,
 }
 
 
-#' decision tree method to grow individual tree crowns based on 'itcSegment'
+#' Decision tree method to grow individual tree crowns based on 'itcSegment'
 #' @description Segmentation of individual tree crowns as polygons based on a LiDAR derived canopy height model.
 #' Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}.
 #'  M. Dalponte, F. Reyes, K. Kandare, and D. Gianelle,
@@ -270,15 +267,15 @@ chmseg_RL <- function(treepos = NULL,
 #'                        }
 
 
-#' @param chm Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
+#' @param chm raster*, Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 #' the input for \code{treepos}.
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
 #' height of \code{treepos}.
-#' @param EPSG_code The EPSG code of the reference system of the CHM raster image.
-#' @param movingWin Size (in pixels) of the moving window to detect local maxima.
-#' @param minTreeAlt Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
-#' @param TRESHSeed seeding threshold
-#' @param TRESHCrown crowns threshold
+#' @param EPSG_code character. The EPSG code of the reference system of the CHM raster image.
+#' @param movingWin numeric. Size (in pixels) of the moving window to detect local maxima. \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}
+#' @param minTreeAlt numeric. Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.\href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}
+#' @param TRESHSeed numeric. seeding threshold. \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}
+#' @param TRESHCrown numeric. crowns threshold. \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}
 #' @import itcSegment
 #' @export chmseg_ITC
 #' @examples

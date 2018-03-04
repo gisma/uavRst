@@ -10,20 +10,20 @@ get_gi(links = NULL, simple = TRUE, linkItems = c("saga", "grass7", "otb",
   gdalArgs = "quiet = TRUE,\\n                                     returnPaths = TRUE")
 }
 \arguments{
-\item{links}{character links}
+\item{links}{character. links}
 
-\item{simple}{boolean true  make all}
+\item{simple}{logical. true  make all}
 
-\item{linkItems}{character list of c("saga","grass7","otb","gdal")}
+\item{linkItems}{character. list of c("saga","grass7","otb","gdal")}
 
-\item{sagaArgs}{sagaArgs}
+\item{sagaArgs}{character. full string of sagaArgs}
 
-\item{grassArgs}{grassArgs}
+\item{grassArgs}{character. grassArgs full string of grassArgs}
 
-\item{otbArgs}{otbArgs}
+\item{otbArgs}{character. full string of otbArgs}
 
-\item{gdalArgs}{gdalArgs}
+\item{gdalArgs}{character. full string of gdalArgs}
 }
 \description{
-converts SAGA raster to R raster object
+brute force search call of all link2GI link functions
 }
