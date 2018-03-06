@@ -547,7 +547,8 @@ calc_ext<- function ( calculateBands    = FALSE,
 
       # create an alltogether stack
       if (rgbi)  tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
-      else tmpFN<-paste0(substr(basename(demFiles[i]),1,nchar(basename(demFiles[i]))-4))
+      else if (length(demFiles)>= i)  tmpFN<-paste0(substr(basename(demFiles[i]),1,nchar(basename(demFiles[i]))-4))
+      else stop("\nhopefully done you are miyxing RGB an DEM files in a non pairwise number...")
       cat(catOk("     save ...",prefixTrainGeom, tmpFN,"\n"))
       # r<-raster::brick(raster::stack(flist)) qgis cannot read heder
       r<-raster::stack(paste0(path_run,flist))
