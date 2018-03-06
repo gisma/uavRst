@@ -58,6 +58,7 @@ get_traindata<-function(rasterStack  = NULL,
 }
 
 #' counts pixel values according to their classes
+#' @description counts pixel values according to their classes
 #'
 #' @param ids numeric. the ids used for the training 
 #' @param position sp. spatialpoint object containing the centre target positions  
@@ -180,7 +181,7 @@ predict_rgb <- function(imageFiles=NULL,
 #' @param modelSaveName character. name pattern used for saving the model default is \code{"model.RData" }
 #' @param seed          numeric. number for seeding
 #' @param noClu         numeric. number of cluster to be used
-#' @param sumFunction   character function to summarize default is "twoClassSummary"
+#' @param sumFunction   \code{character}. function to summarize default is "twoClassSummary"
 #' @export ffs_train
 #' @examples
 #' \dontrun{
@@ -293,8 +294,8 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param extractTrain      logical. switch for set on extract training data according to training geometries default = TRUE
 #' @param prefixrunFN       character. prefix of current run default = "train"
 #' @param prefixdemFN       character. prefix of current DEM default = "dem_"
-#' @param suffixTrainGeom   suffix. of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"
-#' @param prefixTrainGeom   prefix. of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index_"
+#' @param suffixTrainGeom   character. of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"
+#' @param prefixTrainGeom   character. of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index_"
 #' @param channels          character. channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")
 #' @param hara              logical. switch for using  HaralickTextureExtraction default = TRUE. \cr
 #' @param haraType          character. hara options default is c("simple"), other  options are "advanced"  "higher" "all". NOTE:  "higher" takes a LOT of time
@@ -311,7 +312,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param colorSpaces       character.  RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
 #' @param kernel            numeric. size of kernel for filtering and statistics default is  3
 #' @param morpho_method  numeric. saga morphometric method 
-#' @param min_scale  mnumeric. in scale for multi scale TPI
+#' @param min_scale  numeric. in scale for multi scale TPI
 #' @param max_scale  numeric. max scale for multi scale TPI
 #' @param num_scale  numeric. number of scale for multi scale TPI
 #' @param currentDataFolder  NULL folder to image (and shape) data

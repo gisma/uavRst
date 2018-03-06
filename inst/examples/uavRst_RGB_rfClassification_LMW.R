@@ -28,9 +28,10 @@ require(mapview)
 require(link2GI)
 
 # proj subfolders
-prefixrunFN       = "traddel"
+
+prefixrunFN       = "desert_dem"
 # define project folder
-projRootDir <- "~/temp7/GRASS7"
+projRootDir <- "/media/solo/7fbfcfdf-6276-48ad-ba94-82ba2f9993b9/drohne/chile"
 
 paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/training/","data/training/idx/",
@@ -46,7 +47,10 @@ giLinks<-uavRst::get_gi()
 
 # set processing switches
 startcalc_ext  = TRUE
+
+
 startTrain   = FALSE
+
 startPredict = FALSE
 
 # set current data and results path default is training
@@ -68,17 +72,19 @@ if (startcalc_ext){
                  prefixrunFN       = prefixrunFN,
                  suffixTrainGeom   = "",
                  prefixTrainGeom   = "index_",
-                 rgbi              = F,
+
+                 rgbi              = TRUE,
                   indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"),
-                 RGBTrans          = F,
+                 RGBTrans          = TRUE,
                  colorSpaces       = c("CIELab","XYZ","YUV"),
                  channels          = c("red"),# "green", "blue"),
-                 hara              = F,
+                 hara              = TRUE,
                   haraType          = c("simple"), #,"advanced","higher"),
-                 stat              = F,
-                 edge              = F,
+                 stat              = TRUE,
+                 edge              = TRUE,
                   edgeType          = c("gradient","sobel","touzi"),
-                 morpho            = F,
+                 morpho            = TRUE,
+
                   morphoType        = c("dilate","erode","opening","closing"),
                  pardem = TRUE,
                  #demType = c("hillshade","slope", "aspect","TRI","TPI","Roughness"),
@@ -95,9 +101,11 @@ if (startTrain){
   # NOTE ADAPT IT TO YOUR NEEDS
 
   # classes IDs as given by the training vector files ID column
-  idNumber=c(1,2,3,4,5,6,7)
+
+  idNumber=c(1,2,3,4,5,6,7,8,9)
   # rename them
-  idNames= c("lightgreen","darkgreen","lightsoil","darksoil","shadow","lightgray","darkgray")
+  idNames= c("darkgreen","lightgreen","darksoil","lightsoil","shadow","cacti","lightgray","darkgray","molliswhite")
+
 
   # load raw training dataframe
   if (!(exists)("trainDF"))

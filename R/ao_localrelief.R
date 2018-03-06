@@ -13,7 +13,7 @@ if (!isGeneric('local_relief')) {
 #'
 #'@param lasDir  character. default is \code{NULL} path  to the laz/las file(s)
 #'@param path_lastools character. character folder containing the Windows binary files of the lastools
-#'@param gisdbase_path character. gisdbase will be linked or created depending on \code{gisdbase_exist}
+#'@param gisdbase_path character.  gisdbase will be linked or created depending on \code{gisdbase_exist}
 #'@param GRASSlocation character. location will be linked or created depending on \code{gisdbase_exist}
 #'@param projFolder character. subfolders in gisdbase for R related processing
 #'@param grid_size numeric. resolution for raster operations
