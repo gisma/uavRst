@@ -79,6 +79,9 @@ dtm <- uavRst::pc2dtm(lasDir = las_data,
 dsmR <- dsm[[1]]
 dtmR <- dtm[[1]]
 
+
+
+
 # crop them to the test area
 dsmR<-raster::crop(dsmR,ext)
 dtmR<-raster::crop(dtmR,ext)
