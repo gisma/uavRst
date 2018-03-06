@@ -139,7 +139,7 @@ predict_rgb <- function(imageFiles=NULL,
   doParallel::registerDoParallel	(cl)
   foreach::foreach(i,po) %dopar% {
     #for (i in 1:length(imageFiles)) {
-    requireNamespace(raster)
+    requireNamespace("raster")
     #requireNamespace(randomForest)
     #require(caret)
     #TODO rasterstack
