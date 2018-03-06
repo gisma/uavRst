@@ -360,7 +360,7 @@ ffs_train<-function(   trainingDF   = NULL,
 
 calc_ext<- function ( calculateBands    = FALSE,
                     extractTrain      = TRUE,
-                    prefixrunFN       = "train",
+                    prefixrunFN       = "train_",
                     prefixdemFN       = "dem_",
                     suffixTrainGeom   = "TrainingArea",
                     prefixTrainGeom   = "index_",
@@ -419,8 +419,8 @@ calc_ext<- function ( calculateBands    = FALSE,
 
     # create list of image files to be processed
     # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
-    imageFiles <- list.files(pattern="[.]tif$", path=currentDataFolder, full.names=TRUE)
-    demFiles <- list.files(pattern=prefixdemFN, path=currentDataFolder, full.names=TRUE)
+    imageFiles <- list.files(pattern=paste0("^",prefixrunFN), path=currentDataFolder, full.names=TRUE)
+    demFiles <- list.files(pattern=paste0("^",prefixdemFN), path=currentDataFolder, full.names=TRUE)
     # stack the ortho images
     #rgb<- lapply(imageFiles, FUN=raster::raster)
 

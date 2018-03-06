@@ -6,7 +6,7 @@
 extract the raster values on base of vector data for training purposes}
 \usage{
 calc_ext(calculateBands = FALSE, extractTrain = TRUE,
-  prefixrunFN = "train", prefixdemFN = "dem_",
+  prefixrunFN = "train_", prefixdemFN = "dem_",
   suffixTrainGeom = "TrainingArea", prefixTrainGeom = "index_",
   channels = c("red", "green", "blue"), hara = TRUE,
   haraType = c("simple", "advanced", "higher"), stat = TRUE, edge = TRUE,
@@ -31,9 +31,9 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE,
 
 \item{prefixdemFN}{character. prefix of current DEM default = "dem_"}
 
-\item{suffixTrainGeom}{suffix. of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"}
+\item{suffixTrainGeom}{character. of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"}
 
-\item{prefixTrainGeom}{prefix. of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index_"}
+\item{prefixTrainGeom}{character. of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index_"}
 
 \item{channels}{character. channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")}
 
@@ -65,7 +65,7 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE,
 
 \item{morpho_method}{numeric. saga morphometric method}
 
-\item{min_scale}{mnumeric. in scale for multi scale TPI}
+\item{min_scale}{numeric. in scale for multi scale TPI}
 
 \item{max_scale}{numeric. max scale for multi scale TPI}
 

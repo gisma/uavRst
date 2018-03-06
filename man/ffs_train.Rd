@@ -24,7 +24,7 @@ ffs_train(trainingDF = NULL, predictors = c("R", "G", "B"),
 
 \item{noLoc}{numeric. number of locations to leave out usually nuber of dicrete trainings locations/images}
 
-\item{sumFunction}{character function to summarize default is "twoClassSummary"}
+\item{sumFunction}{\code{character}. function to summarize default is "twoClassSummary"}
 
 \item{pVal}{numeric. used part of the training data  default is \code{ 0.5}}
 
