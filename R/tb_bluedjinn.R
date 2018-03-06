@@ -622,15 +622,17 @@ gdalsplit<-function(fn){
     gdalUtils::gdal_translate(fn,paste0(directory,"/b",i,".tif"),b=i)
   }
 }
-
+#' colorize the cat outputs 
+#' @description colorize the cat outputs 
+#'@export
+#'@keywords internal
 getCrayon<-function(){
-head <- crayon::black $ bgGreen
-err  <- crayon::red $ bold
-note <- crayon::blue $ bold
-ok   <- crayon::green $ bold
-return(list(note,err,ok,head))
+  head <- crayon::black $ bgGreen
+  err  <- crayon::red $ bold
+  note <- crayon::blue $ bold
+  ok   <- crayon::green $ bold
+  return(list(note,err,ok,head))
 }
-
 #' create name vector corresponding to the training image stack
 #'
 #' @param rgbi character. codes of the RGB indices 
@@ -723,6 +725,14 @@ make_bandnames <- function(rgbi    = NA,
 }
 
 
+issagaitem <- function(x) 
+{
+  if (x %in%  c("SLOPE","ASPECT","C_GENE","C_PROF","C_PLAN","C_TANG","C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI") ) return(TRUE) else return(FALSE)
+}             
+isgdaldemitem <- function(x) 
+{
+  if (x %in%  c("hillshade","slope", "aspect","TRI","TPI","Roughness")) return(TRUE) else return(FALSE)
+}
 
 
 

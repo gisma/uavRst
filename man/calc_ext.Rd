@@ -15,8 +15,11 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE,
   "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), RGBTrans = TRUE,
   colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ",
   "YUV"), pardem = TRUE, demType = c("hillshade", "slope", "aspect", "TRI",
-  "TPI", "Roughness"), kernel = 3, currentDataFolder = NULL,
-  currentIdxFolder = NULL, cleanTiffs = TRUE, giLinks = NULL)
+  "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", "C_TANG",
+  "C_LONG", "C_CROS", "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI"),
+  morpho_method = 6, min_scale = 1, max_scale = 8, num_scale = 2,
+  kernel = 3, currentDataFolder = NULL, currentIdxFolder = NULL,
+  cleanTiffs = TRUE, giLinks = NULL)
 }
 \arguments{
 \item{calculateBands}{logical. switch for set on calculation of syntheic bands and indices default = TRUE}
@@ -56,6 +59,14 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE,
 \item{pardem}{logical. switch for calculating dem parameter default = FALSE}
 
 \item{demType}{character. ("hillshade","slope", "aspect","TRI","TPI","Roughness")}
+
+\item{morpho_method}{numeric. saga morphometric method}
+
+\item{min_scale}{mnumeric. in scale for multi scale TPI}
+
+\item{max_scale}{numeric. max scale for multi scale TPI}
+
+\item{num_scale}{numeric. number of scale for multi scale TPI}
 
 \item{kernel}{numeric. size of kernel for filtering and statistics default is  3}
 

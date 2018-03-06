@@ -308,6 +308,10 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param RGBTrans          logical. switch for using color space transforming default = TRUE
 #' @param colorSpaces       character.  RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
 #' @param kernel            numeric. size of kernel for filtering and statistics default is  3
+#' @param morpho_method  numeric. saga morphometric method 
+#' @param min_scale  mnumeric. in scale for multi scale TPI
+#' @param max_scale  numeric. max scale for multi scale TPI
+#' @param num_scale  numeric. number of scale for multi scale TPI
 #' @param currentDataFolder  NULL folder to image (and shape) data
 #' @param currentIdxFolder  NULL folder for saving the results
 #' @param cleanTiffs  logical. TRUE logical switch for deleting the calculated tifs default is TRUE
@@ -371,7 +375,13 @@ calc_ext<- function ( calculateBands    = FALSE,
                     RGBTrans          = TRUE,
                     colorSpaces       = c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
                     pardem            = TRUE,
-                    demType           = c("hillshade","slope", "aspect","TRI","TPI","Roughness"),
+                    demType           = c("hillshade","slope", "aspect","TRI","TPI","Roughness",
+                                          "SLOPE","ASPECT", "C_GENE","C_PROF","C_PLAN","C_TANG",
+                                          "C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI"),  
+                    morpho_method = 6,
+                    min_scale = 1,
+                    max_scale = 8,
+                    num_scale = 2,
                     kernel            = 3,
                     currentDataFolder = NULL,
                     currentIdxFolder  = NULL,
@@ -418,8 +428,14 @@ calc_ext<- function ( calculateBands    = FALSE,
     if (pardem){
       bnames<-NULL
       for (i in 1:length(demFiles)){
-        cat(catNote(":::: processing dem... ",demType,"\n"))
-        uavRst::gdal_dem(dem = demFiles[i], item = demType)
+        #cat(catNote(":::: processing dem... ",demType,"\n"))
+        morpho_dem(dem = demFiles[i], 
+                   item = demType,
+                   morpho_method = morpho_method,
+                   min_scale = min_scale,
+                   max_scale = max_scale,
+                   num_scale = num_scale,
+                   giLinks = giLinks)
         flist<-append(flist,paste0(demType,".tif"))
         for (item in demType) 
           bnames <-append(bnames,make_bandnames(dem = item))
@@ -548,8 +564,8 @@ calc_ext<- function ( calculateBands    = FALSE,
       # create an alltogether stack
       if (rgbi)  tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
       else if (length(demFiles)>= i)  tmpFN<-paste0(substr(basename(demFiles[i]),1,nchar(basename(demFiles[i]))-4))
-      else stop("\nhopefully done you are miyxing RGB an DEM files in a non pairwise number...")
-      cat(catOk("     save ...",prefixTrainGeom, tmpFN,"\n"))
+      else return(cat(catErr("\nhopefully done\n You are mixing RGB an DEM input files. You may do this but only if they are of the same extent etc. and if each image file has a corresponding dem file\n NOTE the dem filename MUST have the prefix 'dem_'.")))
+      cat(catOk("     save ...",paste0(prefixTrainGeom, tmpFN),"\n"))
       # r<-raster::brick(raster::stack(flist)) qgis cannot read heder
       r<-raster::stack(paste0(path_run,flist))
       if (raster::nlayers(r)!=length(bnames)) stop("\n Number of names and layers differ...\n most common case is a broken cleanup of the runtime directory!")

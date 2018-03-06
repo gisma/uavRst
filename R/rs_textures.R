@@ -696,48 +696,107 @@ otbtex_gray<- function(input=NULL,
 #' calculate gdal derived DEM params
 #'
 #' @note please provide a GeoTiff file
-#' @param dem of GeoTiff containing one channel DEM
-#' @param item index to be calculated default are c("hillshade","slope", "aspect","TRI","TPI","Roughness")
+#' @param dem  character filname to GeoTiff containing one channel DEM
+#' @param item index. to be calculated default are c("hillshade","slope", "aspect","TRI","TPI","Roughness")
+#' @param verbose logical. be quiet
+#' @param morpho_method  numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}
+#' @param min_scale  mnumeric. in scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
+#' @param max_scale  numeric. max scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
+#' @param num_scale  numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
+#' @param giLinks    list. of GI tools cli pathes
 
-#' @export gdal_dem
+#' @export morpho_dem
 #' @examples
 #' \dontrun{
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
-#' gm<-gdal_dem(dem=paste0(getwd(),"4490600_5321400.tif"))
+#' gm<-morpho_dem(dem=paste0(getwd(),"4490600_5321400.tif"))
 #' raster::plot(gm[[1]])
 #' }
 # calculate gdal derived DEM params
-gdal_dem<- function(dem,
-                        item=NULL,
+morpho_dem<- function(dem,
+                    item=c("hillshade","slope", "aspect","TRI","TPI","Roughness","SLOPE","ASPECT", "C_GENE","C_PROF","C_PLAN"," C_TANG"," C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI"),
                     verbose=FALSE,
+                    morpho_method = 6,
+                    min_scale = 1,
+                    max_scale = 8,
+                    num_scale = 2,
                     giLinks = NULL) {
-  if (is.null(item)){
-    items<-c("hillshade","slope", "aspect","TRI","TPI","Roughness")
-  } else items = item
-  s<-raster(dem)
+  if (is.null(giLinks)){
+    giLinks <- get_gi()
+  }
+  issaga <- Vectorize(issagaitem)
+  isgdal <- Vectorize(isgdaldemitem)
+  saga_items<-item[issaga(item)]
+  gdal_items<-item[isgdal(item)]
+  
+  gdal <- giLinks$gdal
+  saga <- giLinks$saga
+  sagaCmd<-saga$sagaCmd
+  invisible(env<-RSAGA::rsaga.env())
+
+  s<-raster::raster(dem)
   y<-yres(s)
   x<-xres(s)
-  res<-gdalwarp(dem,paste0(path_run,'dem2.tif'),
-           te=paste(extent(s)[1],
-                    ' ',
-                    extent(s)[3],
-                    ' ',
-                    extent(s)[2],
-                    ' ',
-                    extent(s)[4]),
-           tr=paste(x,' ', y),
-           overwrite = TRUE,
-           multi = TRUE)
-
-  for (item in items){
-
-     res<-   gdaldem(mode = item,
+  res<-gdalUtils::gdalwarp(dem,paste0(path_run,'dem2.tif'),
+                           te=paste(extent(s)[1],' ',
+                                    extent(s)[3],' ',
+                                    extent(s)[2],' ',
+                                    extent(s)[4]),
+                           tr=paste(x,' ', y),
+                           overwrite = TRUE,
+                           multi = TRUE)
+  
+  for (item in gdal_items){
+    cat(getCrayon()[[1]](":::: processing ",item,"\n"))
+    res<-   gdaldem(mode = item,
             input_dem="dem2.tif",
             output = paste0(item,".tif"))
   }
-  
+  rdem<-raster::raster(paste0(path_run,'dem2.tif'))
+  raster::writeRaster(rdem,paste0(path_run,"SAGA_dem.sdat"),overwrite = TRUE,NAflag = 0)
+  # claculate the basics SAGA morphometric params
+  cat(getCrayon()[[1]](":::: processing ",saga_items,"\n"))
+  rsaga.geoprocessor(lib = "ta_morphometry", module = 0,
+                     param = list(ELEVATION = paste(path_run,"SAGA_dem.sgrd", sep = ""), 
+                                  UNIT_SLOPE = 1,
+                                  UNIT_ASPECT = 1, 
+                                  SLOPE = paste(path_run,"SLOPE.sgrd", sep = ""),
+                                  ASPECT = paste(path_run,"ASPECT.sgrd", sep = ""),
+                                  C_GENE = paste(path_run,"C_GENE.sgrd", sep = ""),
+                                  C_PROF = paste(path_run,"C_PROF.sgrd", sep = ""),
+                                  C_PLAN = paste(path_run,"C_PLAN.sgrd", sep = ""),
+                                  C_TANG = paste(path_run,"C_TANG.sgrd", sep = ""),
+                                  C_LONG = paste(path_run,"C_LONG.sgrd", sep = ""),
+                                  C_CROS = paste(path_run,"C_CROS.sgrd", sep = ""),
+                                  C_MINI = paste(path_run,"C_MINI.sgrd", sep = ""),
+                                  C_MAXI = paste(path_run,"C_MAXI.sgrd", sep = ""),
+                                  C_TOTA = paste(path_run,"C_TOTA.sgrd", sep = ""),
+                                  C_ROTO = paste(path_run,"C_ROTO.sgrd", sep = ""),
+                                  METHOD = morpho_method),
+                     show.output.on.console = FALSE,
+                     env = env)
+ 
+  # calculate multiscale p
+  # Topographic Position Index (TPI) calculation as proposed by Guisan et al. (1999).SAGA 
+  # This implementation calculates the TPI for different scales and integrates these into 
+  # one single grid. The hierarchical integration is achieved by starting with the 
+  # standardized TPI values of the largest scale, then adding standardized values from smaller
+  # scales where the (absolute) values from the smaller scale exceed those from the larger scale. 
+  rsaga.geoprocessor(lib = "ta_morphometry", module = 28,
+                     param = list(DEM = paste(path_run,"SAGA_dem.sgrd", sep = ""), 
+                                  SCALE_MIN = min_scale,
+                                  SCALE_MAX = max_scale,
+                                  SCALE_NUM = num_scale,
+                                  TPI = paste(path_run,"MTPI.sgrd", sep = "")),
+                     show.output.on.console = FALSE,
+                     env = env)
+  for (item in saga_items){
+    cat(getCrayon()[[1]](":::: converting ",item,"\n"))
+    ritem<-raster::raster(paste(path_run,item,".sdat", sep = ""))
+    raster::writeRaster(ritem,paste(path_run,item,".tif", sep = ""), overwrite = TRUE, NAflag = 0)
+  }
 }
 
 # if necessary creates additional folders for the resulting files
