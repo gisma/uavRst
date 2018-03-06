@@ -290,7 +290,8 @@ ffs_train<-function(   trainingDF   = NULL,
 
 #' @param calculateBands    logical. switch for set on calculation of syntheic bands and indices default = TRUE
 #' @param extractTrain      logical. switch for set on extract training data according to training geometries default = TRUE
-#' @param prefixrunFN       prefix. of current run default = "train"
+#' @param prefixrunFN       character. prefix of current run default = "train"
+#' @param prefixdemFN       character. prefix of current DEM default = "dem_"
 #' @param suffixTrainGeom   suffix. of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"
 #' @param prefixTrainGeom   prefix. of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index_"
 #' @param channels          character. channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")
@@ -358,6 +359,7 @@ ffs_train<-function(   trainingDF   = NULL,
 calc_ext<- function ( calculateBands    = FALSE,
                     extractTrain      = TRUE,
                     prefixrunFN       = "train",
+                    prefixdemFN       = "dem_",
                     suffixTrainGeom   = "TrainingArea",
                     prefixTrainGeom   = "index_",
                     channels          = c("red", "green", "blue"),
@@ -416,7 +418,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     # create list of image files to be processed
     # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
     imageFiles <- list.files(pattern="[.]tif$", path=currentDataFolder, full.names=TRUE)
-    demFiles <- list.files(pattern="dem_", path=currentDataFolder, full.names=TRUE)
+    demFiles <- list.files(pattern=prefixdemFN, path=currentDataFolder, full.names=TRUE)
     # stack the ortho images
     #rgb<- lapply(imageFiles, FUN=raster::raster)
 
@@ -564,7 +566,7 @@ calc_ext<- function ( calculateBands    = FALSE,
       # create an alltogether stack
       if (rgbi)  tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
       else if (length(demFiles)>= i)  tmpFN<-paste0(substr(basename(demFiles[i]),1,nchar(basename(demFiles[i]))-4))
-      else return(cat(catErr("\nhopefully done\n You are mixing RGB an DEM input files. You may do this but only if they are of the same extent etc. and if each image file has a corresponding dem file\n NOTE the dem filename MUST have the prefix 'dem_'.")))
+      else return(cat(catErr("\nhopefully done\n You are mixing RGB an DEM input files. You may do this but only if they are of the same extent etc. and if each image file has a corresponding dem file\n NOTE the dem filename MUST have a prefix default is 'dem_'.")))
       cat(catOk("     save ...",paste0(prefixTrainGeom, tmpFN),"\n"))
       # r<-raster::brick(raster::stack(flist)) qgis cannot read heder
       r<-raster::stack(paste0(path_run,flist))

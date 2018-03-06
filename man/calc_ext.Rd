@@ -6,10 +6,11 @@
 extract the raster values on base of vector data for training purposes}
 \usage{
 calc_ext(calculateBands = FALSE, extractTrain = TRUE,
-  prefixrunFN = "train", suffixTrainGeom = "TrainingArea",
-  prefixTrainGeom = "index_", channels = c("red", "green", "blue"),
-  hara = TRUE, haraType = c("simple", "advanced", "higher"), stat = TRUE,
-  edge = TRUE, edgeType = c("gradient", "sobel", "touzi"), morpho = TRUE,
+  prefixrunFN = "train", prefixdemFN = "dem_",
+  suffixTrainGeom = "TrainingArea", prefixTrainGeom = "index_",
+  channels = c("red", "green", "blue"), hara = TRUE,
+  haraType = c("simple", "advanced", "higher"), stat = TRUE, edge = TRUE,
+  edgeType = c("gradient", "sobel", "touzi"), morpho = TRUE,
   morphoType = c("dilate", "erode", "opening", "closing"), rgbi = TRUE,
   indices = c("VVI", "VARI", "NDTI", "RI", "SCI", "BI", "SI", "HI", "TGI",
   "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), RGBTrans = TRUE,
@@ -26,7 +27,9 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE,
 
 \item{extractTrain}{logical. switch for set on extract training data according to training geometries default = TRUE}
 
-\item{prefixrunFN}{prefix. of current run default = "train"}
+\item{prefixrunFN}{character. prefix of current run default = "train"}
+
+\item{prefixdemFN}{character. prefix of current DEM default = "dem_"}
 
 \item{suffixTrainGeom}{suffix. of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"}
 
