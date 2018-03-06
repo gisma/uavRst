@@ -777,7 +777,9 @@ morpho_dem<- function(dem,
                                   METHOD = morpho_method),
                      show.output.on.console = FALSE,
                      env = env)
- 
+  if ("MTPI" %in% saga_items){
+  if (RSAGA::rsaga.get.version() >= "3.0.0") {
+  
   # calculate multiscale p
   # Topographic Position Index (TPI) calculation as proposed by Guisan et al. (1999).SAGA 
   # This implementation calculates the TPI for different scales and integrates these into 
@@ -792,6 +794,11 @@ morpho_dem<- function(dem,
                                   TPI = paste(path_run,"MTPI.sgrd", sep = "")),
                      show.output.on.console = FALSE,
                      env = env)
+    } else {cat("Please install SAGA >= 3.0.0\n Run without MTPI...")
+      saga_items<-saga_items[  !(saga_items %in% "MTPI")]
+            
+    }
+    }
   for (item in saga_items){
     cat(getCrayon()[[1]](":::: converting ",item,"\n"))
     ritem<-raster::raster(paste(path_run,item,".sdat", sep = ""))
