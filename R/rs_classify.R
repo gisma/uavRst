@@ -131,7 +131,9 @@ predict_rgb <- function(imageFiles=NULL,
                        model = NULL,
                        in_prefix = "index_",
                        out_prefix = "classified_",
-                       bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis")) {
+                       bandNames = NULL) {
+  
+  if (is.null(bandNames)) return(cat(crayon()[[1]]("\n you did not provide predictor names. \nTypically something like bnames ie c('R','G','B')")))
   po = path_output
   i = 1:length(imageFiles)
   cat("\n::: start prediction aka classifikation...\n")
@@ -139,13 +141,12 @@ predict_rgb <- function(imageFiles=NULL,
   doParallel::registerDoParallel	(cl)
   foreach::foreach(i,po) %dopar% {
     #for (i in 1:length(imageFiles)) {
-    requireNamespace(raster)
+    requireNamespace("raster")
     #requireNamespace(randomForest)
     #require(caret)
     #TODO rasterstack
     fn<-basename(imageFiles[i])
     fnOut <- paste0(po,out_prefix,fn)
-
     img2predict<-raster::stack(imageFiles[i])
     names(img2predict)<-bandNames
     predictImg<- raster::predict(img2predict,
@@ -426,10 +427,11 @@ calc_ext<- function ( calculateBands    = FALSE,
     ### calculate indices and base stat export it to tif
     # create list vars
     flist<-list()
-    # if calc pardem 
-    if (pardem){
+
       bnames<-NULL
       for (i in 1:length(demFiles)){
+        # if calc pardem 
+        if (pardem){
         #cat(catNote(":::: processing dem... ",demType,"\n"))
         morpho_dem(dem = demFiles[i], 
                    item = demType,
@@ -443,10 +445,10 @@ calc_ext<- function ( calculateBands    = FALSE,
           bnames <-append(bnames,make_bandnames(dem = item))
         
       } 
-    }
+    #}
 
     # for all images do
-    for (i in 1:length(imageFiles)){
+#    for (i in 1:length(imageFiles)){
       if (rgbi){
       cat(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
       r<-raster::stack(imageFiles[i])
@@ -602,7 +604,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     # get image and geometry data for training purposes
     imageTrainFiles <- list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE)
     tmp  <- basename(list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE))
-    geomTrainFiles<-paste0(currentDataFolder,substr(tmp,nchar(prefixTrainGeom)+1,nchar(tmp)-(nchar(suffixTrainGeom)+4)),suffixTrainGeom,".shp")
+    geomTrainFiles<-paste0(currentDataFolder,substr(tmp,nchar(prefixTrainGeom)+1,nchar(tmp)-(nchar(suffixTrainGeom)+4)),suffixTrainGeom,"shp")
 
     imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
     geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
