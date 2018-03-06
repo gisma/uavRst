@@ -37,21 +37,19 @@ Calls the glcm package with useful settings
 for the use of glcmtex a glcm wrapper function
       a raster* object is required
 
-More information at the texture tutorial site of
-\href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Mryka Hall-Beyer}
+More information at:
+\href{https://prism.ucalgary.ca/handle/1880/51900}{texture tutorial}
 Keep in mind that:\cr
-Homogeneity is correlated with Contrast,  r = -0.80
-Homogeneity is correlated with Dissimilarity, r = -0.95
-GLCM Variance is correlated with Contrast,  r= 0.89
-GLCM Variance is correlated with Dissimilarity,  r= 0.91
-GLCM Variance is correlated with Homogeneity,  r= -0.83
-Entropy is correlated with ASM,  r= -0.87
-GLCM Mean and Correlation are more independent. For the same image,
-GLCM Mean shows  r< 0.1 with any of the other texture measures demonstrated in this tutorial.
-GLCM Correlation shows  r<0.5 with any other measure.
+Homogeneity is correlated with Contrast,  r = -0.80\cr
+Homogeneity is correlated with Dissimilarity, r = -0.95\cr
+GLCM Variance is correlated with Contrast,  r= 0.89\cr
+GLCM Variance is correlated with Dissimilarity,  r= 0.91\cr
+GLCM Variance is correlated with Homogeneity,  r= -0.83\cr
+Entropy is correlated with ASM,  r= -0.87\cr
+GLCM Mean and Correlation are more independent. For the same image, GLCM Mean shows  r< 0.1 with any of the other texture measures demonstrated in this tutorial. GLCM Correlation shows  r<0.5 with any other measure.
 for a review of a lot of feature extraction algorithms look at: \href{http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
-glcm<-> haralick c("mean"  advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
-using stats will cover mean and variance while dissimilarity is highly correlated to  Homogeneity data. For a nice introduction look at: \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Hallbey}.
+glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogeneity" <-> "simple 4", "contrast"<-> "simple 5", "dissimilarity" <-> "advanced 2", "entropy" <-> "simple 2", "second_moment"<-> "simple 4", "correlation" <-> "simple 3"
+Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data.
 }
 \examples{
 \dontrun{

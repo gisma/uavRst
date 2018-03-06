@@ -4,12 +4,12 @@
 \alias{gdal_dem}
 \title{calculate gdal derived DEM params}
 \usage{
-gdal_dem(dem, item = NULL)
+gdal_dem(dem, item = NULL, verbose = FALSE, giLinks = NULL)
 }
 \arguments{
 \item{dem}{of GeoTiff containing one channel DEM}
 
-\item{item}{index to be calculated default are c("slope", "aspect","TRI","TPI","Roughness")}
+\item{item}{index to be calculated default are c("hillshade","slope", "aspect","TRI","TPI","Roughness")}
 }
 \description{
 calculate gdal derived DEM params

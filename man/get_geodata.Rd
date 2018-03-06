@@ -14,8 +14,7 @@ get_geodata(name = "GADM", download = TRUE, path = "", ...)
 \code{alt}, \cr
 \code{worldclim},\cr
 \code{schmatzPangea},\cr
-\code{harrylist}, \cr
-\code{tiroldem}.\cr}
+\code{harrylist}, \cr}
 
 \item{download}{Logical \code{TRUE} data will be downloaded if not locally available}
 
@@ -144,27 +143,6 @@ The list of allowd items is (long): \cr
 If  \code{name=}'harrylist' you will download and clean the complete list\cr
    \code{get_geodata('harrylist')}\cr \cr
 }
-
-\subsection{Digital Elevation Model of Tyrolia}{
-
-\code{tiroldem} refers to the 10 m Lidar based DEM as provided by the Authorithy of Tirol. \cr \cr
-If  \code{name}='tiroldem' you must set the switch 'all' to \code{FALSE} if you just want to download a specified item you have to set data=item.
-The list of allowd items is:
-\itemize{
-\item \code{IBK_DGM10} Innsbruck,
-\item \code{IL_DGM10} Innsbruck Land,
-\item \code{IM_DGM10} Imst,
-\item \code{KB_DGM10} Kitzbuehl,
-\item \code{KU_DGM10} Kufstein,
-\item \code{LA_DGM10} Landeck,
-\item \code{RE_DGM10} Reutte,
-\item \code{SZ_DGM10} Schwaz,
-\item \code{LZ_DGM10} Lienz (Osttirol).
-}
-For use in ArcGIS the data is correctly georeferenced. However for R you MUST use the following proj4 strings if you want to project other data acccording to the Austrian Datum. DO NOT USE the default EPSG Code string! All datasets except Lienz are projected with: ''+proj=tmerc +lat_0=0 +lon_0=10.33333333333333 +k=1 +x_0=0 +y_0=-5000000 +ellps=bessel +towgs84=577.326, 90.129, 463.919, 5.137, 1.474, 5.297, 2.4232 +units=m'. Item=lz_10m (Lienz) has an different Central_Meridian. You have to change it to 13.333333.\cr
-
-\code{get_geodata('tiroldem', item = 'KU_DGM10')} \cr
-}
 }
 
 \examples{
@@ -193,15 +171,6 @@ r<- get_geodata('schmatzPangea',
                   item="bioclim_A_MO_pmip2_21k_oa_CCSM_eu_30s",
                   layer="bio_1")
 
-## get a single tile of the Tirolean DEM
-r<- get_geodata('tiroldem',
-                  items='IBK_DGM10')
-
-## get a single 3 tiles of the Tirolean DEM as a merged raster
-r<- get_geodata('tiroldem',
-                  item=c('IBK_DGM10','IL_DGM10','IM_DGM10'),
-                  merge =TRUE)
-
 
 # get Harald Breitkreutz' summit list
 r<- get_geodata('harrylist',
@@ -222,10 +191,8 @@ t<- ccodes()
 \url{http://srtm.csi.cgiar.org/}\cr
 \url{http://diva-gis.org/gdata}\cr
 \url{http://www.tourenwelt.info}\cr
-\url{https://www.tirol.gv.at/data/datenkatalog/geographie-und-planung/digitales-gelaendemodell-tirol/}\cr
-\url{http://www.openstreetmap.org}\cr
 \url{http://doi.pangaea.de/10.1594/PANGAEA.845883}\cr
 }
 \author{
-Robert J. Hijmans, Chris Reudenbach \email{giswerk@gis-ma.org}
+Robert J. Hijmans, Chris Reudenbach \email{reudenbach@uni-marburg.de}
 }

@@ -10,12 +10,13 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE,
   prefixTrainGeom = "index_", channels = c("red", "green", "blue"),
   hara = TRUE, haraType = c("simple", "advanced", "higher"), stat = TRUE,
   edge = TRUE, edgeType = c("gradient", "sobel", "touzi"), morpho = TRUE,
-  morphoType = c("dilate", "erode", "opening", "closing"),
+  morphoType = c("dilate", "erode", "opening", "closing"), rgbi = TRUE,
   indices = c("VVI", "VARI", "NDTI", "RI", "SCI", "BI", "SI", "HI", "TGI",
   "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), RGBTrans = TRUE,
   colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ",
-  "YUV"), kernel = 3, currentDataFolder = NULL, currentIdxFolder = NULL,
-  cleanTiffs = TRUE, giLinks = NULL)
+  "YUV"), pardem = TRUE, demType = c("hillshade", "slope", "aspect", "TRI",
+  "TPI", "Roughness"), kernel = 3, currentDataFolder = NULL,
+  currentIdxFolder = NULL, cleanTiffs = TRUE, giLinks = NULL)
 }
 \arguments{
 \item{calculateBands}{logical. switch for set on calculation of syntheic bands and indices default = TRUE}
@@ -30,10 +31,7 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE,
 
 \item{channels}{character. channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")}
 
-\item{hara}{logical. switch for using  HaralickTextureExtraction default = TRUE \cr
-for a review of a lot of feature extraction algorithms look at:\href{http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
-glcm<-> haralick c("mean"  advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
-using stats will cover mean and variance while dissimilarity is highly correlated to  Homogeneity data. For a nice introduction look at: \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Hallbey}}
+\item{hara}{logical. switch for using  HaralickTextureExtraction default = TRUE. \cr}
 
 \item{haraType}{character. hara options default is c("simple"), other  options are "advanced"  "higher" "all". NOTE:  "higher" takes a LOT of time}
 
@@ -47,11 +45,17 @@ using stats will cover mean and variance while dissimilarity is highly correlate
 
 \item{morphoType}{character. morphological options default is c("dilate","erode","opening","closing") all options are ("dilate","erode","opening","closing")}
 
+\item{rgbi}{logical. switch for using rgbi index calcualtions default = TRUE}
+
 \item{indices}{character. RGB indices default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP")}
 
 \item{RGBTrans}{logical. switch for using color space transforming default = TRUE}
 
 \item{colorSpaces}{character.  RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")}
+
+\item{pardem}{logical. switch for calculating dem parameter default = FALSE}
+
+\item{demType}{character. ("hillshade","slope", "aspect","TRI","TPI","Roughness")}
 
 \item{kernel}{numeric. size of kernel for filtering and statistics default is  3}
 

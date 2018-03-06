@@ -20,12 +20,12 @@ if(!isGeneric('get_geodata')) {
 #'\code{schmatzPangea},\cr
 #'\code{harrylist}, \cr
 
-#'\code{tiroldem}.\cr
+
 
 #'@param download Logical \code{TRUE} data will be downloaded if not locally available
 #'@param path Character Path name indicating where to store the data. Default is the current working directory
 #'@param ... Additional required (!) parameters. These are data set specific.
-#'@author Robert J. Hijmans, Chris Reudenbach \email{giswerk@@gis-ma.org}
+#'@author Robert J. Hijmans, Chris Reudenbach \email{reudenbach@@uni-marburg.de}
 #'
 #'@section Well Known Data Sets:
 #'\subsection{GADM}{
@@ -142,26 +142,6 @@ if(!isGeneric('get_geodata')) {
 #'    \code{get_geodata('harrylist')}\cr \cr
 #'}
 #'
-#'\subsection{Digital Elevation Model of Tyrolia}{
-#'
-#' \code{tiroldem} refers to the 10 m Lidar based DEM as provided by the Authorithy of Tirol. \cr \cr
-#'If  \code{name}='tiroldem' you must set the switch 'all' to \code{FALSE} if you just want to download a specified item you have to set data=item.
-#'The list of allowd items is:
-#'\itemize{
-#'\item \code{IBK_DGM10} Innsbruck,
-#'\item \code{IL_DGM10} Innsbruck Land,
-#'\item \code{IM_DGM10} Imst,
-#'\item \code{KB_DGM10} Kitzbuehl,
-#'\item \code{KU_DGM10} Kufstein,
-#'\item \code{LA_DGM10} Landeck,
-#'\item \code{RE_DGM10} Reutte,
-#'\item \code{SZ_DGM10} Schwaz,
-#'\item \code{LZ_DGM10} Lienz (Osttirol).
-#'}
-#'For use in ArcGIS the data is correctly georeferenced. However for R you MUST use the following proj4 strings if you want to project other data acccording to the Austrian Datum. DO NOT USE the default EPSG Code string! All datasets except Lienz are projected with: ''+proj=tmerc +lat_0=0 +lon_0=10.33333333333333 +k=1 +x_0=0 +y_0=-5000000 +ellps=bessel +towgs84=577.326, 90.129, 463.919, 5.137, 1.474, 5.297, 2.4232 +units=m'. Item=lz_10m (Lienz) has an different Central_Meridian. You have to change it to 13.333333.\cr
-#'
-#'\code{get_geodata('tiroldem', item = 'KU_DGM10')} \cr
-#'}
 
 #'@references
 #'\url{http://www.worldclim.org}\cr
@@ -169,8 +149,6 @@ if(!isGeneric('get_geodata')) {
 #'\url{http://srtm.csi.cgiar.org/}\cr
 #'\url{http://diva-gis.org/gdata}\cr
 #'\url{http://www.tourenwelt.info}\cr
-#'\url{https://www.tirol.gv.at/data/datenkatalog/geographie-und-planung/digitales-gelaendemodell-tirol/}\cr
-#'\url{http://www.openstreetmap.org}\cr
 #'\url{http://doi.pangaea.de/10.1594/PANGAEA.845883}\cr
 #'
 #'@import raster
@@ -210,16 +188,6 @@ if(!isGeneric('get_geodata')) {
 #'                   item="bioclim_A_MO_pmip2_21k_oa_CCSM_eu_30s",
 #'                   layer="bio_1")
 #'
-#' ## get a single tile of the Tirolean DEM
-#' r<- get_geodata('tiroldem',
-#'                   items='IBK_DGM10')
-#'
-#' ## get a single 3 tiles of the Tirolean DEM as a merged raster
-#' r<- get_geodata('tiroldem',
-#'                   item=c('IBK_DGM10','IL_DGM10','IM_DGM10'),
-#'                   merge =TRUE)
-#'
-
 #'
 #' # get Harald Breitkreutz' summit list
 #' r<- get_geodata('harrylist',
@@ -244,9 +212,7 @@ get_geodata <- function(name='GADM', download=TRUE, path='', ...) {
     .SRTM(..., download=download, path=path)
   } else if (name=='harrylist') {
     .harrylist(..., download=download, path=path)
-  } else if (name=='tiroldem') {
-    .tiroldem(..., download=download, path=path)
-  } else if (name=='alt') {
+  }  else if (name=='alt') {
     .raster(..., name=name, download=download, path=path)
   } else if (name=='schmatzPangea') {
     .schmatz(..., download=download, path=path)
@@ -717,39 +683,7 @@ ccodes <- function() {
 
 }
 
-.tiroldem <- function(items = NULL, path = tempfile(), download = TRUE, all = FALSE, merge = FALSE) {
-  if (all == TRUE){
-    items<-c('IBK_DGM10','IL_DGM10','IM_DGM10','KB_DGM10','KU_DGM10','LA_DGM10','RE_DGM10','SZ_DGM10','LZ_DGM10')
-  }
 
-  for (item in items){
-    f <- item
-    zipfilename <- paste(path,  f, ".zip", sep="")
-    ascfilename <- paste(path,  f, ".asc", sep="")
-
-    if (!file.exists(zipfilename)) {
-      if (download) {
-        theurl <- paste("https://gis.tirol.gv.at/ogd/geografie_planung/DGM/", f,".zip", sep="")
-        test <- try (.download(theurl, zipfilename) , silent=TRUE)
-      } else {cat('file not available locally, use download=TRUE\n') }
-    }
-    if (file.exists(zipfilename)) {
-      utils::unzip(zipfilename,junkpath=TRUE, exdir=dirname(zipfilename))
-      #file.remove(zipfilename)
-    }
-  }
-
-  filenames <- list.files(pattern="*.asc", full.names=TRUE)
-  rs <- lapply(filenames,.importAsc,'+proj=tmerc +lat_0=0 +lon_0=10.33333333333333 +k=1 +x_0=0 +y_0=-5000000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232 +units=m +no_defs')
-  if (merge){
-    names(rs)[1:2] <- c('x', 'y')
-    rs$fun <- mean
-    rs <- do.call(mosaic, rs)
-  }
-
-  return(rs)
-
-}
 
 .harrylist <- function(extent=c(-180,180,-90,90),path,download=TRUE) {
   # use the download.file function to access online content. note we change already the filename and

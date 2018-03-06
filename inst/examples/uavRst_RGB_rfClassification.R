@@ -30,7 +30,7 @@ require(link2GI)
 # proj subfolders
 prefixrunFN       = "traddel"
 # define project folder
-projRootDir <- "~/temp7/GRASS7/"
+projRootDir <- "~/temp7/GRASS7"
 
 paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/training/","data/training/idx/",
@@ -68,17 +68,20 @@ if (startcalc_ext){
                  prefixrunFN       = prefixrunFN,
                  suffixTrainGeom   = "",
                  prefixTrainGeom   = "index_",
+                 rgbi              = F,
                   indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"),
                  RGBTrans          = F,
                  colorSpaces       = c("CIELab","XYZ","YUV"),
                  channels          = c("red"),# "green", "blue"),
-                 hara              = TRUE,
+                 hara              = F,
                   haraType          = c("simple"), #,"advanced","higher"),
                  stat              = F,
                  edge              = F,
                   edgeType          = c("gradient","sobel","touzi"),
                  morpho            = F,
                   morphoType        = c("dilate","erode","opening","closing"),
+                 pardem = TRUE,
+                 #demType = c("hillshade","slope", "aspect","TRI","TPI","Roughness"),
                  kernel            = 3,
                  currentDataFolder = currentDataFolder,
                  currentIdxFolder  = currentIdxFolder,

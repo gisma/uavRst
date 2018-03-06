@@ -630,4 +630,99 @@ note <- crayon::blue $ bold
 ok   <- crayon::green $ bold
 return(list(note,err,ok,head))
 }
-catOk   <- crayon::green $ bold
+
+#' create name vector corresponding to the training image stack
+#'
+#' @param rgbi character. codes of the RGB indices 
+#' @param bandNames character.  band names
+#' @param  stat character.  stat codes
+#' @param morpho character.  morpho codes
+#' @param edge character.  edge codes
+#' @param RGBtrans character.  RGBtrans codes
+#' @param dem charater dem codes
+#' @keywords internal
+#' 
+#' @export make_bandnames
+
+make_bandnames <- function(rgbi    = NA,
+                           bandNames = NA,
+                           stat    = FALSE,
+                           morpho  = NA,
+                           edge    = NA ,
+                           RGBtrans = NA,
+                           dem =    NA){
+  if (!is.na(rgbi[1])) bnames <- append(c("red","green","blue"),rgbi)
+  if (!is.na(bandNames)) {
+    if(bandNames == "simple"){
+      bnames <- c("Energy", "Entropy", "Correlation", 
+                  "Inverse_Difference_Moment", "Inertia", 
+                  "Cluster_Shade", "Cluster_Prominence",
+                  "Haralick_Correlation")
+    } else if(bandNames == "advanced"){
+      bnames <- c("Hara_Mean", "Hara_Variance", "Dissimilarity",
+                  "Sum_Average", 
+                  "Sum_Variance", "Sum_Entropy", 
+                  "Difference_of_Variances", 
+                  "Difference_of_Entropies", 
+                  "IC1", "IC2")
+    } else if(bandNames == "higher"){
+      bnames <- c("Short_Run_Emphasis", 
+                  "Long_Run_Emphasis", 
+                  "Grey-Level_Nonuniformity", 
+                  "Run_Length_Nonuniformity", 
+                  "Run_Percentage", 
+                  "Low_Grey-Level_Run_Emphasis", 
+                  "High_Grey-Level_Run_Emphasis", 
+                  "Short_Run_Low_Grey-Level_Emphasis", 
+                  "Short_Run_High_Grey-Level_Emphasis", 
+                  "Long_Run_Low_Grey-Level_Emphasis",
+                  "Long_Run_High_Grey-Level_Emphasis")
+    } else if(bandNames == "all"){
+      bnames <- c("Energy", "Entropy", "Correlation", 
+                  "Inverse_Difference_Moment", "Inertia", 
+                  "Cluster_Shade", "Cluster_Prominence",
+                  "Haralick_Correlation",
+                  "Hara_Mean", "Hara_Variance", "Dissimilarity",
+                  "Sum_Average", 
+                  "Sum_Variance", "Sum_Entropy", 
+                  "Difference_of_Variances", 
+                  "Difference_of_Entropies", 
+                  "IC1", "IC2",
+                  "Short_Run_Emphasis", 
+                  "Long_Run_Emphasis", 
+                  "Grey-Level_Nonuniformity", 
+                  "Run_Length_Nonuniformity", 
+                  "Run_Percentage", 
+                  "Low_Grey-Level_Run_Emphasis", 
+                  "High_Grey-Level_Run_Emphasis", 
+                  "Short_Run_Low_Grey-Level_Emphasis", 
+                  "Short_Run_High_Grey-Level_Emphasis", 
+                  "Long_Run_Low_Grey-Level_Emphasis",
+                  "Long_Run_High_Grey-Level_Emphasis")
+    }
+  }
+  if (stat == TRUE)  {
+    bnames    = c("Stat_Mean","Stat_Variance", "Skewness", "Kurtosis")
+  } 
+  if (!is.na(dem))  {
+    bnames    =  dem
+  } 
+  
+  if (!is.na(morpho))  {
+    bnames    =  morpho
+  } 
+  
+  if (!is.na(edge))  {
+    bnames    =  edge
+  } 
+  if (!is.na(RGBtrans))  {
+    bnames    =  bnames <- c(paste0(RGBtrans,"_b1"),paste0(RGBtrans,"_b2"),paste0(RGBtrans,"_b3"))
+  } 
+  return(bnames)
+  
+}
+
+
+
+
+

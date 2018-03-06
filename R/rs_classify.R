@@ -161,7 +161,7 @@ predict_rgb <- function(imageFiles=NULL,
 #' of training random forest classification models. This validation is particulary suitable for
 #' leave-location-out cross validations where variable selection
 #' MUST be based on the performance of the model on the hold out station.
-#' See \href{https://doi.org/10.1016/j.envsoft.2017.12.001}{Meyer et al. (2018)}
+#' See \href{https://www.sciencedirect.com/science/article/pii/S1364815217310976}{Meyer et al. (2018)}
 #' for further details.
 #' This is in fact the case while using time space variable vegetation patterns for classification purposes.
 #' For the uav based RGB/NIR imagery it provides an optimized preconfiguration for the classification goals.
@@ -270,91 +270,6 @@ ffs_train<-function(   trainingDF   = NULL,
   return(list(ffs_model,model_final))
 }
 
-#' create name vector corresponding to the training image stack
-#'
-#' @param rgbi character. codes of the RGB indices 
-#' @param bandNames character.  band names
-#' @param  stat character.  stat codes
-#' @param morpho character.  morpho codes
-#' @param edge character.  edge codes
-#' @param RGBtrans character.  RGBtrans codes
-#' @keywords internal
-#' @export make_bandnames
-
-make_bandnames <- function(rgbi    = NA,
-                       bandNames = NA,
-                       stat    = FALSE,
-                       morpho  = NA,
-                       edge    = NA ,
-                       RGBtrans=NA){
-
-  if (!is.na(rgbi[1])) bnames <- append(c("red","green","blue"),rgbi)
-  if (!is.na(bandNames)) {
-    if(bandNames == "simple"){
-      bnames <- c("Energy", "Entropy", "Correlation",
-                  "Inverse_Difference_Moment", "Inertia",
-                  "Cluster_Shade", "Cluster_Prominence",
-                  "Haralick_Correlation")
-    } else if(bandNames == "advanced"){
-      bnames <- c("Hara_Mean", "Hara_Variance", "Dissimilarity",
-                  "Sum_Average",
-                  "Sum_Variance", "Sum_Entropy",
-                  "Difference_of_Variances",
-                  "Difference_of_Entropies",
-                  "IC1", "IC2")
-    } else if(bandNames == "higher"){
-      bnames <- c("Short_Run_Emphasis",
-                  "Long_Run_Emphasis",
-                  "Grey-Level_Nonuniformity",
-                  "Run_Length_Nonuniformity",
-                  "Run_Percentage",
-                  "Low_Grey-Level_Run_Emphasis",
-                  "High_Grey-Level_Run_Emphasis",
-                  "Short_Run_Low_Grey-Level_Emphasis",
-                  "Short_Run_High_Grey-Level_Emphasis",
-                  "Long_Run_Low_Grey-Level_Emphasis",
-                  "Long_Run_High_Grey-Level_Emphasis")
-    } else if(bandNames == "all"){
-      bnames <- c("Energy", "Entropy", "Correlation",
-                  "Inverse_Difference_Moment", "Inertia",
-                  "Cluster_Shade", "Cluster_Prominence",
-                  "Haralick_Correlation",
-                  "Hara_Mean", "Hara_Variance", "Dissimilarity",
-                  "Sum_Average",
-                  "Sum_Variance", "Sum_Entropy",
-                  "Difference_of_Variances",
-                  "Difference_of_Entropies",
-                  "IC1", "IC2",
-                  "Short_Run_Emphasis",
-                  "Long_Run_Emphasis",
-                  "Grey-Level_Nonuniformity",
-                  "Run_Length_Nonuniformity",
-                  "Run_Percentage",
-                  "Low_Grey-Level_Run_Emphasis",
-                  "High_Grey-Level_Run_Emphasis",
-                  "Short_Run_Low_Grey-Level_Emphasis",
-                  "Short_Run_High_Grey-Level_Emphasis",
-                  "Long_Run_Low_Grey-Level_Emphasis",
-                  "Long_Run_High_Grey-Level_Emphasis")
-    }
-  }
-  if (stat == TRUE)  {
-    bnames    = c("Stat_Mean","Stat_Variance", "Skewness", "Kurtosis")
-  }
-
-  if (!is.na(morpho))  {
-    bnames    =  morpho
-  }
-
-  if (!is.na(edge))  {
-    bnames    =  edge
-  }
-  if (!is.na(RGBtrans))  {
-    bnames    =  bnames <- c(paste0(RGBtrans,"_b1"),paste0(RGBtrans,"_b2"),paste0(RGBtrans,"_b3"))
-  }
-  return(bnames)
-
-}
 
 
 #' Convenient function to preprocess synthetic raster bands from a given RGB and optionally
@@ -379,17 +294,16 @@ make_bandnames <- function(rgbi    = NA,
 #' @param suffixTrainGeom   suffix. of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"
 #' @param prefixTrainGeom   prefix. of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index_"
 #' @param channels          character. channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")
-#' @param hara              logical. switch for using  HaralickTextureExtraction default = TRUE \cr
-#' for a review of a lot of feature extraction algorithms look at:\href{http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
-#' glcm<-> haralick c("mean"  advanced1, "variance" advanced2 , "homogeneity"simple4, "contrast" simple5, "dissimilarity"advanced2, "entropy" simple2,"second_moment"simple4, "correlation" simple3)
-#' using stats will cover mean and variance while dissimilarity is highly correlated to  Homogeneity data. For a nice introduction look at: \href{http://www.fp.ucalgary.ca/mhallbey/more_informaton.htm}{Hallbey}
-
+#' @param hara              logical. switch for using  HaralickTextureExtraction default = TRUE. \cr
 #' @param haraType          character. hara options default is c("simple"), other  options are "advanced"  "higher" "all". NOTE:  "higher" takes a LOT of time
 #' @param stat              logical. switch for using statistic default = TRUE the stas are mean,variance, curtosis, skewness
+#' @param pardem            logical. switch for calculating dem parameter default = FALSE
+#' @param demType           character. ("hillshade","slope", "aspect","TRI","TPI","Roughness")
 #' @param edge              logical. switch for using edge filtering default = TRUE
 #' @param edgeType          character. edge options default is c("gradient","sobel","touzi") all options are c("gradient","sobel","touzi")
 #' @param morpho            logical. switch for using morphological filtering default = TRUE
 #' @param morphoType        character. morphological options default is c("dilate","erode","opening","closing") all options are ("dilate","erode","opening","closing")
+#' @param rgbi              logical. switch for using rgbi index calcualtions default = TRUE
 #' @param indices           character. RGB indices default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP")
 #' @param RGBTrans          logical. switch for using color space transforming default = TRUE
 #' @param colorSpaces       character.  RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
@@ -450,17 +364,21 @@ calc_ext<- function ( calculateBands    = FALSE,
                     edgeType          = c("gradient","sobel","touzi"),
                     morpho            = TRUE,
                     morphoType        = c("dilate","erode","opening","closing"),
+                    rgbi              = TRUE,
                     indices           = c("VVI","VARI","NDTI","RI","SCI","BI",
                                           "SI","HI","TGI","GLI","NGRDI","GRVI",
                                           "GLAI","HUE","CI","SAT","SHP") ,
                     RGBTrans          = TRUE,
                     colorSpaces       = c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
+                    pardem            = TRUE,
+                    demType           = c("hillshade","slope", "aspect","TRI","TPI","Roughness"),
                     kernel            = 3,
                     currentDataFolder = NULL,
                     currentIdxFolder  = NULL,
                     cleanTiffs        = TRUE,
                     giLinks = NULL){
 
+  if (!rgbi) RGBTrans <- hara <- stat <- edge <- morpho <- FALSE
   if (is.null(giLinks)){
     giLinks <- get_gi()
   }
@@ -488,7 +406,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     # create list of image files to be processed
     # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
     imageFiles <- list.files(pattern="[.]tif$", path=currentDataFolder, full.names=TRUE)
-
+    demFiles <- list.files(pattern="dem_", path=currentDataFolder, full.names=TRUE)
     # stack the ortho images
     #rgb<- lapply(imageFiles, FUN=raster::raster)
 
@@ -496,9 +414,22 @@ calc_ext<- function ( calculateBands    = FALSE,
     ### calculate indices and base stat export it to tif
     # create list vars
     flist<-list()
+    # if calc pardem 
+    if (pardem){
+      bnames<-NULL
+      for (i in 1:length(demFiles)){
+        cat(catNote(":::: processing dem... ",demType,"\n"))
+        uavRst::gdal_dem(dem = demFiles[i], item = demType)
+        flist<-append(flist,paste0(demType,".tif"))
+        for (item in demType) 
+          bnames <-append(bnames,make_bandnames(dem = item))
+        
+      } 
+    }
 
     # for all images do
     for (i in 1:length(imageFiles)){
+      if (rgbi){
       cat(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
       r<-raster::stack(imageFiles[i])
       # calculate and stack r,g,b and requested indices
@@ -510,7 +441,8 @@ calc_ext<- function ( calculateBands    = FALSE,
                           paste0("rgbi_",basename(imageFiles[i])),
                           progress = "text",
                           overwrite=TRUE)
-      flist<-paste0("rgbi_",basename(imageFiles[i]))
+      flist<-paste0("rgbi_",basename(imageFiles[i])) 
+      }
       # if RGB transform
       if (RGBTrans){
 
@@ -542,7 +474,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         #bnames <-append(bnames,make_bandnames(RGBtrans = colorSpaces))
 
       }
-
+      if (rgbi){
       # assign bandnumber according to name
       cat("\n")
       for (filterBand in channels){
@@ -557,11 +489,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                             progress = "text",
                             overwrite=TRUE)
         fbFN<-paste0(filterBand,"_",basename(imageFiles[i]))
-        # } else {
-        #   fbFN<- imageFiles[i]
-        #   filterBand<-list("red","green","blue")
-        # }
-        # if calc statistcis
+}
         if (stat){
           cat(catNote(":::: processing stats...",fbFN,"\n"))
           otb_stat(input = fbFN,
@@ -585,6 +513,7 @@ calc_ext<- function ( calculateBands    = FALSE,
             bnames <-append(bnames,make_bandnames(edge = paste0(edges,"_",filterBand)))
           }
         }
+        
         # if calc morpho
         if (morpho){
           for (morphos in morphoType){
@@ -617,10 +546,11 @@ calc_ext<- function ( calculateBands    = FALSE,
       # end of single channnel calculation
 
       # create an alltogether stack
-      tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
+      if (rgbi)  tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
+      else tmpFN<-paste0(substr(basename(demFiles[i]),1,nchar(basename(demFiles[i]))-4))
       cat(catOk("     save ...",prefixTrainGeom, tmpFN,"\n"))
       # r<-raster::brick(raster::stack(flist)) qgis cannot read heder
-      r<-(raster::stack(flist))
+      r<-raster::stack(paste0(path_run,flist))
       if (raster::nlayers(r)!=length(bnames)) stop("\n Number of names and layers differ...\n most common case is a broken cleanup of the runtime directory!")
       names(r)<-bnames
       # write file to envi
@@ -635,7 +565,7 @@ calc_ext<- function ( calculateBands    = FALSE,
       # cleanup runtime files lists...
       if (cleanTiffs) {
         cat(catNote(":::: removing temp files...\n"))
-        file.remove(flist)
+        res<-file.remove(unlist(flist))
       }
       flist<-list()
     }

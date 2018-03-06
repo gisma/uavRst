@@ -3,10 +3,10 @@ Type: Package
 Title: Unmanned Aerial Vehicle Remote Sensing Tools
 Version: 0.3-5
 Date: 2018-03-01
-Authors@R: c(person("Hanna", "Meyer", email = "hanna.meyer@geo.uni-marburg.de", role = c("ctb","aut")),
+Authors@R: c(person("Hanna", "Meyer", email = "hanna.meyer@uni-marburg.de", role = c("ctb","aut")),
              person("Lars", "Opgenoorth", email = "opgenoorth@uni-marburg.de", role = c("ctb")),
-             person("Thomas", "Nauss", email = "nauss@staff.uni-marburg.de", role = c("ctb")),
-             person("Chris", "Reudenbach", email = "reudenbach@geo.uni-marburg.de", role = c("cre","aut")),
+             person("Thomas", "Nauss", email = "nauss@uni-marburg.de", role = c("ctb")),
+             person("Chris", "Reudenbach", email = "reudenbach@uni-marburg.de", role = c("cre","aut")),
              person("Environmental Informatics Marburg", role = c("ctb"))
              )
 Encoding: UTF-8
@@ -60,7 +60,6 @@ Imports:
 Suggests: knitr,
     rmarkdown,
     mapview
-VignetteBuilder: knitr    
 LinkingTo: Rcpp
 RoxygenNote: 6.0.1
 SystemRequirements: GNU make
