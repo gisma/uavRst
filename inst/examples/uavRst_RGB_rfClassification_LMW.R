@@ -28,6 +28,7 @@ require(mapview)
 require(link2GI)
 
 # proj subfolders
+
 prefixrunFN       = "desert_dem"
 # define project folder
 projRootDir <- "/media/solo/7fbfcfdf-6276-48ad-ba94-82ba2f9993b9/drohne/chile"
@@ -46,7 +47,10 @@ giLinks<-uavRst::get_gi()
 
 # set processing switches
 startcalc_ext  = TRUE
-startTrain   = TRUE
+
+
+startTrain   = FALSE
+
 startPredict = FALSE
 
 # set current data and results path default is training
@@ -68,6 +72,7 @@ if (startcalc_ext){
                  prefixrunFN       = prefixrunFN,
                  suffixTrainGeom   = "",
                  prefixTrainGeom   = "index_",
+
                  rgbi              = TRUE,
                   indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"),
                  RGBTrans          = TRUE,
@@ -79,6 +84,7 @@ if (startcalc_ext){
                  edge              = TRUE,
                   edgeType          = c("gradient","sobel","touzi"),
                  morpho            = TRUE,
+
                   morphoType        = c("dilate","erode","opening","closing"),
                  pardem = TRUE,
                  #demType = c("hillshade","slope", "aspect","TRI","TPI","Roughness"),
@@ -95,9 +101,11 @@ if (startTrain){
   # NOTE ADAPT IT TO YOUR NEEDS
 
   # classes IDs as given by the training vector files ID column
+
   idNumber=c(1,2,3,4,5,6,7,8,9)
   # rename them
   idNames= c("darkgreen","lightgreen","darksoil","lightsoil","shadow","cacti","lightgray","darkgray","molliswhite")
+
 
   # load raw training dataframe
   if (!(exists)("trainDF"))
