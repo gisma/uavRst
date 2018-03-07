@@ -15,7 +15,7 @@ if (!isGeneric('pc2dtm')) {
 #'@param lasDir  default is \code{NULL} path  to the laz/las file(s)
 #'@param gisdbase_path default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
 #'@param grid_size  resolution of the DTM raster
-#'@param path_lastools character folder containing the Windows binary files of the lastools
+#'@param path_lastools character. folder containing the Windows binary files of the lastools
 #'@param thin_with_grid default 0.5 meter. Grid stepsize for data thinning
 #'@param keep_class default is 2. Default ground class of las/laz conform data
 #'@param bulge  default is 1.5. 'A parameter to filter spikes it is set to a step_size/10 and then clamped into the range from 1.0 to 2.0
@@ -25,8 +25,8 @@ if (!isGeneric('pc2dtm')) {
 #'@param dtm_minalt default is \code{0}, minimum DTM altitude accepted
 #'@param dtm_area default \code{FALSE} generate polygon of valid DTM data
 #'@param cores number of cores that will be used
-#'@param proj4  default is EPSG 32632 any valid proj4 string that is assumingly the correct one
-#'@param giLinks list of GI tools cli pathes  default is NULL
+#'@param proj4  default is EPSG 32632, any valid proj4 string that is assumingly the correct one
+#'@param giLinks list of GI tools cli pathes, default is NULL
 #'@param dtm_maxalt dtm maximum altitude
 #'@param projSubFolder subfolders that will be created/linked for R related GRASS processing
 #'@param verbose to be quiet (1)
@@ -99,7 +99,7 @@ pc2dtm <- function(lasDir = NULL,
   las2dem       <- paste(cmd,"las2dem.exe",sep = "/")
   las2txt       <- paste(cmd,"las2txt.exe",sep = "/")
 
-  # check las / laz files laz will be preferred
+  # check las / laz files; laz will be preferred
   tmplasDir<-dirname(lasDir)
   lasFileNames <- list.files(pattern = "[.]las$", path = tmplasDir, full.names = TRUE)
   lazFileNames <- list.files(pattern = "[.]laz$", path = tmplasDir, full.names = TRUE)
@@ -122,7 +122,7 @@ pc2dtm <- function(lasDir = NULL,
   else if (sub_size == "ultra_fine") sub <- "8"
   else if (sub_size == "hyper_fine") sub <- "9"
 
-  # create project structure and export global pathes
+  # create project structure and export global paths
   link2GI::initProj(projRootDir = gisdbase_path,
                     projFolders =  projSubFolder)
 
@@ -135,7 +135,7 @@ pc2dtm <- function(lasDir = NULL,
 
 
   if(raster::extension(basename(lasDir)) !=".las" & raster::extension(basename(lasDir)) !=".laz") {
-    # check las / laz files laz will be preferred
+    # check las / laz files; laz will be preferred
     lasFileNames <- list.files(pattern = "[.]las$", path = lasDir, full.names = TRUE)
     lazFileNames <- list.files(pattern = "[.]laz$", path = lasDir, full.names = TRUE)
     if (length(lazFileNames) > 0 ) {
@@ -168,7 +168,7 @@ pc2dtm <- function(lasDir = NULL,
 
 
   }
-
+  #TOFIX  overwrite = TRUE,) ->  overwrite = TRUE) #comma
   if (!is.null(cutExtent)){
     #lastool(tool = "lasclip",lasFile = lasfile,cutExtent = cutExtent)
     las = lidR::readLAS(paste0(path_run,name))
@@ -191,7 +191,7 @@ pc2dtm <- function(lasDir = NULL,
   # add proj4 string manually
   sp_param[5] <- proj4
 
-  ### reduce data amount
+  ### reduce the data amount
   cat("\n:: reducing the point density...\n")
   ret <- system(paste0(las2las,
                        " -i ",path_run,name,

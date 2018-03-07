@@ -4,6 +4,11 @@
 # Hashimoto, H., Imanishi, J., Hagiwara, A., Morimoto, Y., & Kitada, K. (2004). Estimating forest structure indices for evaluation of forest bird habitats by an airborne laser scanner. In M. Thies, B. Koch, H. Spiecker, & H. Weinacker (Eds.), Laser scanners for forest and landscape assessment: Proceedings of the ISPRS Working Group VIII/2, Freiburg, 3-6 October 2004, 254-258.
 # http://www.isprs.org/proceedings/XXXVI/8-W2/HASHIMOTO.pdf
 
+#TOFIX #@name
+#@titel
+#@description
+#@author
+
 fun_fhd <- function(a) {
   l <- raster::nlayers(a)
   a[a<=0]=1
@@ -12,7 +17,7 @@ fun_fhd <- function(a) {
   sum(r[[1:(l-1)]])
 }
 
-#slightly changed for GridMetric output (gives allready pi)
+#slightly changed for GridMetric output (gives already pi)
 
 fun_fhd_fu <- function(b) {
   a <- subset(b, 1:6)

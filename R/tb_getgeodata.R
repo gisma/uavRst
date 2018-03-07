@@ -3,12 +3,12 @@ if(!isGeneric('get_geodata')) {
     standardGeneric('get_geodata'))
 }
 #'@name get_geodata
-#'
+#'#@author Chris Reudenbach
 #'@title Retrieves online geodata and converts it to raster/sp objects
 #'
 #'@description Robert J. Hijmans getData() from the raster package is well known and highly used. The only disadvantage is that it currently doesn't support a bunch of great additional and/or improved/newer data sets.  get_geodata provides some more actual or better choices for climate and DEM data as well as some easy to use interfaces to other crowd sourced data compilations.
-#' The main issue of the functionis to offer an easy to use access to a wider range of free to access data sets that may improve significantly the quality of typical ecological and other spatial analysis approaches by an straightforward utilization of data.
-#' You may download the data individually but by default all data will be downloaded georeferenced and converted in \link{raster} or \link{sp} objects.
+#' The main issue of the function is, to offer an easy to use access to a wider range of free to access data sets, that may improve significantly the quality of typical ecological and other spatial analysis approaches by an straightforward utilization of data.
+#' You may download the data individually, but by default all data will be downloaded georeferenced and converted in \link{raster} or \link{sp} objects.
 #'
 #'
 #'@param name Data set name, currently supported are:
@@ -44,7 +44,7 @@ if(!isGeneric('get_geodata')) {
 #'}
 #'
 #'\subsection{CMIP5}{
-#'If \code{name}=CMIP5 for (projected) future climate data you must provide arguments var and res as above. Only resolutions 2.5, 5, and 10 are currently available. In addition, you need to provide model, rcp and year.
+#'If \code{name}=CMIP5 for (projected) future climate data, you must provide arguments var and res as above. Only resolutions 2.5, 5, and 10 are currently available. In addition, you need to provide model, rcp and year.
 #'For example:\cr
 #'   \code{get_geodata('CMIP5', var='tmin', res=10, rcp=85, model='AC', year=70)}\cr
 #'   function (var, model, rcp, year, res, lon, lat, path, download = TRUE)\cr
@@ -686,8 +686,8 @@ ccodes <- function() {
 
 
 .harrylist <- function(extent=c(-180,180,-90,90),path,download=TRUE) {
-  # use the download.file function to access online content. note we change already the filename and
-  # we also pass the .php extension of the download address
+  # use the download.file function to access online content. NOTE: we changed already the filename and
+  # we also pass the .php extension of the download address.
   zipFn=paste0(path,'bergliste-komplett.kmz')
   kmlFn=paste0(path,'bergliste-komplett.kml')
   if (!file.exists(zipFn)) {
@@ -803,7 +803,7 @@ ccodes <- function() {
 
   }
 
-  # create list of tiffiles
+  # create list of tif-files
   tiffFiles <- list.files(dirname(ncfilename), pattern = utils::glob2rx(paste0(var,"*.tif")),
                           full.names = TRUE, recursive = TRUE)
 
