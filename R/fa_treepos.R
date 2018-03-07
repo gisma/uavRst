@@ -7,7 +7,7 @@ if (!isGeneric('treepos')) {
 #'@title Find potential tree positions using a canopy height model
 #'
 #'@description
-#' Find potential tree positions using a canopy height model using a iterative watershed algorithm. return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
+#' Find potential tree positions using a canopy height model by using an iterative watershed algorithm. Basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 #'
 #'@author Chris Reudenbach
 #'
@@ -18,7 +18,7 @@ if (!isGeneric('treepos')) {
 #'@param maxCrownArea    numeric. maximum area in square meter (if you use projected data) of the projected tree crowns
 #'@param join        numeric. Join Segments based on Threshold Value, 0=no join, 1=treepos2saddle diff, 2=treepos2treepos diff. see also \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_0.html}{SAGA GIS Help}
 #'@param thresh      numeric. Specify a threshold value as minimum difference between neighboured segments in meter. see also \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_0.html}{SAGA GIS Help}
-#'@param giLinks        list. of GI tools cli pathes
+#'@param giLinks        list. of GI tools cli paths
 
 #'
 #'
@@ -54,7 +54,7 @@ treepos <- function(chm = NULL,
   #r2saga(chm,"chm")
 
     cat(":: run pre-segmentation...\n")
-    # first segment run is a simple watershed segmentation just for deriving more reliable treeposs
+    # first segment run is a simple watershed segmentation just for deriving more reliable treepos´
     # TODO improve different advanceds treepos finding algorithms
     ret <- system(paste0(sagaCmd, " imagery_segmentation 0 ",
                          " -GRID "     ,path_run,"chm.sgrd",
@@ -123,7 +123,7 @@ treepos <- function(chm = NULL,
 }
 
 
-#' individual tree detection whitin the LiDAR-derived Canopy Height Model (CHM) 'rLiDAR'
+#' #TOFIX @titel Individual tree detection within the LiDAR-derived Canopy Height Model (CHM) 'rLiDAR'
 #' @description Detects and computes the location and height of individual trees within
 #' the LiDAR-derived Canopy Height Model (CHM). The algorithm implemented in this function
 #' is local maximum with a fixed window size. Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
@@ -151,9 +151,9 @@ treepos_RL <- function(chm =NULL,
   return(localmaxima)
 }
 
-#' Tree top detection based on local maxima filters 'lidR'
+#' #TOFIX @titel Tree top detection based on local maxima filters 'lidR'
 #' @description Tree top detection based on local maxima filters. There are two types of filter. The first,
-#' called for gridded objects, works on images with a matrix-based algorithm and the second one, called for
+#' called for gridded objects, works on images with a matrix-based algorithm. And the second one, called for
 #' point clouds, works at the point cloud level without any rasterization. Jean-Romain Roussel and David Auty:
 #' R package \href{https://CRAN.R-project.org/package=lidR}{lidR}\cr
 #' @param chm Canopy height model in \code{raster}, \code{lasmetrics}, \code{matrix} or  object of \code{class LAS}.
@@ -183,7 +183,7 @@ treepos_lidR <- function(chm =NULL,
 }
 
 
-#' Tree top finder 'ForestTools'
+#' #TOFIX @titel Tree top finder 'ForestTools'
 #' @description Implements the variable window filter algorithm (Popescu & Wynne, 2004)
 #' for detecting treetops from a canopy height model. Andrew Plowright:
 #' R package \href{https://CRAN.R-project.org/package=ForestTools}{ForestTools}\cr
