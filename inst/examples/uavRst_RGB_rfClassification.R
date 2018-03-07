@@ -28,7 +28,7 @@ require(mapview)
 require(link2GI)
 
 # proj subfolders
-prefixrunFN       = NULL
+prefixrunFN       ="" 
 prefixdemFN       = "dem"
 # define project folder
 projRootDir <- "~/test1/uavrst"
@@ -66,6 +66,7 @@ if (startcalc_ext){
   # to restrict calculations uncomment and select by editng the param list
   res <- calc_ext(calculateBands    = F,
                  extractTrain      = T,
+                 prefixTrainImg    = "2017",
                  prefixrunFN       = prefixrunFN,
                  prefixdemFN       = prefixdemFN,
                  suffixTrainImg    = "OrthoMosaic" ,

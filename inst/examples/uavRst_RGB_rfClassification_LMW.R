@@ -110,10 +110,10 @@ if (startTrain){
   # load raw training dataframe
   if (!(exists)("trainDF"))
     trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))
-  if (!(exists)("bnames"))
+  if (!(exists)("bandNames"))
     load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
   # add leading Title "ID" and tailing title "FN"
-  names(trainDF)<-append("ID",append(bnames,"FN"))
+  names(trainDF)<-append("ID",append(bandNames,"FN"))
 
   # manipulate the data frame to you rneeds by dropping predictor variables
   #keepsGreen <-c("ID","red","green","blue","VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI","FN")
@@ -169,7 +169,7 @@ if (startPredict){
              model = model_final,
              in_prefix = "index_",
              out_prefix = "classified_",
-             bandNames = bnames)
+             bandNames = bandNames)
 
   cat(":: ...finsihed \n")
 

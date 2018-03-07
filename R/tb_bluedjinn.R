@@ -58,20 +58,13 @@ if (!isGeneric('xyz2tif')) {
 #' @examples
 
 #' \dontrun{
-#' # get some typical data as provided by the authority
-#' url<-"http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip"
-#' res <- curl::curl_download(url, "testdata.zip")
-#' unzip(res,
-#'       files = grep(".tif", unzip(res,list = TRUE)$Name,value = TRUE),
-#'       junkpaths = TRUE,
-#'       overwrite = TRUE)
-#'
-#' xyz2tif(file.path(getwd(),
-#'           basename(grep(".g01dgm",
-#'           unzip(res,list = TRUE)$Name,value = TRUE))))
-#'
-#' plot(raster::raster(paste0(getwd(),"/",file_path_sans_ext(basename(file.path(getwd(),
-#' basename(grep(".g01dgm", unzip(res,list = TRUE)$Name,value = TRUE))))),".tif")))
+#' #get some typical data as provided by the authority
+url<-"http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip"
+res <- curl::curl_download(url, "testdata.zip")
+file<- unzip(res,list = TRUE)$Name[2]
+unzip(res,files = file,  overwrite = TRUE)
+head(read.csv(file))
+xyz2tif(file,epsgCode = "31468")
 #' }
 #' @export xyz2tif
 #'
@@ -79,7 +72,6 @@ if (!isGeneric('xyz2tif')) {
 xyz2tif <- function(xyzFN=NULL,  epsgCode ="25832"){
   # read data
   xyz<-data.table::fread(xyzFN)
-  cat("write it to",paste0(dirname(xyzFN),"/",tools::file_path_sans_ext(basename(xyzFN)),".tif"),"\n")
   cat("this will probably take a while...\n")
   r <- raster::rasterFromXYZ(xyz,crs=sp::CRS(paste0("+init=epsg:",epsgCode)))
   # write it to geotiff

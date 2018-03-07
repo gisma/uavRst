@@ -414,12 +414,12 @@ calc_ext<- function ( calculateBands    = FALSE,
   catNote <- getCrayon()[[1]]
   catOk   <- getCrayon()[[3]]
 
-  if (!is.null(prefixrunFN))   prefixrunFN <-  paste0(prefixrunFN,"_")
-  if (!is.null(prefixdemFN))   prefixdemFN <-  paste0(prefixdemFN,"_")
-  if (!is.null(prefixTrainImg))   prefixTrainImg <-  paste0(prefixTrainImg,"_")
-  if (!is.null(prefixTrainGeom))   prefixTrainGeom <-  paste0(prefixTrainGeom,"_")
-  if (!is.null(suffixTrainGeom))   suffixTrainGeom <-  paste0("_",suffixTrainGeom)
-  if (!is.null(suffixTrainImg))   suffixTrainImg <-  paste0("_",suffixTrainImg)
+  if (nchar(prefixrunFN)>0)   prefixrunFN <-  paste0(prefixrunFN,"_")
+  if (nchar(prefixdemFN)>0)   prefixdemFN <-  paste0(prefixdemFN,"_")
+  if (nchar(prefixTrainImg)>0)   prefixTrainImg <-  paste0(prefixTrainImg,"_")
+  if (nchar(prefixTrainGeom)>0)   prefixTrainGeom <-  paste0(prefixTrainGeom,"_")
+  if (nchar(suffixTrainGeom)>0)   suffixTrainGeom <-  paste0("_",suffixTrainGeom)
+  if (nchar(suffixTrainImg)>0)   suffixTrainImg <-  paste0("_",suffixTrainImg)
   
   currentDataFolder<- currentDataFolder #paste0(path_data_training)
   currentIdxFolder<- currentIdxFolder # paste0(path_data_training_idx)
@@ -433,7 +433,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     # create list of image files to be processed
     # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
     #imageFiles <- list.files(pattern=paste0("^",prefixrunFN,"*","tif"), path=currentDataFolder, full.names=TRUE)
-    imageFiles <-Sys.glob(path=paste0(currentDataFolder,prefixrunFN,"*","tif"))
+    imageFiles <-Sys.glob(path=paste0(currentDataFolder,prefixTrainImg,"*","tif"))
     demFiles <- Sys.glob(path=paste0(currentDataFolder,prefixdemFN,"*","tif"))
     counter<- max(length(demFiles),length(imageFiles))
     # stack the ortho images
