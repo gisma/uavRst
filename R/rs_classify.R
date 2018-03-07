@@ -293,13 +293,14 @@ ffs_train<-function(   trainingDF   = NULL,
 
 #' @param calculateBands    logical. switch for set on calculation of syntheic bands and indices default = TRUE
 #' @param extractTrain      logical. switch for set on extract training data according to training geometries default = TRUE
-#' @param prefixrunFN       character. prefix of current run default = "train"
-#' @param prefixdemFN       character. mandantory if DEM data is processes. prefix of current DEM default = "dem"
 #' @param patternImgFiles   character. mandantory string that exist in ech imagefile to be processes
-#' @param prefixTrainImg    character. prefix of image files index_2017_05_11_RGB_DEFS18_08_Orthoimage.envi
-#' @param prefixTrainGeom   character. of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index"
-#' @param suffixTrainImg    character. suffix of image files index_2017_05_11_RGB_DEFS18_08_Orthoimage.envi
-#' @param suffixTrainGeom   character. of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"
+#' @param patternIdx         character. code string that will concatenated to the filename to identify the index file
+#' @param prefixrunFN       character. general prefix of all result files of the current run default = "tmp"
+#' @param prefixdemFN       character. mandantory if DEM data is processes. prefix of current DEM default = "dem"
+#' @param prefixTrainImg    character. potential string of characters that is used in the beginning of a shape file prefixTrainImg_SHAPEFILENAME_suffixTrainImg
+#' @param suffixTrainImg    character. potential string of characters that is used in the beginning of a shape file prefixTrainImg_SHAPEFILENAME_suffixTrainImg
+#' @param prefixTrainGeom    character. potential string of characters that is used in the beginning of a shape file prefixTrainGeom_SHAPEFILENAME_suffixTrainGeom
+#' @param suffixTrainGeom   character. potential string of characters that is used in the beginning of a shape file prefixTrainGeom_SHAPEFILENAME_suffixTrainGeom
 #' @param channels          character. channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")
 #' @param hara              logical. switch for using  HaralickTextureExtraction, default = TRUE. \cr
 #' @param haraType          character. hara options, default is c("simple"), other  options are "advanced"  "higher" "all". NOTE:  "higher" takes a LOT of time
@@ -344,7 +345,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                extractTrain      = TRUE,
 #'                prefixrunFN       = "traddel",
 #'                suffixTrainGeom   = "TrainingArea",
-#'                prefixTrainGeom   = "index_",
+#'                patternIdx   = "index",
 #'                indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") ,
 #'                channels          = c("red", "green", "blue"),
 #'                hara              = FALSE,
@@ -364,12 +365,13 @@ ffs_train<-function(   trainingDF   = NULL,
 
 calc_ext<- function ( calculateBands    = FALSE,
                     extractTrain      = TRUE,
-                    prefixrunFN       = "train",
+                    prefixrunFN       = "temp",
                     prefixdemFN       = "dem",
                     prefixTrainImg    = "",
-                    suffixTrainImg    = "Orthoimage",
-                    suffixTrainGeom   = "TrainingArea",
-                    prefixTrainGeom   = "index",
+                    prefixTrainGeom   = "",
+                    suffixTrainImg    = "",
+                    suffixTrainGeom   = "",
+                    patternIdx        = "index",
                     patternImgFiles   = "",
                     channels          = c("red", "green", "blue"),
                     hara              = TRUE,
@@ -415,12 +417,12 @@ calc_ext<- function ( calculateBands    = FALSE,
   catNote <- getCrayon()[[1]]
   catOk   <- getCrayon()[[3]]
 
-  if (!is.null(prefixrunFN))   prefixrunFN <-  paste0(prefixrunFN,"_")
-  if (!is.null(prefixdemFN))   prefixdemFN <-  paste0(prefixdemFN,"_")
-  if (!is.null(prefixTrainImg))   prefixTrainImg <-  paste0(prefixTrainImg,"_")
-  if (!is.null(prefixTrainGeom))   prefixTrainGeom <-  paste0(prefixTrainGeom,"_")
-  if (!is.null(suffixTrainGeom))   suffixTrainGeom <-  paste0("_",suffixTrainGeom)
-  if (!is.null(suffixTrainImg))   suffixTrainImg <-  paste0("_",suffixTrainImg)
+  if (nchar(prefixrunFN)>0)   prefixrunFN <-  paste0(prefixrunFN,"_")
+  if (nchar(prefixdemFN)>0)   prefixdemFN <-  paste0(prefixdemFN,"_")
+  if (nchar(prefixTrainImg)>0)   prefixTrainImg <-  paste0(prefixTrainImg,"_")
+  if (nchar(patternIdx)>0)   patternIdx <-  paste0(patternIdx,"_")
+  if (nchar(suffixTrainGeom)>0)   suffixTrainGeom <-  paste0("_",suffixTrainGeom)
+  if (nchar(suffixTrainImg)>0)   suffixTrainImg <-  paste0("_",suffixTrainImg)
   
   currentDataFolder<- currentDataFolder #paste0(path_data_training)
   currentIdxFolder<- currentIdxFolder # paste0(path_data_training_idx)
@@ -435,7 +437,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
 
     #imageFiles <- list.files(pattern=paste0("^",prefixrunFN,"*","tif"), path=currentDataFolder, full.names=TRUE)
-    imageFiles <-Sys.glob(path=paste0(currentDataFolder,prefixrunFN,"*","tif"))
+    imageFiles <-Sys.glob(path=paste0(currentDataFolder,patternImgFiles,"*","tif"))
     demFiles <- Sys.glob(path=paste0(currentDataFolder,prefixdemFN,"*","tif"))
     counter<- max(length(demFiles),length(imageFiles))
     # stack the ortho images
@@ -467,9 +469,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     for (i in 1:length(imageFiles)){
       if (rgbi){
       cat(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
-      r<-raster::stack(
-        
-      )
+      r<-raster::stack(imageFiles[i])
       # calculate and stack r,g,b and requested indices
       rgb_rgbi<-raster::stack(r[[1:3]],uavRst::rgb_indices(r[[1]],r[[2]],r[[3]],indices))
       bandNames <- uavRst::make_bandnames(rgbi = indices)
@@ -587,19 +587,19 @@ calc_ext<- function ( calculateBands    = FALSE,
       if (rgbi)  tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
       else if (length(demFiles)>= i)  tmpFN<-paste0(substr(basename(demFiles[i]),1,nchar(basename(demFiles[i]))-4))
       else return(cat(catErr("\nhopefully done\n You are mixing RGB an DEM input files. You may do this but only if they are of the same extent etc. and if each image file has a corresponding dem file\n NOTE the dem filename MUST have a prefix default is 'dem_'.")))
-      cat(catOk("     save ...",paste0(prefixTrainGeom, tmpFN),"\n"))
+      cat(catOk("     save ...",paste0(patternIdx, tmpFN),"\n"))
       # r<-raster::brick(raster::stack(flist)) qgis cannot read heder
       r<-raster::stack(paste0(path_run,flist))
       if (raster::nlayers(r)!=length(bandNames)) stop("\n Number of names and layers differ...\n most common case is a broken cleanup of the runtime directory!")
       names(r)<-bandNames
       # write file to envi
       raster::writeRaster(r,
-                          paste0(currentIdxFolder,"/", prefixTrainGeom,tmpFN),
+                          paste0(currentIdxFolder,"/", patternIdx,tmpFN),
                           format="ENVI",
                           progress ="text",
                           #options="COMPRESS=LZW",
                           overwrite=TRUE)
-      #raster::hdr(r, filename = paste0(currentIdxFolder,"/", prefixTrainGeom,tmpFN), format = "ENVI") qgis cannot read heder
+      #raster::hdr(r, filename = paste0(currentIdxFolder,"/", patternIdx,tmpFN), format = "ENVI") qgis cannot read heder
 
       # cleanup runtime files lists...
       if (cleanTiffs) {
@@ -622,7 +622,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     # get image and geometry data for training purposes
     imageTrainFiles <- list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE)
     tmp  <- basename(list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE))
-    tmp<- gsub(prefixTrainGeom,prefixrunFN,tmp)
+    tmp<- gsub(patternIdx,prefixTrainGeom,tmp)
     tmp<- gsub(suffixTrainImg,suffixTrainGeom,tmp)
     geomTrainFiles <- gsub(".envi",".shp",tmp)
     geomTrainFiles <- paste0(currentDataFolder,geomTrainFiles)
