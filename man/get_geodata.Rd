@@ -24,8 +24,8 @@ get_geodata(name = "GADM", download = TRUE, path = "", ...)
 }
 \description{
 Robert J. Hijmans getData() from the raster package is well known and highly used. The only disadvantage is that it currently doesn't support a bunch of great additional and/or improved/newer data sets.  get_geodata provides some more actual or better choices for climate and DEM data as well as some easy to use interfaces to other crowd sourced data compilations.
-The main issue of the functionis to offer an easy to use access to a wider range of free to access data sets that may improve significantly the quality of typical ecological and other spatial analysis approaches by an straightforward utilization of data.
-You may download the data individually but by default all data will be downloaded georeferenced and converted in \link{raster} or \link{sp} objects.
+The main issue of the function is, to offer an easy to use access to a wider range of free to access data sets, that may improve significantly the quality of typical ecological and other spatial analysis approaches by an straightforward utilization of data.
+You may download the data individually, but by default all data will be downloaded georeferenced and converted in \link{raster} or \link{sp} objects.
 }
 \section{Well Known Data Sets}{
 
@@ -45,7 +45,7 @@ If  \code{name}='SRTM' you must provide at least the extent of an area as argume
 }
 
 \subsection{CMIP5}{
-If \code{name}=CMIP5 for (projected) future climate data you must provide arguments var and res as above. Only resolutions 2.5, 5, and 10 are currently available. In addition, you need to provide model, rcp and year.
+If \code{name}=CMIP5 for (projected) future climate data, you must provide arguments var and res as above. Only resolutions 2.5, 5, and 10 are currently available. In addition, you need to provide model, rcp and year.
 For example:\cr
   \code{get_geodata('CMIP5', var='tmin', res=10, rcp=85, model='AC', year=70)}\cr
   function (var, model, rcp, year, res, lon, lat, path, download = TRUE)\cr

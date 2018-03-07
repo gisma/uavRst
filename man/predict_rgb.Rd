@@ -8,7 +8,7 @@ predict_rgb(imageFiles = NULL, model = NULL, in_prefix = "index_",
   out_prefix = "classified_", bandNames = NULL)
 }
 \arguments{
-\item{imageFiles}{raster*. imagestack for classification purposes must contain the required bands as needed by the model}
+\item{imageFiles}{raster*. imagestack for classification purposes must contain the required bands as needed by the model.}
 
 \item{model}{model. classification model}
 

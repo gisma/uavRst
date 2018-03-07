@@ -15,15 +15,15 @@ get_counts(ids = c(1, 2), position = NULL, imageFiles = NULL,
 
 \item{imageFiles}{raster* image/classification file}
 
-\item{buffersize}{numeric radius in meters around position}
+\item{buffersize}{numeric. radius in meters around position}
 
 \item{out_prefix}{character. out prefix string}
 
-\item{ext}{character extension}
+\item{ext}{character. extension}
 
 \item{path}{character. output path}
 
-\item{dropChars}{numeric number of characters that should be dropped at the end of the filename}
+\item{dropChars}{numeric. number of characters that should be dropped at the end of the filename}
 }
 \description{
 counts pixel values according to their classes

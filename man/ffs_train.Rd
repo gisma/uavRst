@@ -2,7 +2,7 @@
 % Please edit documentation in R/rs_classify.R
 \name{ffs_train}
 \alias{ffs_train}
-\title{forward feature selection based random forest model training}
+\title{#TOFIX @titel Forward feature selection based random forest model training}
 \usage{
 ffs_train(trainingDF = NULL, predictors = c("R", "G", "B"),
   response = "ID", spaceVar = "FN", names = c("ID", "R", "G", "B", "A",
@@ -18,13 +18,13 @@ ffs_train(trainingDF = NULL, predictors = c("R", "G", "B"),
 
 \item{response}{character. name of response variable as given by the header of the training data table}
 
-\item{spaceVar}{character. name of the spcetime splitting vatiable as given by the header of the training data table}
+\item{spaceVar}{character. name of the spacetime splitting vatiable as given by the header of the training data table}
 
 \item{names}{character. all names of the dataframe header}
 
-\item{noLoc}{numeric. number of locations to leave out usually nuber of dicrete trainings locations/images}
+\item{noLoc}{numeric. number of locations to leave out usually number of discrete trainings locations/images}
 
-\item{sumFunction}{\code{character}. function to summarize default is "twoClassSummary"}
+\item{sumFunction}{character. function to summarize default is "twoClassSummary"}
 
 \item{pVal}{numeric. used part of the training data  default is \code{ 0.5}}
 
@@ -41,14 +41,14 @@ ffs_train(trainingDF = NULL, predictors = c("R", "G", "B"),
 \item{noClu}{numeric. number of cluster to be used}
 }
 \description{
-ffs_train is a wrapper function for a simple use of the forwatrd feature sselection approach
+ffs_train is a wrapper function for a simple use of the forward feature selection approach
 of training random forest classification models. This validation is particulary suitable for
 leave-location-out cross validations where variable selection
 MUST be based on the performance of the model on the hold out station.
 See \href{https://www.sciencedirect.com/science/article/pii/S1364815217310976}{Meyer et al. (2018)}
 for further details.
 This is in fact the case while using time space variable vegetation patterns for classification purposes.
-For the uav based RGB/NIR imagery it provides an optimized preconfiguration for the classification goals.
+For the UAV based RGB/NIR imagery, it provides an optimized preconfiguration for the classification goals.
 }
 \examples{
 \dontrun{

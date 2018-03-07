@@ -60,12 +60,13 @@ if (!isGeneric('xyz2tif')) {
 
 #' \dontrun{
 #' #get some typical data as provided by the authority
-url<-"http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip"
-res <- curl::curl_download(url, "testdata.zip")
-file<- unzip(res,list = TRUE)$Name[2]
-unzip(res,files = file,  overwrite = TRUE)
-head(read.csv(file))
-xyz2tif(file,epsgCode = "31468")
+#' setwd(tempdir())
+#' url<-"http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip"
+#' res <- curl::curl_download(url, "testdata.zip")
+#' file<- unzip(res,list = TRUE)$Name[2]
+#' unzip(res,files = file,  overwrite = TRUE)
+#' head(read.csv(file))
+#' xyz2tif(file,epsgCode = "31468")
 #' }
 #' @export xyz2tif
 #'

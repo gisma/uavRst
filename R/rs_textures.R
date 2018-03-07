@@ -37,7 +37,8 @@
 #' @examples
 #' \dontrun{
 #' ## example on how to calculate texture from a list of channels
-#'
+#' setwd(tempdir())
+#' #get some typical data as provided by the authority
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
@@ -209,22 +210,13 @@ if ( !isGeneric("otbtex_hara") ) {
 #' @export otbtex_hara
 #' @examples
 #' \dontrun{
-#' # get some typical authority generated data
+#' setwd(tempdir())
+#' #get some typical data as provided by the authority
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
-#' unzip(res,
-#'       files = grep(".tif", unzip(res,list = TRUE)$Name,value = TRUE),
-#'       junkpaths = TRUE,
-#'       overwrite = TRUE)
-#'
-#' # first initialisation of the OTB environment
-#' link2GI::linkOTB()
-#'
+#' unzip(res,junkpaths = TRUE,overwrite = TRUE)
 #' # calculate all Haralick-textures
-#' otbtex_hara(x=file.path(getwd(),
-#'                     basename(grep(".tif",
-#'                     unzip(res,list = TRUE)$Name,
-#'                     value = TRUE))))
+#' otbtex_hara(x="4490600_5321400.tif")
 #' }
 NULL
 
@@ -490,10 +482,12 @@ setMethod("otbtex_hara",
 #' @export otb_stat
 #' @examples
 #' \dontrun{
+#' setwd(tempdir())
+#' #get some typical data as provided by the authority
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
-#' otb_stat(input=paste0(getwd(),"4490600_5321400.tif"),radius=5)
+#' otb_stat(input="4490600_5321400.tif",radius=5)
 #' }
 
 otb_stat<- function(input=NULL,
@@ -560,10 +554,12 @@ otb_stat<- function(input=NULL,
 #' @export otbtex_edge
 #' @examples
 #' \dontrun{
+#' setwd(tempdir())
+#' #get some typical data as provided by the authority
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
-#' otbtex_edge(input=paste0(getwd(),"4490600_5321400.tif"),filter = "sobel")
+#' otbtex_edge(input="4490600_5321400.tif",filter = "sobel")
 #' }
 
 
@@ -582,7 +578,7 @@ otbtex_edge<- function(input=NULL,
     if (is.null(giLinks)){
       giLinks <- get_gi()
     }
-    path_OTB <- giLinks$otb$pathOTB
+  path_OTB <- giLinks$otb$pathOTB
   retStack<-list()
   if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
   for (band in channel) {
@@ -634,10 +630,12 @@ otbtex_edge<- function(input=NULL,
 #' @export otbtex_gray
 #' @examples
 #' \dontrun{
+#' setwd(tempdir())
+#' #get some typical data as provided by the authority
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
-#' gm<-otbtex_gray(input=paste0(getwd(),"4490600_5321400.tif"),retRaster = TRUE)
+#' gm<-otbtex_gray(input="4490600_5321400.tif",retRaster = TRUE)
 #' raster::plot(gm[[1]])
 #' }
 
@@ -708,10 +706,12 @@ otbtex_gray<- function(input=NULL,
 #' @export morpho_dem
 #' @examples
 #' \dontrun{
+#' setwd(tempdir())
+#' #get some typical data as provided by the authority
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
-#' gm<-morpho_dem(dem=paste0(getwd(),"4490600_5321400.tif"))
+#' gm<-morpho_dem(dem="4490600_5321400.tif")
 #' raster::plot(gm[[1]])
 #' }
 # calculate gdal derived DEM params
@@ -1051,10 +1051,12 @@ rgb_indices <- function(red,green,blue,
 #' @export colorspace
 #' @examples
 #' \dontrun{
+#' setwd(tempdir())
+#' #get some typical data as provided by the authority
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #' res <- curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
-#' colorspace(input=paste0(getwd(),"4490600_5321400.tif"),colorspace="CIELab")
+#' colorspace(input="4490600_5321400.tif",colorspace="CIELab")
 #' }
 
 colorspace<- function(input=NULL,

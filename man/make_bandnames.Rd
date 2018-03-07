@@ -20,7 +20,7 @@ make_bandnames(rgbi = NA, bandNames = NA, stat = FALSE, morpho = NA,
 
 \item{RGBtrans}{character.  RGBtrans codes}
 
-\item{dem}{charater dem codes}
+\item{dem}{charater. dem codes}
 }
 \description{
 create name vector corresponding to the training image stack

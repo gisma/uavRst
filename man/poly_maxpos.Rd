@@ -2,7 +2,9 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{poly_maxpos}
 \alias{poly_maxpos}
-\title{extract for all polygons the position of the maximum value of the applied raster(s)}
+\title{#@author Chris Reudenbach
+ #TOFIX @name  @title
+ extract for all polygons the position of the maximum value of the applied raster(s)}
 \usage{
 poly_maxpos(x, lN, poly_split = TRUE)
 }
@@ -11,7 +13,7 @@ poly_maxpos(x, lN, poly_split = TRUE)
 
 \item{lN}{layer name of shape file}
 
-\item{poly_split}{split polygon in single file default is TRUE
+\item{poly_split}{split polygon in single file, default is TRUE
 extract for all polygons the position of the maximum value}
 }
 \description{

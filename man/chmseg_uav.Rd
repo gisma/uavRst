@@ -15,7 +15,7 @@ chmseg_uav(treepos = NULL, chm = NULL, minTreeAlt = 2,
 
 \item{chm}{raster*. Canopy height model in \code{raster} format. Should be the same that was used to create the input for \code{treepos}.}
 
-\item{minTreeAlt}{numeric. The minimum height value for a \code{chm} pixel to be considered as part of a crown segment.
+\item{minTreeAlt}{numeric. The minimum height value for a \code{chm} pixel is to be considered as part of a crown segment.
 All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 height of \code{treepos}.}
 
@@ -39,10 +39,10 @@ height of \code{treepos}.}
 
 \item{majority_radius}{numeric. kernel size for the majority filter out spurious pixel}
 
-\item{giLinks}{list. of GI tools cli pathes}
+\item{giLinks}{list. of GI tools cli paths}
 }
 \description{
-Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. After the segementation itself the results are hole filled and optionally filtered by a majority filter.
+Tree segmentation based on a CHM, basically returns a vector data set with the tree crown geometries and a bunch of corresponding indices. After the segementation itself, the results are hole filled and optionally, it can be filtered by a majority filter.
 }
 \examples{
 \dontrun{

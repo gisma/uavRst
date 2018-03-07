@@ -2,7 +2,8 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{grass2tif}
 \alias{grass2tif}
-\title{converts GRASS raster to geotiff}
+\title{#@author Chris Reudenbach
+ #TOFIX @name  @title converts GRASS raster to Geotiff}
 \usage{
 grass2tif(runDir = NULL, layer = NULL, returnRaster = FALSE)
 }
@@ -11,9 +12,9 @@ grass2tif(runDir = NULL, layer = NULL, returnRaster = FALSE)
 
 \item{layer}{name GRASS raster}
 
-\item{returnRaster}{return GRASS raster as an R raster object default = FALSE}
+\item{returnRaster}{return GRASS raster as an R raster object, default = FALSE}
 }
 \description{
-converts GRASS raster to geotiff
+converts GRASS raster to Geotiff
 }
 \keyword{internal}

@@ -2,7 +2,8 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{shape2grass}
 \alias{shape2grass}
-\title{converts OGR to GRASS vector}
+\title{#@author Chris Reudenbach
+ #TOFIX @name  @titleconverts OGR to GRASS vector}
 \usage{
 shape2grass(runDir = NULL, layer = NULL)
 }

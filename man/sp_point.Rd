@@ -2,7 +2,8 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{sp_point}
 \alias{sp_point}
-\title{create an spatialpointobject from 1 points}
+\title{#  #TOFIX @name  @title
+create an spatialpointobject from 1 points}
 \usage{
 sp_point(lon, lat, ID = "point",
   proj4 = "+proj=longlat +datum=WGS84 +no_defs", export = FALSE)
@@ -20,5 +21,6 @@ sp_point(lon, lat, ID = "point",
 }
 \description{
 create an spatialpointobject from 1 points, optional export as shapefile
+#@author Chris Reudenbach
 }
 \keyword{internal}

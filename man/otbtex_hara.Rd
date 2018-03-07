@@ -86,22 +86,13 @@ Furthermore using stats will cover mean and variance while dissimilarity is high
 }
 \examples{
 \dontrun{
-# get some typical authority generated data
+setwd(tempdir())
+#get some typical data as provided by the authority
 url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
 res <- curl::curl_download(url, "testdata.zip")
-unzip(res,
-      files = grep(".tif", unzip(res,list = TRUE)$Name,value = TRUE),
-      junkpaths = TRUE,
-      overwrite = TRUE)
-
-# first initialisation of the OTB environment
-link2GI::linkOTB()
-
+unzip(res,junkpaths = TRUE,overwrite = TRUE)
 # calculate all Haralick-textures
-otbtex_hara(x=file.path(getwd(),
-                    basename(grep(".tif",
-                    unzip(res,list = TRUE)$Name,
-                    value = TRUE))))
+otbtex_hara(x="4490600_5321400.tif")
 }
 }
 \references{

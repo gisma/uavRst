@@ -2,7 +2,8 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{grass2shape}
 \alias{grass2shape}
-\title{converts GRASS vector to shape file}
+\title{#@author Chris Reudenbach
+ #TOFIX @name  @title  converts GRASS vector to shape file}
 \usage{
 grass2shape(runDir = NULL, layer = NULL)
 }

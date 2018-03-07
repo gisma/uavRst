@@ -41,13 +41,13 @@ pc2dtm(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
 
 \item{projSubFolder}{subfolders that will be created/linked for R related GRASS processing}
 
-\item{proj4}{default is EPSG 32632 any valid proj4 string that is assumingly the correct one}
+\item{proj4}{default is EPSG 32632, any valid proj4 string that is assumingly the correct one}
 
 \item{cores}{number of cores that will be used}
 
-\item{path_lastools}{character folder containing the Windows binary files of the lastools}
+\item{path_lastools}{character. folder containing the Windows binary files of the lastools}
 
-\item{giLinks}{list of GI tools cli pathes  default is NULL}
+\item{giLinks}{list of GI tools cli pathes, default is NULL}
 
 \item{verbose}{to be quiet (1)}
 }

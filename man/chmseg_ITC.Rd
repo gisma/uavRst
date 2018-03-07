@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_crownseg.R
 \name{chmseg_ITC}
 \alias{chmseg_ITC}
-\title{Decision tree method to grow individual tree crowns based on 'itcSegment'}
+\title{#TOFIX @titel Decision tree method to grow individual tree crowns based on 'itcSegment'}
 \usage{
 chmseg_ITC(chm = NULL, EPSG_code = 3064, movingWin = 7,
   TRESHSeed = 0.45, TRESHCrown = 0.55, minTreeAlt = 2,

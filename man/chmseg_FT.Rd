@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_crownseg.R
 \name{chmseg_FT}
 \alias{chmseg_FT}
-\title{Fast and straightforward watershed segmentation based on 'ForestTools'}
+\title{#TOFIX @titel Fast and straightforward watershed segmentation based on 'ForestTools'}
 \usage{
 chmseg_FT(treepos = NULL, chm = NULL, minTreeAlt = 2,
   format = "polygons", verbose = FALSE)
@@ -20,7 +20,7 @@ height of \code{treepos}.}
 
 \item{format}{character. Format of the function's output. Can be set to either 'raster' or 'polygons'.}
 
-\item{verbose}{quiet FALSE}
+\item{verbose}{to be quiet FALSE}
 }
 \description{
 'ForestTools' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Very fast algorithm based on the imagr watershed algorithm.

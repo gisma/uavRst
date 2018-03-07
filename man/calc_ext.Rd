@@ -2,8 +2,8 @@
 % Please edit documentation in R/rs_classify.R
 \name{calc_ext}
 \alias{calc_ext}
-\title{Convenient function to preprocess synthetic raster bands from a given RGB and optionally
-extract the raster values on base of vector data for training purposes}
+\title{#TOFIX @titel Convenient function to preprocess synthetic raster bands from a given RGB and optionally
+extract the raster values on base of vector data for training purposes.}
 \usage{
 calc_ext(calculateBands = FALSE, extractTrain = TRUE,
   prefixrunFN = "train", prefixdemFN = "dem", prefixTrainImg = "",
@@ -44,49 +44,49 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE,
 
 \item{channels}{character. channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")}
 
-\item{hara}{logical. switch for using  HaralickTextureExtraction default = TRUE. \cr}
+\item{hara}{logical. switch for using  HaralickTextureExtraction, default = TRUE. \cr}
 
-\item{haraType}{character. hara options default is c("simple"), other  options are "advanced"  "higher" "all". NOTE:  "higher" takes a LOT of time}
+\item{haraType}{character. hara options, default is c("simple"), other  options are "advanced"  "higher" "all". NOTE:  "higher" takes a LOT of time}
 
 \item{stat}{logical. switch for using statistic default = TRUE the stas are mean,variance, curtosis, skewness}
 
 \item{edge}{logical. switch for using edge filtering default = TRUE}
 
-\item{edgeType}{character. edge options default is c("gradient","sobel","touzi") all options are c("gradient","sobel","touzi")}
+\item{edgeType}{character. edge options, default is c("gradient","sobel","touzi") all options are c("gradient","sobel","touzi")}
 
 \item{morpho}{logical. switch for using morphological filtering default = TRUE}
 
-\item{morphoType}{character. morphological options default is c("dilate","erode","opening","closing") all options are ("dilate","erode","opening","closing")}
+\item{morphoType}{character. morphological options, default is c("dilate","erode","opening","closing") all options are ("dilate","erode","opening","closing")}
 
 \item{rgbi}{logical. switch for using rgbi index calcualtions default = TRUE}
 
-\item{indices}{character. RGB indices default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP")}
+\item{indices}{character. RGB indices, default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP")}
 
 \item{RGBTrans}{logical. switch for using color space transforming default = TRUE}
 
 \item{colorSpaces}{character.  RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")}
 
-\item{pardem}{logical. switch for calculating dem parameter default = FALSE}
+\item{pardem}{logical. switch for calculating dem parameter, default = FALSE}
 
 \item{demType}{character. ("hillshade","slope", "aspect","TRI","TPI","Roughness")}
 
 \item{morpho_method}{numeric. saga morphometric method}
 
-\item{min_scale}{numeric. in scale for multi scale TPI}
+\item{min_scale}{mnumeric. in scale for multi scale TPI}
 
 \item{max_scale}{numeric. max scale for multi scale TPI}
 
 \item{num_scale}{numeric. number of scale for multi scale TPI}
 
-\item{kernel}{numeric. size of kernel for filtering and statistics default is  3}
+\item{kernel}{numeric. size of kernel for filtering and statistics, default is  3}
 
 \item{currentDataFolder}{NULL folder to image (and shape) data}
 
 \item{currentIdxFolder}{NULL folder for saving the results}
 
-\item{cleanTiffs}{logical. TRUE logical switch for deleting the calculated tifs default is TRUE}
+\item{cleanTiffs}{logical. TRUE logical switch for deleting the calculated tifs, default is TRUE}
 
-\item{giLinks}{list. GI tools cli pathes}
+\item{giLinks}{list. GI tools cli paths}
 }
 \description{
 The calc_ext function covers step 1 of the  usecaseRGBClassify workflow for a random forest based classification of visible imagery.

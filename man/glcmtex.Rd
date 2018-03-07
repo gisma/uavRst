@@ -54,7 +54,8 @@ Furthermore using stats will cover mean and variance while dissimilarity is high
 \examples{
 \dontrun{
 ## example on how to calculate texture from a list of channels
-
+setwd(tempdir())
+#get some typical data as provided by the authority
 url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
 res <- curl::curl_download(url, "testdata.zip")
 unzip(res,junkpaths = TRUE,overwrite = TRUE)
