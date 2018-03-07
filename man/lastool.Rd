@@ -2,7 +2,7 @@
 % Please edit documentation in R/rs_lastools.R
 \name{lastool}
 \alias{lastool}
-\title{simple wrapper for some LAStools functions}
+\title{#@titel simple wrapper for some LAStools functions}
 \usage{
 lastool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
   keep_class = "2", bulge = "1.5", step_size = "city",
@@ -13,7 +13,7 @@ lastool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
   cutExtent = NULL, cutSlice = NULL)
 }
 \arguments{
-\item{tool}{default is \code{lasinfo}   additionally xou may choose lasrepair, lasthin,  lasmerge, lasground_new, las2dem, las2txt, lasoverage, lasclip}
+\item{tool}{default is \code{lasinfo}   additionally you may choose lasrepair, lasthin,  lasmerge, lasground_new, las2dem, las2txt, lasoverage, lasclip}
 
 \item{lasFile}{default is \code{NULL} path  to the laz/las file(s)}
 
@@ -29,11 +29,11 @@ lastool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
 
 \item{grid_size}{resolution of the DTM raster}
 
-\item{proj4}{default is EPSG 32632 any valid proj4 string that is assumingly the correct one}
+\item{proj4}{default is EPSG 32632, any valid proj4 string that is assumingly the correct one}
 
 \item{rscale}{rscale}
 
-\item{stepoverlap}{Spacing of overlap steps aused in lasoverage default is NULL}
+\item{stepoverlap}{Spacing of overlap steps aused in lasoverage, default is NULL}
 
 \item{cores}{number of cores that will be used}
 
@@ -43,7 +43,7 @@ lastool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
 
 \item{outpath}{outpath}
 
-\item{path_lastools}{character folder containing the Windows binary files of the lastools}
+\item{path_lastools}{character. folder containing the Windows binary files of the lastools}
 
 \item{verbose}{keep it quiet}
 

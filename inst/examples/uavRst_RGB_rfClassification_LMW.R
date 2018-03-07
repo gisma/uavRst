@@ -68,17 +68,16 @@ if (startcalc_ext){
   # note otions are commented due to the fact that the maximum is default
   # to restrict calculations uncomment and select by editng the param list
   res <- calc_ext(calculateBands    = TRUE,
-                 extractTrain      = FALSE,
-                 prefixRun       = "",
-                 patterndemFiles       = "dem",
-                 prefixTrainImg    = "",
-                 prefixTrainGeom   = "",
-                 suffixTrainImg    = "",
+
+                 extractTrain      = TRUE,
                  suffixTrainGeom   = "",
-                 patternIdx        = "index",
+                 patternIdx   = "index",
                  patternImgFiles   = "eme",
-                 rgbi              = T,
-                  indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"),
+                 prefixTrainImg    = "",
+                 prefixrunFN       = prefixrunFN,
+                 prefixdemFN       = prefixdemFN,
+                 rgbi              = TRUE,
+                 indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"),
                  RGBTrans          = F,
                  colorSpaces       = c("CIELab","XYZ","YUV"),
                  channels          = c("red"),# "green", "blue"),
@@ -92,6 +91,7 @@ if (startcalc_ext){
                   morphoType        = c("dilate","erode","opening","closing"),
                  pardem = T,
                  demType = c("hillshade", "MTPI"),#"slope", "aspect","TRI","TPI","Roughness"),
+
                  kernel            = 3,
                  currentDataFolder = currentDataFolder,
                  currentIdxFolder  = currentIdxFolder,
@@ -113,11 +113,13 @@ if (startTrain){
 
   # load raw training dataframe
   if (!(exists)("trainDF"))
+
     trainDF<-readRDS(paste0(currentIdxFolder,prefixRun,"_trainDF",".rds"))
   if (!(exists)("bnames"))
     load(paste0(currentIdxFolder,"bandNames_",prefixRun,".RData"))
+
   # add leading Title "ID" and tailing title "FN"
-  names(trainDF)<-append("ID",append(bnames,"FN"))
+  names(trainDF)<-append("ID",append(bandNames,"FN"))
 
   # manipulate the data frame to you rneeds by dropping predictor variables
   #keepsGreen <-c("ID","red","green","blue","VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI","FN")
@@ -173,7 +175,7 @@ if (startPredict){
              model = model_final,
              in_prefix = "index_",
              out_prefix = "classified_",
-             bandNames = bnames)
+             bandNames = bandNames)
 
   cat(":: ...finsihed \n")
 

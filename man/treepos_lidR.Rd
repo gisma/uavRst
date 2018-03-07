@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_treepos.R
 \name{treepos_lidR}
 \alias{treepos_lidR}
-\title{Tree top detection based on local maxima filters 'lidR'}
+\title{#TOFIX @titel Tree top detection based on local maxima filters 'lidR'}
 \usage{
 treepos_lidR(chm = NULL, movingWin = 7, minTreeAlt = 2)
 }
@@ -17,7 +17,7 @@ the input for \code{treepos}.}
 }
 \description{
 Tree top detection based on local maxima filters. There are two types of filter. The first,
-called for gridded objects, works on images with a matrix-based algorithm and the second one, called for
+called for gridded objects, works on images with a matrix-based algorithm. And the second one, called for
 point clouds, works at the point cloud level without any rasterization. Jean-Romain Roussel and David Auty:
 R package \href{https://CRAN.R-project.org/package=lidR}{lidR}\cr
 }

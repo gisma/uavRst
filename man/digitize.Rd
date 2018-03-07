@@ -2,7 +2,9 @@
 % Please edit documentation in R/tb_leafDraw.R
 \name{digitize}
 \alias{digitize}
-\title{Digitize and save vector features within your rstudio session (or any browser)}
+\title{#TOFIX @name Digitize and save vector features within your rstudio session (or any browser) 
+#@title 
+#@author Chris Reudenbach}
 \usage{
 digitize(mapCenter = NULL, zoom = 15, line = TRUE, rectangle = TRUE,
   poly = TRUE, circle = TRUE, point = TRUE, remove = TRUE,
@@ -30,15 +32,15 @@ digitize(mapCenter = NULL, zoom = 15, line = TRUE, rectangle = TRUE,
 
 \item{position}{place to put the toolbar (topright, topleft, bottomright, bottomleft)}
 
-\item{maplayer}{string as provided by leaflet-provider}
+\item{maplayer}{string. as provided by leaflet-provider}
 
 \item{overlay}{optional sp object}
 
 \item{features}{features}
 
-\item{preset}{character defaut is "NULL" full draw version, "uav" for flightarea digitizing, "ext" for rectangles}
+\item{preset}{character. defaut is "NULL" full draw version, "uav" for flightarea digitizing, "ext" for rectangles}
 
-\item{locPreset}{character default is "muf" for Marburg University Forest, others are "tra" Traddelstein, "hag" Hagenstein, "baw" Bayerwald.}
+\item{locPreset}{character. default is "muf" for Marburg University Forest, others are "tra" Traddelstein, "hag" Hagenstein, "baw" Bayerwald.}
 
 \item{cex}{cex}
 
@@ -52,7 +54,7 @@ digitize(mapCenter = NULL, zoom = 15, line = TRUE, rectangle = TRUE,
 digitize is based on the leaflet draw plugin. It provides a bunch of leaflet maps as base layers for digitizing vector features.
 }
 \note{
-Yu can either save the digitized object to a json file or you ma grab the json string via the clipboard
+You can either save the digitized object to a .json file or you may grab the .json string via the clipboard
 }
 \examples{
 \dontrun{

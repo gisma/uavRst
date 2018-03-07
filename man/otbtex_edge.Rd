@@ -40,10 +40,12 @@ the otb is used for filtering. please provide a GeoTiff file
 }
 \examples{
 \dontrun{
+setwd(tempdir())
+#get some typical data as provided by the authority
 url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
 res <- curl::curl_download(url, "testdata.zip")
 unzip(res,junkpaths = TRUE,overwrite = TRUE)
-otbtex_edge(input=paste0(getwd(),"4490600_5321400.tif"),filter = "sobel")
+otbtex_edge(input="4490600_5321400.tif",filter = "sobel")
 }
 }
 \author{

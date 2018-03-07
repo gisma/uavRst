@@ -9,7 +9,7 @@
 Unmanned Aerial Vehicle Remote Sensing Tools
 }
 \details{
-The package provides some R-GI functionality for dealing with data as retrieved by Unmanned Aerial Vehicle VIS/NIR Remote Sensing
+# TOFIX @description The package provides some R-GI functionality for dealing with data as retrieved by Unmanned Aerial Vehicle VIS/NIR Remote Sensing
 }
 \author{
 Hanna Meyer, Lars Opgenoorth, Chris Reudenbach, Environmental Informatics Marburg \cr

@@ -35,10 +35,12 @@ the otb is used for the calculation of the statistics. Please provide a GeoTiff 
 }
 \examples{
 \dontrun{
+setwd(tempdir())
+#get some typical data as provided by the authority
 url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
 res <- curl::curl_download(url, "testdata.zip")
 unzip(res,junkpaths = TRUE,overwrite = TRUE)
-otb_stat(input=paste0(getwd(),"4490600_5321400.tif"),radius=5)
+otb_stat(input="4490600_5321400.tif",radius=5)
 }
 }
 \author{

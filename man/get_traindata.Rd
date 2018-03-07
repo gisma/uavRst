@@ -2,7 +2,7 @@
 % Please edit documentation in R/rs_classify.R
 \name{get_traindata}
 \alias{get_traindata}
-\title{extracts training data from a raster stack using vector data as a mask}
+\title{Extracts training data from a raster stack using vector data as a mask.}
 \usage{
 get_traindata(rasterStack = NULL, trainPlots = NULL, bandNames = NULL,
   imgFN)
@@ -17,7 +17,7 @@ get_traindata(rasterStack = NULL, trainPlots = NULL, bandNames = NULL,
 \item{imgFN}{character.  default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file}
 }
 \description{
-extracts training data from a raster stack and returns a dataframe containing for each pixel all values
+Extracts training data from a raster stack and returns a dataframe containing for each pixel all values.
 }
 \examples{
 \dontrun{

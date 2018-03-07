@@ -365,8 +365,9 @@ ffs_train<-function(   trainingDF   = NULL,
 
 calc_ext<- function ( calculateBands    = FALSE,
                     extractTrain      = TRUE,
-                    prefixRun      = "temp",
-                    patterndemFiles       = "dem",
+                    prefixRun         = "temp",
+                    patterndemFiles   = "dem",
+
                     prefixTrainImg    = "",
                     prefixTrainGeom   = "",
                     suffixTrainImg    = "",
@@ -417,6 +418,7 @@ calc_ext<- function ( calculateBands    = FALSE,
   catNote <- getCrayon()[[1]]
   catOk   <- getCrayon()[[3]]
 
+
   if (nchar(prefixRun)>0)   prefixRun<-  paste0(prefixRun,"_")
   if (nchar(patterndemFiles)>0)   patterndemFiles <-  paste0(patterndemFiles,"_")
   if (nchar(prefixTrainImg)>0)   prefixTrainImg <-  paste0(prefixTrainImg,"_")
@@ -439,6 +441,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     #imageFiles <- list.files(pattern=paste0("^",prefixRun,"*","tif"), path=currentDataFolder, full.names=TRUE)
     imageFiles <-Sys.glob(path=paste0(currentDataFolder,patternImgFiles,"*","tif"))
     demFiles <- Sys.glob(path=paste0(currentDataFolder,patterndemFiles,"*","tif"))
+
     counter<- max(length(demFiles),length(imageFiles))
     # stack the ortho images
     ### calculate indices and base stat export it to tif
@@ -463,10 +466,12 @@ calc_ext<- function ( calculateBands    = FALSE,
           bandNames <-append(bandNames,make_bandnames(dem = item))
         
       } 
-    #}
+   # }
 
     # for all images do
+
     #for (i in 1:length(imageFiles)){
+
       if (rgbi){
       cat(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
       r<-raster::stack(imageFiles[i])

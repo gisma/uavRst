@@ -12,7 +12,7 @@ local_relief(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
   gisdbase_exist = FALSE, path_lastools = NULL)
 }
 \arguments{
-\item{lasDir}{character. default is \code{NULL} path  to the laz/las file(s)}
+\item{lasDir}{character. default is \code{NULL} path to the laz/las file(s)}
 
 \item{gisdbase_path}{character.  gisdbase will be linked or created depending on \code{gisdbase_exist}}
 
@@ -24,7 +24,7 @@ local_relief(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
 
 \item{param_list}{character. default is c("i","v", "n", "g","f","overwrite","quiet")
 i Save intermediate maps; \cr
-v Use bspline interpolation to construct the surface Uses v.surf.bspline cubic interpolation instead of r.fillnulls cubic interpolation\cr
+v Use bspline interpolation to construct the surface.Uses v.surf.bspline cubic interpolation instead of r.fillnulls cubic interpolation\cr
 n Invert colors in the color table \cr
 g Logarithmic scaling of the color table\cr
 f Do not perform histogram equalization on the color table}

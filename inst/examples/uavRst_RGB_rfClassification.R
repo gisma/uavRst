@@ -28,7 +28,7 @@ require(mapview)
 require(link2GI)
 
 # proj subfolders
-prefixrunFN       = NULL
+prefixrunFN       ="" 
 prefixdemFN       = "dem"
 # define project folder
 projRootDir <- "/media/solo/7fbfcfdf-6276-48ad-ba94-82ba2f9993b9/drohne/chile"
@@ -64,13 +64,17 @@ if (startcalc_ext){
   # start calculation of synthetic bands and extraction of the training data
   # note otions are commented due to the fact that the maximum is default
   # to restrict calculations uncomment and select by editng the param list
-  res <- calc_ext(calculateBands    = TRUE,
-                 extractTrain      = TRUE,
+
+  res <- calc_ext(calculateBands    = T,
+                 extractTrain      = T,
+                 patternImgFiles   = "2017",
+                 prefixTrainImg    = "",
+
                  prefixrunFN       = prefixrunFN,
                  prefixdemFN       = prefixdemFN,
                  suffixTrainImg    = "OrthoMosaic" ,
                  suffixTrainGeom   = "TrainingArea",
-                 prefixTrainGeom   = "index",
+                 patternIdx        = "index",
                  rgbi              = T,
                   indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"),
                  RGBTrans          = T,

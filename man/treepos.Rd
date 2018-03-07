@@ -23,10 +23,10 @@ treepos(chm = NULL, minTreeAlt = 10, minTreeAltParam = "chmQ20",
 
 \item{thresh}{numeric. Specify a threshold value as minimum difference between neighboured segments in meter. see also \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_0.html}{SAGA GIS Help}}
 
-\item{giLinks}{list. of GI tools cli pathes}
+\item{giLinks}{list. of GI tools cli paths}
 }
 \description{
-Find potential tree positions using a canopy height model using a iterative watershed algorithm. return basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
+Find potential tree positions using a canopy height model by using an iterative watershed algorithm. Basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
 }
 \examples{
 \dontrun{
