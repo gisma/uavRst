@@ -467,7 +467,9 @@ calc_ext<- function ( calculateBands    = FALSE,
     for (i in 1:length(imageFiles)){
       if (rgbi){
       cat(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
-      r<-raster::stack(imageFiles[i])
+      r<-raster::stack(
+        
+      )
       # calculate and stack r,g,b and requested indices
       rgb_rgbi<-raster::stack(r[[1:3]],uavRst::rgb_indices(r[[1]],r[[2]],r[[3]],indices))
       bandNames <- uavRst::make_bandnames(rgbi = indices)

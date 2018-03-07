@@ -31,7 +31,7 @@ require(link2GI)
 prefixrunFN       = NULL
 prefixdemFN       = "dem"
 # define project folder
-projRootDir <- "~/test1/uavrst"
+projRootDir <- "/media/solo/7fbfcfdf-6276-48ad-ba94-82ba2f9993b9/drohne/chile"
 
 paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/training/","data/training/idx/",
@@ -64,8 +64,8 @@ if (startcalc_ext){
   # start calculation of synthetic bands and extraction of the training data
   # note otions are commented due to the fact that the maximum is default
   # to restrict calculations uncomment and select by editng the param list
-  res <- calc_ext(calculateBands    = F,
-                 extractTrain      = T,
+  res <- calc_ext(calculateBands    = TRUE,
+                 extractTrain      = TRUE,
                  prefixrunFN       = prefixrunFN,
                  prefixdemFN       = prefixdemFN,
                  suffixTrainImg    = "OrthoMosaic" ,
