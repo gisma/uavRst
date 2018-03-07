@@ -7,20 +7,20 @@ if (!isGeneric('crown_filter')) {
 #'@title basic filtering of crown polygons using altitude, area and other optional thresholds
 #'
 #'@description
-#' applies basic filtering of crown polygons using altitude, area and other optional thresholds. return crown_filterbasically returns SPDF  with the crown polygons and all calculated parameters
+#' applies basic filtering of crown polygons using altitude, area and other optional thresholds. crown_filter basically returns SPDF with the crown polygons and all calculated parameters.
 #'
 
 #'@author Chris Reudenbach
 #'
 #'
-#'@param crownFn filname of OGR comliant vector file
+#'@param crownFn filname of OGR compliant vector file
 #'@param minTreeAlt minimum height in meter that will be regarded as tree
 #'@param minCrownArea minimum area of crowns that is accepted
 #'@param maxCrownArea maximum area of crowns that is accepted
-#'@param minTreeAltParam parameter that is used for filtering mintreealt default ist Median "chmQ50"
-#'@param crownSTDW parameter that optionally filters for the STDV of the crown altitudes default is NULL
-#'@param TAopt optional parameter that my be used for filtering default is NULL
-#'@param opt threshold value for optional filter default is NULL
+#'@param minTreeAltParam parameter that is used for filtering MinTreeAlt, default is Median "chmQ50"
+#'@param crownSTDW parameter that optionally filters for the STDV of the crown altitudes, default is NULL
+#'@param TAopt optional parameter that might be used for filtering, default is NULL
+#'@param opt threshold value for optional filter, default is NULL
 #'@param proj4string proj4 string
 
 #'
