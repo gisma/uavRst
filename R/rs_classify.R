@@ -295,8 +295,8 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param extractTrain      logical. switch for set on extract training data according to training geometries default = TRUE
 #' @param patternImgFiles   character. mandantory string that exist in ech imagefile to be processes
 #' @param patternIdx         character. code string that will concatenated to the filename to identify the index file
-#' @param prefixrunFN       character. general prefix of all result files of the current run default = "tmp"
-#' @param prefixdemFN       character. mandantory if DEM data is processes. prefix of current DEM default = "dem"
+#' @param prefixRun      character. general prefix of all result files of the current run default = "tmp"
+#' @param patterndemFiles       character. mandantory if DEM data is processes. prefix of current DEM default = "dem"
 #' @param prefixTrainImg    character. potential string of characters that is used in the beginning of a shape file prefixTrainImg_SHAPEFILENAME_suffixTrainImg
 #' @param suffixTrainImg    character. potential string of characters that is used in the beginning of a shape file prefixTrainImg_SHAPEFILENAME_suffixTrainImg
 #' @param prefixTrainGeom    character. potential string of characters that is used in the beginning of a shape file prefixTrainGeom_SHAPEFILENAME_suffixTrainGeom
@@ -343,7 +343,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                                  
 #'res <- calc_ext(calculateBands    = TRUE,
 #'                extractTrain      = TRUE,
-#'                prefixrunFN       = "traddel",
+#'                prefixRun      = "traddel",
 #'                suffixTrainGeom   = "TrainingArea",
 #'                patternIdx   = "index",
 #'                indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") ,
@@ -365,8 +365,8 @@ ffs_train<-function(   trainingDF   = NULL,
 
 calc_ext<- function ( calculateBands    = FALSE,
                     extractTrain      = TRUE,
-                    prefixrunFN       = "temp",
-                    prefixdemFN       = "dem",
+                    prefixRun      = "temp",
+                    patterndemFiles       = "dem",
                     prefixTrainImg    = "",
                     prefixTrainGeom   = "",
                     suffixTrainImg    = "",
@@ -417,8 +417,8 @@ calc_ext<- function ( calculateBands    = FALSE,
   catNote <- getCrayon()[[1]]
   catOk   <- getCrayon()[[3]]
 
-  if (nchar(prefixrunFN)>0)   prefixrunFN <-  paste0(prefixrunFN,"_")
-  if (nchar(prefixdemFN)>0)   prefixdemFN <-  paste0(prefixdemFN,"_")
+  if (nchar(prefixRun)>0)   prefixRun<-  paste0(prefixRun,"_")
+  if (nchar(patterndemFiles)>0)   patterndemFiles <-  paste0(patterndemFiles,"_")
   if (nchar(prefixTrainImg)>0)   prefixTrainImg <-  paste0(prefixTrainImg,"_")
   if (nchar(patternIdx)>0)   patternIdx <-  paste0(patternIdx,"_")
   if (nchar(suffixTrainGeom)>0)   suffixTrainGeom <-  paste0("_",suffixTrainGeom)
@@ -436,9 +436,9 @@ calc_ext<- function ( calculateBands    = FALSE,
     # create list of image files to be processed
     # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
 
-    #imageFiles <- list.files(pattern=paste0("^",prefixrunFN,"*","tif"), path=currentDataFolder, full.names=TRUE)
+    #imageFiles <- list.files(pattern=paste0("^",prefixRun,"*","tif"), path=currentDataFolder, full.names=TRUE)
     imageFiles <-Sys.glob(path=paste0(currentDataFolder,patternImgFiles,"*","tif"))
-    demFiles <- Sys.glob(path=paste0(currentDataFolder,prefixdemFN,"*","tif"))
+    demFiles <- Sys.glob(path=paste0(currentDataFolder,patterndemFiles,"*","tif"))
     counter<- max(length(demFiles),length(imageFiles))
     # stack the ortho images
     ### calculate indices and base stat export it to tif
@@ -463,10 +463,10 @@ calc_ext<- function ( calculateBands    = FALSE,
           bandNames <-append(bandNames,make_bandnames(dem = item))
         
       } 
-    }
+    #}
 
     # for all images do
-    for (i in 1:length(imageFiles)){
+    #for (i in 1:length(imageFiles)){
       if (rgbi){
       cat(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
       r<-raster::stack(imageFiles[i])
@@ -610,7 +610,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     }
 
     # save bandname list we need it only once
-    save(bandNames,file = paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
+    save(bandNames,file = paste0(currentIdxFolder,"bandNames_",prefixRun,".RData"))
 
 
     cat(catHead("\n     ---------------- finished preprocessing RGB data ------------------                \n"))
@@ -618,7 +618,7 @@ calc_ext<- function ( calculateBands    = FALSE,
   # ----- start extraction ---------------------------------------------------
   if (extractTrain){
     cat(catHead("\n     --------------- start extract processing ------------------                \n"))
-    load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
+    load(paste0(currentIdxFolder,"bandNames_",prefixRun,".RData"))
     # get image and geometry data for training purposes
     imageTrainFiles <- list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE)
     tmp  <- basename(list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE))
@@ -639,12 +639,12 @@ calc_ext<- function ( calculateBands    = FALSE,
                                         imageTrainFiles
 
     )
-    # create a new dataframe with prefixrunFN
-    assign(paste0(prefixrunFN,"_trainDF"), trainDF,envir = )
+    # create a new dataframe with prefixRun
+    assign(paste0(prefixRun,"_trainDF"), trainDF,envir = )
     # save it
-    saveRDS(eval(parse(text=paste0(prefixrunFN,"_trainDF"))), paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))
+    saveRDS(eval(parse(text=paste0(prefixRun,"_trainDF"))), paste0(currentIdxFolder,prefixRun,"_trainDF",".rds"))
     #read it into another name
-    #DF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))
+    #DF<-readRDS(paste0(currentIdxFolder,prefixRun,"_trainDF",".rds"))
     cat(catHead("\n     --------------- stop start extract processing ------------------                \n"))
     return(trainDF)
   }

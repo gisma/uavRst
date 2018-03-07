@@ -29,7 +29,7 @@ require(link2GI)
 
 # proj subfolders
 
-prefixrunFN       = "desert_dem"
+prefixRun       = "desert_dem"
 # define project folder
 projRootDir <- "/media/solo/7fbfcfdf-6276-48ad-ba94-82ba2f9993b9/drohne/chile"
 
@@ -69,25 +69,29 @@ if (startcalc_ext){
   # to restrict calculations uncomment and select by editng the param list
   res <- calc_ext(calculateBands    = TRUE,
                  extractTrain      = FALSE,
-                 prefixrunFN       = prefixrunFN,
+                 prefixRun       = "",
+                 patterndemFiles       = "dem",
+                 prefixTrainImg    = "",
+                 prefixTrainGeom   = "",
+                 suffixTrainImg    = "",
                  suffixTrainGeom   = "",
-                 prefixTrainGeom   = "index_",
-
-                 rgbi              = TRUE,
+                 patternIdx        = "index",
+                 patternImgFiles   = "eme",
+                 rgbi              = T,
                   indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"),
-                 RGBTrans          = TRUE,
+                 RGBTrans          = F,
                  colorSpaces       = c("CIELab","XYZ","YUV"),
                  channels          = c("red"),# "green", "blue"),
-                 hara              = TRUE,
+                 hara              = F,
                   haraType          = c("simple"), #,"advanced","higher"),
-                 stat              = TRUE,
-                 edge              = TRUE,
+                 stat              = F,
+                 edge              = F,
                   edgeType          = c("gradient","sobel","touzi"),
-                 morpho            = TRUE,
+                 morpho            = F,
 
                   morphoType        = c("dilate","erode","opening","closing"),
-                 pardem = TRUE,
-                 #demType = c("hillshade","slope", "aspect","TRI","TPI","Roughness"),
+                 pardem = T,
+                 demType = c("hillshade", "MTPI"),#"slope", "aspect","TRI","TPI","Roughness"),
                  kernel            = 3,
                  currentDataFolder = currentDataFolder,
                  currentIdxFolder  = currentIdxFolder,
@@ -109,9 +113,9 @@ if (startTrain){
 
   # load raw training dataframe
   if (!(exists)("trainDF"))
-    trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))
+    trainDF<-readRDS(paste0(currentIdxFolder,prefixRun,"_trainDF",".rds"))
   if (!(exists)("bnames"))
-    load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
+    load(paste0(currentIdxFolder,"bandNames_",prefixRun,".RData"))
   # add leading Title "ID" and tailing title "FN"
   names(trainDF)<-append("ID",append(bnames,"FN"))
 
@@ -144,7 +148,7 @@ if (startTrain){
   system("kill -9 $(pidof R)")
 
 
-  saveRDS(result, file = paste0(path_output,prefixrunFN,"_",pVal,"_model_final",".rds"))
+  saveRDS(result, file = paste0(path_output,prefixRun,"_",pVal,"_model_final",".rds"))
   model_final=result[[2]]
   perf <- model_final$pred[model_final$pred$mtry==model_final$bestTune$mtry,]
   # scores for categorical
@@ -162,7 +166,7 @@ if (startPredict){
   imageFiles <- list.files(pattern="[.]tif$", path=currentDataFolder, full.names=TRUE)
   bnameList <-  list.files(pattern="[.]RData$", path=currentIdxFolder, full.names=TRUE)
   load(bnameList)
-  load(file = paste0(path_output,prefixrunFN,"_model_final",".RData"))
+  load(file = paste0(path_output,prefixRun,"_model_final",".RData"))
 
   # start prediction
   predict_rgb(imageFiles=imageFiles,
