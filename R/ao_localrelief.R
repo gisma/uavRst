@@ -11,9 +11,9 @@ if (!isGeneric('local_relief')) {
 #'
 #'@author Chris Reudenbach
 #'
-#'@param lasDir  character. default is \code{NULL} path  to the laz/las file(s)
+#'@param lasDir  character. default is \code{NULL} path to the laz/las file(s)
 #'@param path_lastools character. character folder containing the Windows binary files of the lastools
-#'@param gisdbase_path character.  gisdbase will be linked or created depending on \code{gisdbase_exist}
+#'@param gisdbase_path character. gisdbase will be linked or created depending on \code{gisdbase_exist}
 #'@param GRASSlocation character. location will be linked or created depending on \code{gisdbase_exist}
 #'@param projFolder character. subfolders in gisdbase for R related processing
 #'@param grid_size numeric. resolution for raster operations
@@ -22,7 +22,7 @@ if (!isGeneric('local_relief')) {
 #'@param gisdbase_exist logical. switch if gisdbase is created or  linked only
 #'@param param_list  character. default is c("i","v", "n", "g","f","overwrite","quiet")
 #'                   i Save intermediate maps; \cr
-#'                   v Use bspline interpolation to construct the surface Uses v.surf.bspline cubic interpolation instead of r.fillnulls cubic interpolation\cr
+#'                   v Use bspline interpolation to construct the surface.Uses v.surf.bspline cubic interpolation instead of r.fillnulls cubic interpolation\cr
 #'                   n Invert colors in the color table \cr
 #'                   g Logarithmic scaling of the color table\cr
 #'                   f Do not perform histogram equalization on the color table
@@ -66,7 +66,7 @@ local_relief <- function(lasDir = NULL,
   lasmerge      <- paste(cmd,"lasmerge-cli.exe",sep = "/")
   lasinfo       <- paste(cmd,"/lasinfo-cli.exe",sep = "/")
 
-  # check las / laz files laz will be preferred
+  # check las / laz files; laz will be preferred
   lasFileNames <- list.files(pattern = "[.]las$", path = lasDir, full.names = TRUE)
   lazFileNames <- list.files(pattern = "[.]laz$", path = lasDir, full.names = TRUE)
   if (length(lazFileNames) > 0 ) {
@@ -118,7 +118,7 @@ local_relief <- function(lasDir = NULL,
   else
     link2GI::linkGRASS7(gisdbase = gisdbase_path, location = GRASSlocation, spatial_params = sp_param,resolution = grid_size)
 
-  # late raw DSM using r.in.lidar
+  # TOFIX  (latest?) late raw DSM using r.in.lidar
   cat(":: calculate DSM...\n")
   ret <- rgrass7::execGRASS("r.in.lidar",
                             flags  = c("overwrite","quiet","o"),
