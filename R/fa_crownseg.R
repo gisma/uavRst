@@ -2,12 +2,12 @@
 #'@title seeded region growing tree crown segmentation based on 'SAGA GIS'
 #'
 #'@description
-#' Tree segmentation based on a CHM, basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. After the segementation itself the results are hole filled and optionally filtered by a majority filter.
+#' Tree segmentation based on a CHM, basically returns a vector data set with the tree crown geometries and a bunch of corresponding indices. After the segementation itself, the results are hole filled and optionally, it can be filtered by a majority filter.
 #'
 #'@author Chris Reudenbach
 #'
 #'@param treepos  raster* object
-#'@param minTreeAlt  numeric. The minimum height value for a \code{chm} pixel to be considered as part of a crown segment.
+#'@param minTreeAlt  numeric. The minimum height value for a \code{chm} pixel is to be considered as part of a crown segment.
 #' All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 #' height of \code{treepos}.
 #'@param minTreeAltParam character. code for the percentile that is used as tree height treshold. It is build using the key letters \code{chmQ} and adding the percentile i.e. "10". Default is \code{chmQ20}
@@ -20,7 +20,7 @@
 #'@param thVarFeature   numeric. Variance in Position Space  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
 #'@param thSimilarity   mumeric. Similarity Threshold see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
 #'@param seed_params    character. a list of raster data that is used for the segmentation. The canopy height model \code{c("chm")} is mandantory. see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
-#'@param giLinks        list. of GI tools cli pathes
+#'@param giLinks        list. of GI tools cli paths
 #'@param majority_radius numeric. kernel size for the majority filter out spurious pixel
 #'@export
 #'@examples
@@ -54,7 +54,7 @@ chmseg_uav <- function(treepos = NULL,
 
 
   cat("::: run main segmentation...\n")
-  # create correct param list s
+  # create correct param lists
   #seed_params<-c("HI","GLI")
   if (is.null(giLinks)){
     giLinks <- get_gi()
@@ -84,7 +84,7 @@ chmseg_uav <- function(treepos = NULL,
                                          THRESHOLD = thSimilarity),
                             intern = TRUE)
 
-  # fill holes inside the crowns (simple approach)
+  # fill the holes inside the crowns (simple approach)
   # TODO better segmentation
   if (majority_radius > 0){
     outname<- "sieve_pre_tree_crowns.sdat"
@@ -141,7 +141,7 @@ chmseg_uav <- function(treepos = NULL,
 
 
 
-#' Fast and straightforward watershed segmentation based on 'ForestTools'
+#' #TOFIX @titel Fast and straightforward watershed segmentation based on 'ForestTools'
 #' @description  'ForestTools' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Very fast algorithm based on the imagr watershed algorithm.
 #' Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools}{'ForestTools'}
 #' @param treepos \code{SpatialPointsDataFrame}. The point locations of treetops. The function will generally produce a
@@ -152,7 +152,7 @@ chmseg_uav <- function(treepos = NULL,
 #' All \code{chm} pixels beneath this value will be masked out. Note that this value should be lower than the minimum
 #' height of \code{treepos}.
 #' @param format character. Format of the function's output. Can be set to either 'raster' or 'polygons'.
-#' @param verbose quiet FALSE
+#' @param verbose to be quiet FALSE 
 #'
 #' @import ForestTools
 #'
@@ -198,7 +198,7 @@ chmseg_FT <- function(treepos = NULL,
   return(crownsFT)
 }
 
-#' Watershed segmentation based on 'rLiDAR'
+#' #TOFIX @titel Watershed segmentation based on 'rLiDAR'
 #' @description  'rLiDAR' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Generic segmentation algorithm
 #' Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
 #'
@@ -250,7 +250,7 @@ chmseg_RL <- function(treepos = NULL,
 }
 
 
-#' Decision tree method to grow individual tree crowns based on 'itcSegment'
+#' #TOFIX @titel Decision tree method to grow individual tree crowns based on 'itcSegment'
 #' @description Segmentation of individual tree crowns as polygons based on a LiDAR derived canopy height model.
 #' Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}.
 #'  M. Dalponte, F. Reyes, K. Kandare, and D. Gianelle,

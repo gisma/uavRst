@@ -98,7 +98,7 @@ r_in_lidar<- function(input=NULL,
   } else if (!is.null(class_filter)) {
 
 
-    # (step 0) during r.in.lidar check if an error occure
+    # (step 0) during r.in.lidar check if an error occurs
     m<-try(rgrass7::execGRASS("r.in.lidar",
                               input = input,
                               output = output,
@@ -166,7 +166,7 @@ r_in_lidar<- function(input=NULL,
     # for all not NULL arguments do
     for (i in 1:length(arguments)) {
       if (!is.null(arguments[[i]])) {
-        # for some arguments wr need quotation
+        # for some arguments wr needs quotation
         if (argumentsKey[[i]] %in% charargs)
           command<-paste0(command,argumentsKey[[i]],"=",shQuote(arguments[[i]]),",")
         else

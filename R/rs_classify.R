@@ -4,10 +4,10 @@ if (!isGeneric('get_traindata')) {
 }
 
 #'@name get_traindata
-#'@title extracts training data from a raster stack using vector data as a mask 
+#'@title Extracts training data from a raster stack using vector data as a mask. 
 #'
 #'@description
-#' extracts training data from a raster stack and returns a dataframe containing for each pixel all values
+#' Extracts training data from a raster stack and returns a dataframe containing for each pixel all values.
 #'
 #'@author Chris Reudenbach
 #'
@@ -58,16 +58,15 @@ get_traindata<-function(rasterStack  = NULL,
 }
 
 #' counts pixel values according to their classes
-#' @description counts pixel values according to their classes
 #'
 #' @param ids numeric. the ids used for the training 
 #' @param position sp. spatialpoint object containing the centre target positions  
 #' @param  imageFiles raster* image/classification file 
 #' @param out_prefix character. out prefix string
-#' @param ext character extension
+#' @param ext character. extension
 #' @param path   character. output path
-#' @param dropChars numeric number of characters that should be dropped at the end of the filename
-#' @param buffersize numeric radius in meters around position 
+#' @param dropChars numeric. number of characters that should be dropped at the end of the filename
+#' @param buffersize numeric. radius in meters around position 
 #'
 #' @export get_counts
 #' @examples
@@ -112,7 +111,7 @@ get_counts<- function(ids=c(1,2),
 
 #' classify images using raster predict
 #'
-#' @param imageFiles raster*. imagestack for classification purposes must contain the required bands as needed by the model
+#' @param imageFiles raster*. imagestack for classification purposes must contain the required bands as needed by the model.
 #' @param model model. classification model
 #' @param  in_prefix character. in frefix  string
 #' @param out_prefix character. out prefix string
@@ -148,6 +147,7 @@ predict_rgb <- function(imageFiles=NULL,
     #TODO rasterstack
     fn<-basename(imageFiles[i])
     fnOut <- paste0(po,out_prefix,fn)
+
     img2predict<-raster::stack(imageFiles[i])
     names(img2predict)<-bandNames
     predictImg<- raster::predict(img2predict,
@@ -158,30 +158,30 @@ predict_rgb <- function(imageFiles=NULL,
   parallel::stopCluster(cl)
 }
 
-#' forward feature selection based random forest model training
-#' @description ffs_train is a wrapper function for a simple use of the forwatrd feature sselection approach
+#' #TOFIX @titel Forward feature selection based random forest model training
+#' @description ffs_train is a wrapper function for a simple use of the forward feature selection approach
 #' of training random forest classification models. This validation is particulary suitable for
 #' leave-location-out cross validations where variable selection
 #' MUST be based on the performance of the model on the hold out station.
 #' See \href{https://www.sciencedirect.com/science/article/pii/S1364815217310976}{Meyer et al. (2018)}
 #' for further details.
 #' This is in fact the case while using time space variable vegetation patterns for classification purposes.
-#' For the uav based RGB/NIR imagery it provides an optimized preconfiguration for the classification goals.
+#' For the UAV based RGB/NIR imagery, it provides an optimized preconfiguration for the classification goals.
 #'
 #' @param trainingDF    dataframe. containing training data
 #' @param runtest       logical. default is false, if set a external validation will be performed
 #' @param predictors    character. vector of predictor names as given by the header of the training data table
 #' @param response      character. name of response variable as given by the header of the training data table
-#' @param spaceVar      character. name of the spcetime splitting vatiable as given by the header of the training data table
+#' @param spaceVar      character. name of the spacetime splitting vatiable as given by the header of the training data table
 #' @param names         character. all names of the dataframe header
-#' @param noLoc         numeric. number of locations to leave out usually nuber of dicrete trainings locations/images
+#' @param noLoc         numeric. number of locations to leave out usually number of discrete trainings locations/images
 #' @param pVal          numeric. used part of the training data  default is \code{ 0.5}
 #' @param prefin        character. name pattern used for model default is \code{"final_"}
 #' @param preffs        character. name pattern used for ffs default is \code{"ffs_"}
 #' @param modelSaveName character. name pattern used for saving the model default is \code{"model.RData" }
 #' @param seed          numeric. number for seeding
 #' @param noClu         numeric. number of cluster to be used
-#' @param sumFunction   \code{character}. function to summarize default is "twoClassSummary"
+#' @param sumFunction   character. function to summarize default is "twoClassSummary"
 #' @export ffs_train
 #' @examples
 #' \dontrun{
@@ -243,7 +243,7 @@ ffs_train<-function(   trainingDF   = NULL,
                                 returnResamp    = "all",
                                 classProbs      = FALSE)
 
-  # make it paralel
+  # make it parallel
   cl <- parallel::makeCluster(noClu)
   doParallel::registerDoParallel(cl)
   # run forward feature selection
@@ -274,8 +274,8 @@ ffs_train<-function(   trainingDF   = NULL,
 
 
 
-#' Convenient function to preprocess synthetic raster bands from a given RGB and optionally
-#' extract the raster values on base of vector data for training purposes
+#' #TOFIX @titel Convenient function to preprocess synthetic raster bands from a given RGB and optionally
+#' extract the raster values on base of vector data for training purposes.
 #' @description
 #' The calc_ext function covers step 1 of the  usecaseRGBClassify workflow for a random forest based classification of visible imagery.
 
@@ -290,6 +290,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' (04) prediction startPredict=TRUE\cr\cr
 #'
 
+
 #' @param calculateBands    logical. switch for set on calculation of syntheic bands and indices default = TRUE
 #' @param extractTrain      logical. switch for set on extract training data according to training geometries default = TRUE
 #' @param prefixrunFN       character. prefix of current run default = "train"
@@ -300,28 +301,28 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param suffixTrainImg    character. suffix of image files index_2017_05_11_RGB_DEFS18_08_Orthoimage.envi
 #' @param suffixTrainGeom   character. of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"
 #' @param channels          character. channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")
-#' @param hara              logical. switch for using  HaralickTextureExtraction default = TRUE. \cr
-#' @param haraType          character. hara options default is c("simple"), other  options are "advanced"  "higher" "all". NOTE:  "higher" takes a LOT of time
+#' @param hara              logical. switch for using  HaralickTextureExtraction, default = TRUE. \cr
+#' @param haraType          character. hara options, default is c("simple"), other  options are "advanced"  "higher" "all". NOTE:  "higher" takes a LOT of time
 #' @param stat              logical. switch for using statistic default = TRUE the stas are mean,variance, curtosis, skewness
-#' @param pardem            logical. switch for calculating dem parameter default = FALSE
+#' @param pardem            logical. switch for calculating dem parameter, default = FALSE
 #' @param demType           character. ("hillshade","slope", "aspect","TRI","TPI","Roughness")
 #' @param edge              logical. switch for using edge filtering default = TRUE
-#' @param edgeType          character. edge options default is c("gradient","sobel","touzi") all options are c("gradient","sobel","touzi")
+#' @param edgeType          character. edge options, default is c("gradient","sobel","touzi") all options are c("gradient","sobel","touzi")
 #' @param morpho            logical. switch for using morphological filtering default = TRUE
-#' @param morphoType        character. morphological options default is c("dilate","erode","opening","closing") all options are ("dilate","erode","opening","closing")
+#' @param morphoType        character. morphological options, default is c("dilate","erode","opening","closing") all options are ("dilate","erode","opening","closing")
 #' @param rgbi              logical. switch for using rgbi index calcualtions default = TRUE
-#' @param indices           character. RGB indices default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP")
+#' @param indices           character. RGB indices, default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP")
 #' @param RGBTrans          logical. switch for using color space transforming default = TRUE
 #' @param colorSpaces       character.  RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
-#' @param kernel            numeric. size of kernel for filtering and statistics default is  3
+#' @param kernel            numeric. size of kernel for filtering and statistics, default is  3
 #' @param morpho_method  numeric. saga morphometric method 
-#' @param min_scale  numeric. in scale for multi scale TPI
+#' @param min_scale  mnumeric. in scale for multi scale TPI
 #' @param max_scale  numeric. max scale for multi scale TPI
 #' @param num_scale  numeric. number of scale for multi scale TPI
 #' @param currentDataFolder  NULL folder to image (and shape) data
 #' @param currentIdxFolder  NULL folder for saving the results
-#' @param cleanTiffs  logical. TRUE logical switch for deleting the calculated tifs default is TRUE
-#' @param giLinks     list. GI tools cli pathes
+#' @param cleanTiffs  logical. TRUE logical switch for deleting the calculated tifs, default is TRUE
+#' @param giLinks     list. GI tools cli paths
 #' @examples
 #' \dontrun{
 #' require(uavRst)
@@ -432,6 +433,7 @@ calc_ext<- function ( calculateBands    = FALSE,
 
     # create list of image files to be processed
     # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
+
     #imageFiles <- list.files(pattern=paste0("^",prefixrunFN,"*","tif"), path=currentDataFolder, full.names=TRUE)
     imageFiles <-Sys.glob(path=paste0(currentDataFolder,prefixrunFN,"*","tif"))
     demFiles <- Sys.glob(path=paste0(currentDataFolder,prefixdemFN,"*","tif"))
@@ -445,6 +447,7 @@ calc_ext<- function ( calculateBands    = FALSE,
       for (i in 1:length(counter)){
         # if calc pardem 
         if (pardem){
+
         #cat(catNote(":::: processing dem... ",demType,"\n"))
         morpho_dem(dem = demFiles[i], 
                    item = demType,
@@ -458,10 +461,10 @@ calc_ext<- function ( calculateBands    = FALSE,
           bandNames <-append(bandNames,make_bandnames(dem = item))
         
       } 
-    #}
+    }
 
     # for all images do
-#    for (i in 1:length(imageFiles)){
+    for (i in 1:length(imageFiles)){
       if (rgbi){
       cat(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
       r<-raster::stack(imageFiles[i])

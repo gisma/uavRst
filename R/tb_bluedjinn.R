@@ -4,9 +4,10 @@ if (!isGeneric('read_gpx ')) {
     standardGeneric('read_gpx '))
 }
 
-#' Read GPX file
-#'
-#' Read a GPX file. By default, it reads all possible GPX layers, and only returns shapes for layers that have any features.
+#' #TOFIX @name Read GPX file
+#'  #@title
+#'  #@author
+#' #@description Read a GPX file. By default, it reads all possible GPX layers, and only returns shapes for layers that have any features.
 #' if the layer has any features a sp object is returned.
 #' @param file a GPX filename (including directory)
 #' @param layers vector of GPX layers. Possible options are \code{"waypoints"}, \code{"tracks"}, \code{"routes"}, \code{"track_points"}, \code{"route_points"}. By dedault, all those layers are read.
@@ -144,8 +145,8 @@ h_comp_ll_proj4 <- function(x) {
 }
 
 
-#
-#
+#  #TOFIX @name  @title
+#  #@author Chris Reudenbach
 #' create an spatiallineobject from 2 points
 #' @description
 #' create an spatiallineobject from 2 points, optional export as shapefile
@@ -168,9 +169,12 @@ sp_line <- function(p1,
   }
   return(line)
 }
+#' #  #TOFIX @name  @title
+#   
 #' create an spatialpointobject from 1 points
 #' @description
 #' create an spatialpointobject from 1 points, optional export as shapefile
+#' #@author Chris Reudenbach
 #' @param lat lat of first point
 #' @param lon lon of first point
 #' @param ID name of point
@@ -193,6 +197,10 @@ sp_point <- function(lon,
   return(point)
 }
 
+#' 
+#' 
+#' #@author Chris Reudenbach
+#'  #TOFIX @name  @title
 #' applies a line to a raster and returns the position of the maximum value
 #' @description
 #'  applies a line to a raster and returns the position of the maximum value
@@ -212,12 +220,14 @@ line_maxpos <- function(dem,line){
   return(maxPos)
 }
 
-#' extract for all polygons the position of the maximum value of the applied raster(s)
+#'#@author Chris Reudenbach
+#'  #TOFIX @name  @title
+#'  extract for all polygons the position of the maximum value of the applied raster(s)
 #' @description
 #' extract for all polygons the position of the maximum value
 #' @param x path and name of a GDAL raster file
 #' @param lN layer name of shape file
-#' @param poly_split split polygon in single file default is TRUE
+#' @param poly_split split polygon in single file, default is TRUE
 #' extract for all polygons the position of the maximum value
 #' @export poly_maxpos
 #'
@@ -280,7 +290,7 @@ poly_maxpos <- function(x,lN, poly_split=TRUE){
     #maskx$crop(c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
     #chmx$crop(c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
 
-    # rastrize mask
+    # rasterize mask
     maskx$rasterize(shp,field = "VALUE",band = 1)
 
     # re-convert to raster format
@@ -318,11 +328,12 @@ poly_maxpos <- function(x,lN, poly_split=TRUE){
 }
 
 
-#' converts GRASS raster to geotiff
-#' @description converts GRASS raster to geotiff
+#' #@author Chris Reudenbach
+#'  #TOFIX @name  @title converts GRASS raster to Geotiff
+#' @description converts GRASS raster to Geotiff
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
-#' @param returnRaster return GRASS raster as an R raster object default = FALSE
+#' @param returnRaster return GRASS raster as an R raster object, default = FALSE
 #' @keywords internal
 
 
@@ -339,7 +350,8 @@ grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
 }
 
 
-#' converts OGR to GRASS vector
+#' #@author Chris Reudenbach
+#'  #TOFIX @name  @titleconverts OGR to GRASS vector
 #' @description converts OGR to GRASS vector
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
@@ -354,7 +366,8 @@ shape2grass <- function(runDir = NULL, layer = NULL) {
   )
 }
 
-#' converts GRASS vector to shape file
+#' #@author Chris Reudenbach
+#'  #TOFIX @name  @title  converts GRASS vector to shape file
 #' @description converts GRASS vector to shape file
 #' @param runDir path of working directory
 #' @param layer name GRASS raster
@@ -391,10 +404,11 @@ funWhichmax <- function(mask,value) {
 }
 
 
-#'calculate decriptive stats of raster values of underlying a polygon
+#' 
+#'  #TOFIX @name  @title calculate decriptive stats of raster values of underlying a polygon
 #'
 #'@description
-#' calculate statitiscs of polygon based raster extraction. returns a spatialpolygon dataframe containing decriptive statistics
+#' calculate statitiscs of polygon based raster extraction.Returns a spatialpolygon dataframe containing decriptive statistics
 #'
 #'@author Chris Reudenbach
 #'
@@ -488,7 +502,8 @@ poly_stat <- function(x = NULL,
   return(stat)
 }
 
-#' creates all link2GI links
+#' #@author Chris Reudenbach
+#'  #TOFIX @name  @titlecreates all link2GI links
 #' @description brute force search call of all link2GI link functions
 #' @param links character. links
 #' @param linkItems character. list of c("saga","grass7","otb","gdal")
@@ -641,7 +656,7 @@ getCrayon<-function(){
 #' @param morpho character.  morpho codes
 #' @param edge character.  edge codes
 #' @param RGBtrans character.  RGBtrans codes
-#' @param dem charater dem codes
+#' @param dem charater. dem codes
 #' @keywords internal
 #' 
 #' @export make_bandnames
