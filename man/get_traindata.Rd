@@ -4,14 +4,15 @@
 \alias{get_traindata}
 \title{extracts training data from a raster stack using vector data as a mask}
 \usage{
-get_traindata(rasterStack = NULL, trainPlots = NULL, bnames = NULL, imgFN)
+get_traindata(rasterStack = NULL, trainPlots = NULL, bandNames = NULL,
+  imgFN)
 }
 \arguments{
-\item{rasterStack}{raster*. default is \code{NULL} rasterstack containing all image data}
+\item{rasterStack}{an object of rasterstack*. containing image data to make prediction on}
 
-\item{trainPlots}{sp*. default is \code{NULL}  sp object providing training geometries}
+\item{trainPlots}{an object of SpatialPolygonDataFrame*. providing the training areas}
 
-\item{bnames}{character. names of the bands}
+\item{bandNames}{character. names of the bands}
 
 \item{imgFN}{character.  default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file}
 }

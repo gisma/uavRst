@@ -410,19 +410,19 @@ setMethod("otbtex_hara",
                     }
                     if (return_raster){
                       if(txt == "simple"){
-                        bnames <- c("Energy", "Entropy", "Correlation",
+                        bandNames <- c("Energy", "Entropy", "Correlation",
                                     "Inverse_Difference_Moment", "Inertia",
                                     "Cluster_Shade", "Cluster_Prominence",
                                     "Haralick_Correlation")
                       } else if(txt == "advanced"){
-                        bnames <- c("Mean", "Variance", "Dissimilarity",
+                        bandNames <- c("Mean", "Variance", "Dissimilarity",
                                     "Sum_Average",
                                     "Sum_Variance", "Sum_Entropy",
                                     "Difference_of_Variances",
                                     "Difference_of_Entropies",
                                     "IC1", "IC2")
                       } else if(txt == "higher"){
-                        bnames <- c("Short_Run_Emphasis",
+                        bandNames <- c("Short_Run_Emphasis",
                                     "Long_Run_Emphasis",
                                     "Grey-Level_Nonuniformity",
                                     "Run_Length_Nonuniformity",
@@ -436,7 +436,7 @@ setMethod("otbtex_hara",
                       }
                       if (verbose) print("create: ", path_outfile)
                       ret_textures <- raster::readAll(raster::stack(path_outfile))
-                      names(ret_textures) <- paste0(bnames, "-",
+                      names(ret_textures) <- paste0(bandNames, "-",
                                                     "b", band,
                                                     "r", xyrad[1],
                                                     "o", xyoff[1],

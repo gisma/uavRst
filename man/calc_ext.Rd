@@ -6,21 +6,22 @@
 extract the raster values on base of vector data for training purposes}
 \usage{
 calc_ext(calculateBands = FALSE, extractTrain = TRUE,
-  prefixrunFN = "train_", prefixdemFN = "dem_",
-  suffixTrainGeom = "TrainingArea", prefixTrainGeom = "index_",
-  channels = c("red", "green", "blue"), hara = TRUE,
-  haraType = c("simple", "advanced", "higher"), stat = TRUE, edge = TRUE,
-  edgeType = c("gradient", "sobel", "touzi"), morpho = TRUE,
-  morphoType = c("dilate", "erode", "opening", "closing"), rgbi = TRUE,
-  indices = c("VVI", "VARI", "NDTI", "RI", "SCI", "BI", "SI", "HI", "TGI",
-  "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), RGBTrans = TRUE,
-  colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ",
-  "YUV"), pardem = TRUE, demType = c("hillshade", "slope", "aspect", "TRI",
-  "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", "C_TANG",
-  "C_LONG", "C_CROS", "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI"),
-  morpho_method = 6, min_scale = 1, max_scale = 8, num_scale = 2,
-  kernel = 3, currentDataFolder = NULL, currentIdxFolder = NULL,
-  cleanTiffs = TRUE, giLinks = NULL)
+  prefixrunFN = "train", prefixdemFN = "dem", prefixTrainImg = "",
+  suffixTrainImg = "Orthoimage", suffixTrainGeom = "TrainingArea",
+  prefixTrainGeom = "index", patternImgFiles = "", channels = c("red",
+  "green", "blue"), hara = TRUE, haraType = c("simple", "advanced",
+  "higher"), stat = TRUE, edge = TRUE, edgeType = c("gradient", "sobel",
+  "touzi"), morpho = TRUE, morphoType = c("dilate", "erode", "opening",
+  "closing"), rgbi = TRUE, indices = c("VVI", "VARI", "NDTI", "RI", "SCI",
+  "BI", "SI", "HI", "TGI", "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT",
+  "SHP"), RGBTrans = TRUE, colorSpaces = c("CIELab", "CMY", "Gray", "HCL",
+  "HSB", "HSI", "Log", "XYZ", "YUV"), pardem = TRUE,
+  demType = c("hillshade", "slope", "aspect", "TRI", "TPI", "Roughness",
+  "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", "C_TANG", "C_LONG", "C_CROS",
+  "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI"), morpho_method = 6,
+  min_scale = 1, max_scale = 8, num_scale = 2, kernel = 3,
+  currentDataFolder = NULL, currentIdxFolder = NULL, cleanTiffs = TRUE,
+  giLinks = NULL)
 }
 \arguments{
 \item{calculateBands}{logical. switch for set on calculation of syntheic bands and indices default = TRUE}
@@ -29,11 +30,17 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE,
 
 \item{prefixrunFN}{character. prefix of current run default = "train"}
 
-\item{prefixdemFN}{character. prefix of current DEM default = "dem_"}
+\item{prefixdemFN}{character. mandantory if DEM data is processes. prefix of current DEM default = "dem"}
+
+\item{prefixTrainImg}{character. prefix of image files index_2017_05_11_RGB_DEFS18_08_Orthoimage.envi}
+
+\item{suffixTrainImg}{character. suffix of image files index_2017_05_11_RGB_DEFS18_08_Orthoimage.envi}
 
 \item{suffixTrainGeom}{character. of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"}
 
-\item{prefixTrainGeom}{character. of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index_"}
+\item{prefixTrainGeom}{character. of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index"}
+
+\item{patternImgFiles}{character. mandantory string that exist in ech imagefile to be processes}
 
 \item{channels}{character. channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")}
 

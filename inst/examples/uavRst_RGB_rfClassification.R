@@ -28,9 +28,10 @@ require(mapview)
 require(link2GI)
 
 # proj subfolders
-prefixrunFN       = "traddel"
+prefixrunFN       = NULL
+prefixdemFN       = "dem"
 # define project folder
-projRootDir <- "~/temp7/GRASS7"
+projRootDir <- "~/test1/uavrst"
 
 paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/training/","data/training/idx/",
@@ -46,7 +47,7 @@ giLinks<-uavRst::get_gi()
 
 # set processing switches
 startcalc_ext  = TRUE
-startTrain   = FALSE
+startTrain   = TRUE
 startPredict = FALSE
 
 # set current data and results path default is training
@@ -63,25 +64,27 @@ if (startcalc_ext){
   # start calculation of synthetic bands and extraction of the training data
   # note otions are commented due to the fact that the maximum is default
   # to restrict calculations uncomment and select by editng the param list
-  res <- calc_ext(calculateBands    = TRUE,
-                 extractTrain      = FALSE,
+  res <- calc_ext(calculateBands    = F,
+                 extractTrain      = T,
                  prefixrunFN       = prefixrunFN,
-                 suffixTrainGeom   = "",
-                 prefixTrainGeom   = "index_",
-                 rgbi              = F,
+                 prefixdemFN       = prefixdemFN,
+                 suffixTrainImg    = "OrthoMosaic" ,
+                 suffixTrainGeom   = "TrainingArea",
+                 prefixTrainGeom   = "index",
+                 rgbi              = T,
                   indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"),
-                 RGBTrans          = F,
-                 colorSpaces       = c("CIELab","XYZ","YUV"),
+                 RGBTrans          = T,
+                 colorSpaces       = c("CIELab"),#"XYZ","YUV"),
                  channels          = c("red"),# "green", "blue"),
                  hara              = F,
-                  haraType          = c("simple"), #,"advanced","higher"),
+                  #haraType          = c("simple"), #,"advanced","higher"),
                  stat              = F,
                  edge              = F,
-                  edgeType          = c("gradient","sobel","touzi"),
+                  edgeType          = c("gradient"),#"sobel","touzi"),
                  morpho            = F,
-                  morphoType        = c("dilate","erode","opening","closing"),
-                 pardem = TRUE,
-                 #demType = c("hillshade","slope", "aspect","TRI","TPI","Roughness"),
+                  morphoType        = c("dilate"),#"erode","opening","closing"),
+                 pardem = FALSE,
+                 demType = c("hillshade"),
                  kernel            = 3,
                  currentDataFolder = currentDataFolder,
                  currentIdxFolder  = currentIdxFolder,
@@ -102,10 +105,10 @@ if (startTrain){
   # load raw training dataframe
   if (!(exists)("trainDF"))
     trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))
-  if (!(exists)("bnames"))
+  if (!(exists)("bandNames"))
     load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
   # add leading Title "ID" and tailing title "FN"
-  names(trainDF)<-append("ID",append(bnames,"FN"))
+  names(trainDF)<-append("ID",append(bandNames,"FN"))
 
   # manipulate the data frame to you rneeds by dropping predictor variables
   #keepsGreen <-c("ID","red","green","blue","VVI","VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI","GLAI","FN")
@@ -161,7 +164,7 @@ if (startPredict){
              model = model_final,
              in_prefix = "index_",
              out_prefix = "classified_",
-             bandNames = bnames)
+             bandNames = bandNames)
 
   cat(":: ...finsihed \n")
 
