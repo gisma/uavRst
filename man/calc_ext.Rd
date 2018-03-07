@@ -6,39 +6,40 @@
 extract the raster values on base of vector data for training purposes.}
 \usage{
 calc_ext(calculateBands = FALSE, extractTrain = TRUE,
-  prefixrunFN = "train", prefixdemFN = "dem", prefixTrainImg = "",
-  suffixTrainImg = "Orthoimage", suffixTrainGeom = "TrainingArea",
-  prefixTrainGeom = "index", patternImgFiles = "", channels = c("red",
-  "green", "blue"), hara = TRUE, haraType = c("simple", "advanced",
-  "higher"), stat = TRUE, edge = TRUE, edgeType = c("gradient", "sobel",
-  "touzi"), morpho = TRUE, morphoType = c("dilate", "erode", "opening",
-  "closing"), rgbi = TRUE, indices = c("VVI", "VARI", "NDTI", "RI", "SCI",
-  "BI", "SI", "HI", "TGI", "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT",
-  "SHP"), RGBTrans = TRUE, colorSpaces = c("CIELab", "CMY", "Gray", "HCL",
-  "HSB", "HSI", "Log", "XYZ", "YUV"), pardem = TRUE,
-  demType = c("hillshade", "slope", "aspect", "TRI", "TPI", "Roughness",
-  "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", "C_TANG", "C_LONG", "C_CROS",
-  "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI"), morpho_method = 6,
-  min_scale = 1, max_scale = 8, num_scale = 2, kernel = 3,
-  currentDataFolder = NULL, currentIdxFolder = NULL, cleanTiffs = TRUE,
-  giLinks = NULL)
+  prefixrunFN = "temp", prefixdemFN = "dem", prefixTrainImg = "",
+  prefixTrainGeom = "", suffixTrainImg = "", suffixTrainGeom = "",
+  patternIdx = "index", patternImgFiles = "", channels = c("red", "green",
+  "blue"), hara = TRUE, haraType = c("simple", "advanced", "higher"),
+  stat = TRUE, edge = TRUE, edgeType = c("gradient", "sobel", "touzi"),
+  morpho = TRUE, morphoType = c("dilate", "erode", "opening", "closing"),
+  rgbi = TRUE, indices = c("VVI", "VARI", "NDTI", "RI", "SCI", "BI", "SI",
+  "HI", "TGI", "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"),
+  RGBTrans = TRUE, colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB",
+  "HSI", "Log", "XYZ", "YUV"), pardem = TRUE, demType = c("hillshade",
+  "slope", "aspect", "TRI", "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE",
+  "C_PROF", "C_PLAN", "C_TANG", "C_LONG", "C_CROS", "C_MINI", "C_MAXI",
+  "C_TOTA", "C_ROTO", "MTPI"), morpho_method = 6, min_scale = 1,
+  max_scale = 8, num_scale = 2, kernel = 3, currentDataFolder = NULL,
+  currentIdxFolder = NULL, cleanTiffs = TRUE, giLinks = NULL)
 }
 \arguments{
 \item{calculateBands}{logical. switch for set on calculation of syntheic bands and indices default = TRUE}
 
 \item{extractTrain}{logical. switch for set on extract training data according to training geometries default = TRUE}
 
-\item{prefixrunFN}{character. prefix of current run default = "train"}
+\item{prefixrunFN}{character. general prefix of all result files of the current run default = "tmp"}
 
 \item{prefixdemFN}{character. mandantory if DEM data is processes. prefix of current DEM default = "dem"}
 
-\item{prefixTrainImg}{character. prefix of image files index_2017_05_11_RGB_DEFS18_08_Orthoimage.envi}
+\item{prefixTrainImg}{character. potential string of characters that is used in the beginning of a shape file prefixTrainImg_SHAPEFILENAME_suffixTrainImg}
 
-\item{suffixTrainImg}{character. suffix of image files index_2017_05_11_RGB_DEFS18_08_Orthoimage.envi}
+\item{prefixTrainGeom}{character. potential string of characters that is used in the beginning of a shape file prefixTrainGeom_SHAPEFILENAME_suffixTrainGeom}
 
-\item{suffixTrainGeom}{character. of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"}
+\item{suffixTrainImg}{character. potential string of characters that is used in the beginning of a shape file prefixTrainImg_SHAPEFILENAME_suffixTrainImg}
 
-\item{prefixTrainGeom}{character. of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index"}
+\item{suffixTrainGeom}{character. potential string of characters that is used in the beginning of a shape file prefixTrainGeom_SHAPEFILENAME_suffixTrainGeom}
+
+\item{patternIdx}{character. code string that will concatenated to the filename to identify the index file}
 
 \item{patternImgFiles}{character. mandantory string that exist in ech imagefile to be processes}
 
@@ -121,7 +122,7 @@ res <- calc_ext(calculateBands    = TRUE,
                extractTrain      = TRUE,
                prefixrunFN       = "traddel",
                suffixTrainGeom   = "TrainingArea",
-               prefixTrainGeom   = "index_",
+               patternIdx   = "index",
                indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") ,
                channels          = c("red", "green", "blue"),
                hara              = FALSE,

@@ -68,11 +68,13 @@ if (startcalc_ext){
   # note otions are commented due to the fact that the maximum is default
   # to restrict calculations uncomment and select by editng the param list
   res <- calc_ext(calculateBands    = TRUE,
-                 extractTrain      = FALSE,
-                 prefixrunFN       = prefixrunFN,
+                 extractTrain      = TRUE,
                  suffixTrainGeom   = "",
-                 prefixTrainGeom   = "index_",
-
+                 patternIdx   = "index",
+                 patternImgFiles   = "eme",
+                 prefixTrainImg    = "",
+                 prefixrunFN       = prefixrunFN,
+                 prefixdemFN       = prefixdemFN,
                  rgbi              = TRUE,
                   indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"),
                  RGBTrans          = TRUE,
@@ -87,7 +89,7 @@ if (startcalc_ext){
 
                   morphoType        = c("dilate","erode","opening","closing"),
                  pardem = TRUE,
-                 #demType = c("hillshade","slope", "aspect","TRI","TPI","Roughness"),
+                 demType = c("hillshade"),#"slope", "aspect","TRI","TPI","Roughness"),
                  kernel            = 3,
                  currentDataFolder = currentDataFolder,
                  currentIdxFolder  = currentIdxFolder,
