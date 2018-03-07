@@ -1,8 +1,9 @@
-#' Digitize and save vector features within your rstudio session (or any browser) 
-#'
+#' #TOFIX @name Digitize and save vector features within your rstudio session (or any browser) 
+#' #@title 
+#' #@author Chris Reudenbach
 #' @description  digitize is based on the leaflet draw plugin. It provides a bunch of leaflet maps as base layers for digitizing vector features. 
 #'
-#' @note Yu can either save the digitized object to a json file or you ma grab the json string via the clipboard
+#' @note You can either save the digitized object to a .json file or you may grab the .json string via the clipboard
 #' @param mapCenter c(lat,lon) central point of the leaflet map
 #' @param zoom initial zoom level
 #' @param line enable the draw tool line tool
@@ -13,9 +14,9 @@
 #' @param remove enable/disable the remove feature of the draw tool
 #' @param position place to put the toolbar (topright, topleft, bottomright, bottomleft)
 
-#' @param maplayer string as provided by leaflet-provider 
-#' @param preset character defaut is "NULL" full draw version, "uav" for flightarea digitizing, "ext" for rectangles
-#' @param locPreset character default is "muf" for Marburg University Forest, others are "tra" Traddelstein, "hag" Hagenstein, "baw" Bayerwald.
+#' @param maplayer string. as provided by leaflet-provider 
+#' @param preset character. defaut is "NULL" full draw version, "uav" for flightarea digitizing, "ext" for rectangles
+#' @param locPreset character. default is "muf" for Marburg University Forest, others are "tra" Traddelstein, "hag" Hagenstein, "baw" Bayerwald.
 #' @param overlay optional sp object 
 #' @param features features 
 #' @param cex cex 
@@ -92,7 +93,7 @@ digitize <- function(mapCenter=NULL,
     
     rgdal::writeOGR(overlay, paste(tmpPath, "jsondata", sep=.Platform$file.sep), "OGRGeoJSON", driver="GeoJSON")
     
-    # for fastet json read in a html document we wrap it with var data = {};
+    # for the fastest json read in a html document, we wrap it with var data = {};
     # and we fix the crs item of ogr2json
     # TODO loop a list of data
     
