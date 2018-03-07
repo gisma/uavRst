@@ -5,7 +5,7 @@ if (!isGeneric('poly_metrics')) {
 
 #'@name poly_metrics
 #'@title calculate morphometric features of polygons
-#'@description calculate morphometric features of polygons. calculate some crown related metrics return the metrics as a spatialpointdataframe/spatialpolygondataframe
+#'@description calculate morphometric features of polygons. calculate some crown related metrics, returns the metrics as a spatialpointdataframe/spatialpolygondataframe
 #'@seealso  \href{https://CRAN.R-project.org/package=Momocs}{Momocs}
 #' \href{https://www.researchgate.net/profile/Paul_Rosin/publication/228382248_Computing_global_shape_measures/links/0fcfd510802e598c31000000.pdf?origin=publication_detail}{Paul Rosin}
 #'
