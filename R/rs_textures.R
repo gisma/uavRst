@@ -754,6 +754,7 @@ morpho_dem<- function(dem,
             input_dem="dem2.tif",
             output = paste0(item,".tif"))
   }
+
   if (length(saga_items>0)) {
     rdem<-raster::raster(paste0(path_run,'dem2.tif'))
     raster::writeRaster(rdem,paste0(path_run,"SAGA_dem.sdat"),overwrite = TRUE,NAflag = 0)

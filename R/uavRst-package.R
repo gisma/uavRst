@@ -1,6 +1,6 @@
-#' Unmanned Aerial Vehicle Remote Sensing Tools
+#'  Unmanned Aerial Vehicle Remote Sensing Tools
 #'
-#' The package provides some R-GI functionality for dealing with data as retrieved by Unmanned Aerial Vehicle VIS/NIR Remote Sensing 
+#' # TOFIX @description The package provides some R-GI functionality for dealing with data as retrieved by Unmanned Aerial Vehicle VIS/NIR Remote Sensing 
 #'
 #' @name uavRst
 #' @docType package
