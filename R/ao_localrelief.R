@@ -118,7 +118,7 @@ local_relief <- function(lasDir = NULL,
   else
     link2GI::linkGRASS7(gisdbase = gisdbase_path, location = GRASSlocation, spatial_params = sp_param,resolution = grid_size)
 
-  # TOFIX  (latest?) late raw DSM using r.in.lidar
+  # raw DSM using r.in.lidar
   cat(":: calculate DSM...\n")
   ret <- rgrass7::execGRASS("r.in.lidar",
                             flags  = c("overwrite","quiet","o"),
