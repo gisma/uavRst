@@ -622,7 +622,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     # get image and geometry data for training purposes
     imageTrainFiles <- list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE)
     tmp  <- basename(list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE))
-    tmp<- gsub(patternIdx,prefixrunFN,tmp)
+    tmp<- gsub(patternIdx,prefixTrainGeom,tmp)
     tmp<- gsub(suffixTrainImg,suffixTrainGeom,tmp)
     geomTrainFiles <- gsub(".envi",".shp",tmp)
     geomTrainFiles <- paste0(currentDataFolder,geomTrainFiles)
