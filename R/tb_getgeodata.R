@@ -3,7 +3,6 @@ if(!isGeneric('get_geodata')) {
     standardGeneric('get_geodata'))
 }
 #'@name get_geodata
-
 #'@title Retrieves online geodata and converts it to raster/sp objects
 #'
 #'@description Robert J. Hijmans getData() from the raster package is well known and highly used. The only disadvantage is that it currently doesn't support a bunch of great additional and/or improved/newer data sets.  get_geodata provides some more actual or better choices for climate and DEM data as well as some easy to use interfaces to other crowd sourced data compilations.
