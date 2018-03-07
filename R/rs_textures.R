@@ -754,55 +754,58 @@ morpho_dem<- function(dem,
             input_dem="dem2.tif",
             output = paste0(item,".tif"))
   }
-  rdem<-raster::raster(paste0(path_run,'dem2.tif'))
-  raster::writeRaster(rdem,paste0(path_run,"SAGA_dem.sdat"),overwrite = TRUE,NAflag = 0)
-  # claculate the basics SAGA morphometric params
-  cat(getCrayon()[[1]](":::: processing ",saga_items,"\n"))
-  rsaga.geoprocessor(lib = "ta_morphometry", module = 0,
-                     param = list(ELEVATION = paste(path_run,"SAGA_dem.sgrd", sep = ""), 
-                                  UNIT_SLOPE = 1,
-                                  UNIT_ASPECT = 1, 
-                                  SLOPE = paste(path_run,"SLOPE.sgrd", sep = ""),
-                                  ASPECT = paste(path_run,"ASPECT.sgrd", sep = ""),
-                                  C_GENE = paste(path_run,"C_GENE.sgrd", sep = ""),
-                                  C_PROF = paste(path_run,"C_PROF.sgrd", sep = ""),
-                                  C_PLAN = paste(path_run,"C_PLAN.sgrd", sep = ""),
-                                  C_TANG = paste(path_run,"C_TANG.sgrd", sep = ""),
-                                  C_LONG = paste(path_run,"C_LONG.sgrd", sep = ""),
-                                  C_CROS = paste(path_run,"C_CROS.sgrd", sep = ""),
-                                  C_MINI = paste(path_run,"C_MINI.sgrd", sep = ""),
-                                  C_MAXI = paste(path_run,"C_MAXI.sgrd", sep = ""),
-                                  C_TOTA = paste(path_run,"C_TOTA.sgrd", sep = ""),
-                                  C_ROTO = paste(path_run,"C_ROTO.sgrd", sep = ""),
-                                  METHOD = morpho_method),
-                     show.output.on.console = FALSE,
-                     env = env)
-  if ("MTPI" %in% saga_items){
-  if (RSAGA::rsaga.get.version() >= "3.0.0") {
-  
-  # calculate multiscale p
-  # Topographic Position Index (TPI) calculation as proposed by Guisan et al. (1999).SAGA 
-  # This implementation calculates the TPI for different scales and integrates these into 
-  # one single grid. The hierarchical integration is achieved by starting with the 
-  # standardized TPI values of the largest scale, then adding standardized values from smaller
-  # scales where the (absolute) values from the smaller scale exceed those from the larger scale. 
-  rsaga.geoprocessor(lib = "ta_morphometry", module = 28,
-                     param = list(DEM = paste(path_run,"SAGA_dem.sgrd", sep = ""), 
-                                  SCALE_MIN = min_scale,
-                                  SCALE_MAX = max_scale,
-                                  SCALE_NUM = num_scale,
-                                  TPI = paste(path_run,"MTPI.sgrd", sep = "")),
-                     show.output.on.console = FALSE,
-                     env = env)
-    } else {cat("Please install SAGA >= 3.0.0\n Run without MTPI...")
-      saga_items<-saga_items[  !(saga_items %in% "MTPI")]
-            
+
+  if (length(saga_items>0)) {
+    rdem<-raster::raster(paste0(path_run,'dem2.tif'))
+    raster::writeRaster(rdem,paste0(path_run,"SAGA_dem.sdat"),overwrite = TRUE,NAflag = 0)
+    # claculate the basics SAGA morphometric params
+    cat(getCrayon()[[1]](":::: processing ",saga_items,"\n"))
+    rsaga.geoprocessor(lib = "ta_morphometry", module = 0,
+                       param = list(ELEVATION = paste(path_run,"SAGA_dem.sgrd", sep = ""), 
+                                    UNIT_SLOPE = 1,
+                                    UNIT_ASPECT = 1, 
+                                    SLOPE = paste(path_run,"SLOPE.sgrd", sep = ""),
+                                    ASPECT = paste(path_run,"ASPECT.sgrd", sep = ""),
+                                    C_GENE = paste(path_run,"C_GENE.sgrd", sep = ""),
+                                    C_PROF = paste(path_run,"C_PROF.sgrd", sep = ""),
+                                    C_PLAN = paste(path_run,"C_PLAN.sgrd", sep = ""),
+                                    C_TANG = paste(path_run,"C_TANG.sgrd", sep = ""),
+                                    C_LONG = paste(path_run,"C_LONG.sgrd", sep = ""),
+                                    C_CROS = paste(path_run,"C_CROS.sgrd", sep = ""),
+                                    C_MINI = paste(path_run,"C_MINI.sgrd", sep = ""),
+                                    C_MAXI = paste(path_run,"C_MAXI.sgrd", sep = ""),
+                                    C_TOTA = paste(path_run,"C_TOTA.sgrd", sep = ""),
+                                    C_ROTO = paste(path_run,"C_ROTO.sgrd", sep = ""),
+                                    METHOD = morpho_method),
+                       show.output.on.console = FALSE,
+                       env = env)
+    if ("MTPI" %in% saga_items){
+      if (RSAGA::rsaga.get.version() >= "3.0.0") {
+        
+        # calculate multiscale p
+        # Topographic Position Index (TPI) calculation as proposed by Guisan et al. (1999).SAGA 
+        # This implementation calculates the TPI for different scales and integrates these into 
+        # one single grid. The hierarchical integration is achieved by starting with the 
+        # standardized TPI values of the largest scale, then adding standardized values from smaller
+        # scales where the (absolute) values from the smaller scale exceed those from the larger scale. 
+        rsaga.geoprocessor(lib = "ta_morphometry", module = 28,
+                           param = list(DEM = paste(path_run,"SAGA_dem.sgrd", sep = ""), 
+                                        SCALE_MIN = min_scale,
+                                        SCALE_MAX = max_scale,
+                                        SCALE_NUM = num_scale,
+                                        TPI = paste(path_run,"MTPI.sgrd", sep = "")),
+                           show.output.on.console = FALSE,
+                           env = env)
+      } else {cat("Please install SAGA >= 3.0.0\n Run without MTPI...")
+        saga_items<-saga_items[  !(saga_items %in% "MTPI")]
+        
+      }
     }
+    for (item in saga_items){
+      cat(getCrayon()[[1]](":::: converting ",item,"\n"))
+      ritem<-raster::raster(paste(path_run,item,".sdat", sep = ""))
+      raster::writeRaster(ritem,paste(path_run,item,".tif", sep = ""), overwrite = TRUE, NAflag = 0)
     }
-  for (item in saga_items){
-    cat(getCrayon()[[1]](":::: converting ",item,"\n"))
-    ritem<-raster::raster(paste(path_run,item,".sdat", sep = ""))
-    raster::writeRaster(ritem,paste(path_run,item,".tif", sep = ""), overwrite = TRUE, NAflag = 0)
   }
 }
 

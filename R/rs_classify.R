@@ -132,7 +132,9 @@ predict_rgb <- function(imageFiles=NULL,
                        model = NULL,
                        in_prefix = "index_",
                        out_prefix = "classified_",
-                       bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI","GLAI","Mean","Variance","Skewness","Kurtosis")) {
+                       bandNames = NULL) {
+  
+  if (is.null(bandNames)) return(cat(crayon()[[1]]("\n you did not provide predictor names. \nTypically something like bnames ie c('R','G','B')")))
   po = path_output
   i = 1:length(imageFiles)
   cat("\n::: start prediction aka classifikation...\n")
@@ -146,7 +148,6 @@ predict_rgb <- function(imageFiles=NULL,
     #TODO rasterstack
     fn<-basename(imageFiles[i])
     fnOut <- paste0(po,out_prefix,fn)
-
     img2predict<-raster::stack(imageFiles[i])
     names(img2predict)<-bandNames
     predictImg<- raster::predict(img2predict,
@@ -359,7 +360,7 @@ ffs_train<-function(   trainingDF   = NULL,
 
 calc_ext<- function ( calculateBands    = FALSE,
                     extractTrain      = TRUE,
-                    prefixrunFN       = "train",
+                    prefixrunFN       = "train_",
                     prefixdemFN       = "dem_",
                     suffixTrainGeom   = "TrainingArea",
                     prefixTrainGeom   = "index_",
@@ -418,8 +419,8 @@ calc_ext<- function ( calculateBands    = FALSE,
 
     # create list of image files to be processed
     # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
-    imageFiles <- list.files(pattern="[.]tif$", path=currentDataFolder, full.names=TRUE)
-    demFiles <- list.files(pattern=prefixdemFN, path=currentDataFolder, full.names=TRUE)
+    imageFiles <- list.files(pattern=paste0("^",prefixrunFN), path=currentDataFolder, full.names=TRUE)
+    demFiles <- list.files(pattern=paste0("^",prefixdemFN), path=currentDataFolder, full.names=TRUE)
     # stack the ortho images
     #rgb<- lapply(imageFiles, FUN=raster::raster)
 
@@ -427,10 +428,11 @@ calc_ext<- function ( calculateBands    = FALSE,
     ### calculate indices and base stat export it to tif
     # create list vars
     flist<-list()
-    # if calc pardem 
-    if (pardem){
+
       bnames<-NULL
       for (i in 1:length(demFiles)){
+        # if calc pardem 
+        if (pardem){
         #cat(catNote(":::: processing dem... ",demType,"\n"))
         morpho_dem(dem = demFiles[i], 
                    item = demType,
@@ -444,10 +446,10 @@ calc_ext<- function ( calculateBands    = FALSE,
           bnames <-append(bnames,make_bandnames(dem = item))
         
       } 
-    }
+    #}
 
     # for all images do
-    for (i in 1:length(imageFiles)){
+#    for (i in 1:length(imageFiles)){
       if (rgbi){
       cat(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
       r<-raster::stack(imageFiles[i])

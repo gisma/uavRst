@@ -14,7 +14,7 @@ local_relief(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
 \arguments{
 \item{lasDir}{character. default is \code{NULL} path  to the laz/las file(s)}
 
-\item{gisdbase_path}{character. gisdbase will be linked or created depending on \code{gisdbase_exist}}
+\item{gisdbase_path}{character.  gisdbase will be linked or created depending on \code{gisdbase_exist}}
 
 \item{GRASSlocation}{character. location will be linked or created depending on \code{gisdbase_exist}}
 

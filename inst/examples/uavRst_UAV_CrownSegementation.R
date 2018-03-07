@@ -12,11 +12,12 @@ require(uavRst)
 projRootDir <- "~/proj/uav/thesis/finn"
 
 # lidar data  can be a foldr or a file
-las_data <- "~/proj/uav/thesis/finn/output/477375_000_5631900_000_477475_000_5632000_000.las"
+#las_data <- "~/proj/uav/thesis/finn/output/477375_000_5631900_000_477475_000_5632000_000.las"
+las_data <- "~/proj/uav/thesis/finn/data/max/small_point_cloud_aggressive_utm32.las"
 
-url <- "https://github.com/gisma/gismaData/raw/master/uavRst/lidar_477375_00_5631900_00_477475_00_5632000_00.las"
-res <- curl::curl_download(url, "~/proj/uav/thesis/finn/output/lasdata.las")
-las_data<-paste0(path_output,"lasdata.las")
+# url <- "https://github.com/gisma/gismaData/raw/master/uavRst/lidar_477375_00_5631900_00_477475_00_5632000_00.las"
+# res <- curl::curl_download(url, "~/proj/uav/thesis/finn/output/lasdata.las")
+# las_data<-paste0(path_output,"lasdata.las")
 # proj subfolders
 projFolders = c("data/","data/ref/","output/","run/","las/")
 
@@ -30,7 +31,7 @@ path_prefix = "path_"
 proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "
 # cutExtent <- c(477393.,477460. ,5631938. , 5632003.) # old extent sharply cutted
 cutExtent <- c(477375.,477475. ,5631900. , 5632000.)
-ext<- raster::extent(as.numeric(cutExtent))
+#ext<- raster::extent(as.numeric(cutExtent))
 
 maxCrownArea = 150
 minTreeAlt = 2
@@ -54,25 +55,25 @@ raster::rasterOptions(tmpdir=path_run)
 
 # set working directory
 setwd(path_run)
-actual_grid_size<-0.5
+actual_grid_size<-0.25
 # ----- calculate DSM DTM & CHM FROM UAV POINT CLOUDS-----------------------------------------------
 #las_data<-"~/proj/uav/thesis/finn/output/477375_00_5631900_00_477475_00_5632000_00.las"
 # create DSM
 dsm <- uavRst::pc2dsm(lasDir = las_data,
                       gisdbase_path = projRootDir,
-                      type_smooth = "gauss",
-                      grid_size = ".5",
+                      type_smooth = "no",
+                      grid_size = actual_grid_size,
                       GRASSlocation = "dsm",
-                      grass_lidar_method = "mean",
-                      cutExtent = cutExtent,
+                      grass_lidar_method = "max",
+#                      cutExtent = cutExtent,
                       giLinks = giLinks)
 # create DTM
 dtm <- uavRst::pc2dtm(lasDir = las_data,
                       gisdbase_path = projRootDir,
                       thin_with_grid = ".5",
                       level_max = "4" ,
-                      grid_size = "0.5",
-                      cutExtent = cutExtent,
+                      grid_size = actual_grid_size,
+                      #cutExtent = cutExtent,
                       giLinks = giLinks)
 
 # take the rsulting raster files
