@@ -1,10 +1,14 @@
-#' simple wrapper for some LAStools functions 
+
+
+#TOFIX #@name
+
+#' #@titel simple wrapper for some LAStools functions 
 #'
 #'@description
 #' simple wrapper for some lastools functions
 #'
 #'@author Chris Reudenbach
-#'@param tool default is \code{lasinfo}   additionally xou may choose lasrepair, lasthin,  lasmerge, lasground_new, las2dem, las2txt, lasoverage, lasclip
+#'@param tool default is \code{lasinfo}   additionally you may choose lasrepair, lasthin,  lasmerge, lasground_new, las2dem, las2txt, lasoverage, lasclip
 #'@param lasFile  default is \code{NULL} path  to the laz/las file(s)
 #'@param grid_size  resolution of the DTM raster
 #'@param thin_with_grid default 0.5 meter. Grid stepsize for data thinning
@@ -13,13 +17,13 @@
 #'@param step_size  default is 25 meter. lastools key words if \code{city},\code{town},\code{metro},\code{nature},\code{wilderness} or experiment with free values
 #'@param sub_size = "8", default is 8 meter. lastools key words if \code{extra_coarse},\code{coarse},\code{fine},\code{extra_fine},\code{ultra_fine},\code{hyper_fine} or experiment with free values
 #'@param cores number of cores that will be used
-#'@param proj4  default is EPSG 32632 any valid proj4 string that is assumingly the correct one
+#'@param proj4  default is EPSG 32632, any valid proj4 string that is assumingly the correct one
 #'@param rscale rscale
-#'@param stepoverlap  Spacing of overlap steps aused in lasoverage default is NULL
+#'@param stepoverlap  Spacing of overlap steps aused in lasoverage, default is NULL
 #'@param xoff xoff
 #'@param yoff yoff
 #'@param outpath outpath
-#'@param path_lastools character folder containing the Windows binary files of the lastools
+#'@param path_lastools character. folder containing the Windows binary files of the lastools
 #'@param verbose keep it quiet
 #'@param cutExtent NULL
 #'@param cutSlice NULL
