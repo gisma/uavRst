@@ -11,10 +11,10 @@ if (!isGeneric('get_traindata')) {
 #'
 #'@author Chris Reudenbach
 #'
-#'@param rasterStack  raster*. default is \code{NULL} rasterstack containing all image data
-#'@param trainPlots   sp*. default is \code{NULL}  sp object providing training geometries
+#'@param rasterStack  an object of rasterstack*. containing image data to make prediction on
+#'@param trainPlots   an object of SpatialPolygonDataFrame*. providing the training areas
 #'@param imgFN        character.  default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file
-#'@param bnames       character. names of the bands
+#'@param bandNames       character. names of the bands
 #'@import crayon
 #'@export get_traindata
 #'@examples
@@ -28,7 +28,7 @@ if (!isGeneric('get_traindata')) {
 
 get_traindata<-function(rasterStack  = NULL,
                            trainPlots     = NULL,
-                           bnames = NULL,
+                           bandNames = NULL,
                            imgFN) {
 
   catNote <- crayon::blue $ bold
@@ -43,7 +43,7 @@ get_traindata<-function(rasterStack  = NULL,
 
     categorymap<-rgeos::gUnionCascaded(trainPlots[[j]],id=trainPlots[[j]]@data$id)
     dataSet <- raster::extract(rasterStack[[j]], categorymap,df=TRUE)
-    names(dataSet)<-append(c("ID"),bnames)
+    names(dataSet)<-append(c("ID"),bandNames)
     ## add filename as lloc category
     #FNname<-substr(names(rasterStack[[j]][[1]]),1,nchar(names(rasterStack[[j]][[1]]))-2)
     dataSet$FN= imgFN[[j]]
@@ -134,7 +134,7 @@ predict_rgb <- function(imageFiles=NULL,
                        out_prefix = "classified_",
                        bandNames = NULL) {
   
-  if (is.null(bandNames)) return(cat(crayon()[[1]]("\n you did not provide predictor names. \nTypically something like bnames ie c('R','G','B')")))
+  if (is.null(bandNames)) return(cat(crayon()[[1]]("\n you did not provide predictor names. \nTypically something like bandNames ie c('R','G','B')")))
   po = path_output
   i = 1:length(imageFiles)
   cat("\n::: start prediction aka classifikation...\n")
@@ -293,9 +293,12 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param calculateBands    logical. switch for set on calculation of syntheic bands and indices default = TRUE
 #' @param extractTrain      logical. switch for set on extract training data according to training geometries default = TRUE
 #' @param prefixrunFN       character. prefix of current run default = "train"
-#' @param prefixdemFN       character. prefix of current DEM default = "dem_"
+#' @param prefixdemFN       character. mandantory if DEM data is processes. prefix of current DEM default = "dem"
+#' @param patternImgFiles   character. mandantory string that exist in ech imagefile to be processes
+#' @param prefixTrainImg    character. prefix of image files index_2017_05_11_RGB_DEFS18_08_Orthoimage.envi
+#' @param prefixTrainGeom   character. of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index"
+#' @param suffixTrainImg    character. suffix of image files index_2017_05_11_RGB_DEFS18_08_Orthoimage.envi
 #' @param suffixTrainGeom   character. of training shape files e.g. index_2017_05_11_RGB_DEFS18_08_TrainingArea.shp default = "TrainingArea"
-#' @param prefixTrainGeom   character. of training image files e.g. index_2017_05_11_RGB_DEFS18_08_OrthoMosaic.tif default = "index_"
 #' @param channels          character. channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")
 #' @param hara              logical. switch for using  HaralickTextureExtraction default = TRUE. \cr
 #' @param haraType          character. hara options default is c("simple"), other  options are "advanced"  "higher" "all". NOTE:  "higher" takes a LOT of time
@@ -360,10 +363,13 @@ ffs_train<-function(   trainingDF   = NULL,
 
 calc_ext<- function ( calculateBands    = FALSE,
                     extractTrain      = TRUE,
-                    prefixrunFN       = "train_",
-                    prefixdemFN       = "dem_",
+                    prefixrunFN       = "train",
+                    prefixdemFN       = "dem",
+                    prefixTrainImg    = "",
+                    suffixTrainImg    = "Orthoimage",
                     suffixTrainGeom   = "TrainingArea",
-                    prefixTrainGeom   = "index_",
+                    prefixTrainGeom   = "index",
+                    patternImgFiles   = "",
                     channels          = c("red", "green", "blue"),
                     hara              = TRUE,
                     haraType          = c("simple","advanced","higher"),
@@ -408,6 +414,13 @@ calc_ext<- function ( calculateBands    = FALSE,
   catNote <- getCrayon()[[1]]
   catOk   <- getCrayon()[[3]]
 
+  if (!is.null(prefixrunFN))   prefixrunFN <-  paste0(prefixrunFN,"_")
+  if (!is.null(prefixdemFN))   prefixdemFN <-  paste0(prefixdemFN,"_")
+  if (!is.null(prefixTrainImg))   prefixTrainImg <-  paste0(prefixTrainImg,"_")
+  if (!is.null(prefixTrainGeom))   prefixTrainGeom <-  paste0(prefixTrainGeom,"_")
+  if (!is.null(suffixTrainGeom))   suffixTrainGeom <-  paste0("_",suffixTrainGeom)
+  if (!is.null(suffixTrainImg))   suffixTrainImg <-  paste0("_",suffixTrainImg)
+  
   currentDataFolder<- currentDataFolder #paste0(path_data_training)
   currentIdxFolder<- currentIdxFolder # paste0(path_data_training_idx)
 
@@ -419,18 +432,17 @@ calc_ext<- function ( calculateBands    = FALSE,
 
     # create list of image files to be processed
     # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
-    imageFiles <- list.files(pattern=paste0("^",prefixrunFN), path=currentDataFolder, full.names=TRUE)
-    demFiles <- list.files(pattern=paste0("^",prefixdemFN), path=currentDataFolder, full.names=TRUE)
+    #imageFiles <- list.files(pattern=paste0("^",prefixrunFN,"*","tif"), path=currentDataFolder, full.names=TRUE)
+    imageFiles <-Sys.glob(path=paste0(currentDataFolder,prefixrunFN,"*","tif"))
+    demFiles <- Sys.glob(path=paste0(currentDataFolder,prefixdemFN,"*","tif"))
+    counter<- max(length(demFiles),length(imageFiles))
     # stack the ortho images
-    #rgb<- lapply(imageFiles, FUN=raster::raster)
-
-
     ### calculate indices and base stat export it to tif
     # create list vars
     flist<-list()
 
-      bnames<-NULL
-      for (i in 1:length(demFiles)){
+      bandNames<-NULL
+      for (i in 1:length(counter)){
         # if calc pardem 
         if (pardem){
         #cat(catNote(":::: processing dem... ",demType,"\n"))
@@ -443,7 +455,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                    giLinks = giLinks)
         flist<-append(flist,paste0(demType,".tif"))
         for (item in demType) 
-          bnames <-append(bnames,make_bandnames(dem = item))
+          bandNames <-append(bandNames,make_bandnames(dem = item))
         
       } 
     #}
@@ -455,8 +467,8 @@ calc_ext<- function ( calculateBands    = FALSE,
       r<-raster::stack(imageFiles[i])
       # calculate and stack r,g,b and requested indices
       rgb_rgbi<-raster::stack(r[[1:3]],uavRst::rgb_indices(r[[1]],r[[2]],r[[3]],indices))
-      bnames <- uavRst::make_bandnames(rgbi = indices)
-      names(rgb_rgbi)<-bnames
+      bandNames <- uavRst::make_bandnames(rgbi = indices)
+      names(rgb_rgbi)<-bandNames
       cat(catOk("\n     save ...",paste0("rgbi_",basename(imageFiles[i])),"\n"))
       raster::writeRaster(rgb_rgbi,
                           paste0("rgbi_",basename(imageFiles[i])),
@@ -486,13 +498,13 @@ calc_ext<- function ( calculateBands    = FALSE,
                               overwrite=TRUE,
                               options="INTERLEAVE=BAND",
                               progress="text")
-          bnames <-append(bnames,make_bandnames(RGBtrans = colorSpaces[jj]))
+          bandNames <-append(bandNames,make_bandnames(RGBtrans = colorSpaces[jj]))
           flist<-append(flist, paste0(colorSpaces[jj],"_ref",basename(imageFiles[i])))
         }
         file.remove(unlist(rgbtranslist))
         #r<-raster::stack(imageFiles[i])
 
-        #bnames <-append(bnames,make_bandnames(RGBtrans = colorSpaces))
+        #bandNames <-append(bandNames,make_bandnames(RGBtrans = colorSpaces))
 
       }
       if (rgbi){
@@ -519,7 +531,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                        radius =  kernel,
                        giLinks=giLinks)
           flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,"stat_",basename(imageFiles[i])),"*")))
-          bnames <-append(bnames,paste0(make_bandnames(stat = TRUE),"_",filterBand))
+          bandNames <-append(bandNames,paste0(make_bandnames(stat = TRUE),"_",filterBand))
         }
         # if calc edge
         if (edge){
@@ -531,7 +543,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                             giLinks=giLinks)
 
             flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,edges,basename(imageFiles[i])),"*")))
-            bnames <-append(bnames,make_bandnames(edge = paste0(edges,"_",filterBand)))
+            bandNames <-append(bandNames,make_bandnames(edge = paste0(edges,"_",filterBand)))
           }
         }
         
@@ -544,7 +556,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                                   filter = morphos,
                                   giLinks=giLinks)
             flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,morphos,basename(imageFiles[i])),"*")))
-            bnames <-append(bnames,make_bandnames(edge = paste0(morphos,"_",filterBand)))
+            bandNames <-append(bandNames,make_bandnames(edge = paste0(morphos,"_",filterBand)))
           }
         }
         # if calc haralick
@@ -556,7 +568,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                                         texture = type,
                                         giLinks=giLinks)
             flist<-append(flist,Sys.glob(paste0("*",paste0(filterBand,"hara_",basename(imageFiles[i])),"*")))
-            bnames <-append(bnames,paste0(make_bandnames(bandNames = type),"_",filterBand))
+            bandNames <-append(bandNames,paste0(make_bandnames(bandNames = type),"_",filterBand))
           }
         }
         # delete single channel for synthetic channel calculation
@@ -573,8 +585,8 @@ calc_ext<- function ( calculateBands    = FALSE,
       cat(catOk("     save ...",paste0(prefixTrainGeom, tmpFN),"\n"))
       # r<-raster::brick(raster::stack(flist)) qgis cannot read heder
       r<-raster::stack(paste0(path_run,flist))
-      if (raster::nlayers(r)!=length(bnames)) stop("\n Number of names and layers differ...\n most common case is a broken cleanup of the runtime directory!")
-      names(r)<-bnames
+      if (raster::nlayers(r)!=length(bandNames)) stop("\n Number of names and layers differ...\n most common case is a broken cleanup of the runtime directory!")
+      names(r)<-bandNames
       # write file to envi
       raster::writeRaster(r,
                           paste0(currentIdxFolder,"/", prefixTrainGeom,tmpFN),
@@ -593,7 +605,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     }
 
     # save bandname list we need it only once
-    save(bnames,file = paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
+    save(bandNames,file = paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
 
 
     cat(catHead("\n     ---------------- finished preprocessing RGB data ------------------                \n"))
@@ -605,16 +617,20 @@ calc_ext<- function ( calculateBands    = FALSE,
     # get image and geometry data for training purposes
     imageTrainFiles <- list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE)
     tmp  <- basename(list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE))
-    geomTrainFiles<-paste0(currentDataFolder,substr(tmp,nchar(prefixTrainGeom)+1,nchar(tmp)-(nchar(suffixTrainGeom)+4)),suffixTrainGeom,"shp")
-
+    tmp<- gsub(prefixTrainGeom,prefixrunFN,tmp)
+    tmp<- gsub(suffixTrainImg,suffixTrainGeom,tmp)
+    geomTrainFiles <- gsub(".envi",".shp",tmp)
+    geomTrainFiles <- paste0(currentDataFolder,geomTrainFiles)
     imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
+    if (file.exists(extension(geomTrainFiles, ".shp")))
     geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
-
+    else 
+      return(cat(catErr("\nTraining files are not existing please check suffix or prefix strings")))
     # extract clean and format training data
 
     trainDF <- uavRst::get_traindata(rasterStack  = imageTrainStack,
                                         trainPlots = geomTrainStack,
-                                        bnames = bnames,
+                                        bandNames = bandNames,
                                         imageTrainFiles
 
     )

@@ -653,22 +653,22 @@ make_bandnames <- function(rgbi    = NA,
                            edge    = NA ,
                            RGBtrans = NA,
                            dem =    NA){
-  if (!is.na(rgbi[1])) bnames <- append(c("red","green","blue"),rgbi)
+  if (!is.na(rgbi[1])) bandNames <- append(c("red","green","blue"),rgbi)
   if (!is.na(bandNames)) {
     if(bandNames == "simple"){
-      bnames <- c("Energy", "Entropy", "Correlation", 
+      bandNames <- c("Energy", "Entropy", "Correlation", 
                   "Inverse_Difference_Moment", "Inertia", 
                   "Cluster_Shade", "Cluster_Prominence",
                   "Haralick_Correlation")
     } else if(bandNames == "advanced"){
-      bnames <- c("Hara_Mean", "Hara_Variance", "Dissimilarity",
+      bandNames <- c("Hara_Mean", "Hara_Variance", "Dissimilarity",
                   "Sum_Average", 
                   "Sum_Variance", "Sum_Entropy", 
                   "Difference_of_Variances", 
                   "Difference_of_Entropies", 
                   "IC1", "IC2")
     } else if(bandNames == "higher"){
-      bnames <- c("Short_Run_Emphasis", 
+      bandNames <- c("Short_Run_Emphasis", 
                   "Long_Run_Emphasis", 
                   "Grey-Level_Nonuniformity", 
                   "Run_Length_Nonuniformity", 
@@ -680,7 +680,7 @@ make_bandnames <- function(rgbi    = NA,
                   "Long_Run_Low_Grey-Level_Emphasis",
                   "Long_Run_High_Grey-Level_Emphasis")
     } else if(bandNames == "all"){
-      bnames <- c("Energy", "Entropy", "Correlation", 
+      bandNames <- c("Energy", "Entropy", "Correlation", 
                   "Inverse_Difference_Moment", "Inertia", 
                   "Cluster_Shade", "Cluster_Prominence",
                   "Haralick_Correlation",
@@ -704,23 +704,23 @@ make_bandnames <- function(rgbi    = NA,
     }
   }
   if (stat == TRUE)  {
-    bnames    = c("Stat_Mean","Stat_Variance", "Skewness", "Kurtosis")
+    bandNames    = c("Stat_Mean","Stat_Variance", "Skewness", "Kurtosis")
   } 
   if (!is.na(dem))  {
-    bnames    =  dem
+    bandNames    =  dem
   } 
   
   if (!is.na(morpho))  {
-    bnames    =  morpho
+    bandNames    =  morpho
   } 
   
   if (!is.na(edge))  {
-    bnames    =  edge
+    bandNames    =  edge
   } 
   if (!is.na(RGBtrans))  {
-    bnames    =  bnames <- c(paste0(RGBtrans,"_b1"),paste0(RGBtrans,"_b2"),paste0(RGBtrans,"_b3"))
+    bandNames    =  bandNames <- c(paste0(RGBtrans,"_b1"),paste0(RGBtrans,"_b2"),paste0(RGBtrans,"_b3"))
   } 
-  return(bnames)
+  return(bandNames)
   
 }
 
