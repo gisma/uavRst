@@ -31,7 +31,7 @@ require(link2GI)
 prefixrunFN       ="" 
 prefixdemFN       = "dem"
 # define project folder
-projRootDir <- "~/test1/uavrst"
+projRootDir <- "~/proj/uav/thesis/finn/"
 
 paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/training/","data/training/idx/",
@@ -66,7 +66,7 @@ if (startcalc_ext){
   # to restrict calculations uncomment and select by editng the param list
   res <- calc_ext(calculateBands    = T,
                  extractTrain      = T,
-                 patternImgFiles   = "2017",
+                 patternImgFiles   = "",
                  prefixTrainImg    = "",
                  prefixrunFN       = prefixrunFN,
                  prefixdemFN       = prefixdemFN,

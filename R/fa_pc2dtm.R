@@ -103,12 +103,23 @@ pc2dtm <- function(lasDir = NULL,
   las2txt       <- paste(cmd,"las2txt.exe",sep = "/")
 
   # check las / laz files; laz will be preferred
-  tmplasDir<-dirname(lasDir)
-  lasFileNames <- list.files(pattern = "[.]las$", path = tmplasDir, full.names = TRUE)
-  lazFileNames <- list.files(pattern = "[.]laz$", path = tmplasDir, full.names = TRUE)
-  if (length(lazFileNames) > 0 ) extFN <- substr(extension(basename(lazFileNames[1])),2,4)
-  else if (length(lasFileNames) > 0) extFN <- substr(extension(basename(lasFileNames[1])),2,4)
-  else stop("no valid las or laz files found...\n")
+  # if (!(extension(lasDir)==".las"||extension(lasDir)==".laz")) {
+  #   tmplasDir<-dirname(lasDir)
+  #   lasFileNames <- list.files(pattern = "[.]las$", path = tmplasDir, full.names = TRUE)
+  #   lazFileNames <- list.files(pattern = "[.]laz$", path = tmplasDir, full.names = TRUE)
+  # } else {
+  #   if (extension(lasDir)==".las") {
+  #     lasFileNames <- lasDir
+  #     lazFileNames <- NULL}
+  #   else if (extension(lasDir)==".laz") {
+  #     lazFileNames <- lasDir
+  #     lasFileNames <- NULL}
+  #   
+  # }
+  # 
+  # if (length(lazFileNames) > 0 ) extFN <- substr(extension(basename(lazFileNames[1])),2,4)
+  # else if (length(lasFileNames) > 0) extFN <- substr(extension(basename(lasFileNames[1])),2,4)
+  # else stop("no valid las or laz files found...\n")
 
 
 
@@ -164,6 +175,7 @@ pc2dtm <- function(lasDir = NULL,
   } else {
 
     name<-basename(lasDir)
+    extFN<- substr(raster::extension(basename(paste0(path_run,name))),2,4)
     if (!file.exists(paste0(path_run,name)))
     file.copy(from = lasDir,
               to = paste0(path_run,name),
@@ -181,7 +193,7 @@ pc2dtm <- function(lasDir = NULL,
   }
   # get extent of merged file
   sp_param <-lastool(lasFile= paste0(path_run,name))
-
+  
   # rename output file according to the extent
   fn<- paste(sp_param ,collapse=" ")
   tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
@@ -282,12 +294,17 @@ pc2dtm <- function(lasDir = NULL,
                 ignore.stderr = TRUE)
 
   # saga spline interpolation of the alt values
+  
   ret <- system(paste0(sagaCmd,' grid_spline 4 ',
                        ' -SHAPES ', path_run,'pointcloud.spc',
                        ' -FIELD 2',
                        ' -TARGET_DEFINITION 0',
                        ' -TARGET_OUT_GRID ',paste0(path_run,"rawdtm.sgrd"),
                        ' -TARGET_USER_SIZE ',grid_size,
+                       ' -TARGET_USER_XMIN ',sp_param[1],
+                       ' -TARGET_USER_XMAX ',sp_param[3],
+                       ' -TARGET_USER_YMIN ',sp_param[2],
+                       ' -TARGET_USER_YMAX ',sp_param[4],
                        ' -METHOD 1',
                        ' -EPSILON 0.000100',
                        ' -LEVEL_MAX ',level_max),
