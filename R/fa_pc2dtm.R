@@ -31,7 +31,10 @@ if (!isGeneric('pc2dtm')) {
 #'@param projSubFolder subfolders that will be created/linked for R related GRASS processing
 #'@param verbose to be quiet (1)
 #'@param cutExtent clip area
-
+#'@importFrom lidR tree_detection
+#'@importFrom lidR writeLAS
+#'@importFrom lidR readLAS
+#'@importFrom lidR lasclipRectangle
 #'@export pc2dtm
 #'
 #'@examples

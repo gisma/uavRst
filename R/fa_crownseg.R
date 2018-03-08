@@ -209,6 +209,7 @@ chmseg_FT <- function(treepos = NULL,
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
 #' height of \code{treepos}.
 #' @param exclusion numeric. A single value from 0 to 1 that represents the percent of pixel exclusion.
+#' @importFrom rLiDAR FindTreesCHM
 #' @export
 #' @examples
 #' \dontrun{

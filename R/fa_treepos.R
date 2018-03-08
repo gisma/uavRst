@@ -160,7 +160,10 @@ treepos_RL <- function(chm =NULL,
 #' the input for \code{treepos}.
 #' @param movingWin Size (in pixels) of the moving window to detect local maxima.
 #' @param minTreeAlt Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
-#' @import lidR
+#' @importFrom lidR tree_detection
+#' @importFrom lidR writeLAS
+#' @importFrom lidR readLAS
+#' @importFrom lidR lasclipRectangle
 #' @export treepos_lidR
 #' @examples
 #' \dontrun{
@@ -196,7 +199,7 @@ treepos_lidR <- function(chm =NULL,
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected.
 #' @param verbose quiet (1)
 #' height of \code{treepos}.
-#' @import rLiDAR
+#' @importFrom rLiDAR ForestCAS
 #' @export treepos_ft
 #' @examples
 #' \dontrun{

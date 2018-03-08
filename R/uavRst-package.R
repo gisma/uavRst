@@ -23,20 +23,13 @@
 #' @importFrom utils write.table
 #' @importFrom grDevices colorRampPalette
 #' @import crayon sf
+#' @import pROC
 #' @importFrom utils modifyList
 #' @importFrom ForestTools SegmentCrowns
 #' @importFrom ForestTools TreeTopFinder
 #' @importFrom itcSegment itcIMG
-#' @importFrom rLiDAR FindTreesCHM
-#' @importFrom rLiDAR ForestCAS
-#' @import pROC
-#' @importFrom lidR tree_detection
-#' @importFrom lidR writeLAS
-#' @importFrom lidR readLAS
-#' @importFrom lidR lasclipRectangle
 #' @import methods
 #' @import RSAGA
-
 #' @import reshape2
 #' @import rgrass7
 #'

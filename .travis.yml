@@ -31,7 +31,6 @@ r_packages:
   - CAST
   - curl
   - glcm
-  - inline
   - raster
   - lattice
   - latticeExtra
