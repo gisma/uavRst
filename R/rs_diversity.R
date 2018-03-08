@@ -18,6 +18,10 @@ fun_fhd <- function(a) {
 }
 
 #slightly changed for GridMetric output (gives already pi)
+#TOFIX #@name
+#@titel
+#@description
+#@author
 
 fun_fhd_fu <- function(b) {
   a <- subset(b, 1:6)

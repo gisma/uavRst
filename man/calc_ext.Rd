@@ -2,34 +2,34 @@
 % Please edit documentation in R/rs_classify.R
 \name{calc_ext}
 \alias{calc_ext}
-\title{#TOFIX @titel Convenient function to preprocess synthetic raster bands from a given RGB and optionally
+\title{Convenient function to preprocess synthetic raster bands from a given RGB and optionally
 extract the raster values on base of vector data for training purposes.}
 \usage{
-calc_ext(calculateBands = FALSE, extractTrain = TRUE,
-  prefixrunFN = "temp", prefixdemFN = "dem", prefixTrainImg = "",
-  prefixTrainGeom = "", suffixTrainImg = "", suffixTrainGeom = "",
-  patternIdx = "index", patternImgFiles = "", channels = c("red", "green",
-  "blue"), hara = TRUE, haraType = c("simple", "advanced", "higher"),
-  stat = TRUE, edge = TRUE, edgeType = c("gradient", "sobel", "touzi"),
-  morpho = TRUE, morphoType = c("dilate", "erode", "opening", "closing"),
-  rgbi = TRUE, indices = c("VVI", "VARI", "NDTI", "RI", "SCI", "BI", "SI",
-  "HI", "TGI", "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"),
-  RGBTrans = TRUE, colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB",
-  "HSI", "Log", "XYZ", "YUV"), pardem = TRUE, demType = c("hillshade",
-  "slope", "aspect", "TRI", "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE",
-  "C_PROF", "C_PLAN", "C_TANG", "C_LONG", "C_CROS", "C_MINI", "C_MAXI",
-  "C_TOTA", "C_ROTO", "MTPI"), morpho_method = 6, min_scale = 1,
-  max_scale = 8, num_scale = 2, kernel = 3, currentDataFolder = NULL,
-  currentIdxFolder = NULL, cleanTiffs = TRUE, giLinks = NULL)
+calc_ext(calculateBands = FALSE, extractTrain = TRUE, prefixRun = "temp",
+  patterndemFiles = "dem", prefixTrainImg = "", prefixTrainGeom = "",
+  suffixTrainImg = "", suffixTrainGeom = "", patternIdx = "index",
+  patternImgFiles = "", channels = c("red", "green", "blue"), hara = TRUE,
+  haraType = c("simple", "advanced", "higher"), stat = TRUE, edge = TRUE,
+  edgeType = c("gradient", "sobel", "touzi"), morpho = TRUE,
+  morphoType = c("dilate", "erode", "opening", "closing"), rgbi = TRUE,
+  indices = c("VVI", "VARI", "NDTI", "RI", "SCI", "BI", "SI", "HI", "TGI",
+  "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), RGBTrans = TRUE,
+  colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ",
+  "YUV"), pardem = TRUE, demType = c("hillshade", "slope", "aspect", "TRI",
+  "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", "C_TANG",
+  "C_LONG", "C_CROS", "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI"),
+  morpho_method = 6, min_scale = 1, max_scale = 8, num_scale = 2,
+  kernel = 3, currentDataFolder = NULL, currentIdxFolder = NULL,
+  cleanTiffs = TRUE, giLinks = NULL)
 }
 \arguments{
 \item{calculateBands}{logical. switch for set on calculation of syntheic bands and indices default = TRUE}
 
 \item{extractTrain}{logical. switch for set on extract training data according to training geometries default = TRUE}
 
-\item{prefixrunFN}{character. general prefix of all result files of the current run default = "tmp"}
+\item{prefixRun}{character. general prefix of all result files of the current run default = "tmp"}
 
-\item{prefixdemFN}{character. mandantory if DEM data is processes. prefix of current DEM default = "dem"}
+\item{patterndemFiles}{character. mandantory if DEM data is processes. prefix of current DEM default = "dem"}
 
 \item{prefixTrainImg}{character. potential string of characters that is used in the beginning of a shape file prefixTrainImg_SHAPEFILENAME_suffixTrainImg}
 
@@ -120,7 +120,7 @@ link2GI::initProj(projRootDir = projRootDir,
                                  
 res <- calc_ext(calculateBands    = TRUE,
                extractTrain      = TRUE,
-               prefixrunFN       = "traddel",
+               prefixRun      = "traddel",
                suffixTrainGeom   = "TrainingArea",
                patternIdx   = "index",
                indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") ,

@@ -164,11 +164,11 @@ pc2dtm <- function(lasDir = NULL,
     if (!file.exists(paste0(path_run,name)))
     file.copy(from = lasDir,
               to = paste0(path_run,name),
-              overwrite = TRUE,)
+              overwrite = TRUE)
 
 
   }
-  #TOFIX  overwrite = TRUE,) ->  overwrite = TRUE) #comma
+  
   if (!is.null(cutExtent)){
     #lastool(tool = "lasclip",lasFile = lasfile,cutExtent = cutExtent)
     las = lidR::readLAS(paste0(path_run,name))

@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_treepos.R
 \name{treepos_RL}
 \alias{treepos_RL}
-\title{#TOFIX @titel Individual tree detection within the LiDAR-derived Canopy Height Model (CHM) 'rLiDAR'}
+\title{'rLiDAR' based tree detection of a LiDAR-derived Canopy Height Model (CHM)}
 \usage{
 treepos_RL(chm = NULL, movingWin = 7, minTreeAlt = 2)
 }

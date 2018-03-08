@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_crownseg.R
 \name{chmseg_RL}
 \alias{chmseg_RL}
-\title{#TOFIX @titel Watershed segmentation based on 'rLiDAR'}
+\title{Watershed segmentation based on 'rLiDAR'}
 \usage{
 chmseg_RL(treepos = NULL, chm = NULL, maxCrownArea = 150,
   exclusion = 0.2)

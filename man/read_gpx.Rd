@@ -2,11 +2,7 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{read_gpx}
 \alias{read_gpx}
-\title{#TOFIX @name Read GPX file
- #@title
- #@author
-#@description Read a GPX file. By default, it reads all possible GPX layers, and only returns shapes for layers that have any features.
-if the layer has any features a sp object is returned.}
+\title{Read a GPX file.}
 \usage{
 read_gpx(file, layers = c("waypoints", "tracks", "routes", "track_points",
   "route_points"))
@@ -17,10 +13,7 @@ read_gpx(file, layers = c("waypoints", "tracks", "routes", "track_points",
 \item{layers}{vector of GPX layers. Possible options are \code{"waypoints"}, \code{"tracks"}, \code{"routes"}, \code{"track_points"}, \code{"route_points"}. By dedault, all those layers are read.}
 }
 \description{
-#TOFIX @name Read GPX file
- #@title
- #@author
-#@description Read a GPX file. By default, it reads all possible GPX layers, and only returns shapes for layers that have any features.
+Read a GPX file. By default, it reads all possible GPX layers, and only returns shapes for layers that have any features.
 if the layer has any features a sp object is returned.
 }
 \note{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_treepos.R
 \name{treepos_lidR}
 \alias{treepos_lidR}
-\title{#TOFIX @titel Tree top detection based on local maxima filters 'lidR'}
+\title{tree top detection based on local maxima filters as provided by 'lidR'}
 \usage{
 treepos_lidR(chm = NULL, movingWin = 7, minTreeAlt = 2)
 }

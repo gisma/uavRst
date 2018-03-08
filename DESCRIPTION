@@ -44,8 +44,6 @@ Imports:
     glcm,
     inline,
     raster,
-    lattice,
-    latticeExtra,
     crayon,
     ForestTools,
     itcSegment,

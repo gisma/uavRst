@@ -6,10 +6,10 @@
 \alias{uavRst-package}
 \title{Unmanned Aerial Vehicle Remote Sensing Tools - awesome tools to manipulate and analyze RGB imagery and point clouds}
 \description{
-Unmanned Aerial Vehicle Remote Sensing Tools
+The package provides some R-GI functionality for dealing with data as retrieved by Unmanned Aerial Vehicle VIS/NIR Remote Sensing
 }
 \details{
-# TOFIX @description The package provides some R-GI functionality for dealing with data as retrieved by Unmanned Aerial Vehicle VIS/NIR Remote Sensing
+Unmanned Aerial Vehicle Remote Sensing Tools
 }
 \author{
 Hanna Meyer, Lars Opgenoorth, Chris Reudenbach, Environmental Informatics Marburg \cr

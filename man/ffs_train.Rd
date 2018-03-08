@@ -2,7 +2,7 @@
 % Please edit documentation in R/rs_classify.R
 \name{ffs_train}
 \alias{ffs_train}
-\title{#TOFIX @titel Forward feature selection based random forest model training}
+\title{Forward feature selection based on rf model}
 \usage{
 ffs_train(trainingDF = NULL, predictors = c("R", "G", "B"),
   response = "ID", spaceVar = "FN", names = c("ID", "R", "G", "B", "A",

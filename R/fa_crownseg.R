@@ -141,7 +141,7 @@ chmseg_uav <- function(treepos = NULL,
 
 
 
-#' #TOFIX @titel Fast and straightforward watershed segmentation based on 'ForestTools'
+#' Watershed segmentation based on 'ForestTools'
 #' @description  'ForestTools' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Very fast algorithm based on the imagr watershed algorithm.
 #' Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools}{'ForestTools'}
 #' @param treepos \code{SpatialPointsDataFrame}. The point locations of treetops. The function will generally produce a
@@ -198,7 +198,7 @@ chmseg_FT <- function(treepos = NULL,
   return(crownsFT)
 }
 
-#' #TOFIX @titel Watershed segmentation based on 'rLiDAR'
+#' Watershed segmentation based on 'rLiDAR'
 #' @description  'rLiDAR' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Generic segmentation algorithm
 #' Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
 #'
@@ -209,7 +209,6 @@ chmseg_FT <- function(treepos = NULL,
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
 #' height of \code{treepos}.
 #' @param exclusion numeric. A single value from 0 to 1 that represents the percent of pixel exclusion.
-#' @import rLiDAR
 #' @export
 #' @examples
 #' \dontrun{
@@ -250,7 +249,7 @@ chmseg_RL <- function(treepos = NULL,
 }
 
 
-#' #TOFIX @titel Decision tree method to grow individual tree crowns based on 'itcSegment'
+#' Decision tree segmentation method to grow individual tree crowns based on 'itcSegment'
 #' @description Segmentation of individual tree crowns as polygons based on a LiDAR derived canopy height model.
 #' Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}.
 #'  M. Dalponte, F. Reyes, K. Kandare, and D. Gianelle,

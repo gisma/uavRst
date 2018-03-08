@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_crownseg.R
 \name{chmseg_FT}
 \alias{chmseg_FT}
-\title{#TOFIX @titel Fast and straightforward watershed segmentation based on 'ForestTools'}
+\title{Watershed segmentation based on 'ForestTools'}
 \usage{
 chmseg_FT(treepos = NULL, chm = NULL, minTreeAlt = 2,
   format = "polygons", verbose = FALSE)

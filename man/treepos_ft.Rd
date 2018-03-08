@@ -2,7 +2,7 @@
 % Please edit documentation in R/fa_treepos.R
 \name{treepos_ft}
 \alias{treepos_ft}
-\title{#TOFIX @titel Tree top finder 'ForestTools'}
+\title{'ForestTools' tree top detection}
 \usage{
 treepos_ft(chm = NULL, winFun = function(x) {     0.5 * ((x^2) * 0.009 +
   2.51) }, minTreeAlt = 2, maxCrownArea = maxCrownArea, verbose = TRUE)

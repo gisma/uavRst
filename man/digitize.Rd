@@ -2,7 +2,7 @@
 % Please edit documentation in R/tb_leafDraw.R
 \name{digitize}
 \alias{digitize}
-\title{#TOFIX @name Digitize and save vector features within your rstudio session (or any browser) 
+\title{Easy digitizing of vector features within your rstudio session (or any browser) 
 #@title 
 #@author Chris Reudenbach}
 \usage{

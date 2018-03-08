@@ -2,8 +2,7 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{get_gi}
 \alias{get_gi}
-\title{#@author Chris Reudenbach
- #TOFIX @name  @titlecreates all link2GI links}
+\title{link all link2GI links}
 \usage{
 get_gi(links = NULL, simple = TRUE, linkItems = c("saga", "grass7", "otb",
   "gdal"), sagaArgs = "default", grassArgs = "default",

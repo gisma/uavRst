@@ -1,6 +1,6 @@
 #'  Unmanned Aerial Vehicle Remote Sensing Tools
 #'
-#' # TOFIX @description The package provides some R-GI functionality for dealing with data as retrieved by Unmanned Aerial Vehicle VIS/NIR Remote Sensing 
+#' @description The package provides some R-GI functionality for dealing with data as retrieved by Unmanned Aerial Vehicle VIS/NIR Remote Sensing 
 #'
 #' @name uavRst
 #' @docType package
@@ -22,8 +22,6 @@
 #' @import caret
 #' @importFrom utils write.table
 #' @importFrom grDevices colorRampPalette
-#' @import  lattice
-#' @import latticeExtra
 #' @import crayon sf
 #' @importFrom utils modifyList
 #' @importFrom ForestTools SegmentCrowns
@@ -33,7 +31,9 @@
 #' @importFrom rLiDAR ForestCAS
 #' @import pROC
 #' @importFrom lidR tree_detection
-
+#' @importFrom lidR writeLAS
+#' @importFrom lidR readLAS
+#' @importFrom lidR lasclipRectangle
 #' @import methods
 #' @import RSAGA
 

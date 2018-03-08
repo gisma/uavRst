@@ -133,7 +133,7 @@ predict_rgb <- function(imageFiles=NULL,
                         out_prefix = "classified_",
                         bandNames = NULL) {
   
-  if (is.null(bandNames)) return(cat(crayon()[[1]]("\n you did not provide predictor names. \nTypically something like bandNames ie c('R','G','B')")))
+  if (is.null(bandNames)) return(cat(getCrayon()[[1]]("\n you did not provide predictor names. \nTypically something like bandNames ie c('R','G','B')")))
   po = path_output
   i = 1:length(imageFiles)
   cat("\n::: start prediction aka classifikation...\n")
@@ -158,7 +158,7 @@ predict_rgb <- function(imageFiles=NULL,
   parallel::stopCluster(cl)
 }
 
-#' #TOFIX @titel Forward feature selection based random forest model training
+#' Forward feature selection based on rf model 
 #' @description ffs_train is a wrapper function for a simple use of the forward feature selection approach
 #' of training random forest classification models. This validation is particulary suitable for
 #' leave-location-out cross validations where variable selection
@@ -274,7 +274,7 @@ ffs_train<-function(   trainingDF   = NULL,
 
 
 
-#' #TOFIX @titel Convenient function to preprocess synthetic raster bands from a given RGB and optionally
+#' Convenient function to preprocess synthetic raster bands from a given RGB and optionally
 #' extract the raster values on base of vector data for training purposes.
 #' @description
 #' The calc_ext function covers step 1 of the  usecaseRGBClassify workflow for a random forest based classification of visible imagery.
@@ -439,8 +439,8 @@ calc_ext<- function ( calculateBands    = FALSE,
     # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
     
     #imageFiles <- list.files(pattern=paste0("^",prefixRun,"*","tif"), path=currentDataFolder, full.names=TRUE)
-    imageFiles <-Sys.glob(path=paste0(currentDataFolder,patternImgFiles,"*","tif"))
-    demFiles <- Sys.glob(path=paste0(currentDataFolder,patterndemFiles,"*","tif"))
+    imageFiles <-Sys.glob(paths = paste0(currentDataFolder,patternImgFiles,"*","tif"))
+    demFiles <- Sys.glob(paths = paste0(currentDataFolder,patterndemFiles,"*","tif"))
     
     counter<- max(length(demFiles),length(imageFiles))
     # stack the ortho images
@@ -466,11 +466,11 @@ calc_ext<- function ( calculateBands    = FALSE,
           bandNames <-append(bandNames,make_bandnames(dem = item))
         
       } 
-      # }
+
       
       # for all images do
       
-      #for (i in 1:length(imageFiles)){
+
       
       if (rgbi){
         cat(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))

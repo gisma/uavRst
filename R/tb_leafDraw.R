@@ -1,4 +1,4 @@
-#' #TOFIX @name Digitize and save vector features within your rstudio session (or any browser) 
+#' Easy digitizing of vector features within your rstudio session (or any browser) 
 #' #@title 
 #' #@author Chris Reudenbach
 #' @description  digitize is based on the leaflet draw plugin. It provides a bunch of leaflet maps as base layers for digitizing vector features. 

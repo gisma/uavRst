@@ -123,7 +123,7 @@ treepos <- function(chm = NULL,
 }
 
 
-#' #TOFIX @titel Individual tree detection within the LiDAR-derived Canopy Height Model (CHM) 'rLiDAR'
+#' 'rLiDAR' based tree detection of a LiDAR-derived Canopy Height Model (CHM) 
 #' @description Detects and computes the location and height of individual trees within
 #' the LiDAR-derived Canopy Height Model (CHM). The algorithm implemented in this function
 #' is local maximum with a fixed window size. Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
@@ -131,7 +131,6 @@ treepos <- function(chm = NULL,
 #' the input for \code{treepos}.
 #' @param movingWin Size (in pixels) of the moving window to detect local maxima.
 #' @param minTreeAlt Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
-#' @import rLiDAR
 #' @export treepos_RL
 #' @examples
 #' \dontrun{
@@ -151,7 +150,7 @@ treepos_RL <- function(chm =NULL,
   return(localmaxima)
 }
 
-#' #TOFIX @titel Tree top detection based on local maxima filters 'lidR'
+#' @title tree top detection based on local maxima filters as provided by 'lidR'
 #' @description Tree top detection based on local maxima filters. There are two types of filter. The first,
 #' called for gridded objects, works on images with a matrix-based algorithm. And the second one, called for
 #' point clouds, works at the point cloud level without any rasterization. Jean-Romain Roussel and David Auty:
@@ -161,7 +160,7 @@ treepos_RL <- function(chm =NULL,
 #' the input for \code{treepos}.
 #' @param movingWin Size (in pixels) of the moving window to detect local maxima.
 #' @param minTreeAlt Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
-#' @import rLiDAR
+#' @import lidR
 #' @export treepos_lidR
 #' @examples
 #' \dontrun{
@@ -183,7 +182,7 @@ treepos_lidR <- function(chm =NULL,
 }
 
 
-#' #TOFIX @titel Tree top finder 'ForestTools'
+#' 'ForestTools' tree top detection
 #' @description Implements the variable window filter algorithm (Popescu & Wynne, 2004)
 #' for detecting treetops from a canopy height model. Andrew Plowright:
 #' R package \href{https://CRAN.R-project.org/package=ForestTools}{ForestTools}\cr

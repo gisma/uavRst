@@ -2,9 +2,7 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{line_maxpos}
 \alias{line_maxpos}
-\title{#@author Chris Reudenbach
- #TOFIX @name  @title
-applies a line to a raster and returns the position of the maximum value}
+\title{applies a line to a raster and returns the position of the maximum value}
 \usage{
 line_maxpos(dem, line)
 }

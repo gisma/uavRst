@@ -29,9 +29,11 @@ require(link2GI)
 
 # proj subfolders
 
-prefixrunFN       = "desert_dem"
+# proj subfolders
+prefixrunFN       ="desert" 
+prefixdemFN       = "dem"
 # define project folder
-projRootDir <- "/media/solo/7fbfcfdf-6276-48ad-ba94-82ba2f9993b9/drohne/chile"
+projRootDir <- "~/test1/uavrst"
 
 paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/training/","data/training/idx/",
@@ -67,7 +69,7 @@ if (startcalc_ext){
   # start calculation of synthetic bands and extraction of the training data
   # note otions are commented due to the fact that the maximum is default
   # to restrict calculations uncomment and select by editng the param list
-  res <- calc_ext(calculateBands    = TRUE,
+  res <- calc_ext(calculateBands    = F,
                  extractTrain      = TRUE,
                  suffixTrainGeom   = "",
                  patternIdx   = "index",
@@ -77,17 +79,17 @@ if (startcalc_ext){
                  prefixdemFN       = prefixdemFN,
                  rgbi              = TRUE,
                   indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"),
-                 RGBTrans          = TRUE,
+                 RGBTrans          = FALSE,
                  colorSpaces       = c("CIELab","XYZ","YUV"),
                  channels          = c("red"),# "green", "blue"),
-                 hara              = TRUE,
+                 hara              = FALSE,
                   haraType          = c("simple"), #,"advanced","higher"),
-                 stat              = TRUE,
-                 edge              = TRUE,
+                 stat              = FALSE,
+                 edge              = FALSE,
                   edgeType          = c("gradient","sobel","touzi"),
                  morpho            = TRUE,
 
-                  morphoType        = c("dilate","erode","opening","closing"),
+                  morphoType        = c("dilate"),#"erode","opening","closing"),
                  pardem = TRUE,
                  demType = c("hillshade"),#"slope", "aspect","TRI","TPI","Roughness"),
                  kernel            = 3,

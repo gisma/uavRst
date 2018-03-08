@@ -21,4 +21,7 @@ sp_line(p1, p2, ID, proj4 = "+proj=longlat +datum=WGS84 +no_defs",
 \description{
 create an spatiallineobject from 2 points, optional export as shapefile
 }
+\author{
+Chris Reudenbach
+}
 \keyword{internal}
