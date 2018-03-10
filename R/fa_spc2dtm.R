@@ -23,6 +23,7 @@
 #'@importFrom lidR writeLAS
 #'@importFrom lidR readLAS
 #'@importFrom lidR lasclipRectangle
+#'@importFrom rlas readlasheader
 #'@export spc2dtm
 #'
 #'@examples

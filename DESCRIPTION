@@ -53,7 +53,8 @@ Imports:
     rgrass7,
     randomForest,    
     lidR,
-    rLiDAR
+    rLiDAR,
+    rlas
 Suggests: knitr,
     rmarkdown,
     mapview

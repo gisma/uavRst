@@ -32,6 +32,7 @@
 #' @import RSAGA
 #' @import reshape2
 #' @import rgrass7
+#' @importFrom rlas readlasheader
 #'
 #' @useDynLib uavRst
 #' @keywords package
