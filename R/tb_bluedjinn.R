@@ -241,7 +241,7 @@ poly_maxpos <- function(x,lN, poly_split=TRUE){
   if (poly_split) {
     cat("     split polygons...\n")
     cat("     analyze",length(ids) ,"polygons\n")
-    cat("     assuming 0.25 cm resolution and an average of 25 sqm/polygon\n       calculaton time is approx.:  ",floor(length(ids)/60)," min\n")
+    cat("     calculaton time is approx.:  ",floor(length(ids)/180)," min\n")
     dir.create(paste0(path_tmp,"split"),recursive=TRUE)
 
     # split polygon with respect to the NAME attribute
