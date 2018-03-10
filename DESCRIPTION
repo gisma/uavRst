@@ -51,7 +51,7 @@ Imports:
     RSAGA,
     reshape2,
     rgrass7,
-    randomForest,    
+    randomForest,
     lidR,
     rLiDAR,
     rlas

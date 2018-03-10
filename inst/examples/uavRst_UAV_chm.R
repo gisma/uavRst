@@ -54,7 +54,7 @@ setwd(path_run)
 # ----- calculate DSM DTM & CHM FROM UAV POINT CLOUDS-----------------------------------------------
 #las_data<-"~/proj/uav/thesis/finn/output/477375_00_5631900_00_477475_00_5632000_00.las"
 # create DSM
-dsm <- uavRst::pc2dsm(lasDir = las_data,
+dsm <- uavRst::pc3D_dsm(lasDir = las_data,
                       gisdbase_path = projRootDir,
                       otb_gauss_radius ="4.1",
                       grid_size = "1.0",
@@ -63,7 +63,7 @@ dsm <- uavRst::pc2dsm(lasDir = las_data,
                       cutExtent = cutExtent,
                       giLinks = giLinks)
 # create DTM
-dtm <- uavRst::pc2dtm(lasDir = paste0(path_run,dsm[[4]]),
+dtm <- uavRst::pc2D_dtm(lasDir = paste0(path_run,dsm[[4]]),
                       gisdbase_path = projRootDir,
                       thin_with_grid = "0.5",
                       level_max = "4" ,

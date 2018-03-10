@@ -99,10 +99,13 @@ library(EBImage)
 # read data
 lasfile<-path.expand("~/proj/uav/thesis/finn/output/477375_00_5631900_00_477475_00_5632000_00.las")
 las = readLAS(lasfile)
+thinned = las_clip %>% lasdecimate(1, homogenize = F,res = 5)
+las   %>% grid_density %>% plot
+thinned %>% grid_density %>% plot
 # Classify ground points see example # https://github.com/Jean-Romain/lidR/wiki/Rasterizing-perfect-canopy-height-models
 ws = seq(3,21, 3)
 th = seq(0.1, 2, length.out = length(ws))
-lasground(las, "pmf", ws, th)
+lasground(las_clip, "pmf", ws, th)
 dtm2<-grid_terrain(las, method = "kriging", k = 10L)
 dtm2 = as.raster(dtm2)
 raster::plot(dtm2)
@@ -155,3 +158,22 @@ plot(chm2, col = height.colors(50))
 plot(contour2, add = T)
 
 plot(crowns1-crowns2)
+
+paths<-link2GI::linkGRASS7(gisdbase = gisdbase_path, location = "test2", spatial_params = sp_param,resolution = 20)
+
+ret <- rgrass7::execGRASS("r.in.lidar",
+                          flags  = c("overwrite","quiet","o"),
+                          input  = paste0(path_run,"uniwald_sequoia2.las"),
+                          output = "dem20",
+                          method = "min",
+                          
+                          resolution = 20,
+                          intern = TRUE,
+                          ignore.stderr = TRUE
+)
+
+v.surf.rst --overwrite input=dem20@PERMANENT elevation=int20 tension=20
+r.to.vect -z -b --overwrite input=dem20@PERMANENT output=dem20 type=point       
+
+raster::writeRaster(raster::raster(rgrass7::readRAST(fn)),paste0(path_run,fn), overwrite=TRUE,format="GTiff")
+fn<-"test"

@@ -1,9 +1,9 @@
-if (!isGeneric('pc2dsm')) {
-  setGeneric('pc2dsm', function(x, ...)
-    standardGeneric('pc2dsm'))
+if (!isGeneric('pc3D_dsm')) {
+  setGeneric('pc3D_dsm', function(x, ...)
+    standardGeneric('pc3D_dsm'))
 }
 
-#'@name pc2dsm
+#'@name pc3D_dsm
 #'@title Create a Digital Surface Model from a UAV generated point cloud
 #'
 #'@description
@@ -35,11 +35,11 @@ if (!isGeneric('pc2dsm')) {
 #'@param verbose logical. to be quiet FALSE
 #'@param cutExtent numerical. clip area c(mix,miny,maxx,maxy)
 #'
-#'@export pc2dsm
+#'@export pc3D_dsm
 #'@examples
 #'\dontrun{
 #' # create a DSM based on a uav point cloud
-#'  pc2dsm(lasDir =  lasDir,
+#'  pc3D_dsm(lasDir =  lasDir,
 #'         gisdbase_path = "~/temp6/GRASS7",
 #'         GRASSlocation = "tmp/",
 #'         projSubFolder = c("data/","output/","run/","las/"),
@@ -48,7 +48,7 @@ if (!isGeneric('pc2dsm')) {
 #'}
 #'
 
-pc2dsm <- function(lasDir = NULL,
+pc3D_dsm <- function(lasDir = NULL,
                    gisdbase_path = NULL,
                    GRASSlocation = "tmp/",
                    projSubFolder = c("data/","output/","run/","las/"),

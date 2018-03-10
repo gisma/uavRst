@@ -8,13 +8,12 @@ require(link2GI)
 require(uavRst)
 
 # define project settings, data folders etc
-# define project folder
 projRootDir <- "~/proj/uav/thesis/finn"
 
-
-# url <- "https://github.com/gisma/gismaData/raw/master/uavRst/lidar_477375_00_5631900_00_477475_00_5632000_00.las"
+# url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/477369_800_5631924_000_477469_800_5632024_000.las"
 # res <- curl::curl_download(url, "~/proj/uav/thesis/finn/output/lasdata.las")
-# las_data<-paste0(path_output,"lasdata.las")
+# uav_data<-paste0(path_output,"lasdata.las")
+
 # proj subfolders
 projFolders = c("data/","data/ref/","output/","run/","las/")
 
@@ -26,9 +25,10 @@ path_prefix = "path_"
 
 # proj4 string of ALL data
 proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-# cutExtent <- c(477393.,477460. ,5631938. , 5632003.) # old extent sharply cutted
 
-cutExtent <- c(477369.8, 477469.8, 5631924, 5632024)
+# full tile 
+#cutExtent <- c(477369.8, 477469.8, 5631924, 5632024)
+cutExtent <- c(477392.0, 477462.0, 5631935.0, 5632005.0)
 ext<- raster::extent(as.numeric(cutExtent))
 
 maxCrownArea = 150
@@ -39,7 +39,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = projFolders,
                          global = TRUE,
                          path_prefix = path_prefix)
-
+#'
 # referenz shape filename
 plot2<-raster::shapefile(paste0(path_data,"ref/plot_UTM.shp"))
 # image data
@@ -47,9 +47,11 @@ rgbImgFn<-paste0(path_data,"training/uniWald_sequoia-3-3.tif")
 # lidar data  can be a foldr or a file
 las_data <- "~/proj/uav/thesis/finn/output/477119_673_5631675_040_477733_694_5632284_900.las"
 las_data <- "~/proj/uav/thesis/finn/output/477369_800_5631924_000_477469_800_5632024_000.las"
-#las_data <- "~/proj/uav/thesis/finn/data/sequoia/uniwald_sequoia2.las"
-
-
+las_data <- "~/proj/uav/thesis/finn/data/sequoia/477369_800_5631924_000_477469_800_5632024_000.las"
+las_data <- "~/proj/uav/thesis/finn/data/sequoia/uniwald_sequoia2.las"
+actual_grid_size<-0.1
+splineNumber<-7
+thingrid<- 4.
 
 # link all CLI stuff
 giLinks<-get_gi()
@@ -61,12 +63,12 @@ raster::rasterOptions(tmpdir=path_run)
 
 # set working directory
 setwd(path_run)
-actual_grid_size<-0.25
+
 # ----- calculate DSM DTM & CHM FROM UAV POINT CLOUDS-----------------------------------------------
 #las_data<-"~/proj/uav/thesis/finn/output/477375_00_5631900_00_477475_00_5632000_00.las"
 # create DSM
 
-dsm <- uavRst::pc2dsm(lasDir = las_data,
+dsm <- pc3D_dsm(lasDir = las_data,
                       gisdbase_path = projRootDir,
                       type_smooth = "no",
                       grid_size = actual_grid_size,
@@ -74,42 +76,50 @@ dsm <- uavRst::pc2dsm(lasDir = las_data,
                       grass_lidar_method = "max",
                       #cutExtent = cutExtent,
                       giLinks = giLinks)
-# create DTM
-dtm <- uavRst::pc2dtm(lasDir = las_data,
-                      gisdbase_path = projRootDir,
-                      thin_with_grid = ".5",
-                      level_max = "3" ,
-                      grid_size = actual_grid_size,
-                      #cutExtent = cutExtent,
-                      giLinks = giLinks)
+
+dtm <- pc2D_dtm(laspcFile = las_data,
+               gisdbase_path = projRootDir,
+               tension = 20 ,
+               sampleGridSize = 25,
+               targetGridSize = actual_grid_size,
+               giLinks = giLinks)
+
+# # create DTM
+# dtm2 <- pc3D_dtm(lasDir = las_data,
+#                       gisdbase_path = projRootDir,
+#                       thin_with_grid = 1.,
+#                       level_max = 5 ,
+#                       grid_size = actual_grid_size,
+#                    #   cutExtent = cutExtent,
+#                       giLinks = giLinks)
 
 # take the rsulting raster files
-dsmr <- dsm[[1]]
-dtmr <- dtm[[1]]
-dtmR<-raster::crop(dtmR,dsmR)
-dsmR<-raster::crop(dsmR,dtmR)
-dsmR <- raster::resample(dsmR, dtmR , method = 'bilinear')
-raster::writeRaster(dsmR,paste0(path_output,"dsmR.tif"),overwrite=TRUE)
-raster::writeRaster(dtmR,paste0(path_output,"dtmR.tif"),overwrite=TRUE)
+dsmR <- dsm[[1]]
+dtmR <- dtm
+#dtmR2<- raster::crop(dtmR,dsmR)
+#dtmR <- raster::resample(dtmR2, dsmR , method = 'bilinear')
 rgbImg <- raster::raster(rgbImgFn)
-rgbR<-raster::crop(rgbImg,dsmR) 
-raster::writeRaster(rgbR,paste0(path_output,"rgbImg.tif"),overwrite=TRUE)
-# if not already done adjust dsm to dtm
+dtm2<- raster::crop(dtmR,rgbImg)
+dsm2<- raster::crop(dsmR,rgbImg)
+dtm2 <- raster::resample(dtm2, dsm2 , method = 'bilinear')
+rgbR <- raster::resample(rgbImg, dsm2 , method = 'bilinear')
+
+raster::writeRaster(rgbImg,paste0(path_output,"rgbImg.tif"),overwrite=TRUE)
+             # if not already done adjust dsm to dtm
 
 
 # calculate CHM
-chmR <- dsmR - dtmR
+chmR <- dsm2 - dtm2
 
 # reset negative values to 0
 chmR[chmR<0]<-0
-
+raster::writeRaster(chmR,paste0(path_output,"chm.tif"),overwrite=TRUE)
 # inverse chm
 #chmR<- (- 1 * chmR) + raster::maxValue(chmR)
 
-saveRDS(dtmR,file = paste0(path_output,"dtmR.rds"))
-saveRDS(dsmR,file = paste0(path_output,"dsmR.rds"))
-saveRDS(chmR,file = paste0(path_output,"chmR.rds"))
-
+# saveRDS(dtmR,file = paste0(path_output,"dtmR.rds")
+# saveRDS(dsmR,file = paste0(path_output,"dsmR.rds"))
+# saveRDS(chmR,file = paste0(path_output,"chmR.rds"))
 
 # ----  start crown analysis ------------------------
 
@@ -132,60 +142,48 @@ raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE,NAflag = 0)
 
 # call tree crown segmentation
 
-crowns <- uavRst::chm_seg_uav( treepos = tPos,
-                                   chm =chmR,
-                                   minTreeAlt = 3,
-                                   normalize = 0,
-                                   method = 0,
-                                   neighbour = 0,
-                                   majority_radius = 5,
-                                   thVarFeature = 1.,
-                                   thVarSpatial = 1.,
-                                   thSimilarity = 0.003,
-                                   giLinks = giLinks )
+crowns <- chmseg_uav( treepos = tPos,
+                      chm =chmR,
+                      minTreeAlt = 3,
+                      normalize = 0,
+                      method = 0,
+                      neighbour = 0,
+                      majority_radius = 5,
+                      thVarFeature = 1.,
+                      thVarSpatial = 1.,
+                      thSimilarity = 0.003,
+                      giLinks = giLinks )
 
 
 ### Foresttools approach
-crownsFT <- uavRst::chm_seg_FT(treepos = tPos,
-                                      chm = chmR,
-                                      minTreeAlt = minTreeAlt,
-                                      format = "polygons",
-                                      verbose = TRUE)
+crownsFT <- chmseg_FT(treepos = tPos,
+                      chm = chmR,
+                      minTreeAlt = minTreeAlt,
+                      format = "polygons",
+                      verbose = TRUE)
 
 
 ### rLiDAR approach
-crownsRL <- uavRst::chm_seg_RL(chm=chmR,
-                                      treepos=tPos,
-                                      maxCrownArea=maxCrownArea,
-                                      exclusion=0.2)
+crownsRL <- chmseg_RL(chm=chmR,
+                      treepos=tPos,
+                      maxCrownArea=maxCrownArea,
+                      exclusion=0.2)
 
 ### itcSeg approach
-crownsITC<- uavRst::chm_seg_ITC(chm = chmR,
-                                       EPSG_code =3064,
-                                       movingWin = 3,
-                                       TRESHSeed = 0.45,
-                                       TRESHCrown = 0.55,
-                                       minTreeAlt = 2,
-                                       maxCrownArea = maxCrownArea)
-### Fusion approach
-crownsFusion<- chm_seg_FU(lasDir = las_data,
-                                 grid_size = c(1),
-                                 fusionPercentile    = 37,
-                                 movingWin          = 3,
-                                 focalStatFun = "mean",
-                                 proj4 = proj4, #"+init=epsg:25832",
-                                 path = getwd(),
-                                 fusionCmd = NULL,
-                                 extent = ext)
+crownsITC<- chmseg_ITC(chm = chmR,
+                       EPSG_code =3064,
+                       movingWin = 3,
+                       TRESHSeed = 0.45,
+                       TRESHCrown = 0.55,
+                       minTreeAlt = 2,
+                       maxCrownArea = maxCrownArea)
 
-crownsFusion[[3]]
-
-
-mapview::mapview(crownsFT) +
-  mapview::mapview(crownsRL) +
-  mapview::mapview(crownsITC,zcol ="Height_m")
-mapview::mapview(crowns,zcol="chmMAX") +
-  mapview::mapview(chmR)
+print(mapview::mapview(crownsFT) +
+        mapview::mapview(crownsRL) +
+        mapview::mapview(crownsITC,zcol ="Height_m")+
+        mapview::mapview(crowns,zcol="chmMAX") +
+        mapview::mapview(chmR)
+)
 
 
 
@@ -205,7 +203,7 @@ crownsITC<-sp::spTransform(crownsITC,CRSobj = raster::crs(proj4))
 crowns<-sp::spTransform(crowns,CRSobj = raster::crs(proj4))
 finalTreesITC<-rgeos::gIntersection(plot2,crownsITC,byid = TRUE)
 finalTrees<-rgeos::gIntersection(plot2,crowns,byid = TRUE)
-mapview::mapview(finalTreesITC) +
-  mapview::mapview(finalTrees)
+print(mapview::mapview(finalTreesITC) +
+        mapview::mapview(finalTrees))
 
 

@@ -1,10 +1,10 @@
 
-if (!isGeneric('fpc2dtm')) {
-  setGeneric('fpc2dtm', function(x, ...)
-    standardGeneric('fpc2dtm'))
+if (!isGeneric('pc3D_dtm')) {
+  setGeneric('pc3D_dtm', function(x, ...)
+    standardGeneric('pc3D_dtm'))
 }
 
-#'@name fpc2dtm
+#'@name pc3D_dtm
 #'@title create a Digital Terrain Model from preclassified point cloud data
 #'
 #'@description
@@ -35,18 +35,18 @@ if (!isGeneric('fpc2dtm')) {
 #'@importFrom lidR writeLAS
 #'@importFrom lidR readLAS
 #'@importFrom lidR lasclipRectangle
-#'@export fpc2dtm
+#'@export pc3D_dtm
 #'
 #'@examples
 #'\dontrun{
-#' fpc2dtm(lasDir =  "~/path/to/lasdata",
+#' pc3D_dtm(lasDir =  "~/path/to/lasdata",
 #'        gisdbase_path = "~/temp5",
 #'        thin_with_grid = "0.5",
 #'        level_max = "5" ,
 #'        grid_size = "0.5")
 #'}
 
-fpc2dtm <- function(lasDir = NULL,
+pc3D_dtm <- function(lasDir = NULL,
                       gisdbase_path = NULL,
                       thin_with_grid = "0.5",
                       keep_class = "2",

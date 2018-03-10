@@ -1,5 +1,5 @@
 
-#' Create a Digital Terrain Model from UAV generated point clouds by minimum sampling
+#' Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling
 #'
 #'@description
 #' Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval. Due to the poor estimation of ground points 
@@ -8,13 +8,15 @@
 #'
 #'@author Chris Reudenbach
 #'
-#'@param laspcFile  default is \code{NULL} path  to the laz/las file(s)
-#'@param gisdbase_path default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
-#'@param sampleGridSize  resolution extraction raster
-#'@param targetGridSize the resolution of the target DTM raster
+#'@param laspcFile  character. default is \code{NULL} path  to the laz/las file(s)
+#'@param gisdbase_path character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
+#'@param sampleGridSize  numeric, resolution extraction raster
+#'@param targetGridSize numeric. the resolution of the target DTM raster
+#'@param splineThresGridSize numeric. threshold of minimum gridsize tha is used for splininterpolation if the desired resolution is finer a two step approximation is choosen 
+#'first step spline interpolation using the treshold gridsize second step bilinear resampling to the desired targetGridSize.
 #'@param tension  numeric. tension of spline interpolation.
-#'@param proj4  default is EPSG 32632, any valid proj4 string that is assumingly the correct one
-#'@param giLinks list of GI tools cli pathes, default is NULL
+#'@param proj4  character. valid proj4 string that should be assumingly the correct one
+#'@param giLinks list of link2GI cli pathes, default is NULL
 #'@param projFolder subfolders that will be created/linked for R related GRASS processing
 #'@param verbose to be quiet (1)
 #'@param cutExtent clip area
@@ -24,23 +26,24 @@
 #'@importFrom lidR readLAS
 #'@importFrom lidR lasclipRectangle
 #'@importFrom rlas readlasheader
-#'@export spc2dtm
-#'
+#'@export pc2D_dtm
+
 #'@examples
 #'\dontrun{
-#' spc2dtm(laspcFile =  "~/path/to/lasdata",
+#' pc2D_dtm(laspcFile =  "~/path/to/lasdata",
 #'        gisdbase_path = "~/temp5",
 #'        thin_with_grid = "0.5",
 #'        level_max = "5" ,
 #'        grid_size = "0.5")
 #'}
 
-spc2dtm <- function(laspcFile = NULL,
+pc2D_dtm <- function(laspcFile = NULL,
                     gisdbase_path = NULL,
                     tension = 20 ,
                     cutExtent = NULL,
                     sampleGridSize=25,
-                    targetGridSize = 0.5,
+                    targetGridSize = 0.25,
+                    splineThresGridSize = 0.5,
                     projFolder = NULL,
                     proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                     giLinks =NULL,
@@ -106,7 +109,7 @@ spc2dtm <- function(laspcFile = NULL,
   sp_param[5] <- proj4
 
   link2GI::linkGRASS7(gisdbase = gisdbase_path,
-                      location = "spc2dtm", 
+                      location = "pc2D_dtm", 
                       spatial_params = sp_param, 
                       resolution = sampleGridSize, 
                       returnPaths = FALSE, 
@@ -133,6 +136,11 @@ spc2dtm <- function(laspcFile = NULL,
   )
   
   # set regio with new gridsize
+  if (targetGridSize < splineThresGridSize) {
+    oldtgs<-targetGridSize
+    targetGridSize <- splineThresGridSize
+    cat(":: target grid size is", targetGridSize ," => setting grid size to: ",splineThresGridSize,"\n") 
+    }
   ret <- rgrass7::execGRASS("g.region",
                             flags  = c("quiet"),
                             res= as.character(targetGridSize),
@@ -148,6 +156,7 @@ spc2dtm <- function(laspcFile = NULL,
                             intern = TRUE,
                             ignore.stderr = TRUE
   )
+  
   # apply mask for input data area
   ret <- rgrass7::execGRASS("r.mapcalc",
                             flags  = c("overwrite","quiet"),
@@ -156,9 +165,17 @@ spc2dtm <- function(laspcFile = NULL,
                             ignore.stderr = TRUE
   )
   
-  
-  
-  dtm<- raster::writeRaster(raster::raster(rgrass7::readRAST("dtm")),paste0(path_run,"dtm"), overwrite=TRUE,format="GTiff")
+  dtm0<- raster::writeRaster(raster::raster(rgrass7::readRAST("dtm")),paste0(path_run,"dtm0"), overwrite=TRUE,format="GTiff")
+  if (oldtgs < splineThresGridSize) {
+  cat(":: Resample to a grid size of: ", targetGridSize ,"\n")  
+  res<-gdalUtils::gdalwarp(srcfile = paste0(path_run,"dtm0.tif"),
+                             dstfile = paste0(path_run,"dtm.tif"),
+                             tr=c(oldtgs,oldtgs),
+                             r="bilinear",
+                             overwrite = TRUE,
+                             multi = TRUE)
+    }
+  dtm <- raster::raster(paste0(path_run,"dtm.tif"))
   # cat(":: calculate metadata ... \n")
   # raster::writeRaster(dtm, paste0(path_output,fn, "_dtm.tif"),overwrite = TRUE)
   # e <- extent(dtm)
