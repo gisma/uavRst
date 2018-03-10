@@ -166,7 +166,7 @@ raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE,NAflag = 0)
 imageTrainFiles <- list.files(pattern="[.]envi$", path=path_output, full.names=TRUE)
 # load the band names
 load(paste0(path_output,"bandNames_rgbImg_.RData"))
-
+bandNames<- append(bandNames,c("hillshade","slope", "aspect","TRI","TPI","Roughness","SLOPE","ASPECT", "C_GENE","C_PROF","C_PLAN"," C_TANG"," C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI"))
 # convert them to saga 
 convert2SAGA(imageTrainFiles,
           bandName=bandNames, 
@@ -174,7 +174,8 @@ convert2SAGA(imageTrainFiles,
           endBand=length(bandNames),
           refFn="chm.tif")
 
-# call tree crown segmentation
+# call tree crown segmentation NOTE there are about 100 highly correlated channels 
+# try to reduce and mention the thresholds
 crowns <- chmseg_uav( treepos = tPos, 
                       segmentation_bands = bandNames,
                       chm = chmR,
@@ -185,7 +186,7 @@ crowns <- chmseg_uav( treepos = tPos,
                       majority_radius = 3,
                       thVarFeature = 2.,
                       thVarSpatial = 2.,
-                      thSimilarity = 0.0001,
+                      thSimilarity = 0.00001,
                       giLinks = giLinks )
 
 
