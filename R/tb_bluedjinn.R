@@ -741,4 +741,22 @@ isgdaldemitem <- function(x)
 }
 
 
-
+cutTif<- function(rasterFiles = NULL,
+                  ext=NULL,
+                  outpath="cut",
+                  prefix="cut") {
+  #rasterFiles <- list.files(pattern="[.]tif$", path="/home/creu/proj/geopat/data/modis_carpathian_mountains/study_area/modis_ndvi/2002", full.names=TRUE)
+  # UX<-1964000
+  # UY<-5130000
+  # LX<-2130000
+  # LY<- 4973000
+  te=paste(extent(ext)[1],' ',
+           extent(ext)[3],' ',
+           extent(ext)[2],' ',
+           extent(ext)[4])
+  
+  for (rasterFile in rasterFiles) {
+    system(paste0("gdal_translate -projwin ", te, " -of GTiff ",rasterFile, " ", dirname(rasterFile),"/",outpath,"/",prefix,basename(rasterFile)))
+  }
+}
+  

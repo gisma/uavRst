@@ -1,11 +1,11 @@
 
-if (!isGeneric('pc2dtm')) {
-  setGeneric('pc2dtm', function(x, ...)
-    standardGeneric('pc2dtm'))
+if (!isGeneric('fpc2dtm')) {
+  setGeneric('fpc2dtm', function(x, ...)
+    standardGeneric('fpc2dtm'))
 }
 
-#'@name pc2dtm
-#'@title Create a Digital Terrain Model from a UAV generated point cloud
+#'@name fpc2dtm
+#'@title create a Digital Terrain Model from preclassified point cloud data
 #'
 #'@description
 #' Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.
@@ -35,18 +35,18 @@ if (!isGeneric('pc2dtm')) {
 #'@importFrom lidR writeLAS
 #'@importFrom lidR readLAS
 #'@importFrom lidR lasclipRectangle
-#'@export pc2dtm
+#'@export fpc2dtm
 #'
 #'@examples
 #'\dontrun{
-#' pc2dtm(lasDir =  "~/path/to/lasdata",
+#' fpc2dtm(lasDir =  "~/path/to/lasdata",
 #'        gisdbase_path = "~/temp5",
 #'        thin_with_grid = "0.5",
 #'        level_max = "5" ,
 #'        grid_size = "0.5")
 #'}
 
-pc2dtm <- function(lasDir = NULL,
+fpc2dtm <- function(lasDir = NULL,
                       gisdbase_path = NULL,
                       thin_with_grid = "0.5",
                       keep_class = "2",

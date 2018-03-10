@@ -1,14 +1,16 @@
 
-#' Create a Digital Terrain Model from a UAV generated point cloud by minimum sampling
+#' Create a Digital Terrain Model from UAV generated point clouds by minimum sampling
 #'
 #'@description
-#' Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.
+#' Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval. Due to the poor estimation of ground points 
+#' a minimum samopling approach is applied. It retrieves on a coarse sampling gridsize the minimum value and interpolates on these samples a surface grid with a higher target 
+#' resolution. this is a kind of an try and error process and provides fairly good results if the point cloud shows at least some real surface points on a not to coarse grid. 
 #'
 #'@author Chris Reudenbach
 #'
 #'@param laspcFile  default is \code{NULL} path  to the laz/las file(s)
 #'@param gisdbase_path default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
-#'@param gridSize  resolution extraction raster
+#'@param sampleGridSize  resolution extraction raster
 #'@param targetGridSize the resolution of the target DTM raster
 #'@param tension  numeric. tension of spline interpolation.
 #'@param proj4  default is EPSG 32632, any valid proj4 string that is assumingly the correct one
@@ -36,14 +38,12 @@ spc2dtm <- function(laspcFile = NULL,
                     gisdbase_path = NULL,
                     tension = 20 ,
                     cutExtent = NULL,
-                    gridSize=25,
+                    sampleGridSize=25,
                     targetGridSize = 0.5,
-                    projFolder = c("data/","output/","run/","las/"),
+                    projFolder = NULL,
                     proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                     giLinks =NULL,
                     verbose = FALSE) {
-
-
   if (is.null(giLinks)){
     giLinks <- get_gi()
   }
@@ -52,82 +52,93 @@ spc2dtm <- function(laspcFile = NULL,
   otb <- giLinks$otb
   sagaCmd<-saga$sagaCmd
   path_OTB <- otb$pathOTB
+  
   if (!verbose){
     GV <- Sys.getenv("GRASS_VERBOSE")
     Sys.setenv("GRASS_VERBOSE"=0)
     ois <- get.ignore.stderrOption()
     set.ignore.stderrOption(TRUE)}
-
+  
+  if (is.null(projFolder)) projFolder <-  c("data/","output/","run/","las/")
+  
   # get/map the las binary folder and create the base command line
   if (is.null(laspcFile)) stop("no directory containing las/laz files provided...\n")
-  laspcFile <- path.expand(laspcFile)
-
-
-
+  else laspcFile <- path.expand(laspcFile)
+  name<-basename(laspcFile)
+  
   # create project structure and export global paths
-  link2GI::initProj(projRootDir = gisdbase_path,
+  if (!nchar(Sys.getenv("GISDBASE")) > 0 ){
+  link2GI::initProj(projRootDir = tempdir() ,
                     projFolders =  projFolder)
+  }
+
 
   
-
-    name<-basename(laspcFile)
-    extFN<- substr(raster::extension(basename(paste0(path_run,name))),2,4)
-    if (!file.exists(paste0(path_run,name)))
+  if (!file.exists(paste0(path_run,name)))
+    cat(":: create copy of the las file at the working directory... \n")
     file.copy(from = laspcFile,
               to = paste0(path_run,name),
               overwrite = TRUE)
-    cat(":: check raw point cloud \n")
-    las = lidR::readLAS(paste0(path_run,name))
-    sp_param <- c(as.character(las@header@PHB$`Min X`),as.character(las@header@PHB$`Min Y`),as.character(las@header@PHB$`Max X`),as.character(las@header@PHB$`Max Y`))
-    if (!is.null(cutExtent)){
+  cat(":: get extent of the point cloud \n")
+  if (!is.null(cutExtent)){
     las<-lidR::lasclipRectangle(las, as.numeric(cutExtent[1]), as.numeric(cutExtent[3]), as.numeric(cutExtent[2]), as.numeric(cutExtent[4]))
     lidR::writeLAS(las ,paste0(path_run,"cut_point_cloud.las"))
-    sp_param <- c(as.character(las@header@PHB$`Min X`),as.character(las@header@PHB$`Min Y`),as.character(las@header@PHB$`Max X`),as.character(las@header@PHB$`Max Y`))
-    name<-"cut_point_cloud.las"
+    sp_param <- c(as.character(las$`Min X`),as.character(las$`Min Y`),as.character(las$`Max X`),as.character(las$`Max Y`))
+    # rename output file according to the extent
+    fn<- paste(sp_param ,collapse=" ")
+    tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
+    name<-paste0(gsub(tmp,pattern = "[.]",replacement = "_"),".las")
+    file.rename(from =paste0(path_run,"cut_point_cloud.las"),
+                to = paste0(path_run,name))
+    
+  } else {
+    las<-rlas::readlasheader(paste0(path_run,name))
+    sp_param <- c(as.character(las$`Min X`),as.character(las$`Min Y`),as.character(las$`Max X`),as.character(las$`Max Y`))
+    # rename output file according to the extent
+    fn<- paste(sp_param ,collapse=" ")
+    tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
+    name<-paste0(gsub(tmp,pattern = "[.]",replacement = "_"),".las")
+    file.rename(from =paste0(path_run,basename(laspcFile)),
+                to = paste0(path_run,name))
   }
-
-  # rename output file according to the extent
-  fn<- paste(sp_param ,collapse=" ")
-  tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
-  fn<-gsub(tmp,pattern = "[.]",replacement = "_")
-  # # copy it to the output folder
-  # file.copy(from = paste0(path_run,name),
-  #           to = paste0(path_output,fn,".las"),
-  #           overwrite = TRUE)
-
-  # add proj4 string manually
+  # copy it to the output folder
   sp_param[5] <- proj4
 
+  link2GI::linkGRASS7(gisdbase = gisdbase_path,
+                      location = "spc2dtm", 
+                      spatial_params = sp_param, 
+                      resolution = sampleGridSize, 
+                      returnPaths = FALSE, 
+                      quiet = TRUE)
   
-  paths<-link2GI::linkGRASS7(gisdbase = gisdbase_path, location = "test4", spatial_params = sp_param,resolution = gridSize)
-  cat(":: finding minimum data on a raster size of: ", gridSize ,"\n")  
+  cat(":: sampling minimum altitudes using : ", sampleGridSize ,"meter grid size\n")  
   ret <- rgrass7::execGRASS("r.in.lidar",
                             flags  = c("overwrite","quiet","o","e","n"),
                             input  = paste0(path_run,name),
-                            output = paste0("dem",gridSize),
+                            output = paste0("dem",sampleGridSize),
                             method = "min",
-                            resolution = gridSize,
+                            resolution = sampleGridSize,
                             intern = TRUE,
                             ignore.stderr = TRUE
   )
-  #r.to.vect -z -b --overwrite input=dem20@PERMANENT output=dem20 type=point       
+  # vectorize points
   ret <- rgrass7::execGRASS("r.to.vect",
                             flags  = c("overwrite","quiet","z","b"),
-                            input  = paste0("dem",gridSize),
+                            input  = paste0("dem",sampleGridSize),
                             output = "vdtm",
                             type = "point",
                             intern = TRUE,
                             ignore.stderr = TRUE
   )
   
-  
+  # set regio with new gridsize
   ret <- rgrass7::execGRASS("g.region",
                             flags  = c("quiet"),
                             res= as.character(targetGridSize),
                             intern = TRUE,
                             ignore.stderr = TRUE
   )
-  cat(":: interpolate points on a raster size of: ", targetGridSize ,"\n")  
+  cat(":: create DTM by interpolation to a raster size of: ", targetGridSize ,"\n")  
   ret <- rgrass7::execGRASS("v.surf.rst",
                             flags  = c("overwrite","quiet"),
                             input  = "vdtm",
@@ -136,24 +147,26 @@ spc2dtm <- function(laspcFile = NULL,
                             intern = TRUE,
                             ignore.stderr = TRUE
   )
+  # apply mask for input data area
   ret <- rgrass7::execGRASS("r.mapcalc",
                             flags  = c("overwrite","quiet"),
-                            expression= paste0('"dtm = if(',paste0("dem",gridSize),' > 0  ,tdtm,0)"'),
+                            expression= paste0('"dtm = if(',paste0("dem",sampleGridSize),' > 0  ,tdtm,0)"'),
                             intern = TRUE,
                             ignore.stderr = TRUE
   )
   
   
-  fn<-"dtm"
-  dtm<- raster::writeRaster(raster::raster(rgrass7::readRAST(fn)),paste0(path_run,fn), overwrite=TRUE,format="GTiff")
-  cat(":: calculate metadata ... \n")
-  raster::writeRaster(dtm, paste0(path_output,fn, "_dtm.tif"),overwrite = TRUE)
-  e <- extent(dtm)
-  dtmA <- as(e, 'SpatialPolygons')
-  dtmA <- methods::as(raster::extent(dtm), "SpatialPolygons")
+  
+  dtm<- raster::writeRaster(raster::raster(rgrass7::readRAST("dtm")),paste0(path_run,"dtm"), overwrite=TRUE,format="GTiff")
+  # cat(":: calculate metadata ... \n")
+  # raster::writeRaster(dtm, paste0(path_output,fn, "_dtm.tif"),overwrite = TRUE)
+  # e <- extent(dtm)
+  # dtmA <- as(e, 'SpatialPolygons')
+  # dtmA <- methods::as(raster::extent(dtm), "SpatialPolygons")
   if (!verbose)  {
     Sys.setenv("GRASS_VERBOSE"=GV)
     set.ignore.stderrOption(ois)
   }
-  return(list(dtm,dtmA,paste0(fn,".",extFN)))
+  #return(list(dtm,dtmA,paste0(fn,".",extFN)))
+  return(dtm)
 }
