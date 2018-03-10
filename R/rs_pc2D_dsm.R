@@ -118,6 +118,7 @@ pc2D_dsm <- function(laspcFile = NULL,
                             input  = paste0(path_run,name),
                             output = paste0("dsm",sampleGridSize),
                             method = sampleMethod,
+                            pth    = threshold,
                             resolution = sampleGridSize,
                             intern = TRUE,
                             ignore.stderr = TRUE
