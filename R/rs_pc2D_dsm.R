@@ -104,29 +104,32 @@ pc2D_dsm <- function(laspcFile = NULL,
   }
   # copy it to the output folder
   sp_param[5] <- proj4
-
+  cat(":: link to GRASS\n")
   link2GI::linkGRASS7(gisdbase = gisdbase_path,
                       location = "pc2D_dsm", 
                       spatial_params = sp_param, 
-                      resolution = sampleGridSize, 
+                      resolution = targetGridSize, 
                       returnPaths = FALSE, 
                       quiet = TRUE)
   
-  cat(":: sampling ", sampleMethod, " altitudes using : ", sampleGridSize ,"meter grid size\n")  
+  cat(":: sampling ", sampleMethod, " altitudes using : ", targetGridSize ,"meter grid size\n")  
   ret <- rgrass7::execGRASS("r.in.lidar",
                             flags  = c("overwrite","quiet","o","e","n"),
                             input  = paste0(path_run,name),
-                            output = paste0("dsm",sampleGridSize),
+                            output = paste0("dsm",targetGridSize),
                             method = sampleMethod,
                             pth    = threshold,
-                            resolution = sampleGridSize,
+                            resolution = targetGridSize,
                             intern = TRUE,
                             ignore.stderr = TRUE
   )
   
-  
-  dsm<- raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("dsm",sampleGridSize))),paste0(path_run,"dsm"), overwrite=TRUE,format="GTiff")
-
+  cat(":: filling no data values if so \n")
+  dsm<- raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("dsm",targetGridSize))),paste0(path_run,"dsm"), overwrite=TRUE,format="GTiff")
+  ret <- system(paste0("gdal_fillnodata.py ",
+                       path_run,"dsm.tif ",
+                       path_run,"dsm.tif"),intern = TRUE)
+  dsm <- raster::raster(paste0(path_run,"dsm.tif"))
   if (!verbose)  {
     Sys.setenv("GRASS_VERBOSE"=GV)
     set.ignore.stderrOption(ois)

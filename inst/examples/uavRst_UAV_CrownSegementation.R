@@ -1,15 +1,14 @@
 # use cases for UAV data based crown segmentation
-
 # ---- define global parameters -----------------------------------------------
-#
+
 # load package for linking  GI tools
 require(link2GI)
-
 require(uavRst)
 
-# define project settings, data folders etc
+# define project root folder
 projRootDir <- "~/proj/uav/thesis/finn"
 
+### web data
 # url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/477369_800_5631924_000_477469_800_5632024_000.las"
 # res <- curl::curl_download(url, "~/proj/uav/thesis/finn/output/lasdata.las")
 # uav_data<-paste0(path_output,"lasdata.las")
@@ -19,10 +18,8 @@ projFolders = c("data/","data/ref/","output/","run/","las/")
 
 # export folders as global
 global = TRUE
-
 # with folder name plus following prefix
 path_prefix = "path_"
-
 # proj4 string of ALL data
 proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "
 
@@ -42,13 +39,17 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 #'
 # referenz shape filename
 plot2<-raster::shapefile(paste0(path_data,"ref/plot_UTM.shp"))
+
 # image data
 rgbImgFn<-paste0(path_data,"training/uniWald_sequoia-3-3.tif")
 # lidar data  can be a foldr or a file
-las_data <- "~/proj/uav/thesis/finn/output/477119_673_5631675_040_477733_694_5632284_900.las"
-las_data <- "~/proj/uav/thesis/finn/output/477369_800_5631924_000_477469_800_5632024_000.las"
-las_data <- "~/proj/uav/thesis/finn/data/sequoia/477369_800_5631924_000_477469_800_5632024_000.las"
+# las_data <- "~/proj/uav/thesis/finn/output/477119_673_5631675_040_477733_694_5632284_900.las"
+# las_data <- "~/proj/uav/thesis/finn/output/477369_800_5631924_000_477469_800_5632024_000.las"
+# las_data <- "~/proj/uav/thesis/finn/data/sequoia/477369_800_5631924_000_477469_800_5632024_000.las"
+# uav 2D point cloud
 las_data <- "~/proj/uav/thesis/finn/data/sequoia/uniwald_sequoia2.las"
+
+# set some params
 actual_grid_size<-0.1
 splineNumber<-7
 thingrid<- 4.
@@ -57,8 +58,9 @@ thingrid<- 4.
 giLinks<-get_gi()
 
 # clean dirs
-
 unlink(paste0(path_run,"*"), force = TRUE)
+
+# set raster options
 raster::rasterOptions(tmpdir=path_run)
 
 # set working directory
@@ -68,15 +70,13 @@ setwd(path_run)
 #las_data<-"~/proj/uav/thesis/finn/output/477375_00_5631900_00_477475_00_5632000_00.las"
 # create DSM
 
-dsm <- pc3D_dsm(lasDir = las_data,
+dsm <- pc2D_dsm(laspcFile = las_data,
                       gisdbase_path = projRootDir,
-                      type_smooth = "no",
-                      grid_size = actual_grid_size,
-                      GRASSlocation = "dsm",
-                      grass_lidar_method = "max",
-                      #cutExtent = cutExtent,
+                      sampleMethod = "max",
+                      targetGridSize = actual_grid_size, 
                       giLinks = giLinks)
 
+# create 2D point cloud  DTM
 dtm <- pc2D_dtm(laspcFile = las_data,
                gisdbase_path = projRootDir,
                tension = 20 ,
@@ -84,7 +84,7 @@ dtm <- pc2D_dtm(laspcFile = las_data,
                targetGridSize = actual_grid_size,
                giLinks = giLinks)
 
-# # create DTM
+# # create 3D DTM
 # dtm2 <- pc3D_dtm(lasDir = las_data,
 #                       gisdbase_path = projRootDir,
 #                       thin_with_grid = 1.,
@@ -93,33 +93,55 @@ dtm <- pc2D_dtm(laspcFile = las_data,
 #                    #   cutExtent = cutExtent,
 #                       giLinks = giLinks)
 
-# take the rsulting raster files
-dsmR <- dsm[[1]]
+# take the resulting raster files
+dsmR <- dsm
 dtmR <- dtm
-#dtmR2<- raster::crop(dtmR,dsmR)
-#dtmR <- raster::resample(dtmR2, dsmR , method = 'bilinear')
-rgbImg <- raster::raster(rgbImgFn)
+
+# read rgb ortho image file
+rgbImg <- raster::stack(rgbImgFn)
+
+# crop dsm/dtm data to the image file *extent* NOT RESOLUTION
 dtm2<- raster::crop(dtmR,rgbImg)
 dsm2<- raster::crop(dsmR,rgbImg)
+
+# resample dtm and rgb to dsm 
 dtm2 <- raster::resample(dtm2, dsm2 , method = 'bilinear')
 rgbR <- raster::resample(rgbImg, dsm2 , method = 'bilinear')
-
-raster::writeRaster(rgbImg,paste0(path_output,"rgbImg.tif"),overwrite=TRUE)
-             # if not already done adjust dsm to dtm
-
 
 # calculate CHM
 chmR <- dsm2 - dtm2
 
 # reset negative values to 0
 chmR[chmR<0]<-0
-raster::writeRaster(chmR,paste0(path_output,"chm.tif"),overwrite=TRUE)
-# inverse chm
-#chmR<- (- 1 * chmR) + raster::maxValue(chmR)
 
-# saveRDS(dtmR,file = paste0(path_output,"dtmR.rds")
-# saveRDS(dsmR,file = paste0(path_output,"dsmR.rds"))
-# saveRDS(chmR,file = paste0(path_output,"chmR.rds"))
+# save chm
+raster::writeRaster(chmR,paste0(path_output,"chm.tif"),overwrite=TRUE)
+
+# save the resampled image file NOTE use UNIQUE suffix!
+raster::writeRaster(rgbR,paste0(path_output,"rgb_.tif"),overwrite=TRUE)
+
+# calculate synthetic channels for segmentation
+res <- calc_ext(calculateBands    = T,
+                extractTrain      = F,
+                suffixTrainGeom   = "",
+                patternIdx        = "index",
+                patternImgFiles   = "rgb" ,
+                patterndemFiles   = "dsm",
+                prefixRun         = "rgbImg",
+                prefixTrainImg    = "",
+                rgbi              = T,
+                indices           =  c("NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"),
+                RGBTrans          = F,
+                hara              = T,
+                haraType          = c("simple"),
+                stat              = T,
+                edge              = T,
+                morpho            = T,
+                pardem            = T,
+                kernel            = 3,
+                currentDataFolder = path_output,
+                currentIdxFolder  = path_output,
+                giLinks = giLinks)
 
 # ----  start crown analysis ------------------------
 
@@ -131,27 +153,39 @@ tPos <- uavRst::treepos(chmR,
                         join = 1,
                         thresh = 0.35,
                         giLinks = giLinks )
-saveRDS(tPos,file = paste0(path_output,"treepos_iws.rds"))
+# saveRDS(tPos,file = paste0(path_output,"treepos_iws.rds"))
 # workaround for strange effects with SAGA
 # even if all params are identical it is dealing with different grid systems
 tPos<-raster::resample(tPos, chmR , method = 'bilinear')
 tPos[tPos<=0]<-0
-# statically writing of the two minimum raster for segmentation
+# write the two minimum raster for segmentation
 raster::writeRaster(tPos,"treepos.tif",overwrite = TRUE,NAflag = 0)
 raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE,NAflag = 0)
 
-# call tree crown segmentation
+# get synthetic image stack file
+imageTrainFiles <- list.files(pattern="[.]envi$", path=path_output, full.names=TRUE)
+# load the band names
+load(paste0(path_output,"bandNames_rgbImg_.RData"))
 
-crowns <- chmseg_uav( treepos = tPos,
+# convert them to saga 
+convert2SAGA(imageTrainFiles,
+          bandName=bandNames, 
+          startBand=1,
+          endBand=length(bandNames),
+          refFn="chm.tif")
+
+# call tree crown segmentation
+crowns <- chmseg_uav( treepos = tPos, 
+                      segmentation_bands = bandNames,
                       chm =chmR,
                       minTreeAlt = 3,
                       normalize = 0,
                       method = 0,
                       neighbour = 0,
                       majority_radius = 5,
-                      thVarFeature = 1.,
-                      thVarSpatial = 1.,
-                      thSimilarity = 0.003,
+                      thVarFeature = 2.,
+                      thVarSpatial = 2.,
+                      thSimilarity = 0.0001,
                       giLinks = giLinks )
 
 

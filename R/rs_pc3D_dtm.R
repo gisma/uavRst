@@ -199,9 +199,8 @@ pc3D_dtm <- function(lasDir = NULL,
   tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
   fn<-gsub(tmp,pattern = "[.]",replacement = "_")
   # copy it to the output folder
-  file.copy(from = paste0(path_run,name),
-            to = paste0(path_output,fn,".las"),
-            overwrite = TRUE)
+  file.rename(from = paste0(path_run,name),
+            to = paste0(path_run,fn,".las"))
 
   # add proj4 string manually
   sp_param[5] <- proj4
@@ -246,7 +245,7 @@ pc3D_dtm <- function(lasDir = NULL,
                        " -ocut 3 ",
                        " -odix _las2dtm_DTM ",
                        " -otif ",
-                       " -odir ",path_output,
+                       " -odir ",path_run,
                        " -cores ",cores),
                 intern = TRUE,
                 ignore.stderr = TRUE
@@ -265,7 +264,7 @@ pc3D_dtm <- function(lasDir = NULL,
   #### starting SAGA classification
   # create output mask file for interpolation
   # cat(":: classify ground points (aDTM) ...\n")
-  # r <- raster::rasterFromXYZ(paste0(path_output,"o_dtm.tif"))
+  # r <- raster::rasterFromXYZ(paste0(path_run,"o_dtm.tif"))
   # r[r > 0] <- 0
   # raster::writeRaster(r,filename = paste0(path_run,"rawdtm.tif"),overwrite = TRUE)
   # gdalUtils::gdalwarp(paste0(path_run,"rawdtm.tif"),
@@ -313,7 +312,7 @@ pc3D_dtm <- function(lasDir = NULL,
   dtm<-raster::raster(paste0(path_run,"rawdtm.sdat"))
   raster::projection(dtm)<-proj4
   # dtm <- gdalUtils::gdalwarp(paste0(path_run,"rawdtm.sdat"),
-  #                            paste0(path_output,"dtm.tif"),
+  #                            paste0(path_run,"dtm.tif"),
   #                            t_srs = proj4,
   #                            output_Raster = TRUE,
   #                            overwrite = TRUE,
@@ -321,7 +320,7 @@ pc3D_dtm <- function(lasDir = NULL,
   cat(":: calculate metadata ... \n")
   dtm[dtm <= dtm_minalt] <- NA
   dtm[dtm > dtm_maxalt] <- NA
-  raster::writeRaster(dtm, paste0(path_output,fn, "_dtm.tif"),overwrite = TRUE)
+  raster::writeRaster(dtm, paste0(path_run,fn, "_dtm.tif"),overwrite = TRUE)
   e <- extent(dtm)
   dtmA <- as(e, 'SpatialPolygons')
   dtmA <- methods::as(raster::extent(dtm), "SpatialPolygons")

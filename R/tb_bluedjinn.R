@@ -620,14 +620,41 @@ getPopupStyle <- function() {
   end <- grep("<%=pop%>", pop)
   return(paste(pop[1:(end-2)], collapse = ""))
 }
+#' split multiband tif to single tif files
+#' @description split multiband tif to single tif files
+#' @param fn character. filename
+#' @param bandname character. list of bandnames c("red","green","blue")
+#' @param startBand numerical. first band to export 
+#' @param startBand numerial. last band to export 
+#' @param refFn character. reference image for resampling
+#' @name convert2SAGA
 
-# Split rgb
-gdalsplit<-function(fn){
-  directory<-dirname(fn)
-  for (i in seq(1:3)){
-    gdalUtils::gdal_translate(fn,paste0(directory,"/b",i,".tif"),b=i)
+#' @keywords internal
+#'@export
+convert2SAGA<-function(fn=NULL,
+                    bandName=NULL,
+                    startBand= 1,
+                    endBand =3,
+                    refFn=NULL){
+  flist<-list()
+  for (i in seq(startBand:endBand)){
+    outFn<-paste0(path_run,bandName[i],".sdat")
+    #raster::writeRaster(raster::raster(fn),outFn,overwrite = TRUE,NAflag = 0,process="text")
+    if (!is.null(refFn))
+    res<-gdalUtils::gdal_translate(src_dataset = fn,
+                              dst_dataset = outFn,
+                              b = as.character(i),
+                              of = "SAGA",a_nodata = 0)
+   raster::writeRaster(raster::resample(raster::raster(fn),raster::raster(refFn)),
+                       filename	= outFn,
+                       NAflag = 0,	
+                       format="SAGA",
+                       overwrite=TRUE)
+    #flist<-append(flist, paste0(path_run,bandName[i],".sgrd"))
   }
+  #return(flist)
 }
+
 #' colorize the cat outputs 
 #' @description colorize the cat outputs 
 #'@export

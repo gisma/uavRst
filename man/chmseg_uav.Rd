@@ -7,8 +7,8 @@
 chmseg_uav(treepos = NULL, chm = NULL, minTreeAlt = 2,
   minTreeAltParam = "chmQ20", leafsize = 256, normalize = 0,
   neighbour = 1, method = 0, thVarFeature = 1, thVarSpatial = 1,
-  thSimilarity = 0.002, seed_params = c("chm"), majority_radius = 3,
-  giLinks = NULL)
+  thSimilarity = 0.002, segmentation_bands = c("chm.sgrd"),
+  majority_radius = 3, giLinks = NULL)
 }
 \arguments{
 \item{treepos}{raster* object}
@@ -35,11 +35,11 @@ height of \code{treepos}.}
 
 \item{thSimilarity}{mumeric. Similarity Threshold see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}}
 
-\item{seed_params}{character. a list of raster data that is used for the segmentation. The canopy height model \code{c("chm")} is mandantory. see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}}
-
 \item{majority_radius}{numeric. kernel size for the majority filter out spurious pixel}
 
 \item{giLinks}{list. of GI tools cli paths}
+
+\item{seed_params}{character. a list of raster data that is used for the segmentation. The canopy height model \code{c("chm")} is mandantory. see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}}
 }
 \description{
 Tree segmentation based on a CHM, basically returns a vector data set with the tree crown geometries and a bunch of corresponding indices. After the segementation itself, the results are hole filled and optionally, it can be filtered by a majority filter.

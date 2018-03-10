@@ -500,10 +500,10 @@ calc_ext<- function ( calculateBands    = FALSE,
         }
         rt<- lapply(rgbtranslist, FUN=raster::stack)
         for (jj in 1:length(rt)) {
-          extent(rt[[jj]])<-extent(r)
-          projection(rt[[jj]]) <- CRS(projection(r))
+          raster::extent(rt[[jj]])<-raster::extent(r)
+          raster::projection(rt[[jj]]) <- raster::crs(projection(r))
           cat(catOk(":::: save... ",colorSpaces[jj],"_",basename(imageFiles[i]),"\n"))
-          raster::writeRaster(stack(rt[[jj]][[1:3]]),
+          raster::writeRaster(raster::stack(rt[[jj]][[1:3]]),
                               paste0(colorSpaces[jj],"_ref",basename(imageFiles[i])),
                               overwrite=TRUE,
                               options="INTERLEAVE=BAND",
@@ -532,7 +532,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                               progress = "text",
                               overwrite=TRUE)
           fbFN<-paste0(filterBand,"_",basename(imageFiles[i]))
-        }
+         # filterband
         if (stat){
           cat(catNote(":::: processing stats...",fbFN,"\n"))
           otb_stat(input = fbFN,
@@ -586,7 +586,7 @@ calc_ext<- function ( calculateBands    = FALSE,
       }
       # get the rest in a list
       #flist<-(Sys.glob(paste0("*",basename(imageFiles[i]),"*")))
-      # end of single channnel calculation
+      }# end of single channnel calculation
       
       # create an alltogether stack
       if (rgbi)  tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))

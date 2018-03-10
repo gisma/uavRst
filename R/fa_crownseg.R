@@ -40,7 +40,7 @@ chmseg_uav <- function(treepos = NULL,
                             thVarFeature   = 1.,
                             thVarSpatial   = 1.,
                             thSimilarity   = 0.002,
-                            seed_params    = c("chm"),
+                            segmentation_bands    = c("chm.sgrd"),
                             majority_radius    = 3.000,
                             giLinks = NULL) {
   proj<- raster::crs(treepos)
@@ -55,7 +55,7 @@ chmseg_uav <- function(treepos = NULL,
 
   cat("::: run main segmentation...\n")
   # create correct param lists
-  #seed_params<-c("HI","GLI")
+  #segmentation_bands<-c("HI","GLI")
   if (is.null(giLinks)){
     giLinks <- get_gi()
   }
@@ -65,7 +65,7 @@ chmseg_uav <- function(treepos = NULL,
   sagaCmd<-saga$sagaCmd
   RSAGA::rsaga.env(path =saga$sagaPath,modules = saga$sagaModPath)
 
-  param_list <- paste0(path_run,seed_params,".sgrd;",collapse = "")
+  param_list <- paste0(path_run,segmentation_bands,".sgrd;",collapse = "")
 
   # Start final segmentation algorithm as provided by SAGA's seeded Region Growing segmentation (imagery_segmentation 3)
   # TODO sensitivity analysis of the parameters
@@ -82,7 +82,8 @@ chmseg_uav <- function(treepos = NULL,
                                          SIG_1    =  thVarFeature,
                                          SIG_2    =  thVarSpatial,
                                          THRESHOLD = thSimilarity),
-                            intern = TRUE)
+                            intern = TRUE,
+                            invisible = TRUE)
 
   # fill the holes inside the crowns (simple approach)
   # TODO better segmentation

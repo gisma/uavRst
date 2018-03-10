@@ -165,9 +165,8 @@ pc3D_dsm <- function(lasDir = NULL,
   tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
   fn<-gsub(tmp,pattern = "[.]",replacement = "_")
   # copy it to the output folder
-  file.copy(from = paste0(path_run,name),
-            to = paste0(path_output,fn,".las"),
-            overwrite = TRUE)
+  file.rename(from = paste0(path_run,name),
+            to = paste0(path_run,fn,".las"))
   # add proj4 string manually
   sp_param[5] <- proj4
   # create and export globally project folder structure
@@ -198,10 +197,10 @@ pc3D_dsm <- function(lasDir = NULL,
 
 
   cat(":: convert raw DSM to GeoTiff \n")
-  #h_grass2tif(runDir = path_output, layer = "point_cloud_dsm")
+  #h_grass2tif(runDir = path_run, layer = "point_cloud_dsm")
   raster::writeRaster(raster::raster(rgrass7::readRAST(fn)),paste0(path_run,fn), overwrite=TRUE,format="GTiff")
   cat(":: fill no data... \n")
-  #uavRst:::fillGaps(path_output,paste0("point_cloud_dsm.tif "))
+  #uavRst:::fillGaps(path_run,paste0("point_cloud_dsm.tif "))
   ret <- system(paste0("gdal_fillnodata.py ",
                        path_run,fn,".tif ",
                        path_run,fn,".tif"),intern = TRUE)
@@ -253,7 +252,7 @@ pc3D_dsm <- function(lasDir = NULL,
   cat(":: calculate metadata ... \n")
   dsm[dsm <= dsm_minalt] <- NA
   dsm[dsm > dsm_maxalt] <- NA
-  raster::writeRaster(dsm, paste0(path_output,"dsm_",fn,".tif"), overwrite = TRUE)
+  raster::writeRaster(dsm, paste0(path_run,"dsm_",fn,".tif"), overwrite = TRUE)
   e <- extent(dsm)
   dsmA <- as(e, 'SpatialPolygons')
   if (dsm_area) {

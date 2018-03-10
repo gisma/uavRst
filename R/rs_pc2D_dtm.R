@@ -177,7 +177,7 @@ pc2D_dtm <- function(laspcFile = NULL,
     }
   dtm <- raster::raster(paste0(path_run,"dtm.tif"))
   # cat(":: calculate metadata ... \n")
-  # raster::writeRaster(dtm, paste0(path_output,fn, "_dtm.tif"),overwrite = TRUE)
+  # raster::writeRaster(dtm, paste0(path_run,fn, "_dtm.tif"),overwrite = TRUE)
   # e <- extent(dtm)
   # dtmA <- as(e, 'SpatialPolygons')
   # dtmA <- methods::as(raster::extent(dtm), "SpatialPolygons")
