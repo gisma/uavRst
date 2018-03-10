@@ -17,6 +17,8 @@ pc2D_dsm(laspcFile = NULL, gisdbase_path = NULL, sampleMethod = "max",
 
 \item{sampleMethod}{sampling method for point aggregation}
 
+\item{threshold}{numeric. percentile threshold}
+
 \item{cutExtent}{clip area}
 
 \item{targetGridSize}{numeric. the resolution of the target DTM raster}
@@ -28,8 +30,6 @@ pc2D_dsm(laspcFile = NULL, gisdbase_path = NULL, sampleMethod = "max",
 \item{giLinks}{list of link2GI cli pathes, default is NULL}
 
 \item{verbose}{to be quiet (1)}
-
-\item{threshhold}{numeric. percentile threshold}
 }
 \description{
 Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval. Due to the poor estimation of ground points 

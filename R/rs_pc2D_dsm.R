@@ -12,7 +12,7 @@
 #'@param gisdbase_path character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
 #'@param targetGridSize numeric. the resolution of the target DTM raster
 #'@param sampleMethod sampling method for point aggregation
-#'@param threshhold  numeric. percentile threshold
+#'@param threshold  numeric. percentile threshold
 #'@param proj4  character. valid proj4 string that should be assumingly the correct one
 #'@param giLinks list of link2GI cli pathes, default is NULL
 #'@param projFolder subfolders that will be created/linked for R related GRASS processing
