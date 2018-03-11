@@ -168,7 +168,7 @@ split2SAGA(imageTrainFiles,
            bandName=bandNames, 
            startBand=1,
            endBand=length(bandNames),
-           refFn="chm.tif")
+           refFn="chm_3-3.tif")
 
 # call tree crown segmentation NOTE there are about 75 partly highly correlated channels 
 # try to reduce and mention the thresholds
