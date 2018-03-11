@@ -284,7 +284,7 @@ poly_maxpos <- function(fileName,layerName, polySplit=TRUE){
   mask <- raster::raster(fn)
   seeds <- raster::rasterize(max_pos,mask,field="id")
   seeds[seeds >= 0] <- 1
-  raster::writeRaster(seeds,paste0(path_run,"seeds.tif"),overwrite=TRUE)
+  #raster::writeRaster(seeds,paste0(path_run,"seeds.tif"),overwrite=TRUE)
   return(list(seeds,max_pos))
 }
 
@@ -600,6 +600,7 @@ getPopupStyle <- function() {
 #' @param startBand numerical. first band to export 
 #' @param startBand numerial. last band to export 
 #' @param refFn character. reference image for resampling
+#' @param returnRaster logical. return as raster
 #' @name split2SAGA
 
 #' @keywords internal
@@ -608,7 +609,8 @@ split2SAGA<-function(fn=NULL,
                     bandName=NULL,
                     startBand= 1,
                     endBand =3,
-                    refFn=NULL){
+                    refFn=NULL,
+                    returnRaster=FALSE){
   flist<-list()
   for (i in seq(startBand:endBand)){
     outFn<-paste0(path_run,bandName[i],".sdat")
@@ -618,14 +620,14 @@ split2SAGA<-function(fn=NULL,
                               dst_dataset = outFn,
                               b = as.character(i),
                               of = "SAGA",a_nodata = 0)
-   raster::writeRaster(raster::resample(raster::raster(fn),raster::raster(refFn)),
+  r<-raster::writeRaster(raster::resample(raster::raster(outFn),raster::raster(refFn)),
                        filename	= outFn,
                        NAflag = 0,	
                        format="SAGA",
                        overwrite=TRUE)
-    #flist<-append(flist, paste0(path_run,bandName[i],".sgrd"))
+    flist<-append(flist, r)
   }
-  #return(flist)
+  if (returnRaster) return(flist)
 }
 
 #' colorize the cat outputs 

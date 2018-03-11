@@ -443,8 +443,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     ### calculate indices and base stat export it to tif
     # create list vars
     flist<-list()
-    
-    bandNames<-NULL
+    bandNames<-list()
     for (i in 1:length(counter)){
       # if calc pardem 
       if (pardem){
@@ -457,7 +456,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                    maxScale = maxScale,
                    numScale = numScale,
                    giLinks = giLinks)
-        flist<-append(flist,paste0(demType,".tif"))
+        flist<-append(flist, Sys.glob(paste0(demType,".*")))
         for (item in demType) 
           bandNames <-append(bandNames,make_bandnames(dem = item))
         
@@ -473,8 +472,8 @@ calc_ext<- function ( calculateBands    = FALSE,
         r<-raster::stack(imageFiles[i])
         # calculate and stack r,g,b and requested indices
         rgb_rgbi<-raster::stack(r[[1:3]],uavRst::rgb_indices(r[[1]],r[[2]],r[[3]],indices))
-        bandNames <- uavRst::make_bandnames(rgbi = indices)
-        names(rgb_rgbi)<-bandNames
+        bandNames <- append(bandNames,make_bandnames(rgbi = indices))
+        names(rgb_rgbi)<-append(c("red","green","blue"),indices)
         cat(catOk("\n     save ...",paste0("rgbi_",basename(imageFiles[i])),"\n"))
         raster::writeRaster(rgb_rgbi,
                             paste0("rgbi_",basename(imageFiles[i])),
@@ -569,7 +568,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         if (hara){
           for (type in haraType){
             cat(catNote(":::: processing haralick... ",type,"\n"))
-            uavRst::otbtex_hara(x = fbFN,
+            otbtex_hara(x = fbFN,
                                 output_name=paste0(filterBand,"hara_",basename(imageFiles[i])),
                                 texture = type,
                                 giLinks=giLinks)

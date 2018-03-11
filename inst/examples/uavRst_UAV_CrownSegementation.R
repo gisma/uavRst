@@ -68,21 +68,21 @@ setwd(path_run)
 
 # ----- calculate DSM DTM & CHM FROM UAV POINT CLOUDS-----------------------------------------------
 #las_data<-"~/proj/uav/thesis/finn/output/477375_00_5631900_00_477475_00_5632000_00.las"
-# create DSM
 
+# create 2D pointcloud DSM
 dsm <- pc2D_dsm(laspcFile = las_data,
-                      gisdbasePath = projRootDir,
-                      sampleMethod = "max",
-                      targetGridSize = actual_grid_size, 
-                      giLinks = giLinks)
+                gisdbasePath = projRootDir,
+                sampleMethod = "max",
+                targetGridSize = actual_grid_size, 
+                giLinks = giLinks)
 
-# create 2D point cloud  DTM
+# create 2D point cloud DTM
 dtm <- pc2D_dtm(laspcFile = las_data,
-               gisdbasePath = projRootDir,
-               tension = 20 ,
-               sampleGridSize = 25,
-               targetGridSize = actual_grid_size,
-               giLinks = giLinks)
+                gisdbasePath = projRootDir,
+                tension = 20 ,
+                sampleGridSize = 25,
+                targetGridSize = actual_grid_size,
+                giLinks = giLinks)
 
 # # create 3D DTM
 # dtm2 <- pc3D_dtm(lasDir = las_data,
@@ -100,32 +100,32 @@ dtmR <- dtm
 rgbImg <- raster::stack(rgbImgFn)
 
 # crop dsm/dtm data to the image file *extent* NOT RESOLUTION
-dtm2<- raster::crop(dtmR,rgbImg)
-dsm2<- raster::crop(dsmR,rgbImg)
+dtm<- raster::crop(dtmR,rgbImg)
+dsm<- raster::crop(dsmR,rgbImg)
 
 # resample dtm and rgb to dsm 
-dtm2 <- raster::resample(dtm2, dsm2 , method = 'bilinear')
-rgbR <- raster::resample(rgbImg, dsm2 , method = 'bilinear')
+dtm <- raster::resample(dtm, dsm , method = 'bilinear')
+rgbR <- raster::resample(rgbImg, dsm , method = 'bilinear')
 
 # calculate CHM
-chmR <- dsm2 - dtm2
+chmR <- dsm - dtm
 
 # reset negative values to 0
 chmR[chmR<0]<-0
 
 # save chm
-raster::writeRaster(chmR,paste0(path_output,"chm.tif"),overwrite=TRUE)
+raster::writeRaster(chmR,paste0(path_run,"chm_3-3.tif"),overwrite=TRUE)
 
 # save the resampled image file NOTE use UNIQUE suffix!
-raster::writeRaster(rgbR,paste0(path_output,"rgb_.tif"),overwrite=TRUE)
+raster::writeRaster(rgbR,paste0(path_run,"syn_3-3.tif"),overwrite=TRUE)
 
 # calculate synthetic channels for segmentation
 res <- calc_ext(calculateBands    = T,
                 extractTrain      = F,
                 suffixTrainGeom   = "",
                 patternIdx        = "index",
-                patternImgFiles   = "rgb" ,
-                patterndemFiles   = "dsm",
+                patternImgFiles   = "syn" ,
+                patterndemFiles   = "chm",
                 prefixRun         = "rgbImg",
                 prefixTrainImg    = "",
                 rgbi              = T,
@@ -138,8 +138,8 @@ res <- calc_ext(calculateBands    = T,
                 morpho            = T,
                 pardem            = T,
                 kernel            = 3,
-                currentDataFolder = path_output,
-                currentIdxFolder  = path_output,
+                currentDataFolder = path_run,
+                currentIdxFolder  = path_run,
                 giLinks = giLinks)
 
 # ----  start crown analysis ------------------------
@@ -152,28 +152,25 @@ tPos <- uavRst::treepos(chmR,
                         join = 1,
                         thresh = 0.35,
                         giLinks = giLinks )
-# saveRDS(tPos,file = paste0(path_output,"treepos_iws.rds"))
-# workaround for strange effects with SAGA
-# even if all params are identical it is dealing with different grid systems
-tPos<-raster::resample(tPos, chmR , method = 'bilinear')
-tPos[tPos<=0]<-0
-# write the two minimum raster for segmentation
+
+# we need treepos as segmentation seeding 
 raster::writeRaster(tPos,"treepos.tif",overwrite = TRUE,NAflag = 0)
-raster::writeRaster(chmR,"chm.sdat",overwrite = TRUE,NAflag = 0)
 
-# get synthetic image stack file
-imageTrainFiles <- list.files(pattern="[.]envi$", path=path_output, full.names=TRUE)
-# load the band names
-load(paste0(path_output,"bandNames_rgbImg_.RData"))
-bandNames<- append(bandNames,c("hillshade","slope", "aspect","TRI","TPI","Roughness","SLOPE","ASPECT", "C_GENE","C_PROF","C_PLAN"," C_TANG"," C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI"))
+# now get synthetic image stack file
+imageTrainFiles <- list.files(pattern="[.]envi$", path=path_run, full.names=TRUE)
+
+# load the corresponding band names
+load(paste0(path_run,"bandNames_rgbImg_.RData"))
+
 # convert them to saga 
-convert2SAGA(imageTrainFiles,
-          bandName=bandNames, 
-          startBand=1,
-          endBand=length(bandNames),
-          refFn="chm.tif")
+# NOTE this is an ugly workaround to force all files to the same extent
+split2SAGA(imageTrainFiles,
+           bandName=bandNames, 
+           startBand=1,
+           endBand=length(bandNames),
+           refFn="chm.tif")
 
-# call tree crown segmentation NOTE there are about 100 highly correlated channels 
+# call tree crown segmentation NOTE there are about 75 partly highly correlated channels 
 # try to reduce and mention the thresholds
 crowns <- chmseg_uav( treepos = tPos, 
                       segmentationBands = bandNames,
@@ -183,9 +180,9 @@ crowns <- chmseg_uav( treepos = tPos,
                       method = 0,
                       neighbour = 0,
                       majorityRadius = 3,
-                      thVarFeature = 2.,
-                      thVarSpatial = 2.,
-                      thSimilarity = 0.00001,
+                      thVarFeature = 1.,
+                      thVarSpatial = 1.,
+                      thSimilarity = 0.000001,
                       giLinks = giLinks )
 
 

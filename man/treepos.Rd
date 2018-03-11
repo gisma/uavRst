@@ -26,7 +26,7 @@ treepos(chm = NULL, minTreeAlt = 10, minTreeAltParam = "chmQ20",
 \item{giLinks}{list. of GI tools cli paths}
 }
 \description{
-Find potential tree positions using a canopy height model by using an iterative watershed algorithm. Basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
+Find potential tree positions using a canopy height model by using an iterative watershed algorithm. Basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices.
 }
 \examples{
 \dontrun{

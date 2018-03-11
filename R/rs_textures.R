@@ -1,9 +1,4 @@
-# Calculate selected texture parameters based on gray level properties
-# The first otb function otbHaraTex has some extended comments
-# describing a straightforward wrapping concept
-# glcm_texture provides a good practice example for using
-# the R capabilities of paralell tasking
-#
+
 #' Calls the glcm package with useful settings
 #' @note for the use of glcm_texture a glcm wrapper function
 #'       a raster* object is required
@@ -124,14 +119,10 @@ glcm_texture <- function(x,
 }
 
 
-if ( !isGeneric("otbtex_hara") ) {
-  setGeneric("otbtex_hara", function(x, ...)
-    standardGeneric("otbtex_hara"))
-}
-
-#' OTB wrapper for Haralick's simple, advanced and higher order texture features. return A list of RasterStacks containing the texture parameters for each
-#' combination of channel and filter
-#'@description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image.
+#' OTB wrapper for Haralick's simple, advanced and higher order texture features. 
+#' 
+#' @description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image
+#' 
 #' @param x A \code{Raster*} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands
 #' @param output_name string pattern vor individual naming of the output file(s)
 #' @param parameters.xyrad list with the x and y radius in pixel indicating the kernel sizes for which the textures are calculated
@@ -189,7 +180,7 @@ if ( !isGeneric("otbtex_hara") ) {
 #' Long Run Low Grey-Level Emphasis \if{html}{\figure{form_Long_Run_Low_Grey_Level_Emphasis.png}{options:alt="Long Run Low Grey-Level Emphasis"}}\cr
 #' Long Run High Grey-Level Emphasis \if{html}{\figure{form_Long_Run_High_Grey_Level_Emphasis.png}{options:alt="Long Run High Grey-Level Emphasis"}}\cr
 
-#' @author Chris Reudenbach, Thomas Nauss
+#' @author Chris Reudenbach
 
 #' @note More information at:
 #' \href{https://prism.ucalgary.ca/handle/1880/51900}{texture tutorial}
@@ -205,8 +196,6 @@ if ( !isGeneric("otbtex_hara") ) {
 #' glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogeneity" <-> "simple 4", "contrast"<-> "simple 5", "dissimilarity" <-> "advanced 2", "entropy" <-> "simple 2", "second_moment"<-> "simple 4", "correlation" <-> "simple 3"
 #' Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data. 
 
-#'
-#' @name otbtex_hara
 #' @export otbtex_hara
 #' @examples
 #' \dontrun{
@@ -218,126 +207,8 @@ if ( !isGeneric("otbtex_hara") ) {
 #' # calculate all Haralick-textures
 #' otbtex_hara(x="4490600_5321400.tif")
 #' }
-NULL
 
-
-
-# Function using RasterBrick ---------------------------------------------------
-#' OTB wrapper for Haralick's simple, advanced and higher order texture features
-#'@description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel
-#' @rdname otbtex_hara
-#'
-setMethod("otbtex_hara",
-          signature(x = "RasterBrick"),
-          function(x,
-                   texture="all",
-                   path_output=NULL,
-                   return_raster=TRUE,
-                   parameters.xyrad=list(c(1,1)),
-                   parameters.xyoff=list(c(1,1)),
-                   parameters.minmax=c(0,255),
-                   parameters.nbbin=8,
-                   channel=NULL,
-                   verbose=TRUE,
-                   ram="8192"){
-            if (is.null(path_output)) path_output <- file.path(getwd(),"/")
-            raster::writeRaster(x, file = file.path(path_output, "tmp.tif"), overwrite = TRUE)
-            x <- paste0(path_output, "tmp.tif")
-            tempout <- format(Sys.time(), "%Y-%m-%d-%H%M%S")
-            ret_textures <- otbtex_hara(x = x,
-                                                texture = texture,
-                                                output_name = tempout,
-                                                path_output = path_output,
-                                                return_raster = TRUE,
-                                                parameters.xyrad = parameters.xyrad,
-                                                parameters.xyoff = parameters.xyoff,
-                                                parameters.minmax = parameters.minmax,
-                                                parameters.nbbin = parameters.nbbin,
-                                                channel = channel,
-                                                verbose = verbose,
-                                                ram = ram)
-            file.remove(x)
-            tmpfiles <- list.files(path_output,
-                                   pattern = utils::glob2rx(paste0("*", tempout, "*")),
-                                   full.names = TRUE)
-            file.remove(tmpfiles)
-            return(ret_textures)
-          })
-
-
-# Function using RasterLayer ---------------------------------------------------
-#' OTB wrapper for Haralick's simple, advanced and higher order texture features
-#'@description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel
-#' @rdname otbtex_hara
-#'
-setMethod("otbtex_hara",
-          signature(x = "RasterLayer"),
-          function(x,
-                   texture="all",
-                   path_output=NULL,
-                   return_raster=TRUE,
-                   parameters.xyrad=list(c(1,1)),
-                   parameters.xyoff=list(c(1,1)),
-                   parameters.minmax=c(0,255),
-                   parameters.nbbin=8,
-                   channel=NULL,
-                   verbose=FALSE,
-                   ram="8192"){
-            ret_textures <- otbtex_hara(x = raster::brick(x),
-                                                texture = texture,
-                                                path_output = path_output,
-                                                return_raster = return_raster,
-                                                parameters.xyrad = parameters.xyrad,
-                                                parameters.xyoff = parameters.xyoff,
-                                                parameters.minmax = parameters.minmax,
-                                                parameters.nbbin = parameters.nbbin,
-                                                channel = channel,
-                                                verbose = verbose,
-                                                ram = ram)
-            return(ret_textures)
-          })
-
-
-# Function using RasterStack ---------------------------------------------------
-#' OTB wrapper for Haralick's simple, advanced and higher order texture features
-#'@description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel
-#' @rdname otbtex_hara
-#'
-setMethod("otbtex_hara",
-          signature(x = "RasterStack"),
-          function(x,
-                   texture="all",
-                   path_output=NULL,
-                   return_raster=TRUE,
-                   parameters.xyrad=list(c(1,1)),
-                   parameters.xyoff=list(c(1,1)),
-                   parameters.minmax=c(0,255),
-                   parameters.nbbin=8,
-                   channel=NULL,
-                   verbose=FALSE,
-                   ram="8192"){
-            ret_textures <- otbtex_hara(x = raster::brick(x),
-                                                texture = texture,
-                                                path_output = path_output,
-                                                return_raster = return_raster,
-                                                parameters.xyrad = parameters.xyrad,
-                                                parameters.xyoff = parameters.xyoff,
-                                                parameters.minmax = parameters.minmax,
-                                                parameters.nbbin = parameters.nbbin,
-                                                channel = channel,
-                                                verbose = verbose,
-                                                ram = ram)
-            return(ret_textures)
-          })
-
-# Function using GeoTiff -------------------------------------------------------
-#' OTB wrapper for Haralick's simple, advanced and higher order texture features
-#'@description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel
-#' @rdname otbtex_hara
-#'
-setMethod("otbtex_hara",
-          signature(x = "character"),
-          function(x,
+otbtex_hara<- function(x,
                    texture="all",
                    output_name="hara",
                    path_output=NULL,
@@ -398,23 +269,23 @@ setMethod("otbtex_hara",
                       cat("\nrunning cmd:  ", command,"\n")
                       system(command)
                     } else{
-                      system(command,intern = TRUE,ignore.stdout = TRUE)
+                      system(command,intern = FALSE,ignore.stdout = FALSE)
                     }
                     if (return_raster){
                       if(txt == "simple"){
-                        bandNames <- c("Energy", "Entropy", "Correlation",
+                        bnames <- c("Energy", "Entropy", "Correlation",
                                     "Inverse_Difference_Moment", "Inertia",
                                     "Cluster_Shade", "Cluster_Prominence",
                                     "Haralick_Correlation")
                       } else if(txt == "advanced"){
-                        bandNames <- c("Mean", "Variance", "Dissimilarity",
+                        bnames <- c("Mean", "Variance", "Dissimilarity",
                                     "Sum_Average",
                                     "Sum_Variance", "Sum_Entropy",
                                     "Difference_of_Variances",
                                     "Difference_of_Entropies",
                                     "IC1", "IC2")
                       } else if(txt == "higher"){
-                        bandNames <- c("Short_Run_Emphasis",
+                        bnames <- c("Short_Run_Emphasis",
                                     "Long_Run_Emphasis",
                                     "Grey-Level_Nonuniformity",
                                     "Run_Length_Nonuniformity",
@@ -428,7 +299,7 @@ setMethod("otbtex_hara",
                       }
                       if (verbose) print("create: ", path_outfile)
                       ret_textures <- raster::readAll(raster::stack(path_outfile))
-                      names(ret_textures) <- paste0(bandNames, "-",
+                      names(ret_textures) <- paste0(bnames, "-",
                                                     "b", band,
                                                     "r", xyrad[1],
                                                     "o", xyoff[1],
@@ -462,7 +333,7 @@ setMethod("otbtex_hara",
             } else {
               return(raster::stack(ret_textures))
             }
-          })
+          }
 
 
 

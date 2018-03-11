@@ -5,7 +5,7 @@
 \title{Split multiband image to single band SAGA files}
 \usage{
 split2SAGA(fn = NULL, bandName = NULL, startBand = 1, endBand = 3,
-  refFn = NULL)
+  refFn = NULL, returnRaster = FALSE)
 }
 \arguments{
 \item{fn}{character. filename}
@@ -13,6 +13,8 @@ split2SAGA(fn = NULL, bandName = NULL, startBand = 1, endBand = 3,
 \item{startBand}{numerical. first band to export}
 
 \item{refFn}{character. reference image for resampling}
+
+\item{returnRaster}{logical. return as raster}
 
 \item{bandname}{character. list of bandnames c("red","green","blue")}
 

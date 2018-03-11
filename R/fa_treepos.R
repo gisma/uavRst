@@ -7,7 +7,7 @@ if (!isGeneric('treepos')) {
 #'@title Find potential tree positions using a canopy height model
 #'
 #'@description
-#' Find potential tree positions using a canopy height model by using an iterative watershed algorithm. Basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices
+#' Find potential tree positions using a canopy height model by using an iterative watershed algorithm. Basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. 
 #'
 #'@author Chris Reudenbach
 #'
@@ -95,12 +95,10 @@ treepos <- function(chm = NULL,
 
     cat(":: find max height position...\n")
     ts <-  poly_maxpos(paste0(path_run,"chm.tif"),paste0(path_run,"dummyCrownSegment"),polySplit = TRUE)
-    # create raw zero mask
+    # create raw zero mask ts[[1]] = seeds ts[[2]] = maxpos
     treepos <- ts[[1]] * chm
     raster::writeRaster(treepos,paste0(path_run,"treepos0.sdat"),overwrite = TRUE,NAflag = 0)
-    #r2saga(treepos,"treepos0")
-    # extract stats
-
+    
     # reclass extracted treeposs to minTreeAlt
     ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
                          " -INPUT "  ,path_run,"treepos0.sgrd",
@@ -119,6 +117,18 @@ treepos <- function(chm = NULL,
     # trees <- sf::st_read(paste0(path_run,"treepos.shp"))
     localmaxima<-raster::raster(paste0(path_run,"treepos.sdat"))
     localmaxima@crs <- chm@crs
+    # workaround for strange effects with SAGA
+    # even if all params are identical it is dealing with different grid systems
+    localmaxima<-raster::resample(localmaxima, chm , method = 'bilinear')
+    localmaxima[localmaxima<=0]<-0
+    # remove temporary files
+    flist<-list()
+    flist<-append(flist, Sys.glob(paste0(path_run,"treepos0.*")))
+    flist<-append(flist, Sys.glob(paste0(path_run,"dummyCrownSegment*")))
+    flist<-append(flist, Sys.glob(paste0(path_run,"treepos.*")))
+    flist<-append(flist, Sys.glob(paste0(path_run,"chmStat.*")))
+    flist<-append(flist, Sys.glob(paste0(path_run,"polyStat.*")))
+    res<-file.remove(unlist(flist))
   return(localmaxima)
 }
 
