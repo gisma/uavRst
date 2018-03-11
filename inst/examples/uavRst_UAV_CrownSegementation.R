@@ -170,8 +170,9 @@ split2SAGA(imageTrainFiles,
            endBand=length(bandNames),
            refFn="chm_3-3.tif")
 
-# call tree crown segmentation NOTE there are about 75 partly highly correlated channels 
-# try to reduce and mention the thresholds
+# call tree crown segmentation 
+# NOTE called like in this script this are roughly about 100 partly highly correlated channels 
+# try to reduce the number and mention the thresholds...
 crowns <- chmseg_uav( treepos = tPos, 
                       segmentationBands = bandNames,
                       chm = chmR,
@@ -182,7 +183,7 @@ crowns <- chmseg_uav( treepos = tPos,
                       majorityRadius = 3,
                       thVarFeature = 1.,
                       thVarSpatial = 1.,
-                      thSimilarity = 0.000001,
+                      thSimilarity = 0.0001,
                       giLinks = giLinks )
 
 
