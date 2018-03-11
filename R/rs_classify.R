@@ -438,12 +438,13 @@ calc_ext<- function ( calculateBands    = FALSE,
     imageFiles <-Sys.glob(paths = paste0(currentDataFolder,patternImgFiles,"*","tif"))
     demFiles <- Sys.glob(paths = paste0(currentDataFolder,patterndemFiles,"*","tif"))
     
+    # create a counter for all input files to be processed     
     counter<- max(length(demFiles),length(imageFiles))
-    # stack the ortho images
+
     ### calculate indices and base stat export it to tif
     # create list vars
-    flist<-list()
-    bandNames<-list()
+    bandNames <- flist <- list()
+    
     for (i in 1:length(counter)){
       # if calc pardem 
       if (pardem){
@@ -479,7 +480,8 @@ calc_ext<- function ( calculateBands    = FALSE,
                             paste0("rgbi_",basename(imageFiles[i])),
                             progress = "text",
                             overwrite=TRUE)
-        flist<-paste0("rgbi_",basename(imageFiles[i])) 
+        
+        flist<-append(flist, paste0("rgbi_",basename(imageFiles[i])))
       }
       # if RGB transform
       if (RGBTrans){
