@@ -1,8 +1,6 @@
 
 
-#TOFIX #@name
-
-#' #@titel simple wrapper for some LAStools functions 
+#' simple wrapper for some LAStools functions 
 #'
 #'@description
 #' simple wrapper for some lastools functions
@@ -10,12 +8,12 @@
 #'@author Chris Reudenbach
 #'@param tool default is \code{lasinfo}   additionally you may choose lasrepair, lasthin,  lasmerge, lasground_new, las2dem, las2txt, lasoverage, lasclip
 #'@param lasFile  default is \code{NULL} path  to the laz/las file(s)
-#'@param grid_size  resolution of the DTM raster
-#'@param thin_with_grid default 0.5 meter. Grid stepsize for data thinning
-#'@param keep_class default is 2. Default ground class of las/laz conform data
-#'@param bulge  default is 1.5. 'A parameter to filter spikes it is set to a step_size/10 and then clamped into the range from 1.0 to 2.0
-#'@param step_size  default is 25 meter. lastools key words if \code{city},\code{town},\code{metro},\code{nature},\code{wilderness} or experiment with free values
-#'@param sub_size = "8", default is 8 meter. lastools key words if \code{extra_coarse},\code{coarse},\code{fine},\code{extra_fine},\code{ultra_fine},\code{hyper_fine} or experiment with free values
+#'@param gridSize  resolution of the DTM raster
+#'@param thinGrid default 0.5 meter. Grid stepsize for data thinning
+#'@param keepClass default is 2. Default ground class of las/laz conform data
+#'@param bulge  default is 1.5. 'A parameter to filter spikes it is set to a stepSize/10 and then clamped into the range from 1.0 to 2.0
+#'@param stepSize  default is 25 meter. lastools key words if \code{city},\code{town},\code{metro},\code{nature},\code{wilderness} or experiment with free values
+#'@param subSize = "8", default is 8 meter. lastools key words if \code{extra_coarse},\code{coarse},\code{fine},\code{extra_fine},\code{ultra_fine},\code{hyper_fine} or experiment with free values
 #'@param cores number of cores that will be used
 #'@param proj4  default is EPSG 32632, any valid proj4 string that is assumingly the correct one
 #'@param rscale rscale
@@ -23,7 +21,7 @@
 #'@param xoff xoff
 #'@param yoff yoff
 #'@param outpath outpath
-#'@param path_lastools character. folder containing the Windows binary files of the lastools
+#'@param pathLastools character. folder containing the Windows binary files of the lastools
 #'@param verbose keep it quiet
 #'@param cutExtent NULL
 #'@param cutSlice NULL
@@ -35,20 +33,20 @@
 #'@examples
 #'\dontrun{
 #' lasR(lasFile =  "~/path/to/lasdata",
-#'        gisdbase_path = "~/temp5",
-#'        thin_with_grid = "0.5",
-#'        level_max = "5" ,
-#'        grid_size = "0.5")
+#'        gisdbasePath = "~/temp5",
+#'        thinGrid = "0.5",
+#'        splineNumber = "5" ,
+#'        gridSize = "0.5")
 #'}
 
 lastool <- function(  tool="lasinfo",
                       lasFile = NULL,
-                      thin_with_grid = "1.0",
-                      keep_class = "2",
+                      thinGrid = "1.0",
+                      keepClass = "2",
                       bulge = "1.5",
-                      step_size = "city",
-                      sub_size = "ultra_fine",
-                      grid_size = "1.0",
+                      stepSize = "city",
+                      subSize = "ultra_fine",
+                      gridSize = "1.0",
                       proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                       rscale= "0.01 0.01 0.01",
                       stepoverlap = NULL,
@@ -56,7 +54,7 @@ lastool <- function(  tool="lasinfo",
                       xoff = 0,
                       yoff = 0,
                       outpath = NULL,
-                      path_lastools = NULL,
+                      pathLastools = NULL,
                       verbose = FALSE,
                       cutExtent = NULL,
                       cutSlice = NULL) {
@@ -71,14 +69,14 @@ lastool <- function(  tool="lasinfo",
 
 
   # get/map the las binary folder and create the base command line
-  # if (is.null(path_lastools)) stop("no directory containing the Windows lastool binary files is provided...\n")
+  # if (is.null(pathLastools)) stop("no directory containing the Windows lastool binary files is provided...\n")
   if (Sys.info()["sysname"] == "Windows") {
-    #cmd <- path_lastools <- paste(system.file(package = "uavRst"), "lastools", sep="/")/lastools/bin
-    if (is.null(path_lastools)) {cmd <- path_lastools <- "C:/lastools/bin"
+    #cmd <- pathLastools <- paste(system.file(package = "uavRst"), "lastools", sep="/")/lastools/bin
+    if (is.null(pathLastools)) {cmd <- pathLastools <- "C:/lastools/bin"
     if (verbose) cat("\n You did not provide a path to your lastool binary folder. Assuming C:/lastools/bin\n")}
   } else {
-    #cmd <- paste("wine ",path_lastools <- paste(system.file(package = "uavRst"), "lastools",  sep="/"))
-    if (is.null(path_lastools)) {cmd <- path_lastools <- paste0("wine ",path.expand("~/apps/lastools/bin"))
+    #cmd <- paste("wine ",pathLastools <- paste(system.file(package = "uavRst"), "lastools",  sep="/"))
+    if (is.null(pathLastools)) {cmd <- pathLastools <- paste0("wine ",path.expand("~/apps/lastools/bin"))
     if (verbose) cat("\n You did not provide a path to your lastool binary folder. Assuming wine ~/apps/lastools/bin\n")}
 
   }
@@ -106,17 +104,17 @@ lastool <- function(  tool="lasinfo",
 
 
   # map the las code words
-  if (step_size == "city") step <- "25"
-  else if (step_size == "town") step <- "10"
-  else if (step_size == "metro") step <- "50"
-  else if (step_size == "nature") step <- "5"
-  else if (step_size == "wilderness") step <- "3"
-  if (sub_size == "extra_coarse") sub <- "3"
-  else if (sub_size == "coarse") sub <- "4"
-  else if (sub_size == "fine") sub <- "6"
-  else if (sub_size == "extra_fine") sub <- "7"
-  else if (sub_size == "ultra_fine") sub <- "8"
-  else if (sub_size == "hyper_fine") sub <- "9"
+  if (stepSize == "city") step <- "25"
+  else if (stepSize == "town") step <- "10"
+  else if (stepSize == "metro") step <- "50"
+  else if (stepSize == "nature") step <- "5"
+  else if (stepSize == "wilderness") step <- "3"
+  if (subSize == "extra_coarse") sub <- "3"
+  else if (subSize == "coarse") sub <- "4"
+  else if (subSize == "fine") sub <- "6"
+  else if (subSize == "extra_fine") sub <- "7"
+  else if (subSize == "ultra_fine") sub <- "8"
+  else if (subSize == "hyper_fine") sub <- "9"
 
 
 
@@ -153,15 +151,15 @@ lastool <- function(  tool="lasinfo",
   }
   ### reduce data amount
   if (tool=="lasthin"){
-    cat("\n:: reducing points by factor",thin_with_grid," ...\n")
+    cat("\n:: reducing points by factor",thinGrid," ...\n")
     # build command
     command <- lasthin
     command <- paste0(command, " -i ",lasFile)
     command <- paste0(command," -odix _reduced")
     command <- paste0(command," -odir ",outpath)
     command <- paste0(command," -olas")
-    command <- paste0(command," -keep_class ",keep_class)
-    command <- paste0(command," -thin_with_grid ",thin_with_grid)
+    command <- paste0(command," -keep_class ",keepClass)
+    command <- paste0(command," -thin_with_grid ",thinGrid)
 
     # execute
     ret <- system(command,intern = FALSE, ignore.stderr = FALSE)
@@ -231,7 +229,7 @@ lastool <- function(  tool="lasinfo",
     command <- paste0(command, " -i ",lasFile)
     command <- paste0(command," -keep_class 2 ")
     command <- paste0(command," -extra_pass ")
-    command <- paste0(command," -step ",grid_size)
+    command <- paste0(command," -step ",gridSize)
     command <- paste0(command," -ocut 3 ")
     command <- paste0(command," -odix _dtm ")
     command <- paste0(command," -otif ")

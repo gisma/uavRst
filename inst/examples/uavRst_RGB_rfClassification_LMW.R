@@ -171,8 +171,8 @@ if (startPredict){
   # start prediction
   predict_rgb(imageFiles=imageFiles,
              model = model_final,
-             in_prefix = "index_",
-             out_prefix = "classified_",
+             inPrefix = "index_",
+             outPrefix = "classified_",
              bandNames = bandNames)
 
   cat(":: ...finsihed \n")

@@ -1,19 +1,13 @@
-# karim is the blue djinn
-if (!isGeneric('read_gpx ')) {
-  setGeneric('read_gpx ', function(x, ...)
-    standardGeneric('read_gpx '))
-}
-
-
 #' Read a GPX file.
 
 #' @description Read a GPX file. By default, it reads all possible GPX layers, and only returns shapes for layers that have any features.
 #' if the layer has any features a sp object is returned.
+#' 
 #' @param file a GPX filename (including directory)
 #' @param layers vector of GPX layers. Possible options are \code{"waypoints"}, \code{"tracks"}, \code{"routes"}, \code{"track_points"}, \code{"route_points"}. By dedault, all those layers are read.
 
 #' @export read_gpx
-#' @note cloned from tmap
+#' @note adapted from \code{\link[tmaptools]{read_GPX}}
 #'
 
 read_gpx <- function(file,
@@ -41,23 +35,17 @@ read_gpx <- function(file,
 }
 
 
-if (!isGeneric('xyz2tif')) {
-  setGeneric('xyz2tif', function(x, ...)
-    standardGeneric('xyz2tif'))
-}
-#' Read and Convert xyz DEM/DSM Data as typically provided by the Authorities
+#' Read and Convert xyz DEM/DSM Data as typically provided by the Authorities.
 #'
 #' @description
-#' Read xyz data and generate a raster  \code{Raster*} object.
+#' Read xyz data and generate a Raster* object.
 #'
 #' @param xyzFN ASCII tect file with xyz values
 #' @param epsgCode "25832"
-
 #'
-#'
+#' @export xyz2tif
 
 #' @examples
-
 #' \dontrun{
 #' #get some typical data as provided by the authority
 #' setwd(tempdir())
@@ -68,7 +56,7 @@ if (!isGeneric('xyz2tif')) {
 #' head(read.csv(file))
 #' xyz2tif(file,epsgCode = "31468")
 #' }
-#' @export xyz2tif
+
 #'
 
 xyz2tif <- function(xyzFN=NULL,  epsgCode ="25832"){
@@ -83,7 +71,7 @@ xyz2tif <- function(xyzFN=NULL,  epsgCode ="25832"){
 
 
 
-
+# adjust projection of objects according to their keywords -------
 h_raster_adjust_projection <- function(x) {
   llcrs <- "+proj=longlat +datum=WGS84 +no_defs"
 
@@ -109,7 +97,6 @@ h_raster_adjust_projection <- function(x) {
 }
 
 # Check projection of objects according to their keywords -------
-
 h_comp_ll_proj4 <- function(x) {
   proj <- datum <- nodefs <- "FALSE"
   allWGS84 <- as.vector(c("+init=epsg:4326", "+proj=longlat", "+datum=WGS84", "+no_defs", "+ellps=WGS84", "+towgs84=0,0,0"))
@@ -138,25 +125,24 @@ h_comp_ll_proj4 <- function(x) {
 }
 
 
-#  
-#  
-#' create an spatiallineobject from 2 points
+
+#  Create spatiallineobject from 2 points.
+
+#' Create an spatiallineobject from 2 points
 #' @description
 #' create an spatiallineobject from 2 points, optional export as shapefile
-#' @param p1 coordinate of first point
-#' @param p2 coordinate of second point
+#' @param startPoint coordinate of first point (c(50.1,8.1))
+#' @param endPoint vector. coordinate of second point c(50.2,8.0)
 #' @param proj4 proj4 string
 #' @param ID id of line
 #' @param export write shafefile default = F
 #' @author Chris Reudenbach
 #' @export
 #' @keywords internal
-sp_line <- function(p1,
-                    p2,
-                    ID,
+sp_line <- function(startPoint,endPoint,ID,
                     proj4="+proj=longlat +datum=WGS84 +no_defs",
                     export=FALSE) {
-  line <- SpatialLines(list(Lines(Line(cbind(p1,p2)), ID = ID)))
+  line <- SpatialLines(list(Lines(Line(cbind(startPoint,endPoint)), ID = ID)))
   sp::proj4string(line) <- CRS(proj4)
   if (export) {
     writeLinesShape(line,paste0(ID,"home.shp"))
@@ -164,12 +150,12 @@ sp_line <- function(p1,
   return(line)
 }
 #   
-#' create an spatialpointobject from 1 points
+#' create an spatialpointobject from 1 points.
 #' @description
 #' create an spatialpointobject from 1 points, optional export as shapefile
 #' #@author Chris Reudenbach
-#' @param lat lat of first point
-#' @param lon lon of first point
+#' @param lat numeric. ie latitude of point
+#' @param lon numeric. .i longitude of point
 #' @param ID name of point
 #' @param proj4 proj4 string
 #' @param export write shafefile default = F
@@ -190,12 +176,8 @@ sp_point <- function(lon,
   return(point)
 }
 
-#' 
-#' 
-
-#' applies a line to a raster and returns the position of the maximum value
-#' @description
-#'  applies a line to a raster and returns the position of the maximum value
+#' applies a line to a raster and returns the position of the maximum value.
+#' @description applies a line to a raster and returns the position of the maximum value
 #' @param dem raster object
 #' @param line  sp object
 #' @export
@@ -213,32 +195,32 @@ line_maxpos <- function(dem,line){
 }
 
 
-#'  extract for all polygons the position of the maximum value of the applied raster(s)
+#'  extract for all polygons the position of the maximum value of the applied raster(s).
 #' @description
 #' extract for all polygons the position of the maximum value
-#' @param x path and name of a GDAL raster file
-#' @param lN layer name of shape file
-#' @param poly_split split polygon in single file, default is TRUE
+#' @param fileName path and name of a GDAL raster file
+#' @param layerName layer name of shape file
+#' @param polySplit split polygon in single file, default is TRUE
 #' extract for all polygons the position of the maximum value
 #' @export poly_maxpos
 #'
-poly_maxpos <- function(x,lN, poly_split=TRUE){
+poly_maxpos <- function(fileName,layerName, polySplit=TRUE){
   # read raster input data
-  if (poly_split) {system(paste0("rm -rf ",paste0(path_tmp,"split")))}
-  dem <- raster::raster(x)
-  fn <- spatial.tools::create_blank_raster(reference_raster=dem,filename = paste0(path_tmp,basename(lN),"raw"))
+  if (polySplit) {system(paste0("rm -rf ",paste0(path_tmp,"split")))}
+  dem <- raster::raster(fileName)
+  fn <- spatial.tools::create_blank_raster(reference_raster=dem,filename = paste0(path_tmp,basename(layerName),"raw"))
   mask <- raster::raster(fn)
   maskx <- velox::velox(mask)
   # chmx <- velox::velox(dem)
 
   # read vector input data the sf way
-  sf_dcs <- sf::st_read(paste0(lN,".shp"),quiet = TRUE)
+  sf_dcs <- sf::st_read(paste0(layerName,".shp"),quiet = TRUE)
   dcs <-  methods::as(sf_dcs, "Spatial")
 
   # retrieve unique NAME
   ids <- unique(dcs@data$NAME)
 
-  if (poly_split) {
+  if (polySplit) {
     cat("     split polygons...\n")
     cat("     analyze",length(ids) ,"polygons\n")
     cat("     calculaton time is approx.:  ",floor(length(ids)/180)," min\n")
@@ -247,47 +229,35 @@ poly_maxpos <- function(x,lN, poly_split=TRUE){
     # split polygon with respect to the NAME attribute
     parallel::mclapply(ids,function(x){
       rn <- as.character(x)
-      gdalUtils::ogr2ogr(src_datasource_name = paste0(lN,".shp"),
-                         dst_datasource_name = paste0(path_tmp,"split/",basename(lN),"_",rn,".shp"),
+      gdalUtils::ogr2ogr(src_datasource_name = paste0(layerName,".shp"),
+                         dst_datasource_name = paste0(path_tmp,"split/",basename(layerName),"_",rn,".shp"),
                          where = paste0("NAME='",rn,"'")
                          , nln = rn)
     },
     mc.cores = parallel::detectCores())
   }
-  # parallel retrival of maxpos
 
+    # parallel retrival of maxpos
   cat("     max height coords search...\n")
-
   ret_max_pos <-  parallel::mclapply(ids,function(x) {
-
-    # assign vars
-    #maskx <- velox::velox(mask)
-    #chmx <- velox::velox(dem)
-
     rn <- as.character(x)
-
     # create temp folder and assign it to raster
     dir.create(paste0(path_tmp,rn),recursive=TRUE)
     raster::rasterOptions(tmpdir=paste0(path_tmp,rn))
 
     # read single polygon sf is even in this construct times faster
-    sf_shp <- sf::st_read(paste0(path_tmp,"split/",basename(lN),"_",rn,".shp"),quiet = TRUE)
+    sf_shp <- sf::st_read(paste0(path_tmp,"split/",basename(layerName),"_",rn,".shp"),quiet = TRUE)
     shp <- as(sf_shp, "Spatial")
 
     # reclass VALUE to 1
     shp@data$VALUE <-1
-
-    # crop raster acccording to the polygon
-    #maskx$crop(c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
-    #chmx$crop(c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
 
     # rasterize mask
     maskx$rasterize(shp,field = "VALUE",band = 1)
 
     # re-convert to raster format
     m1 <- maskx$as.RasterLayer(band=1)
-    #d1 <- chmx$as.RasterLayer(band=1)
-    # TODO which(mat == max(mat), arr.ind=TRUE)
+
     # get maxpos of crown area
     m1 <-raster::crop(m1,c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
     d1 <-raster::crop(m1,c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
@@ -310,7 +280,7 @@ poly_maxpos <- function(x,lN, poly_split=TRUE){
   max_pos@data$id<- as.numeric(max_pos@data$id)
   # create seeds file for rasterizing max_pos
   # re-convert to raster format
-  fn <- spatial.tools::create_blank_raster(reference_raster=dem,filename = paste0(path_tmp,basename(lN),"raw"))
+  fn <- spatial.tools::create_blank_raster(reference_raster=dem,filename = paste0(path_tmp,basename(layerName),"raw"))
   mask <- raster::raster(fn)
   seeds <- raster::rasterize(max_pos,mask,field="id")
   seeds[seeds >= 0] <- 1
@@ -323,21 +293,21 @@ poly_maxpos <- function(x,lN, poly_split=TRUE){
 #'  converts GRASS raster to Geotiff
 #' @description converts GRASS raster to Geotiff
 #' @param runDir path of working directory
-#' @param layer name GRASS raster
+#' @param layerName name GRASS raster
 #' @param returnRaster return GRASS raster as an R raster object, default = FALSE
 #' @keywords internal
 
 
 #'
-grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
+grass2tif <- function(runDir = NULL, layerName = NULL, returnRaster = FALSE) {
   link2GI::linkGRASS7()
   rgrass7::execGRASS("r.out.gdal",
                      flags     = c("c","overwrite","quiet"),
                      createopt = "TFW=YES,COMPRESS=LZW",
-                     input     = layer,
-                     output    = paste0(runDir,"/",layer,".tif")
+                     input     = layerName,
+                     output    = paste0(runDir,"/",layerName,".tif")
   )
-  if (returnRaster) return(raster::raster(paste0(runDir,"/",layer,".tif")))
+  if (returnRaster) return(raster::raster(paste0(runDir,"/",layerName,".tif")))
 }
 
 
@@ -345,15 +315,15 @@ grass2tif <- function(runDir = NULL, layer = NULL, returnRaster = FALSE) {
 #' converts OGR to GRASS vector
 #' @description converts OGR to GRASS vector
 #' @param runDir path of working directory
-#' @param layer name GRASS raster
+#' @param layeName name GRASS raster
 #' @keywords internal
 
-shape2grass <- function(runDir = NULL, layer = NULL) {
+shape2grass <- function(runDir = NULL, layerName = NULL) {
   # import point locations to GRASS
   rgrass7::execGRASS('v.in.ogr',
                      flags  = c('o',"overwrite","quiet"),
-                     input  = paste0(layer,".shp"),
-                     output = layer
+                     input  = paste0(layerName,".shp"),
+                     output = layerName
   )
 }
 
@@ -361,15 +331,15 @@ shape2grass <- function(runDir = NULL, layer = NULL) {
 #'  converts GRASS vector to shape file
 #' @description converts GRASS vector to shape file
 #' @param runDir path of working directory
-#' @param layer name GRASS raster
+#' @param layerName name GRASS raster
 #' @keywords internal
 
-grass2shape <- function(runDir = NULL, layer = NULL){
+grass2shape <- function(runDir = NULL, layerName = NULL){
   rgrass7::execGRASS("v.out.ogr",
                      flags  = c("overwrite","quiet"),
-                     input  = layer,
+                     input  = layerName,
                      type   = "line",
-                     output = paste0(layer,".shp")
+                     output = paste0(layerName,".shp")
   )
 }
 
@@ -377,7 +347,7 @@ grass2shape <- function(runDir = NULL, layer = NULL){
 
 
 
-
+# multiplies two raster ----
 funMultiply <- function(x)
 {
   # Note that x is received by the function as a 3-d array:
@@ -390,20 +360,22 @@ funMultiply <- function(x)
 
   return(result)
 }
+
+# returns maxpos of a raster ----
 funWhichmax <- function(mask,value) {
   raster::xyFromCell(value,which.max(mask * value))
 }
 
 
-#' 
-#'  #TOFIX @name  @title calculate decriptive stats of raster values of underlying a polygon
+
+#' Calculate decriptive raster statistics of mask polygons
 #'
 #'@description
-#' calculate statitiscs of polygon based raster extraction.Returns a spatialpolygon dataframe containing decriptive statistics
+#' calculate statitiscs of polygon based raster extraction. Returns a spatialpolygon dataframe containing decriptive statistics
 #'
 #'@author Chris Reudenbach
 #'
-#'@param x  spatial raster object
+#'@param x list of spatial Raster* object(s)
 #'@param spdf   spatial point dataframe
 #'@param count  0 1 switch
 #'@param min    0 1 switch
@@ -558,7 +530,7 @@ fillGaps<- function (folder,layer){
 }
 
 
-# creates names and ranges from a simple list for zrange cuts
+# creates names and ranges from a simple list for zrange cuts ---
 makenames<-function(zr ) {
   class<-list()
   zrange<-list()
@@ -574,7 +546,8 @@ makenames<-function(zr ) {
   return(list(unlist(class),zrange))
 }
 
-extractTrainPixelValues<- function(imgStack=NULL,trainData=NULL,responseCol=NULL){
+# extract pixel values according to an overlay and response name ---
+extractTrainPixelValues <- function(imgStack=NULL,trainData=NULL,responseCol=NULL){
   #extract training Area pixel values
   dfTpv = data.frame(matrix(vector(), nrow = 0, ncol = length(names(imgStack)) + 1))
   for (i in 1:length(unique(trainData[[responseCol]]))){
@@ -590,13 +563,13 @@ extractTrainPixelValues<- function(imgStack=NULL,trainData=NULL,responseCol=NULL
   return(dfTpv)
 }
 
-# calculate mode
+# calculate the mode ---
 Mode <- function(x) {
   ux <- unique(x)
   ux[which.max(tabulate(match(x, ux)))]
 }
 
-### getPopupStyle creates popup style =================================================
+### getPopupStyle creates popup style  -------
 getPopupStyle <- function() {
   # htmlTemplate <- paste(
   #   "<html>",
@@ -620,18 +593,18 @@ getPopupStyle <- function() {
   end <- grep("<%=pop%>", pop)
   return(paste(pop[1:(end-2)], collapse = ""))
 }
-#' split multiband tif to single tif files
-#' @description split multiband tif to single tif files
+#' Split multiband image to single band SAGA files
+#' @description Split multiband image to single band SAGA files. If a reference file is given, it performs a resample if necessary to avoid the numerical noise problem of SAGA extent. 
 #' @param fn character. filename
 #' @param bandname character. list of bandnames c("red","green","blue")
 #' @param startBand numerical. first band to export 
 #' @param startBand numerial. last band to export 
 #' @param refFn character. reference image for resampling
-#' @name convert2SAGA
+#' @name split2SAGA
 
 #' @keywords internal
 #'@export
-convert2SAGA<-function(fn=NULL,
+split2SAGA<-function(fn=NULL,
                     bandName=NULL,
                     startBand= 1,
                     endBand =3,
@@ -656,7 +629,7 @@ convert2SAGA<-function(fn=NULL,
 }
 
 #' colorize the cat outputs 
-#' @description colorize the cat outputs 
+#'@description colorize the cat outputs 
 #'@export
 #'@keywords internal
 getCrayon<-function(){
@@ -667,10 +640,10 @@ getCrayon<-function(){
   return(list(note,err,ok,head))
 }
 #' create name vector corresponding to the training image stack
-#'
+#' create vector containing the names of the image stack claculated using \code{\link{calc_ext}} 
 #' @param rgbi character. codes of the RGB indices 
 #' @param bandNames character.  band names
-#' @param  stat character.  stat codes
+#' @param stat character.  stat codes
 #' @param morpho character.  morpho codes
 #' @param edge character.  edge codes
 #' @param RGBtrans character.  RGBtrans codes
@@ -757,33 +730,39 @@ make_bandnames <- function(rgbi    = NA,
   
 }
 
-
+# returns the saga items from a list --
 issagaitem <- function(x) 
 {
   if (x %in%  c("SLOPE","ASPECT","C_GENE","C_PROF","C_PLAN","C_TANG","C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI") ) return(TRUE) else return(FALSE)
 }             
+
+# returns the gdal items from a list ---
 isgdaldemitem <- function(x) 
 {
   if (x %in%  c("hillshade","slope", "aspect","TRI","TPI","Roughness")) return(TRUE) else return(FALSE)
 }
 
-
+#' clips a tif files according to a given extent.
+#' 
+#' clips a tif files according to a given extent
+#' @param rasterFiles character. vector containing a list of rasterfiles to be clipped
+#' @param ext extent 
+#' @param outPath character. subfolder of current runtime folder. clipped files will be stored there
+#' @param prefix character. prefic string that is added to the filenames
+#'@export
+#'@keywords internal
 cutTif<- function(rasterFiles = NULL,
                   ext=NULL,
-                  outpath="cut",
+                  outPath="cut",
                   prefix="cut") {
   #rasterFiles <- list.files(pattern="[.]tif$", path="/home/creu/proj/geopat/data/modis_carpathian_mountains/study_area/modis_ndvi/2002", full.names=TRUE)
-  # UX<-1964000
-  # UY<-5130000
-  # LX<-2130000
-  # LY<- 4973000
   te=paste(extent(ext)[1],' ',
            extent(ext)[3],' ',
            extent(ext)[2],' ',
            extent(ext)[4])
-  
+  if (!file.exists(paste0(path_run, outPath))) dir.create(file.path(paste0(path_run, outPath)), recursive = TRUE,showWarnings = FALSE)  
   for (rasterFile in rasterFiles) {
-    system(paste0("gdal_translate -projwin ", te, " -of GTiff ",rasterFile, " ", dirname(rasterFile),"/",outpath,"/",prefix,basename(rasterFile)))
+    system(paste0("gdal_translate -projwin ", te, " -of GTiff ",rasterFile, " ", path_run,outPath,"/",prefix,basename(rasterFile)))
   }
 }
   

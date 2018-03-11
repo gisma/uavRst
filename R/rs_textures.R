@@ -1,11 +1,11 @@
 # Calculate selected texture parameters based on gray level properties
 # The first otb function otbHaraTex has some extended comments
 # describing a straightforward wrapping concept
-# glcmtex provides a good practice example for using
+# glcm_texture provides a good practice example for using
 # the R capabilities of paralell tasking
 #
 #' Calls the glcm package with useful settings
-#' @note for the use of glcmtex a glcm wrapper function
+#' @note for the use of glcm_texture a glcm wrapper function
 #'       a raster* object is required
 #' @param x rasterLayer or a rasterStack containing different channels
 #' @param nrasters vector of channels to use from x. Default =nlayers(x)
@@ -33,7 +33,7 @@
 #' for a review of a lot of feature extraction algorithms look at: \href{http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
 #' glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogeneity" <-> "simple 4", "contrast"<-> "simple 5", "dissimilarity" <-> "advanced 2", "entropy" <-> "simple 2", "second_moment"<-> "simple 4", "correlation" <-> "simple 3"
 #' Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data. 
-#' @export glcmtex
+#' @export glcm_texture
 #' @examples
 #' \dontrun{
 #' ## example on how to calculate texture from a list of channels
@@ -45,7 +45,7 @@
 #' r<- raster::stack(paste0(getwd(),"4490600_5321400.tif"))
 #'
 #' # call glcm wrapper
-#' result <- glcmtex(r,nrasters=1:3,
+#' result <- glcm_texture(r,nrasters=1:3,
 #' stats=c("mean", "variance", "homogeneity"))
 #'
 #' #plot the results from VIS0.6 channel:
@@ -53,7 +53,7 @@
 #' }
 #' @seealso \code{\link{glcm}}
 
-glcmtex <- function(x,
+glcm_texture <- function(x,
                              nrasters=1:nlayers(x),
                              kernelSize=c(3),
                              stats=c("mean", "variance", "homogeneity", "contrast", "dissimilarity", "entropy",
@@ -697,10 +697,10 @@ otbtex_gray<- function(input=NULL,
 #' @param dem  character filname to GeoTiff containing one channel DEM
 #' @param item index. to be calculated default are c("hillshade","slope", "aspect","TRI","TPI","Roughness")
 #' @param verbose logical. be quiet
-#' @param morpho_method  numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}
-#' @param min_scale  mnumeric. in scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
-#' @param max_scale  numeric. max scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
-#' @param num_scale  numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
+#' @param morphoMethod  numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}
+#' @param minScale  numeric. in scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
+#' @param maxScale  numeric. max scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
+#' @param numScale  numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param giLinks    list. of GI tools cli pathes
 
 #' @export morpho_dem
@@ -718,10 +718,10 @@ otbtex_gray<- function(input=NULL,
 morpho_dem<- function(dem,
                     item=c("hillshade","slope", "aspect","TRI","TPI","Roughness","SLOPE","ASPECT", "C_GENE","C_PROF","C_PLAN"," C_TANG"," C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI"),
                     verbose=FALSE,
-                    morpho_method = 6,
-                    min_scale = 1,
-                    max_scale = 8,
-                    num_scale = 2,
+                    morphoMethod = 6,
+                    minScale = 1,
+                    maxScale = 8,
+                    numScale = 2,
                     giLinks = NULL) {
   if (is.null(giLinks)){
     giLinks <- get_gi()
@@ -776,7 +776,7 @@ morpho_dem<- function(dem,
                                     C_MAXI = paste(path_run,"C_MAXI.sgrd", sep = ""),
                                     C_TOTA = paste(path_run,"C_TOTA.sgrd", sep = ""),
                                     C_ROTO = paste(path_run,"C_ROTO.sgrd", sep = ""),
-                                    METHOD = morpho_method),
+                                    METHOD = morphoMethod),
                        show.output.on.console = FALSE,
                        env = env)
     if ("MTPI" %in% saga_items){
@@ -790,9 +790,9 @@ morpho_dem<- function(dem,
         # scales where the (absolute) values from the smaller scale exceed those from the larger scale. 
         rsaga.geoprocessor(lib = "ta_morphometry", module = 28,
                            param = list(DEM = paste(path_run,"SAGA_dem.sgrd", sep = ""), 
-                                        SCALE_MIN = min_scale,
-                                        SCALE_MAX = max_scale,
-                                        SCALE_NUM = num_scale,
+                                        SCALE_MIN = minScale,
+                                        SCALE_MAX = maxScale,
+                                        SCALE_NUM = numScale,
                                         TPI = paste(path_run,"MTPI.sgrd", sep = "")),
                            show.output.on.console = FALSE,
                            env = env)

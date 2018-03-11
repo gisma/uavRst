@@ -1,7 +1,3 @@
-if (!isGeneric('get_traindata')) {
-  setGeneric('get_traindata', function(x, ...)
-    standardGeneric('get_traindata'))
-}
 
 #'@name get_traindata
 #'@title Extracts training data from a raster stack using vector data as a mask. 
@@ -62,7 +58,7 @@ get_traindata<-function(rasterStack  = NULL,
 #' @param ids numeric. the ids used for the training 
 #' @param position sp. spatialpoint object containing the centre target positions  
 #' @param  imageFiles raster* image/classification file 
-#' @param out_prefix character. out prefix string
+#' @param outPrefix character. out prefix string
 #' @param ext character. extension
 #' @param path   character. output path
 #' @param dropChars numeric. number of characters that should be dropped at the end of the filename
@@ -82,7 +78,7 @@ get_counts<- function(ids=c(1,2),
                       position=NULL,
                       imageFiles = NULL,
                       buffersize=1.5,
-                      out_prefix="classified_index_",
+                      outPrefix="classified_index_",
                       ext=".tif",
                       path = path_output,
                       dropChars=0) {
@@ -90,7 +86,7 @@ get_counts<- function(ids=c(1,2),
   buffers<-rgeos::gBuffer(position,width=buffersize)
   ex<-data.frame()
   df<- lapply(seq(1:length(position)), function(i) {
-    fn<-paste0(path,out_prefix,substr(position[i,]$tree,1,nchar(position[i,]$tree)-dropChars),ext)
+    fn<-paste0(path,outPrefix,substr(position[i,]$tree,1,nchar(position[i,]$tree)-dropChars),ext)
     
     if (file.exists(fn)){
       ex <- as.data.frame(unlist(raster::extract(raster(fn) , position[i,]    , buffer=buffersize, df=TRUE)))
@@ -113,8 +109,8 @@ get_counts<- function(ids=c(1,2),
 #'
 #' @param imageFiles raster*. imagestack for classification purposes must contain the required bands as needed by the model.
 #' @param model model. classification model
-#' @param  in_prefix character. in frefix  string
-#' @param out_prefix character. out prefix string
+#' @param  inPrefix character. in frefix  string
+#' @param outPrefix character. out prefix string
 #' @param bandNames character. band names
 #'
 #' @export predict_rgb
@@ -122,15 +118,15 @@ get_counts<- function(ids=c(1,2),
 #' \dontrun{
 #' predict_rgb(imageFiles=imagestack,
 #'             model = model_final,
-#'             in_prefix = "index_",
-#'             out_prefix = "classified_",
+#'             inPrefix = "index_",
+#'             outPrefix = "classified_",
 #'             bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI"))
 #'}
 
 predict_rgb <- function(imageFiles=NULL,
                         model = NULL,
-                        in_prefix = "index_",
-                        out_prefix = "classified_",
+                        inPrefix = "index_",
+                        outPrefix = "classified_",
                         bandNames = NULL) {
   
   if (is.null(bandNames)) return(cat(getCrayon()[[1]]("\n you did not provide predictor names. \nTypically something like bandNames ie c('R','G','B')")))
@@ -146,7 +142,7 @@ predict_rgb <- function(imageFiles=NULL,
     #require(caret)
     #TODO rasterstack
     fn<-basename(imageFiles[i])
-    fnOut <- paste0(po,out_prefix,fn)
+    fnOut <- paste0(po,outPrefix,fn)
     
     img2predict<-raster::stack(imageFiles[i])
     names(img2predict)<-bandNames
@@ -316,10 +312,10 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param RGBTrans          logical. switch for using color space transforming default = TRUE
 #' @param colorSpaces       character.  RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
 #' @param kernel            numeric. size of kernel for filtering and statistics, default is  3
-#' @param morpho_method  numeric. saga morphometric method 
-#' @param min_scale  mnumeric. in scale for multi scale TPI
-#' @param max_scale  numeric. max scale for multi scale TPI
-#' @param num_scale  numeric. number of scale for multi scale TPI
+#' @param morphoMethod  numeric. saga morphometric method 
+#' @param minScale  mnumeric. in scale for multi scale TPI
+#' @param maxScale  numeric. max scale for multi scale TPI
+#' @param numScale  numeric. number of scale for multi scale TPI
 #' @param currentDataFolder  NULL folder to image (and shape) data
 #' @param currentIdxFolder  NULL folder for saving the results
 #' @param cleanTiffs  logical. TRUE logical switch for deleting the calculated tifs, default is TRUE
@@ -392,10 +388,10 @@ calc_ext<- function ( calculateBands    = FALSE,
                       demType           = c("hillshade","slope", "aspect","TRI","TPI","Roughness",
                                             "SLOPE","ASPECT", "C_GENE","C_PROF","C_PLAN","C_TANG",
                                             "C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI"),  
-                      morpho_method = 6,
-                      min_scale = 1,
-                      max_scale = 8,
-                      num_scale = 2,
+                      morphoMethod = 6,
+                      minScale = 1,
+                      maxScale = 8,
+                      numScale = 2,
                       kernel            = 3,
                       currentDataFolder = NULL,
                       currentIdxFolder  = NULL,
@@ -456,10 +452,10 @@ calc_ext<- function ( calculateBands    = FALSE,
         #cat(catNote(":::: processing dem... ",demType,"\n"))
         morpho_dem(dem = demFiles[i], 
                    item = demType,
-                   morpho_method = morpho_method,
-                   min_scale = min_scale,
-                   max_scale = max_scale,
-                   num_scale = num_scale,
+                   morphoMethod = morphoMethod,
+                   minScale = minScale,
+                   maxScale = maxScale,
+                   numScale = numScale,
                    giLinks = giLinks)
         flist<-append(flist,paste0(demType,".tif"))
         for (item in demType) 

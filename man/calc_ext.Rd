@@ -18,7 +18,7 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE, prefixRun = "temp",
   "YUV"), pardem = TRUE, demType = c("hillshade", "slope", "aspect", "TRI",
   "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", "C_TANG",
   "C_LONG", "C_CROS", "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI"),
-  morpho_method = 6, min_scale = 1, max_scale = 8, num_scale = 2,
+  morphoMethod = 6, minScale = 1, maxScale = 8, numScale = 2,
   kernel = 3, currentDataFolder = NULL, currentIdxFolder = NULL,
   cleanTiffs = TRUE, giLinks = NULL)
 }
@@ -71,13 +71,13 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE, prefixRun = "temp",
 
 \item{demType}{character. ("hillshade","slope", "aspect","TRI","TPI","Roughness")}
 
-\item{morpho_method}{numeric. saga morphometric method}
+\item{morphoMethod}{numeric. saga morphometric method}
 
-\item{min_scale}{mnumeric. in scale for multi scale TPI}
+\item{minScale}{mnumeric. in scale for multi scale TPI}
 
-\item{max_scale}{numeric. max scale for multi scale TPI}
+\item{maxScale}{numeric. max scale for multi scale TPI}
 
-\item{num_scale}{numeric. number of scale for multi scale TPI}
+\item{numScale}{numeric. number of scale for multi scale TPI}
 
 \item{kernel}{numeric. size of kernel for filtering and statistics, default is  3}
 

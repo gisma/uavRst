@@ -17,5 +17,5 @@ Read a GPX file. By default, it reads all possible GPX layers, and only returns 
 if the layer has any features a sp object is returned.
 }
 \note{
-cloned from tmap
+adapted from \code{\link[tmaptools]{read_GPX}}
 }

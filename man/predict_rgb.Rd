@@ -4,17 +4,17 @@
 \alias{predict_rgb}
 \title{classify images using raster predict}
 \usage{
-predict_rgb(imageFiles = NULL, model = NULL, in_prefix = "index_",
-  out_prefix = "classified_", bandNames = NULL)
+predict_rgb(imageFiles = NULL, model = NULL, inPrefix = "index_",
+  outPrefix = "classified_", bandNames = NULL)
 }
 \arguments{
 \item{imageFiles}{raster*. imagestack for classification purposes must contain the required bands as needed by the model.}
 
 \item{model}{model. classification model}
 
-\item{in_prefix}{character. in frefix  string}
+\item{inPrefix}{character. in frefix  string}
 
-\item{out_prefix}{character. out prefix string}
+\item{outPrefix}{character. out prefix string}
 
 \item{bandNames}{character. band names}
 }
@@ -25,8 +25,8 @@ classify images using raster predict
 \dontrun{
 predict_rgb(imageFiles=imagestack,
             model = model_final,
-            in_prefix = "index_",
-            out_prefix = "classified_",
+            inPrefix = "index_",
+            outPrefix = "classified_",
             bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI"))
 }
 }

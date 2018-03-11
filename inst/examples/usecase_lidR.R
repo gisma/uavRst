@@ -11,7 +11,7 @@ dtm = grid_terrain(las_orig, method = "kriging", k = 10L,res = 5)
 dtm = as.raster(dtm)
 plot(dtm)
 
-lastool(tool="lasthin" , lasFile = lasfile,outpath=path_run,keep_class = 2 , thin_with_grid = 2.)
+lastool(tool="lasthin" , lasFile = lasfile,outpath=path_run,keepClass = 2 , thinGrid = 2.)
 lasred<-path.expand("~/proj/uav/thesis/finn/run/477375_000_5631900_000_477475_000_5632000_000_reduced.las")
 las_red = readLAS(lasred)
 # Classify ground points see example # https://github.com/Jean-Romain/lidR/wiki/Rasterizing-perfect-canopy-height-models
@@ -159,7 +159,7 @@ plot(contour2, add = T)
 
 plot(crowns1-crowns2)
 
-paths<-link2GI::linkGRASS7(gisdbase = gisdbase_path, location = "test2", spatial_params = sp_param,resolution = 20)
+paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath, location = "test2", spatial_params = sp_param,resolution = 20)
 
 ret <- rgrass7::execGRASS("r.in.lidar",
                           flags  = c("overwrite","quiet","o"),

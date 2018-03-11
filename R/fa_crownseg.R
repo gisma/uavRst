@@ -19,9 +19,9 @@
 #'@param thVarSpatial   numeric. Variance in Feature Space  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
 #'@param thVarFeature   numeric. Variance in Position Space  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
 #'@param thSimilarity   mumeric. Similarity Threshold see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
-#'@param seed_params    character. a list of raster data that is used for the segmentation. The canopy height model \code{c("chm")} is mandantory. see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
+#'@param segmentationBands    character. a list of raster data that is used for the segmentation. The canopy height model \code{c("chm")} is mandantory. see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
 #'@param giLinks        list. of GI tools cli paths
-#'@param majority_radius numeric. kernel size for the majority filter out spurious pixel
+#'@param majorityRadius numeric. kernel size for the majority filter out spurious pixel
 #'@export
 #'@examples
 #'\dontrun{
@@ -40,8 +40,8 @@ chmseg_uav <- function(treepos = NULL,
                             thVarFeature   = 1.,
                             thVarSpatial   = 1.,
                             thSimilarity   = 0.002,
-                            segmentation_bands    = c("chm.sgrd"),
-                            majority_radius    = 3.000,
+                            segmentationBands    = c("chm.sgrd"),
+                       majorityRadius    = 3.000,
                             giLinks = NULL) {
   proj<- raster::crs(treepos)
   if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
@@ -55,7 +55,7 @@ chmseg_uav <- function(treepos = NULL,
 
   cat("::: run main segmentation...\n")
   # create correct param lists
-  #segmentation_bands<-c("HI","GLI")
+  #segmentationBands<-c("HI","GLI")
   if (is.null(giLinks)){
     giLinks <- get_gi()
   }
@@ -65,7 +65,7 @@ chmseg_uav <- function(treepos = NULL,
   sagaCmd<-saga$sagaCmd
   RSAGA::rsaga.env(path =saga$sagaPath,modules = saga$sagaModPath)
 
-  param_list <- paste0(path_run,segmentation_bands,".sgrd;",collapse = "")
+  param_list <- paste0(path_run,segmentationBands,".sgrd;",collapse = "")
 
   # Start final segmentation algorithm as provided by SAGA's seeded Region Growing segmentation (imagery_segmentation 3)
   # TODO sensitivity analysis of the parameters
@@ -87,7 +87,7 @@ chmseg_uav <- function(treepos = NULL,
 
   # fill the holes inside the crowns (simple approach)
   # TODO better segmentation
-  if (majority_radius > 0){
+  if (majorityRadius > 0){
     outname<- "sieve_pre_tree_crowns.sdat"
     ret <- system(paste0("gdal_sieve.py -8 ",
                          path_run,"crowns.sdat ",
@@ -99,7 +99,7 @@ chmseg_uav <- function(treepos = NULL,
                          " -INPUT "   ,path_run,"sieve_pre_tree_crowns.sgrd",
                          " -RESULT "  ,path_run,"crowns.sgrd",
                          " -MODE 0",
-                         " -RADIUS "  ,majority_radius,
+                         " -RADIUS "  ,majorityRadius,
                          " -THRESHOLD 0.0 "),
                   intern = TRUE)
   }
@@ -272,7 +272,7 @@ chmseg_RL <- function(treepos = NULL,
 #' the input for \code{treepos}.
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
 #' height of \code{treepos}.
-#' @param EPSG_code character. The EPSG code of the reference system of the CHM raster image.
+#' @param EPSG character. The EPSG code of the reference system of the CHM raster image.
 #' @param movingWin numeric. Size (in pixels) of the moving window to detect local maxima. \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}
 #' @param minTreeAlt numeric. Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.\href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}
 #' @param TRESHSeed numeric. seeding threshold. \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}
@@ -286,7 +286,7 @@ chmseg_RL <- function(treepos = NULL,
 
 
 chmseg_ITC <- function(chm =NULL,
-                               EPSG_code =3064,
+                               EPSG =3064,
                                movingWin = 7,
                                TRESHSeed = 0.45,
                                TRESHCrown = 0.55,
@@ -300,7 +300,7 @@ chmseg_ITC <- function(chm =NULL,
   maxcrown <- sqrt(maxCrownArea/ pi)*2
 
   crown_polygon <- itcSegment::itcIMG(imagery = chm,
-                                      epsg = EPSG_code,
+                                      epsg = EPSG,
                                       TRESHSeed =  0.45,
                                       TRESHCrown = 0.55,
                                       searchWinSize = movingWin,

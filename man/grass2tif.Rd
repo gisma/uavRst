@@ -4,12 +4,12 @@
 \alias{grass2tif}
 \title{converts GRASS raster to Geotiff}
 \usage{
-grass2tif(runDir = NULL, layer = NULL, returnRaster = FALSE)
+grass2tif(runDir = NULL, layerName = NULL, returnRaster = FALSE)
 }
 \arguments{
 \item{runDir}{path of working directory}
 
-\item{layer}{name GRASS raster}
+\item{layerName}{name GRASS raster}
 
 \item{returnRaster}{return GRASS raster as an R raster object, default = FALSE}
 }

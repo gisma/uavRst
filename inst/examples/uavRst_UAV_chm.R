@@ -55,19 +55,19 @@ setwd(path_run)
 #las_data<-"~/proj/uav/thesis/finn/output/477375_00_5631900_00_477475_00_5632000_00.las"
 # create DSM
 dsm <- uavRst::pc3D_dsm(lasDir = las_data,
-                      gisdbase_path = projRootDir,
+                      gisdbasePath = projRootDir,
                       otb_gauss_radius ="4.1",
-                      grid_size = "1.0",
+                      gridSize = "1.0",
                       GRASSlocation = "dsm",
                       grass_lidar_method = "max",
                       cutExtent = cutExtent,
                       giLinks = giLinks)
 # create DTM
 dtm <- uavRst::pc2D_dtm(lasDir = paste0(path_run,dsm[[4]]),
-                      gisdbase_path = projRootDir,
-                      thin_with_grid = "0.5",
-                      level_max = "4" ,
-                      grid_size = "0.25",
+                      gisdbasePath = projRootDir,
+                      thinGrid = "0.5",
+                      splineNumber = "4" ,
+                      gridSize = "0.25",
                       cutExtent = cutExtent,
                       giLinks = giLinks)
 

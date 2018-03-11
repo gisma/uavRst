@@ -12,15 +12,15 @@ if (!isGeneric('local_relief')) {
 #'@author Chris Reudenbach
 #'
 #'@param lasDir  character. default is \code{NULL} path to the laz/las file(s)
-#'@param path_lastools character. character folder containing the Windows binary files of the lastools
-#'@param gisdbase_path character.  gisdbase will be linked or created depending on \code{gisdbase_exist}
+#'@param pathLastools character. character folder containing the Windows binary files of the lastools
+#'@param gisdbasePath character.  gisdbase will be linked or created depending on \code{gisdbase_exist}
 #'@param GRASSlocation character. location will be linked or created depending on \code{gisdbase_exist}
 #'@param projFolder character. subfolders in gisdbase for R related processing
-#'@param grid_size numeric. resolution for raster operations
-#'@param spline_level_max numeric. default is 9 number ob spline iterations
+#'@param gridSize numeric. resolution for raster operations
+#'@param splineNumber numeric. default is 9 number ob spline iterations
 #'@param proj4  character. default is EPSG 32632 any valid proj4 string that is assumingly the correct one
 #'@param gisdbase_exist logical. switch if gisdbase is created or  linked only
-#'@param param_list  character. default is c("i","v", "n", "g","f","overwrite","quiet")
+#'@param paramList  character. default is c("i","v", "n", "g","f","overwrite","quiet")
 #'                   i Save intermediate maps; \cr
 #'                   v Use bspline interpolation to construct the surface.Uses v.surf.bspline cubic interpolation instead of r.fillnulls cubic interpolation\cr
 #'                   n Invert colors in the color table \cr
@@ -34,31 +34,31 @@ if (!isGeneric('local_relief')) {
 #'\dontrun{
 #' # create a hillshade based on a las/laz point clouds
 #'   hs <- uavRst::local_relief(lasDir =  "~/proj/Monte_Bernorio/las/",
-#'                              gisdbase_path = "~/temp55/GRASS7",
-#'                              grid_size = "1.0")
+#'                              gisdbasePath = "~/temp55/GRASS7",
+#'                              gridSize = "1.0")
 #'}
 #'
 
 local_relief <- function(lasDir = NULL,
-                            gisdbase_path = NULL,
+                            gisdbasePath = NULL,
                             GRASSlocation = "tmp/",
                             projFolder = c("data/","output/","run/","las/"),
-                            grid_size = "1.0",
-                            param_list = c("i","v", "n", "g","f","overwrite","quiet"),
-                            spline_level_max = "9" ,
+                            gridSize = "1.0",
+                            paramList = c("i","v", "n", "g","f","overwrite","quiet"),
+                            splineNumber = "9" ,
                             proj4 = "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
                             gisdbase_exist = FALSE,
-                            path_lastools = NULL) {
+                            pathLastools = NULL) {
 
   # some basic checks
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
   lasDir <- path.expand(lasDir)
 
-  if (is.null(path_lastools)) {
+  if (is.null(pathLastools)) {
     if (Sys.info()["sysname"] == "Windows") {
-      cmd <- path_lastools <- paste(system.file(package = "uavRst"), "lastools", sep = "/")
+      cmd <- pathLastools <- paste(system.file(package = "uavRst"), "lastools", sep = "/")
     } else {
-      cmd <- paste("wine ",path_lastools <- paste(system.file(package = "uavRst"), "lastools", sep = "/"))
+      cmd <- paste("wine ",pathLastools <- paste(system.file(package = "uavRst"), "lastools", sep = "/"))
     }
   }
 
@@ -80,10 +80,10 @@ local_relief <- function(lasDir = NULL,
   else stop("no valid las or laz files found...\n")
 
   # set lastool folder
-  path_lastools <- path.expand(path_lastools)
+  pathLastools <- path.expand(pathLastools)
 
   # create project structure and export global pathes
-  link2GI::initProj(projRootDir = gisdbase_path,
+  link2GI::initProj(projRootDir = gisdbasePath,
                     projFolders =  c("output/","run/"))
 
   # delete content in run directory
@@ -108,15 +108,15 @@ local_relief <- function(lasDir = NULL,
   sp_param[5] <- proj4
 
   # create and export globally project folder structure
-  link2GI::initProj(projRootDir = gisdbase_path,
+  link2GI::initProj(projRootDir = gisdbasePath,
                     GRASSlocation = GRASSlocation,
                     projFolders =  projFolder)
 
   # create GRASS7 connection according gisdbase_exist (permanent or temporary)
   if (gisdbase_exist)
-    link2GI::linkGRASS7(gisdbase = gisdbase_path, location = GRASSlocation, gisdbase_exist = TRUE)
+    link2GI::linkGRASS7(gisdbase = gisdbasePath, location = GRASSlocation, gisdbase_exist = TRUE)
   else
-    link2GI::linkGRASS7(gisdbase = gisdbase_path, location = GRASSlocation, spatial_params = sp_param,resolution = grid_size)
+    link2GI::linkGRASS7(gisdbase = gisdbasePath, location = GRASSlocation, spatial_params = sp_param,resolution = gridSize)
 
   # raw DSM using r.in.lidar
   cat(":: calculate DSM...\n")
@@ -133,7 +133,7 @@ local_relief <- function(lasDir = NULL,
 
   cat(":: calculate local relief ...\n")
   ret <- rgrass7::execGRASS("r.local.relief",
-                            flags  = param_list,
+                            flags  = paramList,
                             input  = "point_cloud_dsm",
                             output = "hillshade",
                             shaded_output = "shaded_hillshade",

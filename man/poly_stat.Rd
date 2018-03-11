@@ -2,13 +2,13 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{poly_stat}
 \alias{poly_stat}
-\title{#TOFIX @name  @title calculate decriptive stats of raster values of underlying a polygon}
+\title{Calculate decriptive raster statistics of mask polygons}
 \usage{
 poly_stat(x = NULL, spdf = NULL, count = 1, min = 1, max = 1,
   sum = 1, range = 1, mean = 1, var = 1, stddev = 1, quantile = 10)
 }
 \arguments{
-\item{x}{spatial raster object}
+\item{x}{list of spatial Raster* object(s)}
 
 \item{spdf}{spatial point dataframe}
 
@@ -31,7 +31,7 @@ poly_stat(x = NULL, spdf = NULL, count = 1, min = 1, max = 1,
 \item{quantile}{number of quantile}
 }
 \description{
-calculate statitiscs of polygon based raster extraction.Returns a spatialpolygon dataframe containing decriptive statistics
+calculate statitiscs of polygon based raster extraction. Returns a spatialpolygon dataframe containing decriptive statistics
 }
 \examples{
 \dontrun{

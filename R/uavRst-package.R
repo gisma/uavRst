@@ -4,7 +4,7 @@
 #'
 #' @name uavRst
 #' @docType package
-#' @title Unmanned Aerial Vehicle Remote Sensing Tools - awesome tools to manipulate and analyze RGB imagery and point clouds
+#' @title Unmanned Aerial Vehicle Remote Sensing Tools - some cool tools to manipulate and analyze RGB imagery and point clouds
 #' @author Hanna Meyer, Lars Opgenoorth, Chris Reudenbach, Environmental Informatics Marburg \cr
 #' \cr
 #' \emph{Maintainer:} Chris Reudenbach \email{reudenbach@@uni-marburg.de}

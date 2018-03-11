@@ -2,7 +2,7 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{xyz2tif}
 \alias{xyz2tif}
-\title{Read and Convert xyz DEM/DSM Data as typically provided by the Authorities}
+\title{Read and Convert xyz DEM/DSM Data as typically provided by the Authorities.}
 \usage{
 xyz2tif(xyzFN = NULL, epsgCode = "25832")
 }
@@ -12,7 +12,7 @@ xyz2tif(xyzFN = NULL, epsgCode = "25832")
 \item{epsgCode}{"25832"}
 }
 \description{
-Read xyz data and generate a raster  \code{Raster*} object.
+Read xyz data and generate a Raster* object.
 }
 \examples{
 \dontrun{
@@ -25,4 +25,5 @@ unzip(res,files = file,  overwrite = TRUE)
 head(read.csv(file))
 xyz2tif(file,epsgCode = "31468")
 }
+
 }

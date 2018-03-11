@@ -4,12 +4,12 @@
 \alias{shape2grass}
 \title{converts OGR to GRASS vector}
 \usage{
-shape2grass(runDir = NULL, layer = NULL)
+shape2grass(runDir = NULL, layerName = NULL)
 }
 \arguments{
 \item{runDir}{path of working directory}
 
-\item{layer}{name GRASS raster}
+\item{layeName}{name GRASS raster}
 }
 \description{
 converts OGR to GRASS vector

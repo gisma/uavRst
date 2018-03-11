@@ -4,7 +4,7 @@
 \alias{pc2D_dtm}
 \title{Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling}
 \usage{
-pc2D_dtm(laspcFile = NULL, gisdbase_path = NULL, tension = 20,
+pc2D_dtm(laspcFile = NULL, gisdbasePath = NULL, tension = 20,
   cutExtent = NULL, sampleGridSize = 25, targetGridSize = 0.25,
   splineThresGridSize = 0.5, projFolder = NULL,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
@@ -13,7 +13,7 @@ pc2D_dtm(laspcFile = NULL, gisdbase_path = NULL, tension = 20,
 \arguments{
 \item{laspcFile}{character. default is \code{NULL} path  to the laz/las file(s)}
 
-\item{gisdbase_path}{character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
+\item{gisdbasePath}{character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
 
 \item{tension}{numeric. tension of spline interpolation.}
 
@@ -42,10 +42,10 @@ resolution. this is a kind of an try and error process and provides fairly good 
 \examples{
 \dontrun{
 pc2D_dtm(laspcFile =  "~/path/to/lasdata",
-       gisdbase_path = "~/temp5",
-       thin_with_grid = "0.5",
-       level_max = "5" ,
-       grid_size = "0.5")
+       gisdbasePath = "~/temp5",
+       thinGrid = "0.5",
+       splineNumber = "5" ,
+       sampleGridSize = "0.5")
 }
 }
 \author{

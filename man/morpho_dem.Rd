@@ -7,8 +7,8 @@
 morpho_dem(dem, item = c("hillshade", "slope", "aspect", "TRI", "TPI",
   "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", " C_TANG",
   " C_LONG", "C_CROS", "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI"),
-  verbose = FALSE, morpho_method = 6, min_scale = 1, max_scale = 8,
-  num_scale = 2, giLinks = NULL)
+  verbose = FALSE, morphoMethod = 6, minScale = 1, maxScale = 8,
+  numScale = 2, giLinks = NULL)
 }
 \arguments{
 \item{dem}{character filname to GeoTiff containing one channel DEM}
@@ -17,13 +17,13 @@ morpho_dem(dem, item = c("hillshade", "slope", "aspect", "TRI", "TPI",
 
 \item{verbose}{logical. be quiet}
 
-\item{morpho_method}{numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}}
+\item{morphoMethod}{numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}}
 
-\item{min_scale}{mnumeric. in scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}}
+\item{minScale}{numeric. in scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}}
 
-\item{max_scale}{numeric. max scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}}
+\item{maxScale}{numeric. max scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}}
 
-\item{num_scale}{numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}}
+\item{numScale}{numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}}
 
 \item{giLinks}{list. of GI tools cli pathes}
 }

@@ -71,14 +71,14 @@ setwd(path_run)
 # create DSM
 
 dsm <- pc2D_dsm(laspcFile = las_data,
-                      gisdbase_path = projRootDir,
+                      gisdbasePath = projRootDir,
                       sampleMethod = "max",
                       targetGridSize = actual_grid_size, 
                       giLinks = giLinks)
 
 # create 2D point cloud  DTM
 dtm <- pc2D_dtm(laspcFile = las_data,
-               gisdbase_path = projRootDir,
+               gisdbasePath = projRootDir,
                tension = 20 ,
                sampleGridSize = 25,
                targetGridSize = actual_grid_size,
@@ -86,11 +86,10 @@ dtm <- pc2D_dtm(laspcFile = las_data,
 
 # # create 3D DTM
 # dtm2 <- pc3D_dtm(lasDir = las_data,
-#                       gisdbase_path = projRootDir,
-#                       thin_with_grid = 1.,
-#                       level_max = 5 ,
-#                       grid_size = actual_grid_size,
-#                    #   cutExtent = cutExtent,
+#                       gisdbasePath = projRootDir,
+#                       thinGrid = 1.,
+#                       splineNumber = 5 ,
+#                       gridSize = actual_grid_size,
 #                       giLinks = giLinks)
 
 # take the resulting raster files
@@ -177,13 +176,13 @@ convert2SAGA(imageTrainFiles,
 # call tree crown segmentation NOTE there are about 100 highly correlated channels 
 # try to reduce and mention the thresholds
 crowns <- chmseg_uav( treepos = tPos, 
-                      segmentation_bands = bandNames,
+                      segmentationBands = bandNames,
                       chm = chmR,
                       minTreeAlt = 3,
                       normalize = 0,
                       method = 0,
                       neighbour = 0,
-                      majority_radius = 3,
+                      majorityRadius = 3,
                       thVarFeature = 2.,
                       thVarSpatial = 2.,
                       thSimilarity = 0.00001,
@@ -206,7 +205,7 @@ crownsRL <- chmseg_RL(chm=chmR,
 
 ### itcSeg approach
 crownsITC<- chmseg_ITC(chm = chmR,
-                       EPSG_code =3064,
+                       EPSG =3064,
                        movingWin = 3,
                        TRESHSeed = 0.45,
                        TRESHCrown = 0.55,

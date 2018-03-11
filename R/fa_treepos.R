@@ -94,7 +94,7 @@ treepos <- function(chm = NULL,
                     overwrite_layer = TRUE)
 
     cat(":: find max height position...\n")
-    ts <-  poly_maxpos(paste0(path_run,"chm.tif"),paste0(path_run,"dummyCrownSegment"),poly_split = TRUE)
+    ts <-  poly_maxpos(paste0(path_run,"chm.tif"),paste0(path_run,"dummyCrownSegment"),polySplit = TRUE)
     # create raw zero mask
     treepos <- ts[[1]] * chm
     raster::writeRaster(treepos,paste0(path_run,"treepos0.sdat"),overwrite = TRUE,NAflag = 0)

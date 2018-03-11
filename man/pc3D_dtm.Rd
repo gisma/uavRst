@@ -4,52 +4,47 @@
 \alias{pc3D_dtm}
 \title{create a Digital Terrain Model from preclassified point cloud data}
 \usage{
-pc3D_dtm(lasDir = NULL, gisdbase_path = NULL, thin_with_grid = "0.5",
-  keep_class = "2", bulge = "1.5", level_max = "4", step_size = "city",
-  sub_size = "ultra_fine", grid_size = "0.25", dtm_minalt = 0,
-  dtm_maxalt = 4000, dtm_area = FALSE, cutExtent = NULL,
-  projSubFolder = c("data/", "output/", "run/", "las/"),
+pc3D_dtm(lasDir = NULL, gisdbasePath = NULL, thinGrid = "0.5",
+  keepClass = "2", bulge = "1.5", splineNumber = "4", stepSize = "city",
+  subSize = "ultra_fine", gridSize = "0.25", dtmarea = FALSE,
+  cutExtent = NULL, projSubFolder = c("data/", "output/", "run/", "las/"),
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs", cores = "3",
-  path_lastools = NULL, giLinks = NULL, verbose = FALSE)
+  pathLastools = NULL, giLinks = NULL, verbose = FALSE)
 }
 \arguments{
-\item{lasDir}{default is \code{NULL} path  to the laz/las file(s)}
+\item{lasDir}{character. default is \code{NULL} path  to the laz/las file(s)}
 
-\item{gisdbase_path}{default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
+\item{gisdbasePath}{character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
 
-\item{thin_with_grid}{default 0.5 meter. Grid stepsize for data thinning}
+\item{thinGrid}{numerical. default 0.5 meter. Grid stepsize for data thinning}
 
-\item{keep_class}{default is 2. Default ground class of las/laz conform data}
+\item{keepClass}{numerical. default is 2. Default ground class of las/laz conform data}
 
-\item{bulge}{default is 1.5. 'A parameter to filter spikes it is set to a step_size/10 and then clamped into the range from 1.0 to 2.0}
+\item{bulge}{numerical. default is 1.5. 'A parameter to filter spikes it is set to a stepSize/10 and then clamped into the range from 1.0 to 2.0}
 
-\item{level_max}{default is 3, Maximum number of spline iterations highly suggested to take odd numbers. As higher as more detailed (spurious).}
+\item{splineNumber}{numerical. default is 3, Maximum number of spline iterations highly suggested to take odd numbers. As higher as more detailed (spurious).}
 
-\item{step_size}{default is 25 meter. lastools key words if \code{city},\code{town},\code{metro},\code{nature},\code{wilderness} or experiment with free values}
+\item{stepSize}{character. default is 25 meter. lastools key words if \code{city},\code{town},\code{metro},\code{nature},\code{wilderness} or experiment with free values}
 
-\item{sub_size}{= "8", default is 8 meter. lastools key words if \code{extra_coarse},\code{coarse},\code{fine},\code{extra_fine},\code{ultra_fine},\code{hyper_fine} or experiment with free values}
+\item{subSize}{= character. "8", default is 8 meter. lastools key words if \code{extra_coarse},\code{coarse},\code{fine},\code{extra_fine},\code{ultra_fine},\code{hyper_fine} or experiment with free values}
 
-\item{grid_size}{resolution of the DTM raster}
+\item{gridSize}{numerical. resolution of the DTM raster}
 
-\item{dtm_minalt}{default is \code{0}, minimum DTM altitude accepted}
+\item{dtmarea}{logical. default \code{FALSE} generate polygon of valid DTM data}
 
-\item{dtm_maxalt}{dtm maximum altitude}
+\item{cutExtent}{object of typ extent deteerming the clip area}
 
-\item{dtm_area}{default \code{FALSE} generate polygon of valid DTM data}
-
-\item{cutExtent}{clip area}
-
-\item{projSubFolder}{subfolders that will be created/linked for R related GRASS processing}
+\item{projSubFolder}{list of character contaiing subfolders that will be created/linked for R related GRASS processing}
 
 \item{proj4}{default is EPSG 32632, any valid proj4 string that is assumingly the correct one}
 
-\item{cores}{number of cores that will be used}
+\item{cores}{numerical. number of cores that will be used}
 
-\item{path_lastools}{character. folder containing the Windows binary files of the lastools}
+\item{pathLastools}{character. folder containing the Windows binary files of the lastools}
 
 \item{giLinks}{list of GI tools cli pathes, default is NULL}
 
-\item{verbose}{to be quiet (1)}
+\item{verbose}{logical. to be quiet (1)}
 }
 \description{
 Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.
@@ -57,10 +52,10 @@ Create a Digital Terrain Model from a high density point cloud as typically deri
 \examples{
 \dontrun{
 pc3D_dtm(lasDir =  "~/path/to/lasdata",
-       gisdbase_path = "~/temp5",
-       thin_with_grid = "0.5",
-       level_max = "5" ,
-       grid_size = "0.5")
+       gisdbasePath = "~/temp5",
+       thinGrid = "0.5",
+       splineNumber = "5" ,
+       gridSize = "0.5")
 }
 }
 \author{

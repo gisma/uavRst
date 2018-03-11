@@ -16,12 +16,12 @@ if (!isGeneric('pc3D_dsm')) {
 #'@author Chris Reudenbach
 #'
 #'@param lasDir  character. default is \code{NULL} path  to the laz/las file(s)
-#'@param gisdbase_path character. gisdbase will be linked or created depending on \code{gisdbase_exist}
+#'@param gisdbasePath character. gisdbase will be linked or created depending on \code{gisdbase_exist}
 #'@param GRASSlocation character. location will be linked or created depending on \code{gisdbase_exist}
 #'@param projSubFolder character. subfolders that will be created/linked for R related GRASS processing
-#'@param grid_size numeric. resolution for raster operations
-#'@param type_smooth  character. default is \code{gauss} alternatives are \code{spline} or for no smoothing at all \code{no}
-#'@param saga_spline_level_max numeric. default is 4 number ob spline iterations
+#'@param gridSize numeric. resolution for raster operations
+#'@param smoothFilter  character. default is \code{gauss} alternatives are \code{spline} or for no smoothing at all \code{no}
+#'@param splineNumber numeric. default is 4 number ob spline iterations
 #'@param otb_gauss_radius numeric. default is \code{0.5} radius of otb smoothing filter in meter
 #'@param dsm_minalt numeric. default is \code{0}, minimum DTM altitude accepted
 #'@param dsm_area numeric. default \code{FALSE} generate polygon of valid DSM data
@@ -31,7 +31,7 @@ if (!isGeneric('pc3D_dsm')) {
 #'@param grass_lidar_method character. statistical method to sample the Lidar data, see also \href{https://grass.osgeo.org/grass70/manuals/r.in.lidar.html}{r.in.lidar help}.
 #'@param grass_lidar_pth numeric. grass lidar aggregation column percentile, see also \href{https://grass.osgeo.org/grass70/manuals/r.in.lidar.html}{r.in.lidar help}.
 #'@param dsm_maxalt  numeric. dsm maximum altitude
-#'@param path_lastools character. folder containing the Windows binary files of the lastools
+#'@param pathLastools character. folder containing the Windows binary files of the lastools
 #'@param verbose logical. to be quiet FALSE
 #'@param cutExtent numerical. clip area c(mix,miny,maxx,maxy)
 #'
@@ -40,31 +40,31 @@ if (!isGeneric('pc3D_dsm')) {
 #'\dontrun{
 #' # create a DSM based on a uav point cloud
 #'  pc3D_dsm(lasDir =  lasDir,
-#'         gisdbase_path = "~/temp6/GRASS7",
+#'         gisdbasePath = "~/temp6/GRASS7",
 #'         GRASSlocation = "tmp/",
 #'         projSubFolder = c("data/","output/","run/","las/"),
-#'         grid_size = "0.05",
+#'         gridSize = "0.05",
 #'         gisdbase_exist = FALSE)
 #'}
 #'
 
 pc3D_dsm <- function(lasDir = NULL,
-                   gisdbase_path = NULL,
+                   gisdbasePath = NULL,
                    GRASSlocation = "tmp/",
                    projSubFolder = c("data/","output/","run/","las/"),
-                   grid_size = "0.25",
+                   gridSize = "0.25",
                    grass_lidar_method = "mean",
                    grass_lidar_pth = 90,
-                   saga_spline_level_max = "4" ,
+                   splineNumber = "4" ,
                    otb_gauss_radius = "0.5",
-                   type_smooth = "gauss",
+                   smoothFilter = "gauss",
                    dsm_minalt = 0,
                    dsm_maxalt = 4000,
                    dsm_area = FALSE,
                    cutExtent = NULL,
                    proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                    gisdbase_exist = FALSE,
-                   path_lastools = NULL,
+                   pathLastools = NULL,
                    giLinks =NULL,
                    verbose = FALSE) {
 
@@ -87,12 +87,12 @@ pc3D_dsm <- function(lasDir = NULL,
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
   lasDir <- path.expand(lasDir)
   if (Sys.info()["sysname"] == "Windows") {
-    #cmd <- path_lastools <- paste(system.file(package = "uavRst"), "lastools", sep="/")/lastools/bin
-    if (is.null(path_lastools)) {cmd <- path_lastools <- "C:/lastools/bin"
+    #cmd <- pathLastools <- paste(system.file(package = "uavRst"), "lastools", sep="/")/lastools/bin
+    if (is.null(pathLastools)) {cmd <- pathLastools <- "C:/lastools/bin"
     if (verbose) cat("\n You did not provide a path to your lastool binary folder. Assuming C:/lastools/bin\n")}
   } else {
-    #cmd <- paste("wine ",path_lastools <- paste(system.file(package = "uavRst"), "lastools",  sep="/"))
-    if (is.null(path_lastools)) {cmd <- path_lastools <- paste0("wine ",path.expand("~/apps/lastools/bin"))
+    #cmd <- paste("wine ",pathLastools <- paste(system.file(package = "uavRst"), "lastools",  sep="/"))
+    if (is.null(pathLastools)) {cmd <- pathLastools <- paste0("wine ",path.expand("~/apps/lastools/bin"))
     if (verbose) cat("\n You did not provide a path to your lastool binary folder. Assuming wine ~/apps/lastools/bin\n")}
 
   }
@@ -170,15 +170,15 @@ pc3D_dsm <- function(lasDir = NULL,
   # add proj4 string manually
   sp_param[5] <- proj4
   # create and export globally project folder structure
-  paths<-link2GI::initProj(projRootDir = gisdbase_path,
+  paths<-link2GI::initProj(projRootDir = gisdbasePath,
                            GRASSlocation = GRASSlocation,
                            projFolders =  projSubFolder)
 
   # create GRASS7 connection according gisdbase_exist (permanent or temporary)
   if (gisdbase_exist)
-    paths<-link2GI::linkGRASS7(gisdbase = gisdbase_path, location = GRASSlocation, gisdbase_exist = TRUE)
+    paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath, location = GRASSlocation, gisdbase_exist = TRUE)
   else
-    paths<-link2GI::linkGRASS7(gisdbase = gisdbase_path, location = GRASSlocation, spatial_params = sp_param,resolution = grid_size)
+    paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath, location = GRASSlocation, spatial_params = sp_param,resolution = gridSize)
 
   # create raw DSM using r.in.lidar
   cat(":: calculate DSM...\n")
@@ -189,7 +189,7 @@ pc3D_dsm <- function(lasDir = NULL,
                             output = fn,
                             method = grass_lidar_method,
                             pth = grass_lidar_pth,
-                            resolution = as.numeric(grid_size),
+                            resolution = as.numeric(gridSize),
                             intern = TRUE,
                             ignore.stderr = TRUE
   )
@@ -197,7 +197,7 @@ pc3D_dsm <- function(lasDir = NULL,
 
 
   cat(":: convert raw DSM to GeoTiff \n")
-  #h_grass2tif(runDir = path_run, layer = "point_cloud_dsm")
+  #h_grass2tif(runDir = path_run, layerName = "point_cloud_dsm")
   raster::writeRaster(raster::raster(rgrass7::readRAST(fn)),paste0(path_run,fn), overwrite=TRUE,format="GTiff")
   cat(":: fill no data... \n")
   #uavRst:::fillGaps(path_run,paste0("point_cloud_dsm.tif "))
@@ -208,9 +208,9 @@ pc3D_dsm <- function(lasDir = NULL,
 
   cat(":: smoothing the gap filled DSM... \n")
   # otb gaussian smooth
-  if (type_smooth != "no") {
-    if (type_smooth == "gauss") {
-      otb_gauss_radius <- as.character(as.numeric(otb_gauss_radius)/as.numeric(grid_size))
+  if (smoothFilter != "no") {
+    if (smoothFilter == "gauss") {
+      otb_gauss_radius <- as.character(as.numeric(otb_gauss_radius)/as.numeric(gridSize))
       module  <- "otbcli_Smoothing"
       command <- paste0(path_OTB, module)
       command <- paste0(command, " -in ",path_run,fn,".tif")
@@ -221,7 +221,7 @@ pc3D_dsm <- function(lasDir = NULL,
       ret <- system(command, intern = TRUE,ignore.stdout = TRUE,ignore.stderr = TRUE)
       dsm <- raster::raster(paste0(path_run,"dsm_",fn,".tif"))
     }
-    if (type_smooth == "spline") {
+    if (smoothFilter == "spline") {
       #
       gdalUtils::gdalwarp(paste0(path_run,fn,".tif"),
                           paste0(path_run,fn,".sdat"),
@@ -234,10 +234,10 @@ pc3D_dsm <- function(lasDir = NULL,
                            ' -GRID ', path_run,fn,'.sgrd',
                            ' -TARGET_DEFINITION 0',
                            ' -TARGET_OUT_GRID ',path_run,"dsm_",fn,".sgrd",
-                           ' -TARGET_USER_SIZE ',grid_size,
+                           ' -TARGET_USER_SIZE ',gridSize,
                            ' -METHOD 1',
                            ' -EPSILON 0.0001',
-                           ' -LEVEL_MAX ',saga_spline_level_max),
+                           ' -LEVEL_MAX ',splineNumber),
                     intern = TRUE,
                     ignore.stdout =  TRUE,
                     ignore.stderr = TRUE)
@@ -257,7 +257,7 @@ pc3D_dsm <- function(lasDir = NULL,
   dsmA <- as(e, 'SpatialPolygons')
   if (dsm_area) {
     dsm2 <- dsm > -Inf
-    tmp <- raster::aggregate(dsm2,fact = 1 / grid_size)
+    tmp <- raster::aggregate(dsm2,fact = 1 / gridSize)
     dsmdA  <- rasterToPolygons(tmp)
     dsmdA  <- rgeos::gUnaryUnion(dsmdA)
     #dsmdA <- rasterToPolygons(dsm2, dissolve=TRUE)

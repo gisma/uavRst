@@ -4,38 +4,38 @@
 \alias{local_relief}
 \title{Create a hillshading model from LiDAR/UAV generated point cloud}
 \usage{
-local_relief(lasDir = NULL, gisdbase_path = NULL, GRASSlocation = "tmp/",
-  projFolder = c("data/", "output/", "run/", "las/"), grid_size = "1.0",
-  param_list = c("i", "v", "n", "g", "f", "overwrite", "quiet"),
-  spline_level_max = "9",
+local_relief(lasDir = NULL, gisdbasePath = NULL, GRASSlocation = "tmp/",
+  projFolder = c("data/", "output/", "run/", "las/"), gridSize = "1.0",
+  paramList = c("i", "v", "n", "g", "f", "overwrite", "quiet"),
+  splineNumber = "9",
   proj4 = "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
-  gisdbase_exist = FALSE, path_lastools = NULL)
+  gisdbase_exist = FALSE, pathLastools = NULL)
 }
 \arguments{
 \item{lasDir}{character. default is \code{NULL} path to the laz/las file(s)}
 
-\item{gisdbase_path}{character.  gisdbase will be linked or created depending on \code{gisdbase_exist}}
+\item{gisdbasePath}{character.  gisdbase will be linked or created depending on \code{gisdbase_exist}}
 
 \item{GRASSlocation}{character. location will be linked or created depending on \code{gisdbase_exist}}
 
 \item{projFolder}{character. subfolders in gisdbase for R related processing}
 
-\item{grid_size}{numeric. resolution for raster operations}
+\item{gridSize}{numeric. resolution for raster operations}
 
-\item{param_list}{character. default is c("i","v", "n", "g","f","overwrite","quiet")
+\item{paramList}{character. default is c("i","v", "n", "g","f","overwrite","quiet")
 i Save intermediate maps; \cr
 v Use bspline interpolation to construct the surface.Uses v.surf.bspline cubic interpolation instead of r.fillnulls cubic interpolation\cr
 n Invert colors in the color table \cr
 g Logarithmic scaling of the color table\cr
 f Do not perform histogram equalization on the color table}
 
-\item{spline_level_max}{numeric. default is 9 number ob spline iterations}
+\item{splineNumber}{numeric. default is 9 number ob spline iterations}
 
 \item{proj4}{character. default is EPSG 32632 any valid proj4 string that is assumingly the correct one}
 
 \item{gisdbase_exist}{logical. switch if gisdbase is created or  linked only}
 
-\item{path_lastools}{character. character folder containing the Windows binary files of the lastools}
+\item{pathLastools}{character. character folder containing the Windows binary files of the lastools}
 }
 \description{
 Create a hillshading model on base of LiDAR/UAV generated point cloud.
@@ -44,8 +44,8 @@ Create a hillshading model on base of LiDAR/UAV generated point cloud.
 \dontrun{
 # create a hillshade based on a las/laz point clouds
   hs <- uavRst::local_relief(lasDir =  "~/proj/Monte_Bernorio/las/",
-                             gisdbase_path = "~/temp55/GRASS7",
-                             grid_size = "1.0")
+                             gisdbasePath = "~/temp55/GRASS7",
+                             gridSize = "1.0")
 }
 
 }

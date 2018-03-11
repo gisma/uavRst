@@ -4,7 +4,7 @@
 \name{uavRst}
 \alias{uavRst}
 \alias{uavRst-package}
-\title{Unmanned Aerial Vehicle Remote Sensing Tools - awesome tools to manipulate and analyze RGB imagery and point clouds}
+\title{Unmanned Aerial Vehicle Remote Sensing Tools - some cool tools to manipulate and analyze RGB imagery and point clouds}
 \description{
 The package provides some R-GI functionality for dealing with data as retrieved by Unmanned Aerial Vehicle VIS/NIR Remote Sensing
 }

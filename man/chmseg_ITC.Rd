@@ -4,15 +4,14 @@
 \alias{chmseg_ITC}
 \title{Decision tree segmentation method to grow individual tree crowns based on 'itcSegment'}
 \usage{
-chmseg_ITC(chm = NULL, EPSG_code = 3064, movingWin = 7,
-  TRESHSeed = 0.45, TRESHCrown = 0.55, minTreeAlt = 2,
-  maxCrownArea = 100)
+chmseg_ITC(chm = NULL, EPSG = 3064, movingWin = 7, TRESHSeed = 0.45,
+  TRESHCrown = 0.55, minTreeAlt = 2, maxCrownArea = 100)
 }
 \arguments{
 \item{chm}{raster*, Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 the input for \code{treepos}.}
 
-\item{EPSG_code}{character. The EPSG code of the reference system of the CHM raster image.}
+\item{EPSG}{character. The EPSG code of the reference system of the CHM raster image.}
 
 \item{movingWin}{numeric. Size (in pixels) of the moving window to detect local maxima. \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}}
 

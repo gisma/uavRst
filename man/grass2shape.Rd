@@ -4,12 +4,12 @@
 \alias{grass2shape}
 \title{converts GRASS vector to shape file}
 \usage{
-grass2shape(runDir = NULL, layer = NULL)
+grass2shape(runDir = NULL, layerName = NULL)
 }
 \arguments{
 \item{runDir}{path of working directory}
 
-\item{layer}{name GRASS raster}
+\item{layerName}{name GRASS raster}
 }
 \description{
 converts GRASS vector to shape file

@@ -2,15 +2,15 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{sp_line}
 \alias{sp_line}
-\title{create an spatiallineobject from 2 points}
+\title{Create an spatiallineobject from 2 points}
 \usage{
-sp_line(p1, p2, ID, proj4 = "+proj=longlat +datum=WGS84 +no_defs",
-  export = FALSE)
+sp_line(startPoint, endPoint, ID,
+  proj4 = "+proj=longlat +datum=WGS84 +no_defs", export = FALSE)
 }
 \arguments{
-\item{p1}{coordinate of first point}
+\item{startPoint}{coordinate of first point (c(50.1,8.1))}
 
-\item{p2}{coordinate of second point}
+\item{endPoint}{vector. coordinate of second point c(50.2,8.0)}
 
 \item{ID}{id of line}
 

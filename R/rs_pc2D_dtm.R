@@ -9,7 +9,7 @@
 #'@author Chris Reudenbach
 #'
 #'@param laspcFile  character. default is \code{NULL} path  to the laz/las file(s)
-#'@param gisdbase_path character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
+#'@param gisdbasePath character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
 #'@param sampleGridSize  numeric, resolution extraction raster
 #'@param targetGridSize numeric. the resolution of the target DTM raster
 #'@param splineThresGridSize numeric. threshold of minimum gridsize tha is used for splininterpolation if the desired resolution is finer a two step approximation is choosen 
@@ -31,14 +31,14 @@
 #'@examples
 #'\dontrun{
 #' pc2D_dtm(laspcFile =  "~/path/to/lasdata",
-#'        gisdbase_path = "~/temp5",
-#'        thin_with_grid = "0.5",
-#'        level_max = "5" ,
-#'        grid_size = "0.5")
+#'        gisdbasePath = "~/temp5",
+#'        thinGrid = "0.5",
+#'        splineNumber = "5" ,
+#'        sampleGridSize = "0.5")
 #'}
 
 pc2D_dtm <- function(laspcFile = NULL,
-                    gisdbase_path = NULL,
+                    gisdbasePath = NULL,
                     tension = 20 ,
                     cutExtent = NULL,
                     sampleGridSize=25,
@@ -108,7 +108,7 @@ pc2D_dtm <- function(laspcFile = NULL,
   # copy it to the output folder
   sp_param[5] <- proj4
 
-  link2GI::linkGRASS7(gisdbase = gisdbase_path,
+  link2GI::linkGRASS7(gisdbase = gisdbasePath,
                       location = "pc2D_dtm", 
                       spatial_params = sp_param, 
                       resolution = sampleGridSize, 

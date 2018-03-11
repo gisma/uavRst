@@ -5,7 +5,7 @@
 \title{counts pixel values according to their classes}
 \usage{
 get_counts(ids = c(1, 2), position = NULL, imageFiles = NULL,
-  buffersize = 1.5, out_prefix = "classified_index_", ext = ".tif",
+  buffersize = 1.5, outPrefix = "classified_index_", ext = ".tif",
   path = path_output, dropChars = 0)
 }
 \arguments{
@@ -17,7 +17,7 @@ get_counts(ids = c(1, 2), position = NULL, imageFiles = NULL,
 
 \item{buffersize}{numeric. radius in meters around position}
 
-\item{out_prefix}{character. out prefix string}
+\item{outPrefix}{character. out prefix string}
 
 \item{ext}{character. extension}
 

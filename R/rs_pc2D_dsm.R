@@ -9,7 +9,7 @@
 #'@author Chris Reudenbach
 #'
 #'@param laspcFile  character. default is \code{NULL} path  to the laz/las file(s)
-#'@param gisdbase_path character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
+#'@param gisdbasePath character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
 #'@param targetGridSize numeric. the resolution of the target DTM raster
 #'@param sampleMethod sampling method for point aggregation
 #'@param threshold  numeric. percentile threshold
@@ -29,14 +29,14 @@
 #'@examples
 #'\dontrun{
 #' pc2D_dsm(laspcFile =  "~/path/to/lasdata",
-#'        gisdbase_path = "~/temp5",
-#'        thin_with_grid = "0.5",
-#'        level_max = "5" ,
-#'        grid_size = "0.5")
+#'        gisdbasePath = "~/temp5",
+#'        thinGrid = "0.5",
+#'        splineNumber = "5" ,
+#'        gridSize = "0.5")
 #'}
 
 pc2D_dsm <- function(laspcFile = NULL,
-                    gisdbase_path = NULL,
+                    gisdbasePath = NULL,
                     sampleMethod = "max",
                     threshold = 20 ,
                     cutExtent = NULL,
@@ -105,7 +105,7 @@ pc2D_dsm <- function(laspcFile = NULL,
   # copy it to the output folder
   sp_param[5] <- proj4
   cat(":: link to GRASS\n")
-  link2GI::linkGRASS7(gisdbase = gisdbase_path,
+  link2GI::linkGRASS7(gisdbase = gisdbasePath,
                       location = "pc2D_dsm", 
                       spatial_params = sp_param, 
                       resolution = targetGridSize, 

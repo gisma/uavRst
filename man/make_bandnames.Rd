@@ -2,7 +2,8 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{make_bandnames}
 \alias{make_bandnames}
-\title{create name vector corresponding to the training image stack}
+\title{create name vector corresponding to the training image stack
+create vector containing the names of the image stack claculated using \code{\link{calc_ext}}}
 \usage{
 make_bandnames(rgbi = NA, bandNames = NA, stat = FALSE, morpho = NA,
   edge = NA, RGBtrans = NA, dem = NA)
@@ -24,5 +25,6 @@ make_bandnames(rgbi = NA, bandNames = NA, stat = FALSE, morpho = NA,
 }
 \description{
 create name vector corresponding to the training image stack
+create vector containing the names of the image stack claculated using \code{\link{calc_ext}}
 }
 \keyword{internal}

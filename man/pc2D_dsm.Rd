@@ -4,7 +4,7 @@
 \alias{pc2D_dsm}
 \title{Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling}
 \usage{
-pc2D_dsm(laspcFile = NULL, gisdbase_path = NULL, sampleMethod = "max",
+pc2D_dsm(laspcFile = NULL, gisdbasePath = NULL, sampleMethod = "max",
   threshold = 20, cutExtent = NULL, targetGridSize = 0.25,
   projFolder = NULL,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
@@ -13,7 +13,7 @@ pc2D_dsm(laspcFile = NULL, gisdbase_path = NULL, sampleMethod = "max",
 \arguments{
 \item{laspcFile}{character. default is \code{NULL} path  to the laz/las file(s)}
 
-\item{gisdbase_path}{character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
+\item{gisdbasePath}{character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
 
 \item{sampleMethod}{sampling method for point aggregation}
 
@@ -39,10 +39,10 @@ resolution. this is a kind of an try and error process and provides fairly good 
 \examples{
 \dontrun{
 pc2D_dsm(laspcFile =  "~/path/to/lasdata",
-       gisdbase_path = "~/temp5",
-       thin_with_grid = "0.5",
-       level_max = "5" ,
-       grid_size = "0.5")
+       gisdbasePath = "~/temp5",
+       thinGrid = "0.5",
+       splineNumber = "5" ,
+       gridSize = "0.5")
 }
 }
 \author{

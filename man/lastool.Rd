@@ -2,14 +2,14 @@
 % Please edit documentation in R/rs_lastools.R
 \name{lastool}
 \alias{lastool}
-\title{#@titel simple wrapper for some LAStools functions}
+\title{simple wrapper for some LAStools functions}
 \usage{
-lastool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
-  keep_class = "2", bulge = "1.5", step_size = "city",
-  sub_size = "ultra_fine", grid_size = "1.0",
+lastool(tool = "lasinfo", lasFile = NULL, thinGrid = "1.0",
+  keepClass = "2", bulge = "1.5", stepSize = "city",
+  subSize = "ultra_fine", gridSize = "1.0",
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
   rscale = "0.01 0.01 0.01", stepoverlap = NULL, cores = "2", xoff = 0,
-  yoff = 0, outpath = NULL, path_lastools = NULL, verbose = FALSE,
+  yoff = 0, outpath = NULL, pathLastools = NULL, verbose = FALSE,
   cutExtent = NULL, cutSlice = NULL)
 }
 \arguments{
@@ -17,17 +17,17 @@ lastool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
 
 \item{lasFile}{default is \code{NULL} path  to the laz/las file(s)}
 
-\item{thin_with_grid}{default 0.5 meter. Grid stepsize for data thinning}
+\item{thinGrid}{default 0.5 meter. Grid stepsize for data thinning}
 
-\item{keep_class}{default is 2. Default ground class of las/laz conform data}
+\item{keepClass}{default is 2. Default ground class of las/laz conform data}
 
-\item{bulge}{default is 1.5. 'A parameter to filter spikes it is set to a step_size/10 and then clamped into the range from 1.0 to 2.0}
+\item{bulge}{default is 1.5. 'A parameter to filter spikes it is set to a stepSize/10 and then clamped into the range from 1.0 to 2.0}
 
-\item{step_size}{default is 25 meter. lastools key words if \code{city},\code{town},\code{metro},\code{nature},\code{wilderness} or experiment with free values}
+\item{stepSize}{default is 25 meter. lastools key words if \code{city},\code{town},\code{metro},\code{nature},\code{wilderness} or experiment with free values}
 
-\item{sub_size}{= "8", default is 8 meter. lastools key words if \code{extra_coarse},\code{coarse},\code{fine},\code{extra_fine},\code{ultra_fine},\code{hyper_fine} or experiment with free values}
+\item{subSize}{= "8", default is 8 meter. lastools key words if \code{extra_coarse},\code{coarse},\code{fine},\code{extra_fine},\code{ultra_fine},\code{hyper_fine} or experiment with free values}
 
-\item{grid_size}{resolution of the DTM raster}
+\item{gridSize}{resolution of the DTM raster}
 
 \item{proj4}{default is EPSG 32632, any valid proj4 string that is assumingly the correct one}
 
@@ -43,7 +43,7 @@ lastool(tool = "lasinfo", lasFile = NULL, thin_with_grid = "1.0",
 
 \item{outpath}{outpath}
 
-\item{path_lastools}{character. folder containing the Windows binary files of the lastools}
+\item{pathLastools}{character. folder containing the Windows binary files of the lastools}
 
 \item{verbose}{keep it quiet}
 
@@ -57,10 +57,10 @@ simple wrapper for some lastools functions
 \examples{
 \dontrun{
 lasR(lasFile =  "~/path/to/lasdata",
-       gisdbase_path = "~/temp5",
-       thin_with_grid = "0.5",
-       level_max = "5" ,
-       grid_size = "0.5")
+       gisdbasePath = "~/temp5",
+       thinGrid = "0.5",
+       splineNumber = "5" ,
+       gridSize = "0.5")
 }
 }
 \author{

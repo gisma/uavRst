@@ -2,16 +2,16 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{poly_maxpos}
 \alias{poly_maxpos}
-\title{extract for all polygons the position of the maximum value of the applied raster(s)}
+\title{extract for all polygons the position of the maximum value of the applied raster(s).}
 \usage{
-poly_maxpos(x, lN, poly_split = TRUE)
+poly_maxpos(fileName, layerName, polySplit = TRUE)
 }
 \arguments{
-\item{x}{path and name of a GDAL raster file}
+\item{fileName}{path and name of a GDAL raster file}
 
-\item{lN}{layer name of shape file}
+\item{layerName}{layer name of shape file}
 
-\item{poly_split}{split polygon in single file, default is TRUE
+\item{polySplit}{split polygon in single file, default is TRUE
 extract for all polygons the position of the maximum value}
 }
 \description{
