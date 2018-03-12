@@ -28,7 +28,7 @@ require(mapview)
 require(link2GI)
 
 # proj subfolders
-prefixrunFN       ="" 
+prefixRun        ="" 
 prefixdemFN       = "dem"
 # define project folder
 projRootDir <- "~/proj/uav/thesis/finn/"
@@ -68,7 +68,7 @@ if (startcalc_ext){
                  extractTrain      = T,
                  patternImgFiles   = "",
                  prefixTrainImg    = "",
-                 prefixrunFN       = prefixrunFN,
+                 prefixRun        = prefixRun ,
                  prefixdemFN       = prefixdemFN,
                  suffixTrainImg    = "OrthoMosaic" ,
                  suffixTrainGeom   = "TrainingArea",
@@ -106,9 +106,9 @@ if (startTrain){
 
   # load raw training dataframe
   if (!(exists)("trainDF"))
-    trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))
+    trainDF<-readRDS(paste0(currentIdxFolder,prefixRun ,"_trainDF",".rds"))
   if (!(exists)("bandNames"))
-    load(paste0(currentIdxFolder,"bandNames_",prefixrunFN,".RData"))
+    load(paste0(currentIdxFolder,prefixRun ,"bandNames.RData"))
   # add leading Title "ID" and tailing title "FN"
   names(trainDF)<-append("ID",append(bandNames,"FN"))
 
@@ -141,7 +141,7 @@ if (startTrain){
   system("kill -9 $(pidof R)")
 
 
-  saveRDS(result, file = paste0(path_output,prefixrunFN,"_",pVal,"_model_final",".rds"))
+  saveRDS(result, file = paste0(path_output,prefixRun ,"_",pVal,"_model_final",".rds"))
   model_final=result[[2]]
   perf <- model_final$pred[model_final$pred$mtry==model_final$bestTune$mtry,]
   # scores for categorical
@@ -159,7 +159,7 @@ if (startPredict){
   imageFiles <- list.files(pattern="[.]tif$", path=currentDataFolder, full.names=TRUE)
   bnameList <-  list.files(pattern="[.]RData$", path=currentIdxFolder, full.names=TRUE)
   load(bnameList)
-  load(file = paste0(path_output,prefixrunFN,"_model_final",".RData"))
+  load(file = paste0(path_output,prefixRun ,"_model_final",".RData"))
 
   # start prediction
   predict_rgb(imageFiles=imageFiles,

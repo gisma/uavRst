@@ -160,7 +160,7 @@ raster::writeRaster(tPos,"treepos.tif",overwrite = TRUE,NAflag = 0)
 imageTrainFiles <- list.files(pattern="[.]envi$", path=path_run, full.names=TRUE)
 
 # load the corresponding band names
-load(paste0(path_run,"bandNames_rgbImg_.RData"))
+load(paste0(path_run,prefixRun,"bandNames.RData"))
 
 # convert them to saga 
 # NOTE this is an ugly workaround to force all files to the same extent

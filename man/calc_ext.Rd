@@ -19,7 +19,7 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE, prefixRun = "temp",
   "C_LONG", "C_CROS", "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI"),
   morphoMethod = 6, minScale = 1, maxScale = 8, numScale = 2,
   kernel = 3, currentDataFolder = NULL, currentIdxFolder = NULL,
-  cleanTiffs = TRUE, giLinks = NULL)
+  cleanRunDir = TRUE, giLinks = NULL)
 }
 \arguments{
 \item{calculateBands}{logical. switch for set on calculation of syntheic bands and indices default = TRUE}
@@ -84,7 +84,7 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE, prefixRun = "temp",
 
 \item{currentIdxFolder}{NULL folder for saving the results}
 
-\item{cleanTiffs}{logical. TRUE logical switch for deleting the calculated tifs, default is TRUE}
+\item{cleanRunDir}{logical. TRUE logical switch for deleting the calculated tifs, default is TRUE}
 
 \item{giLinks}{list. GI tools cli paths}
 }

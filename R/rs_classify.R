@@ -339,7 +339,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param numScale  numeric. number of scale for multi scale TPI
 #' @param currentDataFolder  NULL folder to image (and shape) data
 #' @param currentIdxFolder  NULL folder for saving the results
-#' @param cleanTiffs  logical. TRUE logical switch for deleting the calculated tifs, default is TRUE
+#' @param cleanRunDir  logical. TRUE logical switch for deleting the calculated tifs, default is TRUE
 #' @param giLinks     list. GI tools cli paths
 #' @examples
 #' \dontrun{
@@ -430,7 +430,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                       kernel            = 3,
                       currentDataFolder = NULL,
                       currentIdxFolder  = NULL,
-                      cleanTiffs        = TRUE,
+                      cleanRunDir        = TRUE,
                       giLinks = NULL){
   
   if (!rgbi) rgbTrans <- hara <- stat <- edge <- morpho <- FALSE
@@ -450,14 +450,14 @@ calc_ext<- function ( calculateBands    = FALSE,
   catOk   <- getCrayon()[[3]]
   
   
-  if (nchar(prefixRun)>0)   prefixRun<-  paste0(prefixRun,"_")
-  if (nchar(patterndemFiles)>0)   patterndemFiles <-  paste0(patterndemFiles,"_")
-  if (nchar(patternImgFiles)>0)   patternImgFiles <-  paste0(patternImgFiles,"_")
-  if (nchar(prefixTrainImg)>0)   prefixTrainImg <-  paste0(prefixTrainImg,"_")
-  if (nchar(patternIdx)>0)   patternIdx <-  paste0(patternIdx,"_")
-  if (nchar(suffixTrainGeom)>0)   suffixTrainGeom <-  paste0("_",suffixTrainGeom)
-  if (nchar(suffixTrainImg)>0)   suffixTrainImg <-  paste0("_",suffixTrainImg)
-  
+  # if (nchar(prefixRun)>0)   prefixRun<-  paste0(prefixRun,"_")
+  # if (nchar(patterndemFiles)>0)   patterndemFiles <-  paste0(patterndemFiles,"_")
+  # if (nchar(patternImgFiles)>0)   patternImgFiles <-  paste0(patternImgFiles,"_")
+  # if (nchar(prefixTrainImg)>0)   prefixTrainImg <-  paste0(prefixTrainImg,"_")
+  # if (nchar(patternIdx)>0)   patternIdx <-  paste0(patternIdx,"_")
+  # if (nchar(suffixTrainGeom)>0)   suffixTrainGeom <-  paste0("_",suffixTrainGeom)
+  # if (nchar(suffixTrainImg)>0)   suffixTrainImg <-  paste0("_",suffixTrainImg)
+  # 
   currentDataFolder<- currentDataFolder #paste0(path_data_training)
   currentIdxFolder<- currentIdxFolder # paste0(path_data_training_idx)
   
@@ -479,13 +479,17 @@ calc_ext<- function ( calculateBands    = FALSE,
 
     ### calculate indices and base stat export it to tif
     # create list vars
-    bandNames <- flist <- list()
+    bandNames <- flist <- dellist <- list()
     
-    for (i in 1:length(counter)){
+    for (i in 1:counter){
+      
       # if calc pardem 
       if (pardem){
         
         #cat(catNote(":::: processing dem... ",demType,"\n"))
+        flist<-append(flist, Sys.glob(demFiles[i]))
+        dellist <- append(dellist, Sys.glob(demFiles[i]))
+        bandNames <-append(bandNames,"dem")
         morpho_dem(dem = demFiles[i], 
                    item = demType,
                    morphoMethod = morphoMethod,
@@ -494,6 +498,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                    numScale = numScale,
                    giLinks = giLinks)
         flist<-append(flist, Sys.glob(paste0(path_run,demType,".tif")))
+        dellist <- append(dellist, Sys.glob(paste0(path_run,demType,".*")))
         for (item in demType) 
           bandNames <-append(bandNames,make_bandnames(dem = item))
         
@@ -518,6 +523,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                             overwrite=TRUE)
         
         flist<-append(flist, paste0(path_run,"rgbi_",basename(imageFiles[i])))
+        dellist <- append(dellist, paste0(path_run,"rgbi_",basename(imageFiles[i])))
       }
       # if RGB transform
       if (rgbTrans){
@@ -543,8 +549,10 @@ calc_ext<- function ( calculateBands    = FALSE,
                               progress="text")
           bandNames <-append(bandNames,make_bandnames(rgbTrans = colorSpaces[jj]))
           flist<-append(flist, paste0(path_run,colorSpaces[jj],"_ref",basename(imageFiles[i])))
+          dellist <- append(dellist, paste0(path_run,colorSpaces[jj],"_ref",basename(imageFiles[i])))
+          dellist <- append(dellist, paste0(path_run,colorSpaces[jj],basename(imageFiles[i])))
         }
-        file.remove(unlist(path_run,rgbTranslist))
+        #file.remove(paste0(path_run,unlist(rgbTranslist)))
         #r<-raster::stack(imageFiles[i])
         
         #bandNames <-append(bandNames,make_bandnames(rgbTrans = colorSpaces))
@@ -574,6 +582,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                    radius =  kernel,
                    giLinks=giLinks)
           flist<-append(flist,Sys.glob(paste0(path_run,filterBand,"stat_*")))
+          dellist <-append(dellist,Sys.glob(paste0(path_run,filterBand,"stat_*")))
           bandNames <-append(bandNames,paste0(make_bandnames(stat = TRUE),"_",filterBand))
         }
         # if calc edge
@@ -586,6 +595,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                                 giLinks=giLinks)
                    
             flist<-append(flist,Sys.glob(paste0(path_run,filterBand,edges,"*")))
+            dellist<-append(dellist,Sys.glob(paste0(path_run,filterBand,edges,"*")))
             bandNames <-append(bandNames,make_bandnames(edge = paste0(edges,"_",filterBand)))
           }
         }
@@ -599,6 +609,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                                 filter = morphos,
                                 giLinks=giLinks)
             flist<-append(flist,Sys.glob(paste0(path_run,filterBand,morphos,"*")))
+            dellist<-append(dellist,Sys.glob(paste0(path_run,filterBand,morphos,"*")))
             bandNames <-append(bandNames,make_bandnames(edge = paste0(morphos,"_",filterBand)))
           }
         }
@@ -607,18 +618,17 @@ calc_ext<- function ( calculateBands    = FALSE,
           for (type in haraType){
             cat(catNote(":::: processing haralick... ",type,"\n"))
             otbtex_hara(x = fbFN,
-                                output_name=paste0(path_run,filterBand,"hara_",basename(imageFiles[i])),
-                                texture = type,
-                                giLinks=giLinks)
+                        output_name=paste0(path_run,filterBand,"hara_",basename(imageFiles[i])),
+                        texture = type,
+                        giLinks=giLinks)
             flist<-append(flist,Sys.glob(paste0(path_run,filterBand,"hara_*")))
+            dellist<-append(dellist,Sys.glob(paste0(path_run,filterBand,"hara_*")))
             bandNames <-append(bandNames,paste0(make_bandnames(bandNames = type),"_",filterBand))
           }
         }
-        # delete single channel for synthetic channel calculation
-        file.remove(paste0(path_run,filterBand,"_",basename(imageFiles[i])))
-      }
-      # get the rest in a list
-      #flist<-(Sys.glob(paste0("*",basename(imageFiles[i]),"*")))
+          # delete single channel for synthetic channel calculation
+          file.remove(paste0(path_run,filterBand,"_",basename(imageFiles[i])))
+        }
       }# end of single channnel calculation
       
       # create an alltogether stack
@@ -640,11 +650,12 @@ calc_ext<- function ( calculateBands    = FALSE,
       #raster::hdr(r, filename = paste0(currentIdxFolder,"/", patternIdx,tmpFN), format = "ENVI") qgis cannot read heder
       
       # cleanup runtime files lists...
-      if (cleanTiffs) {
+      if (cleanRunDir) {
         cat(catNote(":::: removing temp files...\n"))
-        res<-file.remove(unlist(flist))
+        res<-file.remove(unlist(dellist))
       }
-      flist<-list()
+      bandNames <- flist <- dellist <- list()
+      
     }
     
     # save bandname list we need it only once
