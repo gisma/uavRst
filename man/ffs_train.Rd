@@ -6,10 +6,9 @@
 \usage{
 ffs_train(trainingDF = NULL, predictors = c("R", "G", "B"),
   response = "ID", spaceVar = "FN", names = c("ID", "R", "G", "B", "A",
-  "FN"), noLoc = length(unique(trainingDF$FN)),
-  sumFunction = "twoClassSummary", pVal = 0.5, prefin = "final_",
-  preffs = "ffs_", modelSaveName = "model.RData", runtest = FALSE,
-  seed = 100, noClu = 3)
+  "FN"), noLoc = NULL, sumFunction = "twoClassSummary", pVal = 0.5,
+  prefin = "final_", preffs = "ffs_", modelSaveName = "model.RData",
+  runtest = FALSE, seed = 100, noClu = 3)
 }
 \arguments{
 \item{trainingDF}{dataframe. containing training data}

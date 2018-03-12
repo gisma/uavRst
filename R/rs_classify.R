@@ -214,7 +214,7 @@ ffs_train<-function(   trainingDF   = NULL,
                        response     = "ID",
                        spaceVar     = "FN",
                        names        = c("ID","R","G","B","A","FN"),
-                       noLoc        = length(unique(trainingDF$FN)),
+                       noLoc        = NULL,
                        sumFunction  = "twoClassSummary",
                        pVal         = 0.5,
                        prefin       ="final_",
@@ -224,6 +224,7 @@ ffs_train<-function(   trainingDF   = NULL,
                        seed         = 100,
                        noClu = 3) {
   
+  if (is.null(noLoc)) noLoc <- length(unique(trainingDF$FN))
   # create subset according to pval
   trainIndex<-caret::createDataPartition(trainingDF$ID, p = pVal, list=FALSE)
   data_train <- trainingDF[ trainIndex,]
@@ -482,7 +483,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     bandNames <- flist <- dellist <- list()
     
     for (i in 1:counter){
-      
+      bandNames <- list()
       # if calc pardem 
       if (pardem){
         
@@ -654,7 +655,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         cat(catNote(":::: removing temp files...\n"))
         res<-file.remove(unlist(dellist))
       }
-      bandNames <- flist <- dellist <- list()
+      flist <- dellist <- list()
       
     }
     
@@ -666,7 +667,7 @@ calc_ext<- function ( calculateBands    = FALSE,
   }
   # ----- start extraction ---------------------------------------------------
   if (extractTrain){
-    cat(catHead("\n     --------------- start extract processing ------------------                \n"))
+    cat(catHead("\n     ---------------- start extract processing -------------------------                \n"))
     load(paste0(currentIdxFolder,prefixRun,"bandNames.RData"))
     # get image and geometry data for training purposes
     imageTrainStack <- list()
@@ -691,6 +692,9 @@ calc_ext<- function ( calculateBands    = FALSE,
     
     trainDF <- uavRst::get_traindata(rasterStack  = imageTrainStack,
                                      trainPlots = geomTrainStack)
+    
+    names(trainDF)<-append("ID",append(bandNames,"FN"))
+    
     # create a new dataframe with prefixRun
     assign(paste0(prefixRun,"_trainDF"), trainDF)
     # save it
