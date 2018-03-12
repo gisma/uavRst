@@ -13,7 +13,7 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE, prefixRun = "temp",
   edgeType = c("gradient", "sobel", "touzi"), morpho = TRUE,
   morphoType = c("dilate", "erode", "opening", "closing"), rgbi = TRUE,
   indices = c("VVI", "VARI", "NDTI", "RI", "SCI", "BI", "SI", "HI", "TGI",
-  "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), rgbtrans = TRUE,
+  "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), rgbTrans = TRUE,
   colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ",
   "YUV"), pardem = TRUE, demType = c("hillshade", "slope", "aspect", "TRI",
   "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", "C_TANG",
@@ -63,7 +63,7 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE, prefixRun = "temp",
 
 \item{indices}{character. RGB indices, default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP")}
 
-\item{rgbtrans}{logical. switch for using color space transforming default = TRUE}
+\item{rgbTrans}{logical. switch for using color space transforming default = TRUE}
 
 \item{colorSpaces}{character.  RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")}
 
@@ -142,7 +142,7 @@ res <- calc_ext(calculateBands    = TRUE,
                 prefixRun         = "rgbImg",
                 prefixTrainImg    = "",
                 rgbi              = TRUE,
-                rgbtrans          = TRUE,
+                rgbTrans          = TRUE,
                 hara              = TRUE,
                 haraType          = c("simple"),
                 stat              = TRUE,
