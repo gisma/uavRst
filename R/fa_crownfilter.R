@@ -28,7 +28,7 @@ if (!isGeneric('crown_filter')) {
 #'@export crown_filter
 #'
 #'@examples 
-#'#'\dontrun{
+#'\dontrun{
 #'  crown_filter(crownFn = "crowns.shp", 
 #'               minTreeAlt = 10, 
 #'               minCrownArea = 5,
