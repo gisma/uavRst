@@ -2,8 +2,7 @@
 % Please edit documentation in R/rs_classify.R
 \name{calc_ext}
 \alias{calc_ext}
-\title{Convenient function to preprocess synthetic raster bands from a given RGB and optionally
-extract the raster values on base of vector data for training purposes.}
+\title{Convenient function to preprocess synthetic raster bands from a given RGB image and/or DTM/DSM data.}
 \usage{
 calc_ext(calculateBands = FALSE, extractTrain = TRUE, prefixRun = "temp",
   patterndemFiles = "dem", prefixTrainImg = "", prefixTrainGeom = "",
@@ -90,7 +89,10 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE, prefixRun = "temp",
 \item{giLinks}{list. GI tools cli paths}
 }
 \description{
-The calc_ext function covers step 1 of the  usecaseRGBClassify workflow for a random forest based classification of visible imagery.
+Convenient function to preprocess synthetic raster bands from a given RGB image and/or DTM/DSM data.
+Optionally the raster values  can be extracted to data frames on base of vector data. This is useful 
+for for classification training purposes and covers usually step 1 of the random forest based 
+classification of UAV derived visible imagery and point clouds.
 }
 \details{
 (01) calc_ext() calculation of spectral indices, basic spatial statistics and textures and
@@ -132,7 +134,7 @@ unzip(zipfile = res3,exdir = path_run)
 # create the links to the GI software
 giLinks<-uavRst::get_gi()
 
-# calculate synthetic channels for segmentation
+# calculate synthetic channels for segmentation and extract the trainingdata
 res <- calc_ext(calculateBands    = TRUE,
                 extractTrain      = TRUE,
                 suffixTrainGeom   = "",

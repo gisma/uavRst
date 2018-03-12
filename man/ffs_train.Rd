@@ -54,8 +54,8 @@ For the UAV based RGB/NIR imagery, it provides an optimized preconfiguration for
 \dontrun{
 
 # get data
- trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))
- load(paste0(currentIdxFolder,prefixRun,"bandNames.RData"))
+ trainDF<-readRDS("trainDF.rds"))
+ load("bandNames.RData")
  
 # add leading col name "ID" and tailing col name "FN"
  names(trainDF)<-append("ID",append(bandNames,"FN"))

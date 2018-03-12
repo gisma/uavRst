@@ -4,17 +4,12 @@
 \alias{get_traindata}
 \title{Extracts training data from a raster stack using vector data as a mask.}
 \usage{
-get_traindata(rasterStack = NULL, trainPlots = NULL, bandNames = NULL,
-  imgFN)
+get_traindata(rasterStack = NULL, trainPlots = NULL)
 }
 \arguments{
 \item{rasterStack}{an object of rasterstack*. containing image data to make prediction on}
 
 \item{trainPlots}{an object of SpatialPolygonDataFrame*. providing the training areas}
-
-\item{bandNames}{character. names of the bands}
-
-\item{imgFN}{character.  default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file}
 }
 \description{
 Extracts training data from a raster stack and returns a dataframe containing for each pixel all values.
@@ -22,10 +17,9 @@ Extracts training data from a raster stack and returns a dataframe containing fo
 \examples{
 \dontrun{
 
-trainingDF <- get_traindata(rasterStack  = trainStack,
-                               training     = training,
-                               ids=c(1,2),
-                               idLabel= c("green","nogreen"))
+trainingDF <- get_traindata(rasterStack    = list(rasterstacks),
+                            trainPlots     = list(trainPlots)
+                            )
 }
 }
 \author{

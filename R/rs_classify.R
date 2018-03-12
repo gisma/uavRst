@@ -9,23 +9,18 @@
 #'
 #'@param rasterStack  an object of rasterstack*. containing image data to make prediction on
 #'@param trainPlots   an object of SpatialPolygonDataFrame*. providing the training areas
-#'@param imgFN        character.  default is \code{file.path(tempdir(),"trainingDF.RData")} Name of the extracted training data file
-#'@param bandNames       character. names of the bands
 #'@import crayon
 #'@export get_traindata
 #'@examples
 #'\dontrun{
 #'
-#' trainingDF <- get_traindata(rasterStack  = trainStack,
-#'                                training     = training,
-#'                                ids=c(1,2),
-#'                                idLabel= c("green","nogreen"))
+#' trainingDF <- get_traindata(rasterStack    = list(rasterstacks),
+#'                             trainPlots     = list(trainPlots)
+#'                             )
 #'}
 
 get_traindata<-function(rasterStack  = NULL,
-                        trainPlots     = NULL,
-                        bandNames = NULL,
-                        imgFN) {
+                        trainPlots     = NULL) {
   
   catNote <- crayon::blue $ bold
   
@@ -39,10 +34,10 @@ get_traindata<-function(rasterStack  = NULL,
     
     categorymap<-rgeos::gUnionCascaded(trainPlots[[j]],id=trainPlots[[j]]@data$id)
     dataSet <- raster::extract(rasterStack[[j]], categorymap,df=TRUE)
-    names(dataSet)<-append(c("ID"),bandNames)
+    names(dataSet)<-append(c("ID"),names(rasterStack[[j]]))
     ## add filename as lloc category
     #FNname<-substr(names(rasterStack[[j]][[1]]),1,nchar(names(rasterStack[[j]][[1]]))-2)
-    dataSet$FN= imgFN[[j]]
+    dataSet$FN <- rasterStack[[j]]@filename
     dataSet[is.na(dataSet)] <- 0
     dataSet=dataSet[stats::complete.cases(dataSet),]
     
@@ -183,8 +178,8 @@ predict_rgb <- function(imageFiles=NULL,
 #' \dontrun{
 #' 
 #' # get data
-#'  trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))
-#'  load(paste0(currentIdxFolder,prefixRun,"bandNames.RData"))
+#'  trainDF<-readRDS("trainDF.rds"))
+#'  load("bandNames.RData")
 #'  
 #' # add leading col name "ID" and tailing col name "FN"
 #'  names(trainDF)<-append("ID",append(bandNames,"FN"))
@@ -293,10 +288,12 @@ ffs_train<-function(   trainingDF   = NULL,
 
 
 
-#' Convenient function to preprocess synthetic raster bands from a given RGB and optionally
-#' extract the raster values on base of vector data for training purposes.
+#' Convenient function to preprocess synthetic raster bands from a given RGB image and/or DTM/DSM data.
 #' @description
-#' The calc_ext function covers step 1 of the  usecaseRGBClassify workflow for a random forest based classification of visible imagery.
+#' Convenient function to preprocess synthetic raster bands from a given RGB image and/or DTM/DSM data.
+#' Optionally the raster values  can be extracted to data frames on base of vector data. This is useful 
+#' for for classification training purposes and covers usually step 1 of the random forest based 
+#' classification of UAV derived visible imagery and point clouds.
 
 #'@details
 #'
@@ -372,7 +369,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' # create the links to the GI software
 #' giLinks<-uavRst::get_gi()
 #' 
-#' # calculate synthetic channels for segmentation
+#' # calculate synthetic channels for segmentation and extract the trainingdata
 #' res <- calc_ext(calculateBands    = TRUE,
 #'                 extractTrain      = TRUE,
 #'                 suffixTrainGeom   = "",
@@ -661,13 +658,20 @@ calc_ext<- function ( calculateBands    = FALSE,
     cat(catHead("\n     --------------- start extract processing ------------------                \n"))
     load(paste0(currentIdxFolder,prefixRun,"bandNames.RData"))
     # get image and geometry data for training purposes
+    imageTrainStack <- list()
     imageTrainFiles <- list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE)
     tmp  <- basename(list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE))
+    for (j in 1:length(imageTrainFiles) )  {
+      rs<-raster::stack(imageTrainFiles[[j]]) 
+      rs@filename <-tmp[j]
+      names(rs)<-bandNames
+      imageTrainStack <- append(imageTrainStack,rs)
+      }
     tmp<- gsub(patternIdx,prefixTrainGeom,tmp)
     tmp<- gsub(suffixTrainImg,suffixTrainGeom,tmp)
     geomTrainFiles <- gsub(".envi",".shp",tmp)
     geomTrainFiles <- paste0(currentDataFolder,geomTrainFiles)
-    imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
+    #imageTrainStack<-lapply(imageTrainFiles, FUN=raster::names)
     if (file.exists(extension(geomTrainFiles, ".shp")))
       geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
     else 
@@ -675,13 +679,9 @@ calc_ext<- function ( calculateBands    = FALSE,
     # extract clean and format training data
     
     trainDF <- uavRst::get_traindata(rasterStack  = imageTrainStack,
-                                     trainPlots = geomTrainStack,
-                                     bandNames = bandNames,
-                                     imageTrainFiles
-                                     
-    )
+                                     trainPlots = geomTrainStack)
     # create a new dataframe with prefixRun
-    assign(paste0(prefixRun,"_trainDF"), trainDF,envir = )
+    assign(paste0(prefixRun,"_trainDF"), trainDF)
     # save it
     saveRDS(eval(parse(text=paste0(prefixRun,"_trainDF"))), paste0(currentIdxFolder,prefixRun,"_trainDF",".rds"))
     #read it into another name
