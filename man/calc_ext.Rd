@@ -101,39 +101,57 @@ The calc_ext function covers step 1 of the  usecaseRGBClassify workflow for a ra
               the requested channels for all rgb data that you want to predict.\cr\cr
 (04) prediction startPredict=TRUE\cr\cr
 }
+\note{
+If the function is used for stand alone extraction of the training data please provide both, the imagestack containing the raster data plus the corresponding band names (usually saved as an Rdata file) and the corresponding shape file.
+}
 \examples{
 \dontrun{
+# required packages
 require(uavRst)
-devtools::install_github("gisma/link2GI", ref = "master")
+require(curl)
+require(link2GI)
 
-#---> define environment and settings
-projRootDir <- "~/temp7/GRASS7"
+# project folde
+projRootDir<-tempdir()
 
-# create project structure and export global pathes
-projRootDir<-tmpDir()
-setwd(paste0(projRootDir,"run"))
-link2GI::initProj(projRootDir = projRootDir,
-                 projFolders = c("data/","data/training/","data/training/idx/",
-                                 "output/","run/","fun/"),
-                                 global = TRUE,
-                                 path_prefix = "path_")
-                                 
+# create subfolders pls notice the pathes are exported as global variables
+paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+                         global = TRUE,
+                         path_prefix = "path_")
+                         
+# get the data rgb image, chm data and training data 
+url1 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/rgb_3-3.tif"
+url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
+url3 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/syn_3-3_train.zip"
+res1 <- curl::curl_download(url1, paste0(path_run,"rgb_3-3.tif"))
+res2 <- curl::curl_download(url2, paste0(path_run,"chm_3-3.tif"))
+res3 <- curl::curl_download(url3, paste0(path_run,"syn_3-3_train.zip"))
+unzip(zipfile = res3,exdir = path_run)
+
+# create the links to the GI software
+giLinks<-uavRst::get_gi()
+
+# calculate synthetic channels for segmentation
 res <- calc_ext(calculateBands    = TRUE,
-               extractTrain      = TRUE,
-               prefixRun      = "traddel",
-               suffixTrainGeom   = "TrainingArea",
-               patternIdx   = "index",
-               indices           = c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") ,
-               channels          = c("red", "green", "blue"),
-               hara              = FALSE,
-               haraType          = c("simple","advanced","higher"),
-               stat              = TRUE,
-               edge              = TRUE,
-               edgeType          = c("gradient","sobel","touzi"),
-               morpho            = TRUE,
-               morphoType        = c("dilate","erode","opening","closing"),
-               kernel            = 3,
-               currentDataFolder = path_data_training,
-               currentIdxFolder  = path_data_training_idx)
+                extractTrain      = TRUE,
+                suffixTrainGeom   = "",
+                patternIdx        = "index",
+                patternImgFiles   = "rgb" ,
+                patterndemFiles   = "chm",
+                prefixRun         = "rgbImg",
+                prefixTrainImg    = "",
+                rgbi              = TRUE,
+                RGBTrans          = TRUE,
+                hara              = TRUE,
+                haraType          = c("simple"),
+                stat              = TRUE,
+                edge              = TRUE,
+                morpho            = TRUE,
+                pardem            = TRUE,
+                kernel            = 3,
+                currentDataFolder = path_run,
+                currentIdxFolder  = path_run,
+                giLinks = giLinks)
 }
 }

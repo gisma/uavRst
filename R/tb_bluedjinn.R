@@ -662,20 +662,20 @@ make_bandnames <- function(rgbi    = NA,
                            RGBtrans = NA,
                            dem =    NA){
   if (!is.na(rgbi[1])) bandNames <- append(c("red","green","blue"),rgbi)
-  if (!is.na(bandNames)) {
-    if(bandNames == "simple"){
+  if (!is.na(bandNames[1])) {
+    if(bandNames[1] == "simple"){
       bandNames <- c("Energy", "Entropy", "Correlation", 
                   "Inverse_Difference_Moment", "Inertia", 
                   "Cluster_Shade", "Cluster_Prominence",
                   "Haralick_Correlation")
-    } else if(bandNames == "advanced"){
+    } else if(bandNames[1] == "advanced"){
       bandNames <- c("Hara_Mean", "Hara_Variance", "Dissimilarity",
                   "Sum_Average", 
                   "Sum_Variance", "Sum_Entropy", 
                   "Difference_of_Variances", 
                   "Difference_of_Entropies", 
                   "IC1", "IC2")
-    } else if(bandNames == "higher"){
+    } else if(bandNames[1] == "higher"){
       bandNames <- c("Short_Run_Emphasis", 
                   "Long_Run_Emphasis", 
                   "Grey-Level_Nonuniformity", 
@@ -687,7 +687,7 @@ make_bandnames <- function(rgbi    = NA,
                   "Short_Run_High_Grey-Level_Emphasis", 
                   "Long_Run_Low_Grey-Level_Emphasis",
                   "Long_Run_High_Grey-Level_Emphasis")
-    } else if(bandNames == "all"){
+    } else if(bandNames[1] == "all"){
       bandNames <- c("Energy", "Entropy", "Correlation", 
                   "Inverse_Difference_Moment", "Inertia", 
                   "Cluster_Shade", "Cluster_Prominence",
@@ -726,7 +726,10 @@ make_bandnames <- function(rgbi    = NA,
     bandNames    =  edge
   } 
   if (!is.na(RGBtrans))  {
-    bandNames    =  bandNames <- c(paste0(RGBtrans,"_b1"),paste0(RGBtrans,"_b2"),paste0(RGBtrans,"_b3"))
+    if (RGBtrans %in% c("gray"))
+      bandNames    =  bandNames <- c(paste0(RGBtrans,"_b1"))
+    else 
+      bandNames    =  bandNames <- c(paste0(RGBtrans,"_b1"),paste0(RGBtrans,"_b2"),paste0(RGBtrans,"_b3"))
   } 
   return(bandNames)
   

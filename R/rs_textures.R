@@ -242,15 +242,15 @@ otbtex_hara<- function(x,
               ret_textures <- lapply(parameters.xyrad, function(xyrad){
                 ret_textures <- lapply(parameters.xyoff, function(xyoff){
                   ret_textures <- lapply(texture, function(txt){
-                    path_outfile <- paste0(path_output,
-                                           "band_", band, "_",
-                                           output_name, "_",
-                                           txt, "_",
-                                           xyrad[1], xyrad[2], "_",
-                                           xyoff[1], xyoff[2],
-                                           ".tif")
-                    # path_outfile <- paste0(path_output,
-                    #                        output_name)
+                    path_outfile<-paste0(tools::file_path_sans_ext(output_name),
+                                    "__",
+                                    band,
+                                    "_",
+                                    txt,
+                                    "_",
+                                    xyrad[1], xyrad[2], "_",
+                                    xyoff[1], xyoff[2],
+                                    ".tif")
 
                     command<-paste0(path_OTB,"otbcli_HaralickTextureExtraction",
                                     " -in ", x,
@@ -380,11 +380,10 @@ otb_stat<- function(input=NULL,
   if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
   for (band in channel) {
 
-    outName<-paste0("band_",
+    outName<-paste0(tools::file_path_sans_ext(out),
+                    "__",
                     band,
-                    "_",
-                    out,
-                    "_",
+                    "_r",
                     radius,
                     ".tif")
 
@@ -453,11 +452,10 @@ otbtex_edge<- function(input=NULL,
   retStack<-list()
   if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
   for (band in channel) {
-    outName<-paste0("band_",
+    outName<-paste0(tools::file_path_sans_ext(out),
+                    "__",
                     band,
-                    "_",
-                    out,
-                    "_",
+                    "_f",
                     filter,
                     ".tif")
 
@@ -532,11 +530,10 @@ otbtex_gray<- function(input=NULL,
 
   if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
   for (band in channel) {
-    outName<-paste0("band_",
+    outName<-paste0(tools::file_path_sans_ext(out),
+                    "__",
                     band,
-                    "_",
-                    out,
-                    "_",
+                    "_f",
                     filter,
                     "_",
                     structype,
@@ -622,8 +619,8 @@ morpho_dem<- function(dem,
   for (item in gdal_items){
     cat(getCrayon()[[1]](":::: processing ",item,"\n"))
     res<-   gdaldem(mode = item,
-            input_dem="dem2.tif",
-            output = paste0(item,".tif"))
+            input_dem=paste0(path_run,"dem2.tif"),
+            output = paste0(path_run,item,".tif"))
   }
 
   if (length(saga_items>0)) {
@@ -942,7 +939,7 @@ colorspace<- function(input=NULL,
   #if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
   for (colMod in colorspace) {
 
-    outName<-paste0(colMod,"_",basename(input))
+    outName<-paste0(path_run,colMod,"_",basename(input))
 
     command<-paste0("convert")
     command<-paste(command, input)

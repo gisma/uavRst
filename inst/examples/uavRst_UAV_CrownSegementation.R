@@ -181,9 +181,9 @@ crowns <- chmseg_uav( treepos = tPos,
                       method = 0,
                       neighbour = 0,
                       majorityRadius = 3,
-                      thVarFeature = 1.,
-                      thVarSpatial = 1.,
-                      thSimilarity = 0.0001,
+                      thVarFeature = 3.,
+                      thVarSpatial = 3.,
+                      thSimilarity = 0.000005,
                       giLinks = giLinks )
 
 

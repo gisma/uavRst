@@ -52,13 +52,36 @@ For the UAV based RGB/NIR imagery, it provides an optimized preconfiguration for
 }
 \examples{
 \dontrun{
-result<-  ffs_train(trainingDF = trainingDF,
-                     predictors   = c("R","G","B"),
+
+# get data
+ trainDF<-readRDS(paste0(currentIdxFolder,prefixrunFN,"_trainDF",".rds"))
+ load(paste0(currentIdxFolder,prefixRun,"bandNames.RData"))
+ 
+# add leading col name "ID" and tailing col name "FN"
+ names(trainDF)<-append("ID",append(bandNames,"FN"))
+ 
+# define the classes
+ idNumber=c(1,2,3,4)
+ idNames= c("green tree","yellow tree","dead tree","no tree")
+# rename them
+ for (i in 1:length(idNumber)){
+   trainDF$ID[trainDF$ID==i]<-idNames[i]
+ }
+# convert to factor (required by rf)   
+ trainDF$ID <- as.factor(trainDF$ID)
+# now prepare the predictor and response variable names  
+# get actual name list from the DF
+ name<-names(trainDF)
+# cut leading and tailing ID/FN
+ predictNames<-name[3:length(name)-1]
+ 
+# call Training
+ result<-  ffs_train(trainingDF = trainDF,
+                     predictors   = predictNames,
                      response     = "ID",
                      spaceVar     = "FN",
-                     names        = c("ID","R","G","B","A","FN"),
-                     noLoc        = length(imageTrainFiles),
-                     metric_ffs   = "kappa",
-                     pVal         = 0.5)
-                 }
+                     names        =  name,
+                     pVal         = 0.1,
+                     noClu = 4) 
+}
 }
