@@ -31,6 +31,16 @@ crown_filter(crownFn, minTreeAlt = 10, minCrownArea = 5,
 \description{
 applies basic filtering of crown polygons using altitude, area and other optional thresholds. crown_filter basically returns SPDF with the crown polygons and all calculated parameters.
 }
+\examples{
+#'\dontrun{
+ crown_filter(crownFn = "crowns.shp", 
+              minTreeAlt = 10, 
+              minCrownArea = 5,
+              maxCrownArea = 100, 
+              minTreeAltParam = "chmQ50")
+}
+
+}
 \author{
 Chris Reudenbach
 }

@@ -25,8 +25,16 @@
 #'@export
 #'@examples
 #'\dontrun{
-#' # crown segmentation based on a CHM
-#'  chmseg_FT(x = rasterobj,  "nameofSAGAFile")
+#'
+#' crowns <- chmseg_uav( treepos = tPos, 
+#'                      segmentationBands = bandNames,
+#'                      chm = chmR,
+#'                      minTreeAlt = 3,
+#'                      thVarFeature = 3.,
+#'                      thVarSpatial = 3.,
+#'                      thSimilarity = 0.000005,
+#'                      giLinks = giLinks )
+#'                      
 #'}
 
 chmseg_uav <- function(treepos = NULL,
@@ -258,16 +266,6 @@ chmseg_RL <- function(treepos = NULL,
 #'  "Delineation of Individual Tree Crowns from ALS and Hyperspectral data: a comparison among four methods,"
 #'  European Journal of Remote Sensing, Vol. 48, pp. 365-382, 2015.
 #'
-#' @examples
-#' \dontrun{
-#'  tree_crowns_shp <- tree_crown_segmentation(chm = NULL,
-#'                        rs_code = "25832",
-#'                        movWindow = 5,
-#'                        th_local_max = 5,
-#'                        max_crown_diam = 20)
-#'                        }
-
-
 #' @param chm raster*, Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 #' the input for \code{treepos}.
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
@@ -281,6 +279,7 @@ chmseg_RL <- function(treepos = NULL,
 #' @export chmseg_ITC
 #' @examples
 #' \dontrun{
+#' 
 #'  crownsITC <- chmseg_ITC(chm, treepos, maxCrownArea, exclusion)
 #' }
 

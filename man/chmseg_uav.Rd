@@ -46,8 +46,16 @@ Tree segmentation based on a CHM, basically returns a vector data set with the t
 }
 \examples{
 \dontrun{
-# crown segmentation based on a CHM
- chmseg_FT(x = rasterobj,  "nameofSAGAFile")
+
+crowns <- chmseg_uav( treepos = tPos, 
+                     segmentationBands = bandNames,
+                     chm = chmR,
+                     minTreeAlt = 3,
+                     thVarFeature = 3.,
+                     thVarSpatial = 3.,
+                     thSimilarity = 0.000005,
+                     giLinks = giLinks )
+                     
 }
 }
 \author{

@@ -33,13 +33,7 @@ Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}
 }
 \examples{
 \dontrun{
- tree_crowns_shp <- tree_crown_segmentation(chm = NULL,
-                       rs_code = "25832",
-                       movWindow = 5,
-                       th_local_max = 5,
-                       max_crown_diam = 20)
-                       }
-\dontrun{
+
  crownsITC <- chmseg_ITC(chm, treepos, maxCrownArea, exclusion)
 }
 }

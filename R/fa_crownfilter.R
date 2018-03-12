@@ -26,6 +26,16 @@ if (!isGeneric('crown_filter')) {
 #'
 #'
 #'@export crown_filter
+#'
+#'@examples 
+#'#'\dontrun{
+#'  crown_filter(crownFn = "crowns.shp", 
+#'               minTreeAlt = 10, 
+#'               minCrownArea = 5,
+#'               maxCrownArea = 100, 
+#'               minTreeAltParam = "chmQ50")
+#'}
+#'
 
 
 crown_filter<- function(crownFn,
