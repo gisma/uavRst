@@ -13,7 +13,7 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE, prefixRun = "temp",
   edgeType = c("gradient", "sobel", "touzi"), morpho = TRUE,
   morphoType = c("dilate", "erode", "opening", "closing"), rgbi = TRUE,
   indices = c("VVI", "VARI", "NDTI", "RI", "SCI", "BI", "SI", "HI", "TGI",
-  "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), RGBTrans = TRUE,
+  "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"), rgbtrans = TRUE,
   colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ",
   "YUV"), pardem = TRUE, demType = c("hillshade", "slope", "aspect", "TRI",
   "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", "C_TANG",
@@ -63,7 +63,7 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE, prefixRun = "temp",
 
 \item{indices}{character. RGB indices, default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP")}
 
-\item{RGBTrans}{logical. switch for using color space transforming default = TRUE}
+\item{rgbtrans}{logical. switch for using color space transforming default = TRUE}
 
 \item{colorSpaces}{character.  RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")}
 
@@ -73,7 +73,7 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE, prefixRun = "temp",
 
 \item{morphoMethod}{numeric. saga morphometric method}
 
-\item{minScale}{mnumeric. in scale for multi scale TPI}
+\item{minScale}{numeric. in scale for multi scale TPI}
 
 \item{maxScale}{numeric. max scale for multi scale TPI}
 
@@ -142,7 +142,7 @@ res <- calc_ext(calculateBands    = TRUE,
                 prefixRun         = "rgbImg",
                 prefixTrainImg    = "",
                 rgbi              = TRUE,
-                RGBTrans          = TRUE,
+                rgbtrans          = TRUE,
                 hara              = TRUE,
                 haraType          = c("simple"),
                 stat              = TRUE,

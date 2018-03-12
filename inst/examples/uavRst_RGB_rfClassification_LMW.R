@@ -79,7 +79,7 @@ if (startcalc_ext){
                  prefixdemFN       = prefixdemFN,
                  rgbi              = TRUE,
                   indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"),
-                 RGBTrans          = FALSE,
+                 rgbTrans          = FALSE,
                  colorSpaces       = c("CIELab","XYZ","YUV"),
                  channels          = c("red"),# "green", "blue"),
                  hara              = FALSE,
@@ -109,7 +109,7 @@ if (startTrain){
   idNumber=c(1,2,3,4,5,6,7,8,9)
   # rename them
   idNames= c("darkgreen","lightgreen","darksoil","lightsoil","shadow","cacti","lightgray","darkgray","molliswhite")
-
+  
 
   # load raw training dataframe
   if (!(exists)("trainDF"))

@@ -333,11 +333,11 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param morphoType        character. morphological options, default is c("dilate","erode","opening","closing") all options are ("dilate","erode","opening","closing")
 #' @param rgbi              logical. switch for using rgbi index calcualtions default = TRUE
 #' @param indices           character. RGB indices, default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP")
-#' @param RGBTrans          logical. switch for using color space transforming default = TRUE
+#' @param rgbtrans          logical. switch for using color space transforming default = TRUE
 #' @param colorSpaces       character.  RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
 #' @param kernel            numeric. size of kernel for filtering and statistics, default is  3
 #' @param morphoMethod  numeric. saga morphometric method 
-#' @param minScale  mnumeric. in scale for multi scale TPI
+#' @param minScale  numeric. in scale for multi scale TPI
 #' @param maxScale  numeric. max scale for multi scale TPI
 #' @param numScale  numeric. number of scale for multi scale TPI
 #' @param currentDataFolder  NULL folder to image (and shape) data
@@ -382,7 +382,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                 prefixRun         = "rgbImg",
 #'                 prefixTrainImg    = "",
 #'                 rgbi              = TRUE,
-#'                 RGBTrans          = TRUE,
+#'                 rgbtrans          = TRUE,
 #'                 hara              = TRUE,
 #'                 haraType          = c("simple"),
 #'                 stat              = TRUE,
@@ -420,7 +420,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                       indices           = c("VVI","VARI","NDTI","RI","SCI","BI",
                                             "SI","HI","TGI","GLI","NGRDI","GRVI",
                                             "GLAI","HUE","CI","SAT","SHP") ,
-                      RGBTrans          = TRUE,
+                      rgbtrans          = TRUE,
                       colorSpaces       = c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
                       pardem            = TRUE,
                       demType           = c("hillshade","slope", "aspect","TRI","TPI","Roughness",
@@ -436,7 +436,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                       cleanTiffs        = TRUE,
                       giLinks = NULL){
   
-  if (!rgbi) RGBTrans <- hara <- stat <- edge <- morpho <- FALSE
+  if (!rgbi) rgbtrans <- hara <- stat <- edge <- morpho <- FALSE
   if (is.null(giLinks)){
     giLinks <- get_gi()
   }
@@ -523,7 +523,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         flist<-append(flist, paste0(path_run,"rgbi_",basename(imageFiles[i])))
       }
       # if RGB transform
-      if (RGBTrans){
+      if (rgbtrans){
         
         cat(catNote(":::: processing color transformation...\n"))
         uavRst::colorspace(input = imageFiles[i],
@@ -544,13 +544,13 @@ calc_ext<- function ( calculateBands    = FALSE,
                               overwrite=TRUE,
                               options="INTERLEAVE=BAND",
                               progress="text")
-          bandNames <-append(bandNames,make_bandnames(RGBtrans = colorSpaces[jj]))
+          bandNames <-append(bandNames,make_bandnames(rgbtrans = colorSpaces[jj]))
           flist<-append(flist, paste0(path_run,colorSpaces[jj],"_ref",basename(imageFiles[i])))
         }
         file.remove(unlist(path_run,,rgbtranslist))
         #r<-raster::stack(imageFiles[i])
         
-        #bandNames <-append(bandNames,make_bandnames(RGBtrans = colorSpaces))
+        #bandNames <-append(bandNames,make_bandnames(rgbtrans = colorSpaces))
         
       }
       if (rgbi){

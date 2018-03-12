@@ -648,7 +648,7 @@ getCrayon<-function(){
 #' @param stat character.  stat codes
 #' @param morpho character.  morpho codes
 #' @param edge character.  edge codes
-#' @param RGBtrans character.  RGBtrans codes
+#' @param rgbTrans character.  rgbTrans codes
 #' @param dem charater. dem codes
 #' @keywords internal
 #' 
@@ -659,7 +659,7 @@ make_bandnames <- function(rgbi    = NA,
                            stat    = FALSE,
                            morpho  = NA,
                            edge    = NA ,
-                           RGBtrans = NA,
+                           rgbTrans = NA,
                            dem =    NA){
   if (!is.na(rgbi[1])) bandNames <- append(c("red","green","blue"),rgbi)
   if (!is.na(bandNames[1])) {
@@ -725,11 +725,11 @@ make_bandnames <- function(rgbi    = NA,
   if (!is.na(edge))  {
     bandNames    =  edge
   } 
-  if (!is.na(RGBtrans))  {
-    if (RGBtrans %in% c("gray"))
-      bandNames    =  bandNames <- c(paste0(RGBtrans,"_b1"))
+  if (!is.na(rgbTrans))  {
+    if (rgbTrans %in% c("Gray"))
+      bandNames    =  bandNames <- c(paste0(rgbTrans,"_b1"))
     else 
-      bandNames    =  bandNames <- c(paste0(RGBtrans,"_b1"),paste0(RGBtrans,"_b2"),paste0(RGBtrans,"_b3"))
+      bandNames    =  bandNames <- c(paste0(rgbTrans,"_b1"),paste0(rgbTrans,"_b2"),paste0(rgbTrans,"_b3"))
   } 
   return(bandNames)
   

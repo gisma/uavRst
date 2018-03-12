@@ -75,7 +75,7 @@ if (startcalc_ext){
                  patternIdx        = "index",
                  rgbi              = T,
                   indices           =  c("VVI"),#,"VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP"),
-                 RGBTrans          = T,
+                 rgbTrans          = T,
                  colorSpaces       = c("CIELab"),#"XYZ","YUV"),
                  channels          = c("red"),# "green", "blue"),
                  hara              = F,

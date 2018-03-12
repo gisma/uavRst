@@ -6,7 +6,7 @@
 create vector containing the names of the image stack claculated using \code{\link{calc_ext}}}
 \usage{
 make_bandnames(rgbi = NA, bandNames = NA, stat = FALSE, morpho = NA,
-  edge = NA, RGBtrans = NA, dem = NA)
+  edge = NA, rgbTrans = NA, dem = NA)
 }
 \arguments{
 \item{rgbi}{character. codes of the RGB indices}
@@ -19,7 +19,7 @@ make_bandnames(rgbi = NA, bandNames = NA, stat = FALSE, morpho = NA,
 
 \item{edge}{character.  edge codes}
 
-\item{RGBtrans}{character.  RGBtrans codes}
+\item{rgbTrans}{character.  rgbTrans codes}
 
 \item{dem}{charater. dem codes}
 }
