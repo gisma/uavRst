@@ -17,9 +17,36 @@ Extracts training data from a raster stack and returns a dataframe containing fo
 \examples{
 \dontrun{
 
-trainingDF <- get_traindata(rasterStack    = list(rasterstacks),
-                            trainPlots     = list(trainPlots)
-                            )
+# required packages
+ require(uavRst)
+ require(curl)
+ require(link2GI)
+
+# project folder
+ projRootDir<-tempdir()
+
+# create subfolders please mind that the pathes are exported as global variables
+ paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+                         global = TRUE,
+                         path_prefix = "path_")
+                         
+# get the rgb image, chm and training data 
+ url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
+ res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
+ unzip(zipfile = res,exdir = path_run)
+
+# create the links to the GI software
+ giLinks<-uavRst::get_gi()
+ 
+# create stacks from image and geometry files
+ imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
+ geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
+
+# get training data frame
+ trainDF <- uavRst::get_traindata(rasterStack  = imageTrainStack,
+                                    trainPlots = geomTrainStack)
+                                                                                            )
 }
 }
 \author{

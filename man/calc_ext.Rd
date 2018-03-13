@@ -116,7 +116,7 @@ require(link2GI)
 # project folde
 projRootDir<-tempdir()
 
-# create subfolders pls notice the pathes are exported as global variables
+# create subfolders please mind that the pathes are exported as global variables
 paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
@@ -140,13 +140,14 @@ trainDF <- calc_ext(calculateBands    = TRUE,
                     prefixRun         = "rgbImg",
                     prefixTrainImg    = "",
                     rgbi              = TRUE,
-                    rgbTrans          = TRUE,
+                    rgbTrans          = FALSE,
                     hara              = TRUE,
                     haraType          = c("simple"),
                     stat              = TRUE,
-                    edge              = TRUE,
+                    edge              = FALSE,
                     morpho            = TRUE,
-                    pardem            = TRUE,
+                    pardem            = TRUE, 
+                    demType = c("slope", "aspect","TRI","TPI","Roughness","MTPI"),
                     kernel            = 3,
                     currentDataFolder = path_run,
                     currentIdxFolder  = path_run,

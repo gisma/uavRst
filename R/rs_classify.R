@@ -14,9 +14,36 @@
 #'@examples
 #'\dontrun{
 #'
-#' trainingDF <- get_traindata(rasterStack    = list(rasterstacks),
-#'                             trainPlots     = list(trainPlots)
-#'                             )
+#' # required packages
+#'  require(uavRst)
+#'  require(curl)
+#'  require(link2GI)
+#' 
+#' # project folder
+#'  projRootDir<-tempdir()
+#' 
+#' # create subfolders please mind that the pathes are exported as global variables
+#'  paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
+#'                          
+#' # get the rgb image, chm and training data 
+#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
+#'  res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
+#'  unzip(zipfile = res,exdir = path_run)
+#' 
+#' # create the links to the GI software
+#'  giLinks<-uavRst::get_gi()
+#'  
+#' # create stacks from image and geometry files
+#'  imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
+#'  geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
+#' 
+#' # get training data frame
+#'  trainDF <- uavRst::get_traindata(rasterStack  = imageTrainStack,
+#'                                     trainPlots = geomTrainStack)
+#'                                                                                             )
 #'}
 
 get_traindata<-function(rasterStack  = NULL,
@@ -70,7 +97,7 @@ get_traindata<-function(rasterStack  = NULL,
 #' # project folde
 #' projRootDir<-tempdir()
 #' 
-#' # create subfolders pls notice the pathes are exported as global variables
+#' # create subfolders please mind that the pathes are exported as global variables
 #' paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
@@ -371,7 +398,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' # project folde
 #' projRootDir<-tempdir()
 #' 
-#' # create subfolders pls notice the pathes are exported as global variables
+#' # create subfolders please mind that the pathes are exported as global variables
 #' paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
@@ -395,13 +422,14 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                     prefixRun         = "rgbImg",
 #'                     prefixTrainImg    = "",
 #'                     rgbi              = TRUE,
-#'                     rgbTrans          = TRUE,
+#'                     rgbTrans          = FALSE,
 #'                     hara              = TRUE,
 #'                     haraType          = c("simple"),
 #'                     stat              = TRUE,
-#'                     edge              = TRUE,
+#'                     edge              = FALSE,
 #'                     morpho            = TRUE,
-#'                     pardem            = TRUE,
+#'                     pardem            = TRUE, 
+#'                     demType           = c("slope", "aspect","TRI","TPI","Roughness","MTPI"),
 #'                     kernel            = 3,
 #'                     currentDataFolder = path_run,
 #'                     currentIdxFolder  = path_run,

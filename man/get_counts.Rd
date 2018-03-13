@@ -38,7 +38,7 @@ require(link2GI)
 # project folde
 projRootDir<-tempdir()
 
-# create subfolders pls notice the pathes are exported as global variables
+# create subfolders please mind that the pathes are exported as global variables
 paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
