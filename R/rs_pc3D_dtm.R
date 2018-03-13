@@ -31,11 +31,38 @@
 #'
 #'@examples
 #'\dontrun{
-#' pc3D_dtm(lasDir =  "~/path/to/lasdata",
-#'        gisdbasePath = "~/temp5",
-#'        thinGrid = "0.5",
-#'        splineNumber = "5" ,
-#'        gridSize = "0.5")
+#'
+#'
+#' require(uavRst)
+#' require(raster)
+#' require(link2GI)
+#' 
+#' # proj subfolders
+#' projRootDir<-getwd()
+#' #setwd(paste0(projRootDir,"run"))
+#' 
+#' paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
+#' 
+#' # get some colors
+#' pal = mapview::mapviewPalette("mapviewTopoColors")
+#' 
+#' # get the data
+#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/lidar_477375_00_5631900_00_477475_00_5632000_00.las"
+#' res <- curl::curl_download(url, "run/lasdata.las")
+#' # make the folders and linkages
+#' giLinks<-uavRst::get_gi()
+#' 
+#'# # create 3D DTM
+#' dtm2 <- pc3D_dtm(lasDir = l paste0(path_run,"lasdata.las"),
+#'                       gisdbasePath = projRootDir,
+#'                       thinGrid = 1.,
+#'                       splineNumber = 5 ,
+#'                       gridSize = 0.5,
+#'                       giLinks = giLinks)
+#'                       
 #'}
 
 pc3D_dtm <- function(lasDir = NULL,

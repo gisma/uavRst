@@ -38,13 +38,35 @@ if (!isGeneric('pc3D_dsm')) {
 #'@export pc3D_dsm
 #'@examples
 #'\dontrun{
+#'
+#' require(uavRst)
+#' require(raster)
+#' require(link2GI)
+#' 
+#' # proj subfolders
+#' projRootDir<-getwd()
+#' #setwd(paste0(projRootDir,"run"))
+#' 
+#' paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
+#' 
+#' # get some colors
+#' pal = mapview::mapviewPalette("mapviewTopoColors")
+#' 
+#' # get the data
+#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/lidar_477375_00_5631900_00_477475_00_5632000_00.las"
+#' res <- curl::curl_download(url, "run/lasdata.las")
+#' # make the folders and linkages
+#' giLinks<-uavRst::get_gi()
+#' 
 #' # create a DSM based on a uav point cloud
-#'  pc3D_dsm(lasDir =  lasDir,
-#'         gisdbasePath = "~/temp6/GRASS7",
-#'         GRASSlocation = "tmp/",
+#'  pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),
+#'         gisdbasePath = projRootDir,
 #'         projSubFolder = c("data/","output/","run/","las/"),
-#'         gridSize = "0.05",
-#'         gisdbase_exist = FALSE)
+#'         gridSize = "0.5")
+#'         
 #'}
 #'
 
