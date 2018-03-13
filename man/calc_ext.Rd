@@ -124,8 +124,8 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          
 # get the rgb image, chm and training data 
 url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
-res <- curl::curl_download(url, paste0(path_run,"syn_3-3_train.zip"))
-unzip(zipfile = res3,exdir = path_run)
+res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
+unzip(zipfile = res,exdir = path_run)
 
 # create the links to the GI software
 giLinks<-uavRst::get_gi()

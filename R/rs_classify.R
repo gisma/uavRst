@@ -62,10 +62,32 @@ get_traindata<-function(rasterStack  = NULL,
 #' @export get_counts
 #' @examples
 #' \dontrun{
+#' # required packages
+#' require(uavRst)
+#' require(curl)
+#' require(link2GI)
+#' 
+#' # project folde
+#' projRootDir<-tempdir()
+#' 
+#' # create subfolders pls notice the pathes are exported as global variables
+#' paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
+#'                          
+#' # get the rgb image, chm and training data 
+#' url1 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
+#' url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/position.zip"
+#' res1 <- curl::curl_download(url1, paste0(path_run,"tutorial_data.zip"))
+#' res2 <- curl::curl_download(url2, paste0(path_run,"position.zip"))
+#' unzip(zipfile = res1, exdir = path_run)
+#' unzip(zipfile = res2, exdir = path_run)
+#' position <- raster::shapefile(paste0(path_run,"position.zip"))
+#' imageFiles <-Sys.glob(paths = paste0(path_run,"rgb*","tif"))
+#' imageFiles <- raster::stack(imageFiles)
 #' df1<-get_counts(position = position,
 #'               imageFiles = imageFiles,
-#'               dropChars = 8,
-#'               pre=pre,
 #'               ext=".tif")
 #'}
 
@@ -357,8 +379,8 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                          
 #' # get the rgb image, chm and training data 
 #' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
-#' res <- curl::curl_download(url, paste0(path_run,"syn_3-3_train.zip"))
-#' unzip(zipfile = res3,exdir = path_run)
+#' res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
+#' unzip(zipfile = res,exdir = path_run)
 #' 
 #' # create the links to the GI software
 #' giLinks<-uavRst::get_gi()
