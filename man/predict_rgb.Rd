@@ -23,10 +23,44 @@ classify images using raster predict
 }
 \examples{
 \dontrun{
-predict_rgb(imageFiles=imagestack,
-            model = model_final,
-            inPrefix = "index_",
-            outPrefix = "classified_",
-            bandNames = c("R","G","B","A","VARI","NDTI","TGI","GLI","NGRDI"))
+
+# required packages
+require(uavRst)
+require(curl)
+require(link2GI)
+
+# project folder
+projRootDir<-tempdir()
+
+# create subfolders pls notice the pathes are exported as global variables
+paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+                         global = TRUE,
+                         path_prefix = "path_")
+
+# get the data rgb image, chm data and training data 
+
+url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_predict.zip"
+res <- curl::curl_download(url, paste0(path_run,"predict.zip"))
+unzip(zipfile = res,exdir = path_run)
+
+# create the links to the GI software
+giLinks<-uavRst::get_gi()
+
+# get the files  
+ imageTrainStack <- list()
+ geomTrainStack <- list()
+ imageTrainFiles <- list.files(pattern="[.]envi$", path=path_run, full.names=TRUE)
+ geomTrainFiles <- list.files(pattern="[.]shp$", path=path_run, full.names=TRUE)
+ load(paste0(path_run,"rgbImgbandNames.RData"))
+ load(file = paste0(path_output,prefixRun ,"_model_final",".RData"))
+ 
+ # start prediction
+ predict_rgb(imageFiles=imageFiles,
+             model = model_final,
+             inPrefix = "index_",
+             outPrefix = "classified_",
+             bandNames = bandNames)
+                                                 
 }
 }

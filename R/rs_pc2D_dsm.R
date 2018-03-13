@@ -2,9 +2,9 @@
 #' Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling
 #'
 #'@description
-#' Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval. Due to the poor estimation of ground points 
-#' a minimum samopling approach is applied. It retrieves on a coarse sampling gridsize the minimum value and interpolates on these samples a surface grid with a higher target 
-#' resolution. this is a kind of an try and error process and provides fairly good results if the point cloud shows at least some real surface points on a not to coarse grid. 
+#' Create a Digital Surface Model from a high density point cloud as typically derived by an
+#' optical UAV retrieval. It simply samples the maximum or whatever values of a given target 
+#' grid size and fills the no data holes if so.
 #'
 #'@author Chris Reudenbach
 #'

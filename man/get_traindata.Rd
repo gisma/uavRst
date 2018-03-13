@@ -39,6 +39,12 @@ Extracts training data from a raster stack and returns a dataframe containing fo
 # create the links to the GI software
  giLinks<-uavRst::get_gi()
  
+# get the files  
+ imageTrainStack <- list()
+ geomTrainStack <- list()
+ imageTrainFiles <- list.files(pattern="[.]envi$", path=path_run, full.names=TRUE)
+ geomTrainFiles <- list.files(pattern="[.]shp$", path=path_run, full.names=TRUE)
+ 
 # create stacks from image and geometry files
  imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
  geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
