@@ -645,7 +645,7 @@ morpho_dem<- function(dem,
                                     C_TOTA = paste(path_run,"C_TOTA.sgrd", sep = ""),
                                     C_ROTO = paste(path_run,"C_ROTO.sgrd", sep = ""),
                                     METHOD = morphoMethod),
-                       show.output.on.console = FALSE,
+                       show.output.on.console = FALSE, invisible = TRUE,
                        env = env)
     if ("MTPI" %in% saga_items){
       if (RSAGA::rsaga.get.version() >= "3.0.0") {
@@ -662,7 +662,7 @@ morpho_dem<- function(dem,
                                         SCALE_MAX = maxScale,
                                         SCALE_NUM = numScale,
                                         TPI = paste(path_run,"MTPI.sgrd", sep = "")),
-                           show.output.on.console = FALSE,
+                           show.output.on.console = FALSE,invisible = TRUE,
                            env = env)
       } else {cat("Please install SAGA >= 3.0.0\n Run without MTPI...")
         saga_items<-saga_items[  !(saga_items %in% "MTPI")]

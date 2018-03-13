@@ -52,17 +52,14 @@ For the UAV based RGB/NIR imagery, it provides an optimized preconfiguration for
 \examples{
 \dontrun{
 
-# get data
- trainDF<-readRDS("trainDF.rds"))
- load("bandNames.RData")
- 
-# add leading col name "ID" and tailing col name "FN"
- names(trainDF)<-append("ID",append(bandNames,"FN"))
- 
+# get data assuming that you have used before the calc_ext function
+ trainDF<-readRDS(paste0(path_run,"rgbImg_trainDF.rds"))
+ load(paste0(path_run,"rgbImgbandNames.RData"))
+
 # define the classes
- idNumber=c(1,2,3,4)
- idNames= c("green tree","yellow tree","dead tree","no tree")
-# rename them
+ idNumber=c(1,2,3)
+ idNames= c("green tree","yellow tree","no tree")
+# add classes names
  for (i in 1:length(idNumber)){
    trainDF$ID[trainDF$ID==i]<-idNames[i]
  }
@@ -75,12 +72,12 @@ For the UAV based RGB/NIR imagery, it provides an optimized preconfiguration for
  predictNames<-name[3:length(name)-1]
  
 # call Training
- result<-  ffs_train(trainingDF = trainDF,
-                     predictors   = predictNames,
-                     response     = "ID",
-                     spaceVar     = "FN",
-                     names        =  name,
-                     pVal         = 0.1,
-                     noClu = 4) 
+ model <-  ffs_train(trainingDF= trainDF,
+                     predictors= predictNames,
+                     response  = "ID",
+                     spaceVar  = "FN",
+                     names     = name,
+                     pVal      = 0.1,
+                     noClu     = 4) 
 }
 }

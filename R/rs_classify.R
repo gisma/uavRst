@@ -34,7 +34,7 @@ get_traindata<-function(rasterStack  = NULL,
     
     categorymap<-rgeos::gUnionCascaded(trainPlots[[j]],id=trainPlots[[j]]@data$id)
     dataSet <- raster::extract(rasterStack[[j]], categorymap,df=TRUE)
-    names(dataSet)<-append(c("ID"),names(rasterStack[[j]]))
+    #names(dataSet)<-append(c("ID"),names(rasterStack[[j]]))
     ## add filename as lloc category
     #FNname<-substr(names(rasterStack[[j]][[1]]),1,nchar(names(rasterStack[[j]][[1]]))-2)
     dataSet$FN <- rasterStack[[j]]@filename
@@ -42,7 +42,7 @@ get_traindata<-function(rasterStack  = NULL,
     dataSet=dataSet[stats::complete.cases(dataSet),]
     
     trainingDF<-rbind(trainingDF, dataSet)
-    save(dataSet, file = paste0(path_output,"tmptrain_",j,".RData"))
+    save(dataSet, file = paste0(path_run,"tmptrain_",j,".RData"))
   }
   
   return(trainingDF)
@@ -177,17 +177,14 @@ predict_rgb <- function(imageFiles=NULL,
 #' @examples
 #' \dontrun{
 #' 
-#' # get data
-#'  trainDF<-readRDS("trainDF.rds"))
-#'  load("bandNames.RData")
-#'  
-#' # add leading col name "ID" and tailing col name "FN"
-#'  names(trainDF)<-append("ID",append(bandNames,"FN"))
-#'  
+#' # get data assuming that you have used before the calc_ext function
+#'  trainDF<-readRDS(paste0(path_run,"rgbImg_trainDF.rds"))
+#'  load(paste0(path_run,"rgbImgbandNames.RData"))
+#' 
 #' # define the classes
-#'  idNumber=c(1,2,3,4)
-#'  idNames= c("green tree","yellow tree","dead tree","no tree")
-#' # rename them
+#'  idNumber=c(1,2,3)
+#'  idNames= c("green tree","yellow tree","no tree")
+#' # add classes names
 #'  for (i in 1:length(idNumber)){
 #'    trainDF$ID[trainDF$ID==i]<-idNames[i]
 #'  }
@@ -200,13 +197,13 @@ predict_rgb <- function(imageFiles=NULL,
 #'  predictNames<-name[3:length(name)-1]
 #'  
 #'# call Training
-#'  result<-  ffs_train(trainingDF = trainDF,
-#'                      predictors   = predictNames,
-#'                      response     = "ID",
-#'                      spaceVar     = "FN",
-#'                      names        =  name,
-#'                      pVal         = 0.1,
-#'                      noClu = 4) 
+#'  model <-  ffs_train(trainingDF= trainDF,
+#'                      predictors= predictNames,
+#'                      response  = "ID",
+#'                      spaceVar  = "FN",
+#'                      names     = name,
+#'                      pVal      = 0.1,
+#'                      noClu     = 4) 
 #'}
 
 ffs_train<-function(   trainingDF   = NULL,
@@ -358,39 +355,37 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
 #'                          
-#' # get the data rgb image, chm data and training data 
-#' url1 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/rgb_3-3.tif"
-#' url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
-#' url3 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/syn_3-3_train.zip"
-#' res1 <- curl::curl_download(url1, paste0(path_run,"rgb_3-3.tif"))
-#' res2 <- curl::curl_download(url2, paste0(path_run,"chm_3-3.tif"))
-#' res3 <- curl::curl_download(url3, paste0(path_run,"syn_3-3_train.zip"))
+#' # get the rgb image, chm and training data 
+#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
+#' res <- curl::curl_download(url, paste0(path_run,"syn_3-3_train.zip"))
 #' unzip(zipfile = res3,exdir = path_run)
 #' 
 #' # create the links to the GI software
 #' giLinks<-uavRst::get_gi()
 #' 
 #' # calculate synthetic channels for segmentation and extract the trainingdata
-#' res <- calc_ext(calculateBands    = TRUE,
-#'                 extractTrain      = TRUE,
-#'                 suffixTrainGeom   = "",
-#'                 patternIdx        = "index",
-#'                 patternImgFiles   = "rgb" ,
-#'                 patterndemFiles   = "chm",
-#'                 prefixRun         = "rgbImg",
-#'                 prefixTrainImg    = "",
-#'                 rgbi              = TRUE,
-#'                 rgbTrans          = TRUE,
-#'                 hara              = TRUE,
-#'                 haraType          = c("simple"),
-#'                 stat              = TRUE,
-#'                 edge              = TRUE,
-#'                 morpho            = TRUE,
-#'                 pardem            = TRUE,
-#'                 kernel            = 3,
-#'                 currentDataFolder = path_run,
-#'                 currentIdxFolder  = path_run,
-#'                 giLinks = giLinks)
+#' trainDF <- calc_ext(calculateBands    = TRUE,
+#'                     extractTrain      = TRUE,
+#'                     suffixTrainGeom   = "",
+#'                     patternIdx        = "index",
+#'                     patternImgFiles   = "rgb" ,
+#'                     patterndemFiles   = "chm",
+#'                     prefixRun         = "rgbImg",
+#'                     prefixTrainImg    = "",
+#'                     rgbi              = TRUE,
+#'                     rgbTrans          = TRUE,
+#'                     hara              = TRUE,
+#'                     haraType          = c("simple"),
+#'                     stat              = TRUE,
+#'                     edge              = TRUE,
+#'                     morpho            = TRUE,
+#'                     pardem            = TRUE,
+#'                     kernel            = 3,
+#'                     currentDataFolder = path_run,
+#'                     currentIdxFolder  = path_run,
+#'                     giLinks = giLinks)
+#'                 
+#' # head on with ffs_train
 #'}
 #' @import crayon
 #' @export calc_ext
@@ -683,7 +678,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     tmp<- gsub(suffixTrainImg,suffixTrainGeom,tmp)
     geomTrainFiles <- gsub(".envi",".shp",tmp)
     geomTrainFiles <- paste0(currentDataFolder,geomTrainFiles)
-    #imageTrainStack<-lapply(imageTrainFiles, FUN=raster::names)
+    #imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
     if (file.exists(extension(geomTrainFiles, ".shp")))
       geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
     else 
@@ -702,6 +697,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     #read it into another name
     #DF<-readRDS(paste0(currentIdxFolder,prefixRun,"_trainDF",".rds"))
     cat(catHead("\n     --------------- stop start extract processing ------------------                \n"))
-    return(trainDF)
+    
+    return(list(trainDF,bandNames))
   }
 }

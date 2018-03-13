@@ -122,38 +122,36 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          global = TRUE,
                          path_prefix = "path_")
                          
-# get the data rgb image, chm data and training data 
-url1 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/rgb_3-3.tif"
-url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
-url3 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/syn_3-3_train.zip"
-res1 <- curl::curl_download(url1, paste0(path_run,"rgb_3-3.tif"))
-res2 <- curl::curl_download(url2, paste0(path_run,"chm_3-3.tif"))
-res3 <- curl::curl_download(url3, paste0(path_run,"syn_3-3_train.zip"))
+# get the rgb image, chm and training data 
+url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
+res <- curl::curl_download(url, paste0(path_run,"syn_3-3_train.zip"))
 unzip(zipfile = res3,exdir = path_run)
 
 # create the links to the GI software
 giLinks<-uavRst::get_gi()
 
 # calculate synthetic channels for segmentation and extract the trainingdata
-res <- calc_ext(calculateBands    = TRUE,
-                extractTrain      = TRUE,
-                suffixTrainGeom   = "",
-                patternIdx        = "index",
-                patternImgFiles   = "rgb" ,
-                patterndemFiles   = "chm",
-                prefixRun         = "rgbImg",
-                prefixTrainImg    = "",
-                rgbi              = TRUE,
-                rgbTrans          = TRUE,
-                hara              = TRUE,
-                haraType          = c("simple"),
-                stat              = TRUE,
-                edge              = TRUE,
-                morpho            = TRUE,
-                pardem            = TRUE,
-                kernel            = 3,
-                currentDataFolder = path_run,
-                currentIdxFolder  = path_run,
-                giLinks = giLinks)
+trainDF <- calc_ext(calculateBands    = TRUE,
+                    extractTrain      = TRUE,
+                    suffixTrainGeom   = "",
+                    patternIdx        = "index",
+                    patternImgFiles   = "rgb" ,
+                    patterndemFiles   = "chm",
+                    prefixRun         = "rgbImg",
+                    prefixTrainImg    = "",
+                    rgbi              = TRUE,
+                    rgbTrans          = TRUE,
+                    hara              = TRUE,
+                    haraType          = c("simple"),
+                    stat              = TRUE,
+                    edge              = TRUE,
+                    morpho            = TRUE,
+                    pardem            = TRUE,
+                    kernel            = 3,
+                    currentDataFolder = path_run,
+                    currentIdxFolder  = path_run,
+                    giLinks = giLinks)
+                
+# head on with ffs_train
 }
 }

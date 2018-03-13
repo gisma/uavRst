@@ -71,7 +71,7 @@ chmseg_uav <- function(treepos = NULL,
   gdal <- giLinks$gdal
   saga <- giLinks$saga
   sagaCmd<-saga$sagaCmd
-  RSAGA::rsaga.env(path =saga$sagaPath,modules = saga$sagaModPath)
+  invisible(env<-RSAGA::rsaga.env(path =saga$sagaPath,modules = saga$sagaModPath))
 
   param_list <- paste0(path_run,segmentationBands,".sgrd;",collapse = "")
 
