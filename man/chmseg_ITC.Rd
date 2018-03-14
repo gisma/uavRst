@@ -34,6 +34,31 @@ Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}
 \examples{
 \dontrun{
 
- crownsITC <- chmseg_ITC(chm, treepos, maxCrownArea, exclusion)
+#' 
+# required packages
+require(uavRst)
+require(curl)
+
+# project folder
+projRootDir<-tempdir()
+
+# get the data
+ url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
+ url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
+ res <- curl::curl_download(url, paste0(path_run,"treepos_3-3.tif"))
+ res2 <- curl::curl_download(url2, paste0(path_run,"chm_3-3.tif"))
+
+# read chm data
+ chmR<- raster::raster(paste0(path_run,"chm_3-3.tif"))
+tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
+
+# segmentation
+crownsITC<- chmseg_ITC(chm = chmR,
+                       EPSG =3064,
+                       movingWin = 3,
+                       TRESHSeed = 0.45,
+                       TRESHCrown = 0.55,
+                       minTreeAlt = 2,
+                       maxCrownArea = 150)
 }
 }

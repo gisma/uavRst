@@ -42,9 +42,34 @@ Create a hillshading model on base of LiDAR/UAV generated point cloud.
 }
 \examples{
 \dontrun{
+
+require(uavRst)
+require(raster)
+require(link2GI)
+
+# proj subfolders
+projRootDir<-getwd()
+#setwd(paste0(projRootDir,"run"))
+
+paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+                         global = TRUE,
+                         path_prefix = "path_")
+
+# get the data
+# get a laz file from Mr. Isenburg
+url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz"
+res <- curl::curl_download(url=url,
+                           destfile=paste0(path_run,"test.laz"),  quiet = TRUE, mode = "wb")
+# convert from laz to las
+lastool(tool="las2las",paste0(path_run,"test.laz"))
+
+# make the folders and linkages
+giLinks<-uavRst::get_gi()
+
 # create a hillshade based on a las/laz point clouds
-  hs <- uavRst::local_relief(lasDir =  "~/proj/Monte_Bernorio/las/",
-                             gisdbasePath = "~/temp55/GRASS7",
+  hs <- local_relief(lasDir =  paste0(path_run,"test.las"),
+                             gisdbasePath = projRootDir,
                              gridSize = "1.0")
 }
 

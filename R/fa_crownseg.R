@@ -26,15 +26,44 @@
 #'@examples
 #'\dontrun{
 #'
+#' # required packages
+#' require(uavRst)
+#' require(curl)
+#' require(link2GI)
+#' 
+#' # project folder
+#' projRootDir<-tempdir()
+#' 
+#' # create subfolders please mind that the pathes are exported as global variables
+#' paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
+#' # get the data
+#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
+#'  url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
+#'  res <- curl::curl_download(url, paste0(path_run,"treepos_3-3.tif"))
+#'  res2 <- curl::curl_download(url2, paste0(path_run,"chm_3-3.tif"))
+#' 
+#' #' make the folders and linkages
+#'  giLinks<-uavRst::get_gi()
+#' 
+#' # read chm data
+#'  chmR<- raster::raster(paste0(path_run,"chm_3-3.tif"))
+#' tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
+#' 
 #' crowns <- chmseg_uav( treepos = tPos, 
-#'                      segmentationBands = bandNames,
-#'                      chm = chmR,
-#'                      minTreeAlt = 3,
-#'                      thVarFeature = 3.,
-#'                      thVarSpatial = 3.,
-#'                      thSimilarity = 0.000005,
-#'                      giLinks = giLinks )
-#'                      
+#'                       chm = chmR,
+#'                       minTreeAlt = 3,
+#'                       normalize = 0,
+#'                       method = 0,
+#'                       neighbour = 0,
+#'                       majorityRadius = 3,
+#'                       thVarFeature = 1.,
+#'                       thVarSpatial = 1.,
+#'                       thSimilarity = 0.00001,
+#'                       giLinks = giLinks )
+
 #'}
 
 chmseg_uav <- function(treepos = NULL,
@@ -48,7 +77,7 @@ chmseg_uav <- function(treepos = NULL,
                             thVarFeature   = 1.,
                             thVarSpatial   = 1.,
                             thSimilarity   = 0.002,
-                            segmentationBands    = c("chm.sgrd"),
+                            segmentationBands    = c("chm"),
                        majorityRadius    = 3.000,
                             giLinks = NULL) {
   proj<- raster::crs(treepos)
@@ -90,7 +119,7 @@ chmseg_uav <- function(treepos = NULL,
                                          SIG_1    =  thVarFeature,
                                          SIG_2    =  thVarSpatial,
                                          THRESHOLD = thSimilarity),
-                            intern = TRUE,
+                            intern = FALSE,
                             invisible = TRUE)
 
   # fill the holes inside the crowns (simple approach)
@@ -168,11 +197,30 @@ chmseg_uav <- function(treepos = NULL,
 #' @export
 #' @examples
 #' \dontrun{
-#'  crownsFT <- chmseg_FT(chm = kootenayCHM,
-#'                                  treepos = tpos
-#'                                 format = "polygons",
-#'                                 minTreeAlt = 1.5,
-#'                                 verbose = FALSE)
+#' 
+#' # required packages
+#' require(uavRst)
+#' require(curl)
+#' 
+#' # project folder
+#' projRootDir<-tempdir()
+#' 
+#' # get the data
+#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
+#'  url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
+#'  res <- curl::curl_download(url, paste0(path_run,"treepos_3-3.tif"))
+#'  res2 <- curl::curl_download(url2, paste0(path_run,"chm_3-3.tif"))
+#' 
+#' # read chm data
+#'  chmR<- raster::raster(paste0(path_run,"chm_3-3.tif"))
+#' tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
+#' 
+#' # segmentation
+#' crownsFT <- chmseg_FT(chm = chmR,
+#'                       treepos = tpos
+#'                       format = "polygons",
+#'                       minTreeAlt = 2,
+#'                       verbose = FALSE)
 #'
 #' }
 
@@ -222,7 +270,29 @@ chmseg_FT <- function(treepos = NULL,
 #' @export
 #' @examples
 #' \dontrun{
-#'  crownsRL <- chmseg_RL(chm, treepos, maxCrownArea, exclusion)
+#' 
+#' # required packages
+#' require(uavRst)
+#' require(curl)
+#' 
+#' # project folder
+#' projRootDir<-tempdir()
+#' 
+#' # get the data
+#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
+#'  url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
+#'  res <- curl::curl_download(url, paste0(path_run,"treepos_3-3.tif"))
+#'  res2 <- curl::curl_download(url2, paste0(path_run,"chm_3-3.tif"))
+#' 
+#' # read chm data
+#'  chmR<- raster::raster(paste0(path_run,"chm_3-3.tif"))
+#' tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
+#' 
+#' # segmentation
+#'  crownsRL <- chmseg_RL(chm= chmR,
+#'                        treepos= tPos,
+#'                        maxCrownArea = 150,
+#'                        exclusion = 0.2)
 #' }
 
 
@@ -280,7 +350,32 @@ chmseg_RL <- function(treepos = NULL,
 #' @examples
 #' \dontrun{
 #' 
-#'  crownsITC <- chmseg_ITC(chm, treepos, maxCrownArea, exclusion)
+#' #' 
+#' # required packages
+#' require(uavRst)
+#' require(curl)
+#' 
+#' # project folder
+#' projRootDir<-tempdir()
+#' 
+#' # get the data
+#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
+#'  url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
+#'  res <- curl::curl_download(url, paste0(path_run,"treepos_3-3.tif"))
+#'  res2 <- curl::curl_download(url2, paste0(path_run,"chm_3-3.tif"))
+#' 
+#' # read chm data
+#'  chmR<- raster::raster(paste0(path_run,"chm_3-3.tif"))
+#' tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
+#' 
+#' # segmentation
+#' crownsITC<- chmseg_ITC(chm = chmR,
+#'                        EPSG =3064,
+#'                        movingWin = 3,
+#'                        TRESHSeed = 0.45,
+#'                        TRESHCrown = 0.55,
+#'                        minTreeAlt = 2,
+#'                        maxCrownArea = 150)
 #' }
 
 

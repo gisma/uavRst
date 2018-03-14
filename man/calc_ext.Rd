@@ -105,6 +105,10 @@ classification of UAV derived visible imagery and point clouds.
 }
 \note{
 If the function is used for stand alone extraction of the training data please provide both, the imagestack containing the raster data plus the corresponding band names (usually saved as an Rdata file) and the corresponding shape file.
+
+The workflow is intended to use the forward feature selection as decribed by \href{https://www.sciencedirect.com/science/article/pii/S1364815217310976}{Meyer et al. (2018)}. 
+This approach needs at least a pair of images that differ in time and/or space for a leave one location out validation mode. You may overcome this situation if you tile your image and provide for each tile seperate training data.
+If you just want to classify a single image by a single training file use the normal procedure as provided by the \code{\link[caret]{trainControl}} function.
 }
 \examples{
 \dontrun{

@@ -7,8 +7,8 @@
 chmseg_uav(treepos = NULL, chm = NULL, minTreeAlt = 2,
   minTreeAltParam = "chmQ20", leafsize = 256, normalize = 0,
   neighbour = 1, method = 0, thVarFeature = 1, thVarSpatial = 1,
-  thSimilarity = 0.002, segmentationBands = c("chm.sgrd"),
-  majorityRadius = 3, giLinks = NULL)
+  thSimilarity = 0.002, segmentationBands = c("chm"), majorityRadius = 3,
+  giLinks = NULL)
 }
 \arguments{
 \item{treepos}{raster* object}
@@ -47,15 +47,43 @@ Tree segmentation based on a CHM, basically returns a vector data set with the t
 \examples{
 \dontrun{
 
+# required packages
+require(uavRst)
+require(curl)
+require(link2GI)
+
+# project folder
+projRootDir<-tempdir()
+
+# create subfolders please mind that the pathes are exported as global variables
+paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+                         global = TRUE,
+                         path_prefix = "path_")
+# get the data
+ url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
+ url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
+ res <- curl::curl_download(url, paste0(path_run,"treepos_3-3.tif"))
+ res2 <- curl::curl_download(url2, paste0(path_run,"chm_3-3.tif"))
+
+#' make the folders and linkages
+ giLinks<-uavRst::get_gi()
+
+# read chm data
+ chmR<- raster::raster(paste0(path_run,"chm_3-3.tif"))
+tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
+
 crowns <- chmseg_uav( treepos = tPos, 
-                     segmentationBands = bandNames,
-                     chm = chmR,
-                     minTreeAlt = 3,
-                     thVarFeature = 3.,
-                     thVarSpatial = 3.,
-                     thSimilarity = 0.000005,
-                     giLinks = giLinks )
-                     
+                      chm = chmR,
+                      minTreeAlt = 3,
+                      normalize = 0,
+                      method = 0,
+                      neighbour = 0,
+                      majorityRadius = 3,
+                      thVarFeature = 1.,
+                      thVarSpatial = 1.,
+                      thSimilarity = 0.00001,
+                      giLinks = giLinks )
 }
 }
 \author{

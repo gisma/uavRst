@@ -49,6 +49,11 @@ for further details.
 This is in fact the case while using time space variable vegetation patterns for classification purposes.
 For the UAV based RGB/NIR imagery, it provides an optimized preconfiguration for the classification goals.
 }
+\note{
+The workflow of \code{uavRst} is intended to use the forward feature selection as decribed by \href{https://www.sciencedirect.com/science/article/pii/S1364815217310976}{Meyer et al. (2018)}. 
+This approach needs at least a pair of images that differ in time and/or space for a leave one location out validation mode. You may overcome this situation if you tile your image and provide for each tile seperate training data.
+If you just want to classify a single image by a single training file use the normal procedure as provided by the \code{\link[caret]{trainControl}} function.
+}
 \examples{
 \dontrun{
 
@@ -79,5 +84,7 @@ For the UAV based RGB/NIR imagery, it provides an optimized preconfiguration for
                      names     = name,
                      pVal      = 0.1,
                      noClu     = 4) 
+
+# for classification/prediction go ahead with the predict_RGB function
 }
 }
