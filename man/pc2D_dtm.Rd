@@ -59,7 +59,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 pal = mapview::mapviewPalette("mapviewTopoColors")
 
 # get the data
-url <- "https://github.com/gisma/gismaData/raw/master/uavRst/lidar.las"
+url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las"
 res <- curl::curl_download(url, "run/lasdata.las")
 # make the folders and linkages
 giLinks<-uavRst::get_gi()

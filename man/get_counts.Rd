@@ -49,8 +49,8 @@ url1 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data
 url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/position.zip"
 res1 <- curl::curl_download(url1, paste0(path_run,"tutorial_data.zip"))
 res2 <- curl::curl_download(url2, paste0(path_run,"position.zip"))
-unzip(zipfile = res1, exdir = path_run)
-unzip(zipfile = res2, exdir = path_run)
+unzip(zipfile = res1,exdir = ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run))
+unzip(zipfile = res2,exdir = ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run))
 position <- raster::shapefile(paste0(path_run,"position.zip"))
 imageFiles <-Sys.glob(paths = paste0(path_run,"rgb*","tif"))
 imageFiles <- raster::stack(imageFiles)

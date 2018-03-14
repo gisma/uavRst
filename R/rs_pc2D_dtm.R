@@ -48,7 +48,7 @@
 #' pal = mapview::mapviewPalette("mapviewTopoColors")
 #' 
 #' # get the data
-#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/lidar.las"
+#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las"
 #' res <- curl::curl_download(url, "run/lasdata.las")
 #' # make the folders and linkages
 #' giLinks<-uavRst::get_gi()
@@ -166,7 +166,15 @@ pc2D_dtm <- function(laspcFile = NULL,
     oldtgs<-targetGridSize
     targetGridSize <- splineThresGridSize
     cat(":: target grid size is", targetGridSize ," => setting grid size to: ",splineThresGridSize,"\n") 
+  } else {
+    splineThresGridSize <- targetGridSize
+    oldtgs<-targetGridSize
     }
+  # else  {
+  #   oldtgs<- splineThresGridSize
+  #   splineThresGridSize <- targetGridSize
+  #   }
+      
   ret <- rgrass7::execGRASS("g.region",
                             flags  = c("quiet"),
                             res= as.character(targetGridSize),
