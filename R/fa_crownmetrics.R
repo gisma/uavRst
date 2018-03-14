@@ -1,19 +1,14 @@
-if (!isGeneric('poly_metrics')) {
-  setGeneric('poly_metrics', function(x, ...)
-    standardGeneric('poly_metrics'))
-}
-
-#'@name poly_metrics
-#'@title calculate morphometric features of polygons
+#'calculate morphometric features of polygons.
 #'@description calculate morphometric features of polygons. Calculate some crown related metrics, returns the metrics as a spatialpointdataframe/spatialpolygondataframe
 #'@seealso  \href{https://CRAN.R-project.org/package=Momocs}{Momocs}
 #' \href{https://www.researchgate.net/profile/Paul_Rosin/publication/228382248_Computing_global_shape_measures/links/0fcfd510802e598c31000000.pdf?origin=publication_detail}{Paul Rosin}
 #'
 #'@param crownarea sp*  spatialpolygon object
-#'@param funNames character. names of morphometrics to be calculated available are ("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")
-#'
-#'@export poly_metrics
-#'
+#'@param funNames character. names of morphometrics to be calculated 
+#'available are ("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen",
+#'"calliper","rectangularity","circularityharalick","convexity")
+
+#'@examples
 #'\dontrun{
 #' # required packages
 #' require(uavRst)
@@ -39,8 +34,8 @@ if (!isGeneric('poly_metrics')) {
 #' 
 #' polymetric <- poly_metrics(spdf = paste0(path_run,"rgb_3-3_train2.shp"))
 #'}
+#'@export
 
-#'
 
 poly_metrics<- function(crownarea,
                         funNames = c("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")){
