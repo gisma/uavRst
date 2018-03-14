@@ -11,13 +11,16 @@ if (!isGeneric('poly_metrics')) {
 #'
 #'@param crownarea sp*  spatialpolygon object
 #'@param funNames character. names of morphometrics to be calculated available are ("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")
+#'
+#'@export poly_metrics
+#'
 #'\dontrun{
 #' # required packages
 #' require(uavRst)
 #' require(curl)
 #' require(link2GI)
 #' 
-#' # project folde
+#' # project folder
 #' projRootDir<-tempdir()
 #' 
 #' # create subfolders please mind that the pathes are exported as global variables
@@ -35,9 +38,10 @@ if (!isGeneric('poly_metrics')) {
 #' giLinks<-uavRst::get_gi()
 #' 
 #' polymetric <- poly_metrics(spdf = paste0(path_run,"rgb_3-3_train2.shp"))
-#'                       
 #'}
-#'@export poly_metrics
+
+#'
+
 poly_metrics<- function(crownarea,
                         funNames = c("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity")){
   cat("calculate crown-metrics for ",nrow(crownarea)," polygons... \n")
