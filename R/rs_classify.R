@@ -31,7 +31,7 @@
 #' # get the rgb image, chm and training data 
 #'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 #'  res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
-#'  unzip(zipfile = res,exdir = path_run)
+#'  unzip(zipfile = res,exdir = ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run))
 #' 
 #' # create the links to the GI software
 #'  giLinks<-uavRst::get_gi()
@@ -114,8 +114,8 @@ get_traindata<-function(rasterStack  = NULL,
 #' url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/position.zip"
 #' res1 <- curl::curl_download(url1, paste0(path_run,"tutorial_data.zip"))
 #' res2 <- curl::curl_download(url2, paste0(path_run,"position.zip"))
-#' unzip(zipfile = res1, exdir = path_run)
-#' unzip(zipfile = res2, exdir = path_run)
+#' unzip(zipfile = res1,exdir = ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run))
+#' unzip(zipfile = res2,exdir = ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run))
 #' position <- raster::shapefile(paste0(path_run,"position.zip"))
 #' imageFiles <-Sys.glob(paths = paste0(path_run,"rgb*","tif"))
 #' imageFiles <- raster::stack(imageFiles)
@@ -185,7 +185,7 @@ get_counts<- function(ids=c(1,2),
 #' 
 #' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_predict.zip"
 #' res <- curl::curl_download(url, paste0(path_run,"predict.zip"))
-#' unzip(zipfile = res,exdir = path_run)
+#' unzip(zipfile = res,exdir = ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run))
 #' 
 #' # create the links to the GI software
 #' giLinks<-uavRst::get_gi()
@@ -458,7 +458,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' # get the rgb image, chm and training data 
 #' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 #' res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
-#' unzip(zipfile = res,exdir = path_run)
+#' unzip(zipfile = res,exdir = ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run))
 #' 
 #' # create the links to the GI software
 #' giLinks<-uavRst::get_gi()
