@@ -20,12 +20,11 @@ For most of the functions you need a bunch of third party software. The most com
 these requirements is to install 'QGIS', 'GRASS'- and 'SAGA-GIS' following the excellent \href{https://CRAN.R-project.org/package=RQGIS}{RQGIS}. 
 For most of the LiDAR related operations the great R package \href{https://CRAN.R-project.org/package=lidR}{lidR} is used. \cr\cr
 However for some of the basic point cloud related operations you will need to install the 'LAStool' software, that can be downloaded
- \href{http://lastools.org/download/LAStools.zip}{here} here and is provided by \href{https://rapidlasso.com/lastools/}{rapidlasso}. 
+ \href{http://lastools.org/download/LAStools.zip}{here} here and is provided by \href{https://rapidlasso.com/lastools/index.html}{rapidlasso}. 
  Please download it and unzip it as usual. For Windows systems it is by default expected that you put it  at \code{C:/LASTools}, running  Linux at \code{~/apps/LASTools}. 
  For running LAStools tools under Linux you first need to install wine. \cr\cr All of the mentioned software packages have to be correctly installed.
  Most of it tested under Windows and Linux and should run... The most easiest way to obtain a fairly good runtime enviroment is to setup Linux as a dual boot system or in a VB. 
  You will find some tutorials and examples at the uavRst Wiki. Please feel free to participate. \cr\cr
-In case of any problems drop an issue or try to use the \href{https://github.com/gisma/uavRst/issues}{github page} of the package.
 }
 \author{
 Hanna Meyer, Thomas Nauss, Lars Opgenoorth, Chris Reudenbach, Environmental Informatics Marburg \cr
