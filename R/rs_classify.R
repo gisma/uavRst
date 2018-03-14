@@ -75,7 +75,7 @@ get_traindata<-function(rasterStack  = NULL,
     dataSet=dataSet[stats::complete.cases(dataSet),]
     
     trainingDF<-rbind(trainingDF, dataSet)
-    save(dataSet, file = paste0(path_run,"tmptrain_",j,".RData"))
+    save(dataSet, file = paste0(path_tmp,"tmptrain_",j,".RData"))
   }
   
   return(trainingDF)
@@ -574,7 +574,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         
         #cat(catNote(":::: processing dem... ",demType,"\n"))
         flist<-append(flist, Sys.glob(demFiles[i]))
-        dellist <- append(dellist, Sys.glob(demFiles[i]))
+        dellist <- append(dellist, paste0(path_run,"dem2.tif"))
         bandNames <-append(bandNames,"dem")
         morpho_dem(dem = demFiles[i], 
                    item = demType,

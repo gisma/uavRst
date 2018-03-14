@@ -42,13 +42,20 @@ This function calculates various spectral indices from a RGB. It returns at leas
 }
 \examples{
 \dontrun{
-library(raster)
-url <- "https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg"
-dFile <- download.file(url, "Image.jpg")
-img <- stack("Image.jpg")
-plotRGB(img)
-rgbi <- rgbI(img)
-plot(rgbI, col = gray(255:0/255))
+# required packages
+require(uavRst)
+require(curl)
+
+# project folder
+path_run<-tempdir()
+
+# get the rgb image, chm and training data 
+ url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/rgb_3-3.tif"
+ res <- curl::curl_download(url, paste0(path_run,"rgb_3-3.tif"))
+ img <- stack(paste0(path_run,"rgb_3-3.tif"))
+ plotRGB(img)
+ rgbI <- rgbI(img)
+ 
 }
 
 

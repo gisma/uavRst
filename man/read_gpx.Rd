@@ -19,3 +19,4 @@ if the layer has any features a sp object is returned.
 \note{
 adapted from \code{\link[tmaptools]{read_GPX}}
 }
+\keyword{internal}

@@ -23,6 +23,20 @@ R package \href{https://CRAN.R-project.org/package=lidR}{lidR}\cr
 }
 \examples{
 \dontrun{
- crownslidR <-treepos_lidR(chm,fws,minht)
+
+# required packages
+ require(uavRst)
+ require(curl)
+
+# runtime folde
+ path_run<-tempdir()
+
+# get the rgb image, chm and training data 
+ url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
+ res <- curl::curl_download(url, paste0(path_run,"chm_3-3.tif"))
+ tPosliR <- treepos_lidR(chm = paste0(path_run,"chm_3-3.tif"),
+                         movingWin = 7, 
+                         minTreeAlt = 2)
+                         
 }
 }

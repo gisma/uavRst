@@ -25,8 +25,36 @@ if (!isGeneric('treepos')) {
 #'@export treepos
 #'@examples
 #'\dontrun{
-#' # Tree segmentation based on a CHM
-#'  treepos(chm = rasterobj,  "nameofSAGAFile")
+#'
+#' # required packages
+#' require(uavRst)
+#' require(curl)
+#' require(link2GI)
+#' 
+#' # project folder
+#' projRootDir<-tempdir()
+#' 
+#' # create subfolders please mind that the pathes are exported as global variables
+#' paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
+#'
+#' # get the rgb image, chm and training data 
+#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
+#'  res <- curl::curl_download(url, paste0(path_run,"chm_3-3.tif"))
+#'  
+#' # create the links to the GI software
+#'  giLinks<-uavRst::get_gi()
+#' 
+#' # calculate treepos using uavRst generic approach
+#'  tPos <- uavRst::treepos(chm = paste0(path_run,"chm_3-3.tif"),
+#'                          minTreeAlt = 2,
+#'                          maxCrownArea = 150,
+#'                          join = 1,
+#'                          thresh = 0.35,
+#'                          giLinks = giLinks )
+#'                        
 #'}
 #'
 treepos <- function(chm = NULL,
@@ -144,7 +172,20 @@ treepos <- function(chm = NULL,
 #' @export treepos_RL
 #' @examples
 #' \dontrun{
-#'  treeposITC <- treepos_RL(chm,fws,minht)
+#' 
+#' # required packages
+#'  require(uavRst)
+#'  require(curl)
+#' 
+#' # runtime folde
+#' path_run<-tempdir()
+#' 
+#' # get the rgb image, chm and training data 
+#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
+#'  res <- curl::curl_download(url, paste0(path_run,"chm_3-3.tif"))
+#'  tPosRL <- treepos_RL(chm = paste0(path_run,"chm_3-3.tif"), 
+#'                       movingWin = 7, 
+#'                       minTreeAlt = 2)
 #' }
 
 
@@ -177,7 +218,21 @@ treepos_RL <- function(chm =NULL,
 #' @export treepos_lidR
 #' @examples
 #' \dontrun{
-#'  crownslidR <-treepos_lidR(chm,fws,minht)
+#' 
+#' # required packages
+#'  require(uavRst)
+#'  require(curl)
+#' 
+#' # runtime folde
+#'  path_run<-tempdir()
+#' 
+#' # get the rgb image, chm and training data 
+#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
+#'  res <- curl::curl_download(url, paste0(path_run,"chm_3-3.tif"))
+#'  tPosliR <- treepos_lidR(chm = paste0(path_run,"chm_3-3.tif"),
+#'                          movingWin = 7, 
+#'                          minTreeAlt = 2)
+#'                          
 #' }
 
 
@@ -213,9 +268,23 @@ treepos_lidR <- function(chm =NULL,
 #' @export treepos_ft
 #' @examples
 #' \dontrun{
-#'  crownsFT <-treepos_ft(chm = chmR,
-#'                       minTreeAlt = 2,
-#'                       maxCrownArea = maxCrownArea)
+#' 
+#' # required packages
+#'  require(uavRst)
+#'  require(curl)
+#' 
+#' # runtime folde
+#'  path_run<-tempdir()
+#' 
+#' # get the rgb image, chm and training data 
+#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
+#'  res <- curl::curl_download(url, paste0(path_run,"chm_3-3.tif"))
+#' 
+#' # call ForestTools treepos 
+#'  treepos_ft(chm = paste0(path_run,"chm_3-3.tif"),
+#'             minTreeAlt = 2, 
+#'             maxCrownArea = 150)
+#'                          
 #' }
 
 
