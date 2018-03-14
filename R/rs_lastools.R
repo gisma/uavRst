@@ -32,11 +32,17 @@
 #'
 #'@examples
 #'\dontrun{
-#' lasR(lasFile =  "~/path/to/lasdata",
-#'        gisdbasePath = "~/temp5",
-#'        thinGrid = "0.5",
-#'        splineNumber = "5" ,
-#'        gridSize = "0.5")
+#'
+#' require(uavRst)
+#' require(curl)
+#' require(link2GI)
+#' # get a laz file from Mr. Isenburg
+#' url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz"
+#' res <- curl::curl_download(url=url,
+#'                            destfile="test.laz",  quiet = TRUE, mode = "wb")
+#' # convert from laz to las
+#' lastool(tool="las2las","test.laz")
+#' 
 #'}
 
 lastool <- function(  tool="lasinfo",
