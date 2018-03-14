@@ -12,7 +12,7 @@ Authors@R: c(person("Hanna", "Meyer", email = "hanna.meyer@uni-marburg.de", role
              )
 Encoding: UTF-8
 Maintainer: Chris Reudenbach <reudenbach@uni-marburg.de>
-Description: Unmanned Aerial Vehicle Remote Sensing Tools. In general the UAV remote sensing toolbox tries to support the use of UAV derived imagery and pointclouds as a cheap and easy to use alternative/complement to LiDAR data. It provides functionality to analyze poor quality RGB images as taken by low budget ready to fly uavs. This includes preconfigured machine learning based classification workflows, comprehensive texture analysis and segmentation algorithms as well as forest relevant analyzes of metrics and measures on the derived products.    
+Description: Unmanned Aerial Vehicle Remote Sensing Tools. In general the UAV remote sensing toolbox tries to support the use of drone derived imagery and pointclouds as a cheap and easy to use alternative/complement to lidar data. It provides functionality to analyze poor quality digital aerial images as taken by low budget ready to fly drones. This includes preconfigured machine learning based classification functions, comprehensive texture analysis, segmentation algorithms as well as forest relevant analyzes of metrics and measures on the derived products.
 URL: https://github.com/gisma/uavRst
 BugReports: https://github.com/gisma/uavRst/issues
 License: GPL (>= 3) | file LICENSE
