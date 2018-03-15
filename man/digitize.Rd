@@ -2,9 +2,7 @@
 % Please edit documentation in R/tb_digitize.R
 \name{digitize}
 \alias{digitize}
-\title{Easy digitizing of vector features within your rstudio session (or any browser) 
-#@title 
-#@author Chris Reudenbach}
+\title{Easy digitizing of vector features within your rstudio session (or any browser)}
 \usage{
 digitize(mapCenter = NULL, zoom = 15, line = TRUE, rectangle = TRUE,
   poly = TRUE, circle = TRUE, point = TRUE, remove = TRUE,
@@ -71,4 +69,7 @@ uavRst::digitize(overlay = me, preset = "uav")
 # preset for digitizing extents
 digitize(preset="ext",overlay = me)
 }
+}
+\author{
+Chris Reudenbach
 }

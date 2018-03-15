@@ -27,43 +27,44 @@
 #'\dontrun{
 #'
 #' # required packages
-#' require(uavRst)
-#' require(curl)
-#' require(link2GI)
+#'  require(uavRst)
+#'  require(curl)
+#'  require(link2GI)
 #' 
 #' # project folder
-#' projRootDir<-tempdir()
+#'  projRootDir<-tempdir()
 #' 
 #' # create subfolders please mind that the pathes are exported as global variables
-#' paths<-link2GI::initProj(projRootDir = projRootDir,
+#'  paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
 #' # get the data
-#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
+#'  url1 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
 #'  url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
-#'  res <- curl::curl_download(url, paste0(path_run,"treepos_3-3.tif"))
+#'  res1 <- curl::curl_download(url1, paste0(path_run,"treepos_3-3.tif"))
 #'  res2 <- curl::curl_download(url2, paste0(path_run,"chm_3-3.tif"))
 #' 
-#' #' make the folders and linkages
+#' # make the folders and linkages
 #'  giLinks<-uavRst::get_gi()
 #' 
 #' # read chm data
 #'  chmR<- raster::raster(paste0(path_run,"chm_3-3.tif"))
-#' tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
+#'  tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
 #' 
-#' crowns <- chmseg_uav( treepos = tPos, 
-#'                       chm = chmR,
-#'                       minTreeAlt = 3,
-#'                       normalize = 0,
-#'                       method = 0,
-#'                       neighbour = 0,
-#'                       majorityRadius = 3,
-#'                       thVarFeature = 1.,
-#'                       thVarSpatial = 1.,
-#'                       thSimilarity = 0.00001,
-#'                       giLinks = giLinks )
-
+#' # tree segmentation
+#'  crowns <- chmseg_uav( treepos = tPos, 
+#'                        chm = chmR,
+#'                        minTreeAlt = 3,
+#'                        normalize = 0,
+#'                        method = 0,
+#'                        neighbour = 0,
+#'                        majorityRadius = 3,
+#'                        thVarFeature = 1.,
+#'                        thVarSpatial = 1.,
+#'                        thSimilarity = 0.00001,
+#'                        giLinks = giLinks )
+#'                        
 #'}
 
 chmseg_uav <- function(treepos = NULL,
@@ -119,7 +120,7 @@ chmseg_uav <- function(treepos = NULL,
                                          SIG_1    =  thVarFeature,
                                          SIG_2    =  thVarSpatial,
                                          THRESHOLD = thSimilarity),
-                            intern = FALSE,
+                            intern = TRUE,
                             invisible = TRUE)
 
   # fill the holes inside the crowns (simple approach)
@@ -205,6 +206,14 @@ chmseg_uav <- function(treepos = NULL,
 #' # project folder
 #' projRootDir<-tempdir()
 #' 
+#' # create subfolders please mind that the pathes are exported as global variables
+#'  paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
+#' # project folder
+#' projRootDir<-tempdir()
+#' 
 #' # get the data
 #'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
 #'  url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
@@ -213,14 +222,14 @@ chmseg_uav <- function(treepos = NULL,
 #' 
 #' # read chm data
 #'  chmR<- raster::raster(paste0(path_run,"chm_3-3.tif"))
-#' tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
+#'  tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
 #' 
 #' # segmentation
-#' crownsFT <- chmseg_FT(chm = chmR,
-#'                       treepos = tpos
-#'                       format = "polygons",
-#'                       minTreeAlt = 2,
-#'                       verbose = FALSE)
+#'  crownsFT <- chmseg_FT(chm = chmR,
+#'                        treepos = tPos,
+#'                        format = "polygons",
+#'                        minTreeAlt = 2,
+#'                        verbose = FALSE)
 #'
 #' }
 
@@ -272,22 +281,28 @@ chmseg_FT <- function(treepos = NULL,
 #' \dontrun{
 #' 
 #' # required packages
-#' require(uavRst)
-#' require(curl)
+#'  require(uavRst)
+#'  require(curl)
+#'  require(link2GI)
 #' 
 #' # project folder
-#' projRootDir<-tempdir()
+#'  projRootDir<-tempdir()
 #' 
+#' # create subfolders please mind that the pathes are exported as global variables
+#'  paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
 #' # get the data
-#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
+#'  url1 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
 #'  url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
-#'  res <- curl::curl_download(url, paste0(path_run,"treepos_3-3.tif"))
+#'  res1 <- curl::curl_download(url1, paste0(path_run,"treepos_3-3.tif"))
 #'  res2 <- curl::curl_download(url2, paste0(path_run,"chm_3-3.tif"))
 #' 
 #' # read chm data
 #'  chmR<- raster::raster(paste0(path_run,"chm_3-3.tif"))
-#' tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
-#' 
+#'  tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
+#'
 #' # segmentation
 #'  crownsRL <- chmseg_RL(chm= chmR,
 #'                        treepos= tPos,
@@ -358,6 +373,12 @@ chmseg_RL <- function(treepos = NULL,
 #' # project folder
 #' projRootDir<-tempdir()
 #' 
+#' # create subfolders please mind that the pathes are exported as global variables
+#'  paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
+#' 
 #' # get the data
 #'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
 #'  url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
@@ -366,16 +387,16 @@ chmseg_RL <- function(treepos = NULL,
 #' 
 #' # read chm data
 #'  chmR<- raster::raster(paste0(path_run,"chm_3-3.tif"))
-#' tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
+#'  tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
 #' 
 #' # segmentation
-#' crownsITC<- chmseg_ITC(chm = chmR,
-#'                        EPSG =3064,
-#'                        movingWin = 3,
-#'                        TRESHSeed = 0.45,
-#'                        TRESHCrown = 0.55,
-#'                        minTreeAlt = 2,
-#'                        maxCrownArea = 150)
+#'  crownsITC<- chmseg_ITC(chm = chmR,
+#'                         EPSG =3064,
+#'                         movingWin = 3,
+#'                         TRESHSeed = 0.45,
+#'                         TRESHCrown = 0.55,
+#'                         minTreeAlt = 2,
+#'                         maxCrownArea = 150)
 #' }
 
 

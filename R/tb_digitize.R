@@ -1,6 +1,5 @@
 #' Easy digitizing of vector features within your rstudio session (or any browser) 
-#' #@title 
-#' #@author Chris Reudenbach
+#' @author Chris Reudenbach
 #' @description  digitize is based on the leaflet draw plugin. It provides a bunch of leaflet maps as base layers for digitizing vector features. 
 #'
 #' @note You can either save the digitized object to a .json file or you may grab the .json string via the clipboard

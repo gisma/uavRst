@@ -36,6 +36,14 @@ require(curl)
 # project folder
 projRootDir<-tempdir()
 
+# create subfolders please mind that the pathes are exported as global variables
+ paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+                         global = TRUE,
+                         path_prefix = "path_")
+# project folder
+projRootDir<-tempdir()
+
 # get the data
  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
  url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
@@ -44,14 +52,14 @@ projRootDir<-tempdir()
 
 # read chm data
  chmR<- raster::raster(paste0(path_run,"chm_3-3.tif"))
-tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
+ tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
 
 # segmentation
-crownsFT <- chmseg_FT(chm = chmR,
-                      treepos = tpos
-                      format = "polygons",
-                      minTreeAlt = 2,
-                      verbose = FALSE)
+ crownsFT <- chmseg_FT(chm = chmR,
+                       treepos = tPos,
+                       format = "polygons",
+                       minTreeAlt = 2,
+                       verbose = FALSE)
 
 }
 }

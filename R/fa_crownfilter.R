@@ -29,11 +29,31 @@ if (!isGeneric('crown_filter')) {
 #'
 #'@examples 
 #'\dontrun{
-#'  crown_filter(crownFn = "crowns.shp", 
-#'               minTreeAlt = 10, 
-#'               minCrownArea = 5,
-#'               maxCrownArea = 100, 
-#'               minTreeAltParam = "chmQ50")
+#'
+#'  require(uavRst)
+#'  require(curl)
+#'  require(link2GI)
+#' 
+#' # project folder
+#'  projRootDir<-tempdir()
+#' 
+#' # create subfolders please mind that the pathes are exported as global variables
+#'  paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
+#' # get the data
+#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/crowns.zip"
+#'  res <- curl::curl_download(url, paste0(path_run,"crowns.zip"))
+#'  unzip(zipfile = res, exdir = paste0(path_run,"crowns.zip"))
+#'  
+#' # start postclassification of segements  
+#'  tree_crowns <- crown_filter(crownFn =  paste0(path_run,"crowns.shp"),
+#'                              minTreeAlt = 3,
+#'                              minCrownArea = 1,
+#'                              maxCrownArea = 150,
+#'                              minTreeAltParam = "chmQ20" )
+#'                              
 #'}
 #'
 
@@ -55,7 +75,7 @@ crown_filter<- function(crownFn,
 
   crownarea@proj4string <- sp::CRS(proj4string)
   # calculate area
-  crownarea[is.na(crownarea$chmQ10)]<- 0
+  if (sum(is.na(crownarea$chmQ10)) > 0) crownarea[is.na(crownarea$chmQ10)]<- 0
   crownarea@data$area <- rgeos::gArea(crownarea,byid = TRUE)
   # filter for min, tree height and min max crown area
   crownarea <- crownarea[eval(parse(text=paste("crownarea@data$",minTreeAltParam,sep = ""))) >= minTreeAlt ,]

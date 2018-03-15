@@ -7,7 +7,7 @@
 #'@param funNames character. names of morphometrics to be calculated 
 #'available are ("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen",
 #'"calliper","rectangularity","circularityharalick","convexity")
-
+#'
 #'@examples
 #'\dontrun{
 #' # required packages
@@ -27,7 +27,7 @@
 #' # get the rgb image, chm and training data 
 #' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 #' res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
-#' unzip(zipfile = res,exdir = ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run))
+#' unzip(zipfile = res, exdir = paste0(path_run,"tutorial_data.zip"))
 #' 
 #' # create the links to the GI software
 #' giLinks<-uavRst::get_gi()

@@ -42,7 +42,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 
 url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_predict.zip"
 res <- curl::curl_download(url, paste0(path_run,"predict.zip"))
-unzip(zipfile = res,exdir = ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run))
+unzip(zipfile = res,exdir = paste0(path_run,"predict.zip"))
 
 # create the links to the GI software
 giLinks<-uavRst::get_gi()

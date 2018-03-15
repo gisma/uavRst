@@ -411,7 +411,7 @@ funWhichmax <- function(mask,value) {
 #' # get the rgb image, chm and training data 
 #' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 #' res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
-#' unzip(zipfile = res,exdir = ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run))
+#' unzip(zipfile = res, exdir = paste0(path_run,"tutorial_data.zip")))
 #' 
 #' # create the links to the GI software
 #' giLinks<-uavRst::get_gi()
@@ -496,8 +496,10 @@ poly_stat <- function(x = NULL,
 }
 
 
-#'   link all link2GI links
-#' @description brute force search call of all link2GI link functions
+#'  convenient function to establish all link2GI links
+#' @description brute force search, find and linkl of all link2GI link functions
+#' 
+#' @note You may also use the full parameterization of the \code{link2GI} package, but you are strungly advaced to use the \code{link2GI} functions in a direct way.
 #' @param links character. links
 #' @param linkItems character. list of c("saga","grass7","otb","gdal")
 #' @param simple logical. true  make all
@@ -505,6 +507,18 @@ poly_stat <- function(x = NULL,
 #' @param grassArgs character. grassArgs full string of grassArgs
 #' @param otbArgs character. full string of otbArgs
 #' @param gdalArgs character. full string of gdalArgs
+#' 
+#'@examples
+#'\dontrun{
+#' # required packages
+#' require(uavRst)
+#' require(link2GI)
+#' 
+#' # search, find and create the links to all supported  GI software
+#' giLinks<-uavRst::get_gi()
+#' 
+
+#'}
 
 #' @export
 get_gi <- function(links=NULL,
@@ -513,11 +527,10 @@ get_gi <- function(links=NULL,
                         sagaArgs = "default",
                         grassArgs = "default",
                         otbArgs =   "default",
-                        gdalArgs =  "quiet = TRUE,
-                                     returnPaths = TRUE"
-
-
-){
+                        gdalArgs =  c("quiet = TRUE,
+                                     returnPaths = TRUE")
+                   )  {
+  
   if (sagaArgs == "default") sagaArgs <- "default_SAGA = NULL, searchLocation = 'default', ver_select = FALSE, quiet = TRUE, returnPaths = TRUE"
   if (grassArgs == "default") grassArgs <- "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist = FALSE, gisdbase = NULL,
                                      location = NULL, spatial_params = NULL, resolution = NULL, quiet = TRUE, returnPaths = FALSE"

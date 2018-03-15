@@ -27,21 +27,27 @@ Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiD
 \dontrun{
 
 # required packages
-require(uavRst)
-require(curl)
+ require(uavRst)
+ require(curl)
+ require(link2GI)
 
 # project folder
-projRootDir<-tempdir()
+ projRootDir<-tempdir()
 
+# create subfolders please mind that the pathes are exported as global variables
+ paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+                         global = TRUE,
+                         path_prefix = "path_")
 # get the data
- url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
+ url1 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
  url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
- res <- curl::curl_download(url, paste0(path_run,"treepos_3-3.tif"))
+ res1 <- curl::curl_download(url1, paste0(path_run,"treepos_3-3.tif"))
  res2 <- curl::curl_download(url2, paste0(path_run,"chm_3-3.tif"))
 
 # read chm data
  chmR<- raster::raster(paste0(path_run,"chm_3-3.tif"))
-tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
+ tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
 
 # segmentation
  crownsRL <- chmseg_RL(chm= chmR,

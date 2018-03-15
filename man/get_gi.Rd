@@ -2,12 +2,12 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{get_gi}
 \alias{get_gi}
-\title{link all link2GI links}
+\title{convenient function to establish all link2GI links}
 \usage{
 get_gi(links = NULL, simple = TRUE, linkItems = c("saga", "grass7", "otb",
   "gdal"), sagaArgs = "default", grassArgs = "default",
   otbArgs = "default",
-  gdalArgs = "quiet = TRUE,\\n                                     returnPaths = TRUE")
+  gdalArgs = c("quiet = TRUE,\\n                                     returnPaths = TRUE"))
 }
 \arguments{
 \item{links}{character. links}
@@ -25,5 +25,19 @@ get_gi(links = NULL, simple = TRUE, linkItems = c("saga", "grass7", "otb",
 \item{gdalArgs}{character. full string of gdalArgs}
 }
 \description{
-brute force search call of all link2GI link functions
+brute force search, find and linkl of all link2GI link functions
+}
+\note{
+You may also use the full parameterization of the \code{link2GI} package, but you are strungly advaced to use the \code{link2GI} functions in a direct way.
+}
+\examples{
+\dontrun{
+# required packages
+require(uavRst)
+require(link2GI)
+
+# search, find and create the links to all supported  GI software
+giLinks<-uavRst::get_gi()
+
+}
 }
