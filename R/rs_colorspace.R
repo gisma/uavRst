@@ -52,7 +52,7 @@ colorspace<- function(input=NULL,
     else{
       ret<-system(command,intern = TRUE,ignore.stdout = TRUE,ignore.stderr = TRUE)}
     
-    if (retRaster) retStack[[band]]<-assign(paste0(tools::file_path_sans_ext(basename(outName)),"band_",band),raster::stack(outName))
+    if (retRaster) retStack[[paste0(tools::file_path_sans_ext(basename(outName)))]]<-assign(paste0(tools::file_path_sans_ext(basename(outName))),raster::stack(outName))
   }
   return(retStack)
 }
