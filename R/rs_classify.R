@@ -39,8 +39,9 @@
 #' # get the files  
 #'  imageTrainStack <- list()
 #'  geomTrainStack <- list()
-#'  imageTrainFiles <- list.files(pattern="[.]envi$", path=path_run, full.names=TRUE)
-#'  geomTrainFiles <- list.files(pattern="[.]shp$", path=path_run, full.names=TRUE)
+#'  p<- ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+#'  imageTrainFiles <- list.files(pattern="[.]tif$", path=p, full.names=TRUE)
+#'  geomTrainFiles <- list.files(pattern="[.]shp$", path=p, full.names=TRUE)
 #'  
 #' # create stacks from image and geometry files
 #'  imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
