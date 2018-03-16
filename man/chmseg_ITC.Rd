@@ -34,13 +34,12 @@ Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}
 \examples{
 \dontrun{
 
-#' 
 # required packages
-require(uavRst)
-require(curl)
+ require(uavRst)
+ require(curl)
 
 # project folder
-projRootDir<-tempdir()
+ projRootDir<-tempdir()
 
 # create subfolders please mind that the pathes are exported as global variables
  paths<-link2GI::initProj(projRootDir = projRootDir,

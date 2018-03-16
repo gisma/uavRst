@@ -27,11 +27,14 @@
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
-#'                          
+#' # overide trailing backslash issue
+#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)                        
+#'  setwd(path_run)          
+#'  
 #' # get the rgb image, chm and training data 
 #'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 #'  res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
-#'  unzip(zipfile = res,exdir = paste0(path_run,"tutorial_data.zip"))
+#'  unzip(res,exdir= path_run)
 #' 
 #' # create the links to the GI software
 #'  giLinks<-uavRst::get_gi()
@@ -39,13 +42,14 @@
 #' # get the files  
 #'  imageTrainStack <- list()
 #'  geomTrainStack <- list()
-#'  p<- ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  imageTrainFiles <- list.files(pattern="[.]tif$", path=p, full.names=TRUE)
-#'  geomTrainFiles <- list.files(pattern="[.]shp$", path=p, full.names=TRUE)
+#'  imageTrainFiles <- Sys.glob(paste0(path_run,"rgb*.tif"))
+#'  geomTrainFiles <- Sys.glob(paste0(path_run,"rgb*.shp"))
 #'  
 #' # create stacks from image and geometry files
 #'  imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
 #'  geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
+#'  names(imageTrainStack[[1]])<-c("red","green","blue")
+#'  names(imageTrainStack[[2]])<-c("red","green","blue")
 #' 
 #' # get training data frame
 #'  trainDF <- uavRst::get_traindata(rasterStack  = imageTrainStack,
@@ -76,7 +80,7 @@ get_traindata<-function(rasterStack  = NULL,
     dataSet=dataSet[stats::complete.cases(dataSet),]
     
     trainingDF<-rbind(trainingDF, dataSet)
-    save(dataSet, file = paste0(path_tmp,"tmptrain_",j,".RData"))
+    #save(dataSet, file = paste0(path_tmp,"tmptrain_",j,".RData"))
   }
   
   return(trainingDF)
@@ -109,20 +113,28 @@ get_traindata<-function(rasterStack  = NULL,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
+#' # overide trailing backslash issue
+#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)                        
+#'  setwd(path_run)                                                
 #'                          
 #' # get the rgb image, chm and training data 
 #' url1 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 #' url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/position.zip"
 #' res1 <- curl::curl_download(url1, paste0(path_run,"tutorial_data.zip"))
 #' res2 <- curl::curl_download(url2, paste0(path_run,"position.zip"))
-#' unzip(zipfile = res1,exdir = paste0(path_run,"tutorial_data.zip"))
-#' unzip(zipfile = res2,exdir = paste0(path_run,"position.zip"))
-#' position <- raster::shapefile(paste0(path_run,"position.zip"))
-#' imageFiles <-Sys.glob(paths = paste0(path_run,"rgb*","tif"))
-#' imageFiles <- raster::stack(imageFiles)
-#' df1<-get_counts(position = position,
-#'               imageFiles = imageFiles,
-#'               ext=".tif")
+#' unzip(zipfile = res1,exdir = path_run)
+#' unzip(zipfile = res2,exdir = path_run)
+#' 
+#' # read data
+#'  position <- raster::shapefile(paste0(path_run,"position.shp"))
+#'  imageFiles <-Sys.glob(paths = paste0(path_run,"rgb*","tif"))
+#'  imageFiles <- raster::stack(imageFiles)
+#'  
+#' ## get counts
+#'  df1<-get_counts(position = position,
+#'                 imageFiles = imageFiles,
+#'                 ext=".tif")
+#'                 
 #'}
 
 get_counts<- function(ids=c(1,2),
@@ -181,17 +193,19 @@ get_counts<- function(ids=c(1,2),
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
+#' # overide trailing backslash issue
+#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)                        
+#'  setwd(path_run)                                                 
 #' 
 #' # get the data rgb image, chm data and training data 
-#' 
-#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_predict.zip"
-#' res <- curl::curl_download(url, paste0(path_run,"predict.zip"))
-#' unzip(zipfile = res,exdir = paste0(path_run,"predict.zip"))
+#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_predict.zip"
+#'  res <- curl::curl_download(url, paste0(path_run,"predict.zip"))
+#'  unzip(zipfile = res, exdir = path_run)
 #' 
 #' # create the links to the GI software
 #' giLinks<-uavRst::get_gi()
 #' 
-#' # get the files  
+#' # read the files  
 #'  imageTrainStack <- list()
 #'  geomTrainStack <- list()
 #'  imageTrainFiles <- list.files(pattern="[.]envi$", path=path_run, full.names=TRUE)
@@ -199,11 +213,9 @@ get_counts<- function(ids=c(1,2),
 #'  load(paste0(path_run,"rgbImgbandNames.RData"))
 #'  load(file = paste0(path_output,prefixRun ,"_model_final",".RData"))
 #'  
-#'  # start prediction
+#' ## start prediction
 #'  predict_rgb(imageFiles=imageFiles,
 #'              model = model_final,
-#'              inPrefix = "index_",
-#'              outPrefix = "classified_",
 #'              bandNames = bandNames)
 #'                                                  
 #'}
@@ -455,11 +467,15 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
-#'                          
+#' # overide trailing backslash issue
+#' # overide trailing backslash issue
+#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)                        
+#'  setwd(path_run)                                          
+#'  
 #' # get the rgb image, chm and training data 
 #' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 #' res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
-#' unzip(zipfile = res,exdir = paste0(path_run,"tutorial_data.zip"))
+#' unzip(zipfile = res,exdir = path_run)
 #' 
 #' # create the links to the GI software
 #' giLinks<-uavRst::get_gi()

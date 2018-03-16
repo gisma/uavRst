@@ -37,17 +37,19 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
                          path_prefix = "path_")
+# overide trailing backslash issue
+ path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)                        
+ setwd(path_run)                                                 
 
 # get the data rgb image, chm data and training data 
-
-url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_predict.zip"
-res <- curl::curl_download(url, paste0(path_run,"predict.zip"))
-unzip(zipfile = res,exdir = paste0(path_run,"predict.zip"))
+ url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_predict.zip"
+ res <- curl::curl_download(url, paste0(path_run,"predict.zip"))
+ unzip(zipfile = res, exdir = path_run)
 
 # create the links to the GI software
 giLinks<-uavRst::get_gi()
 
-# get the files  
+# read the files  
  imageTrainStack <- list()
  geomTrainStack <- list()
  imageTrainFiles <- list.files(pattern="[.]envi$", path=path_run, full.names=TRUE)
@@ -55,11 +57,9 @@ giLinks<-uavRst::get_gi()
  load(paste0(path_run,"rgbImgbandNames.RData"))
  load(file = paste0(path_output,prefixRun ,"_model_final",".RData"))
  
- # start prediction
+## start prediction
  predict_rgb(imageFiles=imageFiles,
              model = model_final,
-             inPrefix = "index_",
-             outPrefix = "classified_",
              bandNames = bandNames)
                                                  
 }

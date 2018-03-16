@@ -29,15 +29,16 @@ you need to install imagemagick on your system, please look at see \href{https:/
 \dontrun{
 
 # get temporary runtime folder
-  setwd(tempdir())
-  
+ path_run <-  tempdir()
+ setwd(path_run) 
 # download some typical data as provided by the authority
+ Sys.setlocale('LC_ALL','C') 
  url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
  res <- curl::curl_download(url, "testdata.zip")
- unzip(res,junkpaths = TRUE,overwrite = TRUE)
+ unzip(res,junkpaths = TRUE)
  
 # change colorspace from RGB to CIElab  
- colorspace(input="4490600_5321400.tif",colorspace="CIELab")
- 
+ r2 <- colorspace(input="4490600_5321400.tif",colorspace="CIELab")
+ raster::plotRGB(r2)
 }
 }

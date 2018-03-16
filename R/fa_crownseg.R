@@ -56,10 +56,7 @@
 #'  crowns <- chmseg_uav( treepos = tPos, 
 #'                        chm = chmR,
 #'                        minTreeAlt = 3,
-#'                        normalize = 0,
-#'                        method = 0,
 #'                        neighbour = 0,
-#'                        majorityRadius = 3,
 #'                        thVarFeature = 1.,
 #'                        thVarSpatial = 1.,
 #'                        thSimilarity = 0.00001,
@@ -112,7 +109,7 @@ chmseg_uav <- function(treepos = NULL,
   RSAGA::rsaga.geoprocessor(lib = "imagery_segmentation", module = 3,
                             param = list(SEEDS = paste(path_run,"treepos.sgrd", sep = ""),
                                          FEATURES = param_list,
-                                         SEGMENTS = paste(path_run,"crowns.shp", sep = ""),
+                                         SEGMENTS = paste(path_run,"crowns.sgrd", sep = ""),
                                          LEAFSIZE = leafsize,
                                          NORMALIZE = normalize,
                                          NEIGHBOUR = neighbour,
@@ -254,12 +251,12 @@ chmseg_FT <- function(treepos = NULL,
                                          minHeight = minTreeAlt,
                                          verbose = verbose)
 
-  # Writing Shapefile
-  rgdal::writeOGR(obj = crownsFT,
-                  dsn = paste0(path_output, "crowns_FT"),
-                  layer = "crowns_FT",
-                  driver= "ESRI Shapefile",
-                  overwrite=TRUE)
+  # # Writing Shapefile
+  # rgdal::writeOGR(obj = crownsFT,
+  #                 dsn = paste0(path_output, "crowns_FT"),
+  #                 layer = "crowns_FT",
+  #                 driver= "ESRI Shapefile",
+  #                 overwrite=TRUE)
 
   return(crownsFT)
 }
@@ -365,13 +362,12 @@ chmseg_RL <- function(treepos = NULL,
 #' @examples
 #' \dontrun{
 #' 
-#' #' 
 #' # required packages
-#' require(uavRst)
-#' require(curl)
+#'  require(uavRst)
+#'  require(curl)
 #' 
 #' # project folder
-#' projRootDir<-tempdir()
+#'  projRootDir<-tempdir()
 #' 
 #' # create subfolders please mind that the pathes are exported as global variables
 #'  paths<-link2GI::initProj(projRootDir = projRootDir,

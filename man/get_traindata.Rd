@@ -30,11 +30,14 @@ Extracts training data from a raster stack and returns a dataframe containing fo
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
                          path_prefix = "path_")
-                         
+# overide trailing backslash issue
+ path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)                        
+ setwd(path_run)          
+ 
 # get the rgb image, chm and training data 
  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
  res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
- unzip(zipfile = res,exdir = paste0(path_run,"tutorial_data.zip"))
+ unzip(res,exdir= path_run)
 
 # create the links to the GI software
  giLinks<-uavRst::get_gi()
@@ -42,13 +45,14 @@ Extracts training data from a raster stack and returns a dataframe containing fo
 # get the files  
  imageTrainStack <- list()
  geomTrainStack <- list()
- p<- ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- imageTrainFiles <- list.files(pattern="[.]tif$", path=p, full.names=TRUE)
- geomTrainFiles <- list.files(pattern="[.]shp$", path=p, full.names=TRUE)
+ imageTrainFiles <- Sys.glob(paste0(path_run,"rgb*.tif"))
+ geomTrainFiles <- Sys.glob(paste0(path_run,"rgb*.shp"))
  
 # create stacks from image and geometry files
  imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
  geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
+ names(imageTrainStack[[1]])<-c("red","green","blue")
+ names(imageTrainStack[[2]])<-c("red","green","blue")
 
 # get training data frame
  trainDF <- uavRst::get_traindata(rasterStack  = imageTrainStack,

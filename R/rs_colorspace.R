@@ -13,17 +13,22 @@
 #' \dontrun{
 #' 
 #' # get temporary runtime folder
-#'   setwd(tempdir())
-#'   
+#'  path_run <-  tempdir()
+#'  setwd(path_run) 
 #' # download some typical data as provided by the authority
+#'  Sys.setlocale('LC_ALL','C') 
 #'  url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
 #'  res <- curl::curl_download(url, "testdata.zip")
-#'  unzip(res,junkpaths = TRUE,overwrite = TRUE)
+#'  unzip(res,junkpaths = TRUE)
 #'  
 #' # change colorspace from RGB to CIElab  
-#'  colorspace(input="4490600_5321400.tif",colorspace="CIELab")
-#'  
+#'  r2 <- colorspace(input="4490600_5321400.tif",colorspace="CIELab")
+#'  raster::plotRGB(r2)
+
 #' }
+
+
+
 
 colorspace<- function(input=NULL,
                       colorspace =c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
@@ -32,12 +37,12 @@ colorspace<- function(input=NULL,
                       retRaster=TRUE){
   
   
-  retStack<-list()
+  
   #convert 2017_05_20_RGB_DEFS17_16_OrthoMosaic.tif -colorspace cmyk -compress LZW to.tif
   
   #if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
   for (colMod in colorspace) {
-    
+    retStack<- list()
     outName<-paste0(path_run,colMod,"_",basename(input))
     
     command<-paste0("convert")
@@ -52,8 +57,11 @@ colorspace<- function(input=NULL,
     else{
       ret<-system(command,intern = TRUE,ignore.stdout = TRUE,ignore.stderr = TRUE)}
     
-    if (retRaster) retStack[[paste0(tools::file_path_sans_ext(basename(outName)))]]<-assign(paste0(tools::file_path_sans_ext(basename(outName))),raster::stack(outName))
+    raster::extent(r2)<-raster::extent(input)
+    raster::projection(r2) <- raster::crs(projection(input))
+
+    if (retRaster) retStack[[paste0(tools::file_path_sans_ext(basename(outName)))]]<-assign(paste0(tools::file_path_sans_ext(basename(outName))),r2)
   }
-  return(retStack)
+  return(retStack[[1]])
 }
 

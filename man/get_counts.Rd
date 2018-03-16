@@ -43,19 +43,27 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
                          path_prefix = "path_")
+# overide trailing backslash issue
+ path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)                        
+ setwd(path_run)                                                
                          
 # get the rgb image, chm and training data 
 url1 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/position.zip"
 res1 <- curl::curl_download(url1, paste0(path_run,"tutorial_data.zip"))
 res2 <- curl::curl_download(url2, paste0(path_run,"position.zip"))
-unzip(zipfile = res1,exdir = paste0(path_run,"tutorial_data.zip"))
-unzip(zipfile = res2,exdir = paste0(path_run,"position.zip"))
-position <- raster::shapefile(paste0(path_run,"position.zip"))
-imageFiles <-Sys.glob(paths = paste0(path_run,"rgb*","tif"))
-imageFiles <- raster::stack(imageFiles)
-df1<-get_counts(position = position,
-              imageFiles = imageFiles,
-              ext=".tif")
+unzip(zipfile = res1,exdir = path_run)
+unzip(zipfile = res2,exdir = path_run)
+
+# read data
+ position <- raster::shapefile(paste0(path_run,"position.shp"))
+ imageFiles <-Sys.glob(paths = paste0(path_run,"rgb*","tif"))
+ imageFiles <- raster::stack(imageFiles)
+ 
+## get counts
+ df1<-get_counts(position = position,
+                imageFiles = imageFiles,
+                ext=".tif")
+                
 }
 }

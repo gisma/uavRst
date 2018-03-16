@@ -42,10 +42,14 @@ if (!isGeneric('crown_filter')) {
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
+#' # overide trailing backslash issue
+#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)                        
+#'  setwd(path_run)                                               
+#'  
 #' # get the data
 #'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/crowns.zip"
 #'  res <- curl::curl_download(url, paste0(path_run,"crowns.zip"))
-#'  unzip(zipfile = res, exdir = paste0(path_run,"crowns.zip"))
+#'  unzip(zipfile = res, exdir = path_run)
 #'  
 #' # start postclassification of segements  
 #'  tree_crowns <- crown_filter(crownFn =  paste0(path_run,"crowns.shp"),
@@ -69,7 +73,7 @@ crown_filter<- function(crownFn,
                                    proj4string="+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs") {
   # read crown vector data set
   if (class(crownFn)=="character")
-    crownarea <- rgdal::readOGR(path_run,"crowns", verbose = FALSE)
+    crownarea <- rgdal::readOGR(path_run,tools::file_path_sans_ext(basename(crownFn)), verbose = FALSE)
   else
     crownarea <- crownFn
 
