@@ -28,7 +28,7 @@
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
 #' # overide trailing backslash issue
-#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)                        
+#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #'  setwd(path_run)          
 #'  
 #' # get the rgb image, chm and training data 
@@ -51,7 +51,7 @@
 #'  names(imageTrainStack[[1]])<-c("red","green","blue")
 #'  names(imageTrainStack[[2]])<-c("red","green","blue")
 #' 
-#' # get training data frame
+#' ## get training data frame
 #'  trainDF <- uavRst::get_traindata(rasterStack  = imageTrainStack,
 #'                                     trainPlots = geomTrainStack)
 #'                                                                                             )
@@ -114,7 +114,7 @@ get_traindata<-function(rasterStack  = NULL,
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
 #' # overide trailing backslash issue
-#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)                        
+#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #'  setwd(path_run)                                                
 #'                          
 #' # get the rgb image, chm and training data 
@@ -194,7 +194,7 @@ get_counts<- function(ids=c(1,2),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
 #' # overide trailing backslash issue
-#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)                        
+#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #'  setwd(path_run)                                                 
 #' 
 #' # get the data rgb image, chm data and training data 

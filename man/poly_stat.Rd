@@ -49,7 +49,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          global = TRUE,
                          path_prefix = "path_")
 # overide trailing backslash issue
- path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)                        
+ path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
  
 # get the rgb image, chm and training data 
 url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
