@@ -71,6 +71,7 @@ get_traindata<-function(rasterStack  = NULL,
     cat("\n    extracting trainPlots data from image ",j," of ... ",length(rasterStack),"\n")
     
     categorymap<-rgeos::gUnionCascaded(trainPlots[[j]],id=trainPlots[[j]]@data$id)
+    categorymap<-sp::spTransform(categorymap,(rasterStack[[j]]@crs))
     dataSet <- raster::extract(rasterStack[[j]], categorymap,df=TRUE)
     #names(dataSet)<-append(c("ID"),names(rasterStack[[j]]))
     ## add filename as lloc category
@@ -469,7 +470,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                          path_prefix = "path_")
 #' # overide trailing backslash issue
 #' # overide trailing backslash issue
-#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)                        
+#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #'  setwd(path_run)                                          
 #'  
 #' # get the rgb image, chm and training data 
@@ -797,7 +798,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     geomTrainFiles <- gsub(".envi",".shp",tmp)
     geomTrainFiles <- paste0(currentDataFolder,geomTrainFiles)
     #imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
-    if (file.exists(extension(geomTrainFiles, ".shp")))
+    if (file.exists(extension(geomTrainFiles[[1]], ".shp")))
       geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
     else 
       return(cat(catErr("\nTraining files are not existing please check suffix or prefix strings")))
