@@ -47,17 +47,12 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
  unzip(zipfile = res, exdir = path_run)
  
 
-# read the files  
- imageTrainStack <- list()
- geomTrainStack <- list()
- imageTrainFiles <- list.files(pattern="[.]envi$", path=path_run, full.names=TRUE)
- geomTrainFiles <- list.files(pattern="[.]shp$", path=path_run, full.names=TRUE)
- load(paste0(path_run,"tutorialbandNames.RData"))
- readRDS(file = paste0(path_run,"tutorialmodel.rds"))
- 
+imageFile <- paste0(path_run,"predict.tif")
+load(paste0(path_run,"tutorialbandNames.RData"))
+tutorialModel<-readRDS(file = paste0(path_run,"tutorialmodel.rds"))
+
 ## start prediction
- predict_rgb(imageFiles=imageFiles,
-             model = model_final,
-             bandNames = bandNames)
-                                                 
+predict_rgb(imageFiles=imageFile,
+            model = tutorialModel,
+            bandNames = bandNames)                                             
 }

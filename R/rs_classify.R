@@ -206,19 +206,15 @@ get_counts<- function(ids=c(1,2),
 #'  unzip(zipfile = res, exdir = path_run)
 #'  
 #' 
-#' # read the files  
-#'  imageTrainStack <- list()
-#'  geomTrainStack <- list()
-#'  imageTrainFiles <- list.files(pattern="[.]envi$", path=path_run, full.names=TRUE)
-#'  geomTrainFiles <- list.files(pattern="[.]shp$", path=path_run, full.names=TRUE)
-#'  load(paste0(path_run,"tutorialbandNames.RData"))
-#'  readRDS(file = paste0(path_run,"tutorialmodel.rds"))
-#'  
-#' ## start prediction
-#'  predict_rgb(imageFiles=imageFiles,
-#'              model = model_final,
-#'              bandNames = bandNames)
-#'                                                  
+# read the files  
+#' imageFile <- paste0(path_run,"predict.tif")
+#' load(paste0(path_run,"tutorialbandNames.RData"))
+#' tutorialModel<-readRDS(file = paste0(path_run,"tutorialmodel.rds"))
+#' 
+#' ## start prediction taking the non optimized model
+#' predict_rgb(imageFiles=imageFile,
+#'             model = tutorialModel[[1]],
+#'             bandNames = bandNames)                                             
 
 
 predict_rgb <- function(imageFiles=NULL,
