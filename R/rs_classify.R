@@ -227,10 +227,11 @@ predict_rgb <- function(imageFiles=NULL,
   po = path_output
   i = 1:length(imageFiles)
   cat("\n::: start prediction aka classifikation...\n")
-  cl <- parallel::makeCluster(parallel::detectCores())
-  doParallel::registerDoParallel	(cl)
-  foreach::foreach(i,po) %dopar% {
-    #for (i in 1:length(imageFiles)) {
+  
+  #cl <- parallel::makeCluster(parallel::detectCores())
+  #doParallel::registerDoParallel	(cl)
+  #foreach::foreach(i,po) %dopar% {
+    for (i in 1:length(imageFiles)) {
     requireNamespace("raster")
     #requireNamespace(randomForest)
     #require(caret)
@@ -245,7 +246,7 @@ predict_rgb <- function(imageFiles=NULL,
                                  progress= "text")
     raster::writeRaster(predictImg, filename = fnOut, overwrite = TRUE)
   }
-  parallel::stopCluster(cl)
+  #parallel::stopCluster(cl)
 }
 
 #' Forward feature selection based on rf model 
