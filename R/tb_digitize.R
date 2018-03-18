@@ -24,20 +24,21 @@
 #' @param opacity opacity
 #'
 #' @examples
-#' \dontrun{
+# \dontrun{
 #' # all features
 #' digitize()
 #' 
 #' # preset for digitizing uav flight areas in Meuse
+#' require(sp)
 #' data(meuse) 
 #' coordinates(meuse) <- ~x+y 
 #' proj4string(meuse) <-CRS("+init=epsg:28992") 
 #' me<-sp::spTransform(meuse,CRSobj = sp::CRS("+init=epsg:4326"))
-#' uavRst::digitize(overlay = me, preset = "uav")
+#' uavRst::digitize(overlay = me)
 #'   
 #' # preset for digitizing extents
 #' digitize(preset="ext",overlay = me)
-#' }
+# }
 #' @export digitize
 
 digitize <- function(mapCenter=NULL,

@@ -22,7 +22,6 @@ predict_rgb(imageFiles = NULL, model = NULL, inPrefix = "index_",
 classify images using raster predict
 }
 \examples{
-\dontrun{
 
 # required packages
 require(uavRst)
@@ -40,27 +39,25 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 # overide trailing backslash issue
  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
  setwd(path_run)                                                 
-
+ unlink(paste0(path_run,"*"), force = TRUE)
+ 
 # get the data rgb image, chm data and training data 
- url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_predict.zip"
- res <- curl::curl_download(url, paste0(path_run,"predict.zip"))
+ url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip"
+ res <- curl::curl_download(url, paste0(path_run,"ffs.zip"))
  unzip(zipfile = res, exdir = path_run)
-
-# create the links to the GI software
-giLinks<-uavRst::get_gi()
+ 
 
 # read the files  
  imageTrainStack <- list()
  geomTrainStack <- list()
  imageTrainFiles <- list.files(pattern="[.]envi$", path=path_run, full.names=TRUE)
  geomTrainFiles <- list.files(pattern="[.]shp$", path=path_run, full.names=TRUE)
- load(paste0(path_run,"rgbImgbandNames.RData"))
- load(file = paste0(path_output,prefixRun ,"_model_final",".RData"))
+ load(paste0(path_run,"tutorialbandNames.RData"))
+ readRDS(file = paste0(path_run,"tutorialmodel.rds"))
  
 ## start prediction
  predict_rgb(imageFiles=imageFiles,
              model = model_final,
              bandNames = bandNames)
                                                  
-}
 }

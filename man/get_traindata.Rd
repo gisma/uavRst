@@ -15,13 +15,14 @@ get_traindata(rasterStack = NULL, trainPlots = NULL)
 Extracts training data from a raster stack and returns a dataframe containing for each pixel all values.
 }
 \examples{
-\dontrun{
 
 # required packages
  require(uavRst)
  require(curl)
  require(link2GI)
-
+ 
+# check if SAGA is correctly installed 
+ if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
 # project folder
  projRootDir<-tempdir()
 
@@ -33,15 +34,13 @@ Extracts training data from a raster stack and returns a dataframe containing fo
 # overide trailing backslash issue
  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
  setwd(path_run)          
+ unlink(paste0(path_run,"*"), force = TRUE)
  
 # get the rgb image, chm and training data 
  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
  res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
  unzip(res,exdir= path_run)
 
-# create the links to the GI software
- giLinks<-uavRst::get_gi()
- 
 # get the files  
  imageTrainStack <- list()
  geomTrainStack <- list()
@@ -55,10 +54,8 @@ Extracts training data from a raster stack and returns a dataframe containing fo
  names(imageTrainStack[[2]])<-c("red","green","blue")
 
 ## get training data frame
- trainDF <- uavRst::get_traindata(rasterStack  = imageTrainStack,
-                                    trainPlots = geomTrainStack)
-                                                                                            )
-}
+ trainDF <- get_traindata(rasterStack  = imageTrainStack,
+                          trainPlots = geomTrainStack)
 }
 \author{
 Chris Reudenbach

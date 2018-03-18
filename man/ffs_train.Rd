@@ -57,8 +57,31 @@ If you just want to classify a single image by a single training file use the no
 \examples{
 \dontrun{
 
+require(uavRst)
+require(curl)
+require(link2GI)
+
+project folder
+projRootDir<-tempdir()
+
+# create subfolders please mind that the pathes are exported as global variables
+paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+                         global = TRUE,
+                         path_prefix = "path_")
+# overide trailing backslash issue
+path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+setwd(path_run)                                          
+unlink(paste0(path_run,"*"), force = TRUE)
+# get the rgb image, chm and training data 
+url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip"
+res <- curl::curl_download(url, paste0(path_run,"ffs.zip"))
+unzip(zipfile = res,exdir = path_run)
 # get data assuming that you have used before the calc_ext function
- trainDF<-readRDS(paste0(path_run,"rgbImg_trainDF.rds"))
+trainDF<-readRDS(paste0(path_run,"tutorial_trainDF.rds"))
+load(paste0(path_run,"tutorialbandNames.RData"))
+# get data assuming that you have used before the calc_ext function
+trainDF<-readRDS(paste0(path_run,"rgbImg_trainDF.rds"))
  load(paste0(path_run,"rgbImgbandNames.RData"))
 
 # define the classes

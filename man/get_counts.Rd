@@ -29,41 +29,40 @@ get_counts(ids = c(1, 2), position = NULL, imageFiles = NULL,
 counts pixel values according to their classes
 }
 \examples{
-\dontrun{
+
 # required packages
-require(uavRst)
-require(curl)
-require(link2GI)
+ require(uavRst)
+ require(curl)
+ require(link2GI)
 
 # project folde
-projRootDir<-tempdir()
+ projRootDir<-tempdir()
 
 # create subfolders please mind that the pathes are exported as global variables
-paths<-link2GI::initProj(projRootDir = projRootDir,
-                         projFolders = c("data/","data/ref/","output/","run/","las/"),
-                         global = TRUE,
-                         path_prefix = "path_")
+ paths<-link2GI::initProj(projRootDir = projRootDir,
+                          projFolders = c("data/","data/ref/","output/","run/","las/"),
+                          global = TRUE,
+                          path_prefix = "path_")
 # overide trailing backslash issue
  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
  setwd(path_run)                                                
-                         
+ unlink(paste0(path_run,"*"), force = TRUE)
+ 
 # get the rgb image, chm and training data 
-url1 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
-url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/position.zip"
-res1 <- curl::curl_download(url1, paste0(path_run,"tutorial_data.zip"))
-res2 <- curl::curl_download(url2, paste0(path_run,"position.zip"))
-unzip(zipfile = res1,exdir = path_run)
-unzip(zipfile = res2,exdir = path_run)
+ url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
+ res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
+ unzip(zipfile = res,exdir = path_run)
 
 # read data
  position <- raster::shapefile(paste0(path_run,"position.shp"))
  imageFiles <-Sys.glob(paths = paste0(path_run,"rgb*","tif"))
- imageFiles <- raster::stack(imageFiles)
- 
+ imageTrainStack<-lapply(imageFiles, FUN=raster::stack)
+
 ## get counts
  df1<-get_counts(position = position,
-                imageFiles = imageFiles,
-                ext=".tif")
-                
-}
+                      ids = c(100,200),
+               imageFiles = imageFiles,
+                outPrefix = "", 
+                      ext = ".tif",
+                     path = path_run)
 }

@@ -11,7 +11,7 @@ HTMLWidgets.widget({
 
     // we need a not htmlwidget div in the widget container
     addElement("lnlt");
-    addElement("coords");
+    //addElement("coords");
 
     // initialize the leaflet map staticly at the "el" object
     // hard-coding center/zoom here for a non-empty initial view, since there
@@ -46,8 +46,8 @@ HTMLWidgets.widget({
 
   doRenderValue: function(el, x, map) {
 
-      
-    
+
+
 
    // we define the first layer of the list to be the default one
     var defaultLayer = L.tileLayer.provider(x.layer[0]).addTo(map);
@@ -55,7 +55,7 @@ HTMLWidgets.widget({
     for (var i = 0; i < x.layer.length;  i++) {
       baseLayers[x.layer[i] ] = L.tileLayer.provider(x.layer[i]);
       }
-      
+
  // check if an array of colors (palette) or a single color is provided
    if (x.color.length <= 7 ) {
        if (x.color[1].substring(0,1) != "#" ) {
@@ -78,7 +78,7 @@ HTMLWidgets.widget({
    };
    // define a dummy layer for the geojson data
     //var myLayer = L.geoJson(undefined,{style:style,onEachFeature:onEachFeature}).addTo(map);
-  
+
    var feature = {
     "type": "Feature",
     "properties": {
@@ -87,9 +87,9 @@ HTMLWidgets.widget({
         "popupContent": "no definition"
     }
 };
-    
+
 	  function onEachFeature(feature, layer) {
-	   
+
 	       // Create an input
     var input = L.DomUtil.create('input', 'my-input');
     // Set a feature property as value
@@ -99,7 +99,7 @@ HTMLWidgets.widget({
         // Input changed, change property value
         feature.properties.name = input.value;
     });
-	   
+
 	       var features = {};
 	       var input = {};
 	       var times = x.features.length;
@@ -108,13 +108,13 @@ HTMLWidgets.widget({
       name = L.DomUtil.create(name, 'new-input');
       name.value = feature.properties[name];
 
-      } 
+      }
 	        // Create an input
-    
+
     // Set a feature property as value
 
 
-    
+
     // Add a listener to watch for change on input
     L.DomEvent.addListener(name,'change', function () {
         // Input changed, change property value
@@ -123,10 +123,10 @@ HTMLWidgets.widget({
     });
     // Bind popup to layer with input
     layer.bindPopup(feature.properties);
-	
 
-	    
-	    
+
+
+
 /*      var i = 1;
       var content = '';
     // does this feature have a property named popupContent?
@@ -144,7 +144,7 @@ HTMLWidgets.widget({
         layer.bindPopup(popupContent);
     }*/
   }
-  
+
 	// The styles of the layer
 	function style(feature) {
 	        if (feature.properties.ELEV != "" && feature.properties.ELEV != "<Null>" && feature.properties.ELEV != null) {
@@ -189,7 +189,7 @@ HTMLWidgets.widget({
    var polyLayer = L.Proj.geoJson(jsondata,{ pointToLayer: function (feature, latlng) {
         return L.circleMarker(latlng, geojsonMarkerOptions);
     },style:style,onEachFeature:onEachFeature})
-    
+
        var overlayLayers = {};
       overlayLayers['userOverlay'] = polyLayer;
 
@@ -197,15 +197,15 @@ HTMLWidgets.widget({
 
   // layer control
   var layerControl = L.control.layers(baseLayers,overlayLayers).addTo(map);
-   } 
+   }
   else  {
-  var layerControl = L.control.layers(baseLayers).addTo(map);  
+  var layerControl = L.control.layers(baseLayers).addTo(map);
   }
    // create draw layer
     var drawnItems = new L.FeatureGroup(polyLayer);
     map.addLayer(drawnItems);
 
-  // init draw control     
+  // init draw control
   var drawControl = new L.Control.Draw({
           position: x.position,
                  draw: {
@@ -215,7 +215,7 @@ HTMLWidgets.widget({
                 weight: 2
             }},
                 rectangle:x.rectangle,
-                polygon: x.poly, 
+                polygon: x.poly,
                 circle: x.circle,
                 marker: x.point
             },
@@ -224,7 +224,7 @@ HTMLWidgets.widget({
                 remove: x.remove,
             }
         }).addTo(map);
-    
+
     // Each time a feaute is created, it's added to the over arching feature group
      map.on('draw:created', function(e) {
             drawnItems.addLayer(e.layer);
@@ -238,12 +238,12 @@ HTMLWidgets.widget({
   //    overlayLayers['new'] = newLayer;
   //    drawnItems.addLayer(newLayer);
   //    layerControl.addOverlay(newLayer, "newLayer");
-      
-       
-          
+
+
+
         });
 
-        
+
 /*
     // create "save" link
         var b = document.createElement('a');
@@ -253,7 +253,7 @@ HTMLWidgets.widget({
         b.href = "#";
         b.id = 'export';
         el.appendChild(b);
-    
+
     // create "grab" link
         var a = document.createElement('a');
         var linkText = document.createTextNode("Grab");
@@ -289,8 +289,8 @@ HTMLWidgets.widget({
            var convertedData = JSON.stringify(data);
            // Create ajax export using download.js
            download(new Blob([convertedData]), "dlTextBlob.txt", "text/plain");}).addTo(map);
-     
-     
+
+
 
      // if clickevent on "grabber"
      // document.getElementById('grabber').onclick = function(e) {
@@ -302,7 +302,7 @@ HTMLWidgets.widget({
         var kml = tokml(data);
         //var grabstring = "c(" + kml.replace(/ /g, ",") +")";
         //document.write(convertedData);
-        //document.getElementById("coords").innerHTML = '<div class="coords"' + grabstring + '"</div>"' 
+        //document.getElementById("coords").innerHTML = '<div class="coords"' + grabstring + '"</div>"'
         //window.alert(grabstring);}).addTo(map);
        download(new Blob([kml]), "dlTextBlob.txt", "text/plain");}).addTo(map);
       //}

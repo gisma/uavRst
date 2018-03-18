@@ -12,13 +12,14 @@
 #'@import crayon
 #'@export get_traindata
 #'@examples
-#'\dontrun{
 #'
 #' # required packages
 #'  require(uavRst)
 #'  require(curl)
 #'  require(link2GI)
-#' 
+#'  
+#' # check if SAGA is correctly installed 
+#'  if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
 #' # project folder
 #'  projRootDir<-tempdir()
 #' 
@@ -30,15 +31,13 @@
 #' # overide trailing backslash issue
 #'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #'  setwd(path_run)          
+#'  unlink(paste0(path_run,"*"), force = TRUE)
 #'  
 #' # get the rgb image, chm and training data 
 #'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 #'  res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
 #'  unzip(res,exdir= path_run)
 #' 
-#' # create the links to the GI software
-#'  giLinks<-uavRst::get_gi()
-#'  
 #' # get the files  
 #'  imageTrainStack <- list()
 #'  geomTrainStack <- list()
@@ -52,13 +51,13 @@
 #'  names(imageTrainStack[[2]])<-c("red","green","blue")
 #' 
 #' ## get training data frame
-#'  trainDF <- uavRst::get_traindata(rasterStack  = imageTrainStack,
-#'                                     trainPlots = geomTrainStack)
-#'                                                                                             )
-#'}
+#'  trainDF <- get_traindata(rasterStack  = imageTrainStack,
+#'                           trainPlots = geomTrainStack)
+
+
 
 get_traindata<-function(rasterStack  = NULL,
-                        trainPlots     = NULL) {
+                        trainPlots   = NULL) {
   
   catNote <- crayon::blue $ bold
   
@@ -82,6 +81,7 @@ get_traindata<-function(rasterStack  = NULL,
     
     trainingDF<-rbind(trainingDF, dataSet)
     #save(dataSet, file = paste0(path_tmp,"tmptrain_",j,".RData"))
+    
   }
   
   return(trainingDF)
@@ -100,43 +100,44 @@ get_traindata<-function(rasterStack  = NULL,
 #'
 #' @export get_counts
 #' @examples
-#' \dontrun{
+#' 
 #' # required packages
-#' require(uavRst)
-#' require(curl)
-#' require(link2GI)
-#' 
+#'  require(uavRst)
+#'  require(curl)
+#'  require(link2GI)
+#'
 #' # project folde
-#' projRootDir<-tempdir()
-#' 
+#'  projRootDir<-tempdir()
+#'
 #' # create subfolders please mind that the pathes are exported as global variables
-#' paths<-link2GI::initProj(projRootDir = projRootDir,
-#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
-#'                          global = TRUE,
-#'                          path_prefix = "path_")
+#'  paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                           projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                           global = TRUE,
+#'                           path_prefix = "path_")
 #' # overide trailing backslash issue
 #'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #'  setwd(path_run)                                                
-#'                          
+#'  unlink(paste0(path_run,"*"), force = TRUE)
+#'  
 #' # get the rgb image, chm and training data 
-#' url1 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
-#' url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/position.zip"
-#' res1 <- curl::curl_download(url1, paste0(path_run,"tutorial_data.zip"))
-#' res2 <- curl::curl_download(url2, paste0(path_run,"position.zip"))
-#' unzip(zipfile = res1,exdir = path_run)
-#' unzip(zipfile = res2,exdir = path_run)
-#' 
+#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
+#'  res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
+#'  unzip(zipfile = res,exdir = path_run)
+
+#'
 #' # read data
 #'  position <- raster::shapefile(paste0(path_run,"position.shp"))
 #'  imageFiles <-Sys.glob(paths = paste0(path_run,"rgb*","tif"))
-#'  imageFiles <- raster::stack(imageFiles)
-#'  
+#'  imageTrainStack<-lapply(imageFiles, FUN=raster::stack)
+#'
 #' ## get counts
 #'  df1<-get_counts(position = position,
-#'                 imageFiles = imageFiles,
-#'                 ext=".tif")
-#'                 
-#'}
+#'                       ids = c(100,200),
+#'                imageFiles = imageFiles,
+#'                 outPrefix = "", 
+#'                       ext = ".tif",
+#'                      path = path_run)
+
 
 get_counts<- function(ids=c(1,2),
                       position=NULL,
@@ -153,7 +154,8 @@ get_counts<- function(ids=c(1,2),
     fn<-paste0(path,outPrefix,substr(position[i,]$tree,1,nchar(position[i,]$tree)-dropChars),ext)
     
     if (file.exists(fn)){
-      ex <- as.data.frame(unlist(raster::extract(raster(fn) , position[i,]    , buffer=buffersize, df=TRUE)))
+      pos <-sp::spTransform(position[i,],raster::raster(fn)@crs)
+      ex <- as.data.frame(unlist(raster::extract(raster(fn) , pos    , buffer=buffersize, df=TRUE)))
       
       idVal<-as.numeric(vector(length = length(ids)))
       for (j in 1:length(ids)){
@@ -179,7 +181,6 @@ get_counts<- function(ids=c(1,2),
 #'
 #' @export predict_rgb
 #' @examples
-#' \dontrun{
 #' 
 #' # required packages
 #' require(uavRst)
@@ -197,29 +198,28 @@ get_counts<- function(ids=c(1,2),
 #' # overide trailing backslash issue
 #'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #'  setwd(path_run)                                                 
-#' 
+#'  unlink(paste0(path_run,"*"), force = TRUE)
+#'  
 #' # get the data rgb image, chm data and training data 
-#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_predict.zip"
-#'  res <- curl::curl_download(url, paste0(path_run,"predict.zip"))
+#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip"
+#'  res <- curl::curl_download(url, paste0(path_run,"ffs.zip"))
 #'  unzip(zipfile = res, exdir = path_run)
-#' 
-#' # create the links to the GI software
-#' giLinks<-uavRst::get_gi()
+#'  
 #' 
 #' # read the files  
 #'  imageTrainStack <- list()
 #'  geomTrainStack <- list()
 #'  imageTrainFiles <- list.files(pattern="[.]envi$", path=path_run, full.names=TRUE)
 #'  geomTrainFiles <- list.files(pattern="[.]shp$", path=path_run, full.names=TRUE)
-#'  load(paste0(path_run,"rgbImgbandNames.RData"))
-#'  load(file = paste0(path_output,prefixRun ,"_model_final",".RData"))
+#'  load(paste0(path_run,"tutorialbandNames.RData"))
+#'  readRDS(file = paste0(path_run,"tutorialmodel.rds"))
 #'  
 #' ## start prediction
 #'  predict_rgb(imageFiles=imageFiles,
 #'              model = model_final,
 #'              bandNames = bandNames)
 #'                                                  
-#'}
+
 
 predict_rgb <- function(imageFiles=NULL,
                         model = NULL,
@@ -286,8 +286,31 @@ predict_rgb <- function(imageFiles=NULL,
 #' @examples
 #' \dontrun{
 #' 
+#' require(uavRst)
+#' require(curl)
+#' require(link2GI)
+#' 
+#' project folder
+#' projRootDir<-tempdir()
+#' 
+#' # create subfolders please mind that the pathes are exported as global variables
+#' paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
+#' # overide trailing backslash issue
+#' path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+#' setwd(path_run)                                          
+#' unlink(paste0(path_run,"*"), force = TRUE)
+#' # get the rgb image, chm and training data 
+#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip"
+#' res <- curl::curl_download(url, paste0(path_run,"ffs.zip"))
+#' unzip(zipfile = res,exdir = path_run)
 #' # get data assuming that you have used before the calc_ext function
-#'  trainDF<-readRDS(paste0(path_run,"rgbImg_trainDF.rds"))
+#' trainDF<-readRDS(paste0(path_run,"tutorial_trainDF.rds"))
+#' load(paste0(path_run,"tutorialbandNames.RData"))
+#' # get data assuming that you have used before the calc_ext function
+#' trainDF<-readRDS(paste0(path_run,"rgbImg_trainDF.rds"))
 #'  load(paste0(path_run,"rgbImgbandNames.RData"))
 #' 
 #' # define the classes
@@ -454,7 +477,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param cleanRunDir  logical. TRUE logical switch for deleting the calculated tifs, default is TRUE
 #' @param giLinks     list. GI tools cli paths
 #' @examples
-#' \dontrun{
+
 #' # required packages
 #' require(uavRst)
 #' require(curl)
@@ -472,10 +495,11 @@ ffs_train<-function(   trainingDF   = NULL,
 #' # overide trailing backslash issue
 #'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #'  setwd(path_run)                                          
+#'  unlink(paste0(path_run,"*"), force = TRUE)
 #'  
 #' # get the rgb image, chm and training data 
-#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
-#' res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
+#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
+#' res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
 #' unzip(zipfile = res,exdir = path_run)
 #' 
 #' # create the links to the GI software
@@ -488,24 +512,26 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                     patternIdx        = "index",
 #'                     patternImgFiles   = "rgb" ,
 #'                     patterndemFiles   = "chm",
-#'                     prefixRun         = "rgbImg",
+#'                     prefixRun         = "tutorial",
 #'                     prefixTrainImg    = "",
 #'                     rgbi              = TRUE,
+#'                     indices           = c("TGI","CI"),
+#'                     channels          = c("red"),
 #'                     rgbTrans          = FALSE,
-#'                     hara              = TRUE,
+#'                     hara              = FALSE,
 #'                     haraType          = c("simple"),
-#'                     stat              = TRUE,
+#'                     stat              = FALSE,
 #'                     edge              = FALSE,
-#'                     morpho            = TRUE,
+#'                     morpho            = FALSE,
 #'                     pardem            = TRUE, 
-#'                     demType           = c("slope", "aspect","TRI","TPI","Roughness","MTPI"),
+#'                     demType           = c("slope", "MTPI"),
 #'                     kernel            = 3,
 #'                     currentDataFolder = path_run,
 #'                     currentIdxFolder  = path_run,
 #'                     giLinks = giLinks)
 #'                 
 #' # head on with ffs_train
-#'}
+
 #' @import crayon
 #' @export calc_ext
 
@@ -580,7 +606,7 @@ calc_ext<- function ( calculateBands    = FALSE,
   
   ### ----- start preprocessing ---------------------------------------------------
   if (calculateBands) {
-    cat(catHead("\n     ---------------- preprocess input data ------------------                \n"))
+    cat(catHead("\n--- calculate synthetic channels ---\n"))
     
     # create list of image files to be processed
     # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
@@ -777,11 +803,11 @@ calc_ext<- function ( calculateBands    = FALSE,
     save(bandNames,file = paste0(currentIdxFolder,prefixRun,"bandNames.RData"))
     
     
-    cat(catHead("\n     ---------------- finished preprocessing RGB data ------------------                \n"))
+    cat(catHead("\n--- calculation of synthetic channels finished ---\n"))
   }
   # ----- start extraction ---------------------------------------------------
   if (extractTrain){
-    cat(catHead("\n     ---------------- start extract processing -------------------------                \n"))
+    cat(catHead("\n--- extract training data ---\n"))
     load(paste0(currentIdxFolder,prefixRun,"bandNames.RData"))
     # get image and geometry data for training purposes
     imageTrainStack <- list()
@@ -815,7 +841,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     saveRDS(eval(parse(text=paste0(prefixRun,"_trainDF"))), paste0(currentIdxFolder,prefixRun,"_trainDF",".rds"))
     #read it into another name
     #DF<-readRDS(paste0(currentIdxFolder,prefixRun,"_trainDF",".rds"))
-    cat(catHead("\n     --------------- stop start extract processing ------------------                \n"))
+    cat(catHead("\n--- training data extraction finished ---\n"))
     
     return(list(trainDF,bandNames))
   }

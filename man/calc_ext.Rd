@@ -111,7 +111,6 @@ This approach needs at least a pair of images that differ in time and/or space f
 If you just want to classify a single image by a single training file use the normal procedure as provided by the \code{\link[caret]{trainControl}} function.
 }
 \examples{
-\dontrun{
 # required packages
 require(uavRst)
 require(curl)
@@ -129,10 +128,11 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 # overide trailing backslash issue
  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
  setwd(path_run)                                          
+ unlink(paste0(path_run,"*"), force = TRUE)
  
 # get the rgb image, chm and training data 
-url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
-res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
+url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
+res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
 unzip(zipfile = res,exdir = path_run)
 
 # create the links to the GI software
@@ -145,22 +145,23 @@ trainDF <- calc_ext(calculateBands    = TRUE,
                     patternIdx        = "index",
                     patternImgFiles   = "rgb" ,
                     patterndemFiles   = "chm",
-                    prefixRun         = "rgbImg",
+                    prefixRun         = "tutorial",
                     prefixTrainImg    = "",
                     rgbi              = TRUE,
+                    indices           = c("TGI","CI"),
+                    channels          = c("red"),
                     rgbTrans          = FALSE,
-                    hara              = TRUE,
+                    hara              = FALSE,
                     haraType          = c("simple"),
-                    stat              = TRUE,
+                    stat              = FALSE,
                     edge              = FALSE,
-                    morpho            = TRUE,
+                    morpho            = FALSE,
                     pardem            = TRUE, 
-                    demType           = c("slope", "aspect","TRI","TPI","Roughness","MTPI"),
+                    demType           = c("slope", "MTPI"),
                     kernel            = 3,
                     currentDataFolder = path_run,
                     currentIdxFolder  = path_run,
                     giLinks = giLinks)
                 
 # head on with ffs_train
-}
 }

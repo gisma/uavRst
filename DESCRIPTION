@@ -2,17 +2,17 @@ Package: uavRst
 Type: Package
 Title: Unmanned Aerial Vehicle Remote Sensing Tools
 Version: 0.4-0
-Date: 2018-04-14
+Date: 2018-04-16
 Authors@R: c(person("Hanna", "Meyer", email = "hanna.meyer@uni-marburg.de", role = c("aut")),
-             person("Lars", "Opgenoorth", email = "opgenoorth@uni-marburg.de", role = c("ctb")),
-             person("Thomas", "Nauss", email = "nauss@uni-marburg.de", role = c("ctb")),
+             person("Lars", "Opgenoorth", email = "opgenoorth@uni-marburg.de", role = c("aut")),
+             person("Thomas", "Nauss", email = "nauss@uni-marburg.de", role = c("aut")),
              person("Chris", "Reudenbach", email = "reudenbach@uni-marburg.de", role = c("cre","aut")),
-             person("Florian", "Detsch", role = c("ctb")),
+             person("Florian", "Detsch", role = c("aut")),
              person("Environmental Informatics Marburg", role = c("ctb"))
              )
 Encoding: UTF-8
 Maintainer: Chris Reudenbach <reudenbach@uni-marburg.de>
-Description: Unmanned Aerial Vehicle Remote Sensing Tools. In general the unmanned aerial vehicle remote sensing toolbox tries to support the use of drone derived imagery and point clouds as a cheap and easy to use alternative/complement to light detection and ranging data. It provides functionality to analyze poor quality digital aerial images as taken by low budget ready to fly drones. This includes pre-configured machine learning based classification functions, comprehensive texture analysis, segmentation algorithms as well as forest relevant analyzes of metrics and measures on the derived products.
+Description: Support the analysis of drone derived imagery and point clouds as a cheap and easy to use alternative/complement to light detection and ranging data. It provides functionality to analyze poor quality digital aerial images as taken by low budget ready to fly drones. This includes supported machine learning based classification functions, comprehensive texture analysis, segmentation algorithms as well as forest relevant analyzes of metrics and measures on the derived products.
 License: GPL (>= 3) | file LICENSE
 Depends:
     R (>= 3.1.0)
