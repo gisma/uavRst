@@ -51,8 +51,8 @@ imageFile <- paste0(path_run,"predict.tif")
 load(paste0(path_run,"tutorialbandNames.RData"))
 tutorialModel<-readRDS(file = paste0(path_run,"tutorialmodel.rds"))
 
-## start prediction
+## start prediction taking the non optimized model
 predict_rgb(imageFiles=imageFile,
-            model = tutorialModel,
+            model = tutorialModel[[1]],
             bandNames = bandNames)                                             
 }
