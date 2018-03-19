@@ -15,7 +15,7 @@ get_traindata(rasterStack = NULL, trainPlots = NULL)
 Extracts training data from a raster stack and returns a dataframe containing for each pixel all values.
 }
 \examples{
-
+\dontrun{
 # required packages
  require(uavRst)
  require(curl)
@@ -56,6 +56,7 @@ Extracts training data from a raster stack and returns a dataframe containing fo
 ## get training data frame
  trainDF <- get_traindata(rasterStack  = imageTrainStack,
                           trainPlots = geomTrainStack)
+}
 }
 \author{
 Chris Reudenbach

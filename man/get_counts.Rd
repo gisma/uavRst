@@ -29,7 +29,7 @@ get_counts(ids = c(1, 2), position = NULL, imageFiles = NULL,
 counts pixel values according to their classes
 }
 \examples{
-
+\dontrun{
 # required packages
  require(uavRst)
  require(curl)
@@ -65,4 +65,5 @@ counts pixel values according to their classes
                 outPrefix = "", 
                       ext = ".tif",
                      path = path_run)
+}
 }

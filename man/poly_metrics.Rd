@@ -19,6 +19,7 @@ available are ("length","elongation","eccentricityboundingbox","solidity","eccen
 calculate morphometric features of polygons. Calculate some crown related metrics, returns the metrics as a spatialpointdataframe/spatialpolygondataframe
 }
 \examples{
+
 \dontrun{
 # required packages
 require(uavRst)
@@ -42,10 +43,9 @@ url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.
 res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
 unzip(zipfile = res, exdir = path_run)
 
-# create the links to the GI software
-giLinks<-uavRst::get_gi()
+## calculate polygon morpho metrics
+polymetric <- poly_metrics(spdf = paste0(path_run,"rgb_2.shp"))
 
-polymetric <- poly_metrics(spdf = paste0(path_run,"rgb_3-3_train2.shp"))
 }
 }
 \seealso{

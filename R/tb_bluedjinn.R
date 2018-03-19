@@ -181,6 +181,7 @@ sp_point <- function(lon,
 #' @description applies a line to a raster and returns the position of the maximum value
 #' @param dem raster object
 #' @param line  sp object
+#' @keywords internal
 #' @export
 #'
 line_maxpos <- function(dem,line){
@@ -203,6 +204,7 @@ line_maxpos <- function(dem,line){
 #' @param layerName layer name of shape file
 #' @param polySplit split polygon in single file, default is TRUE
 #' extract for all polygons the position of the maximum value
+#' @keywords internal
 #' @export poly_maxpos
 #'
 poly_maxpos <- function(fileName,layerName, polySplit=TRUE){
@@ -398,7 +400,8 @@ funWhichmax <- function(mask,value) {
 #' require(uavRst)
 #' require(curl)
 #' require(link2GI)
-#' 
+#' #' # check if SAGA is correctly installed 
+#'if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
 #' # project folde
 #' projRootDir<-tempdir()
 #' 

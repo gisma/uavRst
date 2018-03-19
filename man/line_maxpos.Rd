@@ -14,3 +14,4 @@ line_maxpos(dem, line)
 \description{
 applies a line to a raster and returns the position of the maximum value
 }
+\keyword{internal}

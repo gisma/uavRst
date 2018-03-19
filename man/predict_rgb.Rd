@@ -22,7 +22,7 @@ predict_rgb(imageFiles = NULL, model = NULL, inPrefix = "index_",
 classify images using raster predict
 }
 \examples{
-
+\dontrun{
 # required packages
 require(uavRst)
 require(curl)
@@ -54,5 +54,6 @@ tutorialModel<-readRDS(file = paste0(path_run,"tutorialmodel.rds"))
 ## start prediction taking the non optimized model
 predict_rgb(imageFiles=imageFile,
             model = tutorialModel[[1]],
-            bandNames = bandNames)                                             
+            bandNames = bandNames)    
+}                                         
 }

@@ -24,7 +24,8 @@
 #' @param opacity opacity
 #'
 #' @examples
-# \dontrun{
+#' 
+#' require(sp)
 #' # all features
 #' digitize()
 #' 
@@ -38,7 +39,7 @@
 #'   
 #' # preset for digitizing extents
 #' digitize(preset="ext",overlay = me)
-# }
+
 #' @export digitize
 
 digitize <- function(mapCenter=NULL,

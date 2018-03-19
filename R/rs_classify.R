@@ -12,7 +12,7 @@
 #'@import crayon
 #'@export get_traindata
 #'@examples
-#'
+#'\dontrun{
 #' # required packages
 #'  require(uavRst)
 #'  require(curl)
@@ -53,6 +53,7 @@
 #' ## get training data frame
 #'  trainDF <- get_traindata(rasterStack  = imageTrainStack,
 #'                           trainPlots = geomTrainStack)
+#'}
 
 
 
@@ -100,7 +101,7 @@ get_traindata<-function(rasterStack  = NULL,
 #'
 #' @export get_counts
 #' @examples
-#' 
+#'\dontrun{
 #' # required packages
 #'  require(uavRst)
 #'  require(curl)
@@ -137,6 +138,7 @@ get_traindata<-function(rasterStack  = NULL,
 #'                 outPrefix = "", 
 #'                       ext = ".tif",
 #'                      path = path_run)
+#'}
 
 
 get_counts<- function(ids=c(1,2),
@@ -181,7 +183,7 @@ get_counts<- function(ids=c(1,2),
 #'
 #' @export predict_rgb
 #' @examples
-#' 
+#'\dontrun{
 #' # required packages
 #' require(uavRst)
 #' require(curl)
@@ -214,7 +216,8 @@ get_counts<- function(ids=c(1,2),
 #' ## start prediction taking the non optimized model
 #' predict_rgb(imageFiles=imageFile,
 #'             model = tutorialModel[[1]],
-#'             bandNames = bandNames)                                             
+#'             bandNames = bandNames)    
+#'}                                         
 
 
 predict_rgb <- function(imageFiles=NULL,
@@ -474,7 +477,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param cleanRunDir  logical. TRUE logical switch for deleting the calculated tifs, default is TRUE
 #' @param giLinks     list. GI tools cli paths
 #' @examples
-
+#'\dontrun{
 #' # required packages
 #' require(uavRst)
 #' require(curl)
@@ -528,6 +531,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                     giLinks = giLinks)
 #'                 
 #' # head on with ffs_train
+#' }
 
 #' @import crayon
 #' @export calc_ext

@@ -30,24 +30,34 @@ Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiD
  require(uavRst)
  require(curl)
  require(link2GI)
+ 
+# check if SAGA is correctly installed 
+if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
 
 # project folder
- projRootDir<-tempdir()
+projRootDir<-tempdir()
 
 # create subfolders please mind that the pathes are exported as global variables
  paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
                          path_prefix = "path_")
+## overide trailing backslash issue
+ path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+ setwd(path_run)                                          
+ unlink(paste0(path_run,"*"), force = TRUE
+                 
 # get the data
- url1 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/treepos_3-3.tif"
- url2 <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
- res1 <- curl::curl_download(url1, paste0(path_run,"treepos_3-3.tif"))
- res2 <- curl::curl_download(url2, paste0(path_run,"chm_3-3.tif"))
+ url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
+ res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
+ unzip(zipfile = res, exdir = path_run)
+
+# make the folders and linkages
+ giLinks<-uavRst::get_gi()
 
 # read chm data
- chmR<- raster::raster(paste0(path_run,"chm_3-3.tif"))
- tPos<- raster::raster(paste0(path_run,"treepos_3-3.tif"))
+ chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
+ tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
 
 # segmentation
  crownsRL <- chmseg_RL(chm= chmR,

@@ -1,13 +1,13 @@
 Package: uavRst
 Type: Package
 Title: Unmanned Aerial Vehicle Remote Sensing Tools
-Version: 0.4-0
-Date: 2018-04-16
+Version: 0.4-1
+Date: 2018-04-18
 Authors@R: c(person("Hanna", "Meyer", email = "hanna.meyer@uni-marburg.de", role = c("aut")),
              person("Lars", "Opgenoorth", email = "opgenoorth@uni-marburg.de", role = c("aut")),
              person("Thomas", "Nauss", email = "nauss@uni-marburg.de", role = c("aut")),
              person("Chris", "Reudenbach", email = "reudenbach@uni-marburg.de", role = c("cre","aut")),
-             person("Florian", "Detsch", role = c("aut")),
+             person("Florian", "Detsch", role = c("ctb")),
              person("Environmental Informatics Marburg", role = c("ctb"))
              )
 Encoding: UTF-8
@@ -53,9 +53,9 @@ Imports:
     reshape2,
     rgrass7,
     randomForest,
-    lidR,
     rLiDAR,
-    rlas
+    rlas,
+    lidR
 Suggests: knitr,
     rmarkdown,
     mapview

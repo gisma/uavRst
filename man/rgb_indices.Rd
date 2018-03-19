@@ -43,21 +43,31 @@ This function calculates various spectral indices from a RGB. It returns at leas
 \examples{
 \dontrun{
 # required packages
-require(uavRst)
-require(curl)
+# required packages
+ require(uavRst)
+ require(curl)
 
 # project folder
-path_run<-tempdir()
+projRootDir<-tempdir()
+
+# create subfolders please mind that the pathes are exported as global variables
+ paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+                         global = TRUE,
+                         path_prefix = "path_")
+## overide trailing backslash issue
+ path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+ setwd(path_run)                                          
+ unlink(paste0(path_run,"*"), force = TRUE
 
 # get the rgb image, chm and training data 
- url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/rgb_3-3.tif"
- res <- curl::curl_download(url, paste0(path_run,"rgb_3-3.tif"))
- img <- stack(paste0(path_run,"rgb_3-3.tif"))
+ url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
+ res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
+ unzip(zipfile = res, exdir = path_run)
+ img <- stack(paste0(path_run,"rgb_3.tif"))
  plotRGB(img)
  rgbI <- rgbI(img)
- 
-}
-
+ }
 
 }
 \references{

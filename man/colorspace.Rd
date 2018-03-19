@@ -28,17 +28,29 @@ you need to install imagemagick on your system, please look at see \href{https:/
 \examples{
 \dontrun{
 
-# get temporary runtime folder
- path_run <-  tempdir()
- setwd(path_run) 
-# download some typical data as provided by the authority
- Sys.setlocale('LC_ALL','C') 
- url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
- res <- curl::curl_download(url, "testdata.zip")
- unzip(res,junkpaths = TRUE)
+# required packages
+ require(uavRst)
+ require(curl)
+ 
+# project folder
+projRootDir<-tempdir()
+
+# create subfolders please mind that the pathes are exported as global variables
+ paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+                         global = TRUE,
+                         path_prefix = "path_")
+## overide trailing backslash issue
+ path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+ setwd(path_run)                                          
+ unlink(paste0(path_run,"*"), force = TRUE
+ 
+ url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
+ res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
+ unzip(zipfile = res, exdir = path_run)
  
 # change colorspace from RGB to CIElab  
- r2 <- colorspace(input="4490600_5321400.tif",colorspace="CIELab")
+ r2 <- colorspace(input=paste0(path_run,"rgb_1.tif"),colorspace="CIELab")
  raster::plotRGB(r2)
 }
 }

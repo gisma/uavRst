@@ -17,3 +17,4 @@ extract for all polygons the position of the maximum value}
 \description{
 extract for all polygons the position of the maximum value
 }
+\keyword{internal}
