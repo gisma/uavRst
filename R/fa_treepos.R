@@ -80,7 +80,7 @@ treepos <- function(chm = NULL,
   gdal <- giLinks$gdal
   saga <- giLinks$saga
   sagaCmd<-saga$sagaCmd
-  raster::writeRaster(chm,paste0(path_run,"chm.sdat"),overwrite = TRUE,NAflag = 0)
+  raster::writeRaster(chm,paste0(path_run,"chm.sdat"),bylayer=TRUE,overwrite = TRUE,NAflag = 0)
   raster::writeRaster(chm,paste0(path_run,"chm.tif"),overwrite = TRUE,NAflag = 0)
   #r2saga(chm,"chm")
 

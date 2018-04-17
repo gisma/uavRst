@@ -5,10 +5,10 @@
 \title{seeded region growing tree crown segmentation based on 'SAGA GIS'}
 \usage{
 chmseg_uav(treepos = NULL, chm = NULL, minTreeAlt = 2,
-  minTreeAltParam = "chmQ20", leafsize = 256, normalize = 0,
-  neighbour = 1, method = 0, thVarFeature = 1, thVarSpatial = 1,
-  thSimilarity = 0.002, segmentationBands = c("chm"), majorityRadius = 3,
-  giLinks = NULL)
+  minTreeAltParam = "chmQ20", maxCrownArea = 100, leafsize = 256,
+  normalize = 0, neighbour = 1, method = 0, thVarFeature = 1,
+  thVarSpatial = 1, thSimilarity = 0.002, segmentationBands = c("chm"),
+  majorityRadius = 3, giLinks = NULL)
 }
 \arguments{
 \item{treepos}{raster* object}

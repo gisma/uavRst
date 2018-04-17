@@ -75,6 +75,7 @@ chmseg_uav <- function(treepos = NULL,
                             chm = NULL,
                             minTreeAlt         =2,
                             minTreeAltParam = "chmQ20",
+                            maxCrownArea = 100,
                             leafsize       = 256,
                             normalize      = 0,
                             neighbour      = 1,
@@ -172,9 +173,9 @@ chmseg_uav <- function(treepos = NULL,
                   overwrite=TRUE)
   # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
   tree_crowns <- crown_filter(crownFn = paste0(path_run,"crowns.shp"),
-                                                 minTreeAlt = minTreeAlt,
+                                                 minTreeAlt = 0.0,
                                                  minCrownArea = 0,
-                                                 maxCrownArea = 250,
+                                                 maxCrownArea = maxCrownArea,
                                                  minTreeAltParam = "chmQ20" )[[2]]
 
   options(warn=0)

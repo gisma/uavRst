@@ -353,6 +353,8 @@ ffs_train<-function(   trainingDF   = NULL,
                        modelSaveName="model.RData" ,
                        runtest      = FALSE,
                        seed         = 100,
+                       withinSE     = TRUE,
+                       mtry         = 2,
                        noClu = 3) {
   
   if (is.null(noLoc)) noLoc <- length(unique(trainingDF$FN))
@@ -398,8 +400,8 @@ ffs_train<-function(   trainingDF   = NULL,
                    method     = "rf",
                    metric     = metric,
                    trControl  = ctrl,
-                   withinSE   = TRUE,
-                   tuneGrid   = expand.grid(mtry = 2)
+                   withinSE   = withinSe,
+                   tuneGrid   = expand.grid(mtry = mtry)
   )
   
   # take resulting predictors
@@ -830,6 +832,8 @@ calc_ext<- function ( calculateBands    = FALSE,
     else 
       return(cat(catErr("\nTraining files are not existing please check suffix or prefix strings")))
     # extract clean and format training data
+    for (i in 1: length(imageTrainStack))
+    imageTrainStack[[i]]@crs<-geomTrainStack[[i]]@proj4string
     
     trainDF <- uavRst::get_traindata(rasterStack  = imageTrainStack,
                                      trainPlots = geomTrainStack)

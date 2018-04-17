@@ -106,9 +106,11 @@ pc2D_dsm <- function(laspcFile = NULL,
               overwrite = TRUE)
   cat(":: get extent of the point cloud \n")
   if (!is.null(cutExtent)){
+    las<-lidR::readLAS(paste0(path_run,name))
     las<-lidR::lasclipRectangle(las, as.numeric(cutExtent[1]), as.numeric(cutExtent[3]), as.numeric(cutExtent[2]), as.numeric(cutExtent[4]))
     lidR::writeLAS(las ,paste0(path_run,"cut_point_cloud.las"))
-    sp_param <- c(as.character(las$`Min X`),as.character(las$`Min Y`),as.character(las$`Max X`),as.character(las$`Max Y`))
+    lasxt<-lidR::extent(las)
+    sp_param <- c(lasxt@xmin,lasxt@ymin,lasxt@xmax,lasxt@ymax)
     # rename output file according to the extent
     fn<- paste(sp_param ,collapse=" ")
     tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")

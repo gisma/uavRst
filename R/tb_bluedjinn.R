@@ -664,15 +664,22 @@ split2SAGA<-function(fn=NULL,
     outFn<-paste0(path_run,bandName[i],".sdat")
     #raster::writeRaster(raster::raster(fn),outFn,overwrite = TRUE,NAflag = 0,process="text")
     if (!is.null(refFn))
-    res<-gdalUtils::gdal_translate(src_dataset = fn,
+      r<-raster::raster(refFn) 
+    else  
+      r<-raster::raster(fn) 
+    res<-gdalUtils::gdal_translate(src_dataset = fn[[i]]@file@name,
                               dst_dataset = outFn,
+                              tr= paste0(raster::xres(r)," ",
+                                    raster::xres(r)),
                               b = as.character(i),
-                              of = "SAGA",a_nodata = 0)
+                              of = "SAGA",
+                              a_nodata = 0,
+                              a_srs = as.character(r@crs) )
   r<-raster::writeRaster(raster::resample(raster::raster(outFn),raster::raster(refFn)),
                        filename	= outFn,
                        NAflag = 0,	
                        format="SAGA",
-                       overwrite=TRUE)
+                       overwrite=TRUE,progress="text")
     flist<-append(flist, r)
   }
   if (returnRaster) return(flist)

@@ -66,6 +66,7 @@
 pc2D_dtm <- function(laspcFile = NULL,
                     gisdbasePath = NULL,
                     tension = 20 ,
+                    method="min",
                     cutExtent = NULL,
                     sampleGridSize=25,
                     targetGridSize = 0.25,
@@ -111,9 +112,11 @@ pc2D_dtm <- function(laspcFile = NULL,
               overwrite = TRUE)
   cat(":: get extent of the point cloud \n")
   if (!is.null(cutExtent)){
+    las<-lidR::readLAS(paste0(path_run,name))
     las<-lidR::lasclipRectangle(las, as.numeric(cutExtent[1]), as.numeric(cutExtent[3]), as.numeric(cutExtent[2]), as.numeric(cutExtent[4]))
     lidR::writeLAS(las ,paste0(path_run,"cut_point_cloud.las"))
-    sp_param <- c(as.character(las$`Min X`),as.character(las$`Min Y`),as.character(las$`Max X`),as.character(las$`Max Y`))
+    lasxt<-lidR::extent(las)
+    sp_param <- c(lasxt@xmin,lasxt@ymin,lasxt@xmax,lasxt@ymax)
     # rename output file according to the extent
     fn<- paste(sp_param ,collapse=" ")
     tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
@@ -146,7 +149,7 @@ pc2D_dtm <- function(laspcFile = NULL,
                             flags  = c("overwrite","quiet","o","e","n"),
                             input  = paste0(path_run,name),
                             output = paste0("dem",sampleGridSize),
-                            method = "min",
+                            method = method,
                             resolution = sampleGridSize,
                             intern = TRUE,
                             ignore.stderr = TRUE
@@ -208,8 +211,11 @@ pc2D_dtm <- function(laspcFile = NULL,
                              r="bilinear",
                              overwrite = TRUE,
                              multi = TRUE)
-    }
   dtm <- raster::raster(paste0(path_run,"dtm.tif"))
+  } else {
+    dtm <- raster::raster(paste0(path_run,"dtm0.tif"))      
+    }
+  
   # cat(":: calculate metadata ... \n")
   # raster::writeRaster(dtm, paste0(path_run,fn, "_dtm.tif"),overwrite = TRUE)
   # e <- extent(dtm)
