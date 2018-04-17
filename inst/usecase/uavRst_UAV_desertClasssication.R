@@ -4,7 +4,8 @@
 # load package for linking  GI tools
 require(link2GI)
 require(uavRst)
-
+require(corrplot)
+require("PerformanceAnalytics")
 # define project root folder
 projRootDir <- "~/data/chile/working"
 
@@ -183,6 +184,22 @@ if (!(exists)("bandNames"))
   load(paste0(currentIdxFolder,prefixRun ,"bandNames",".RData"))
 # add leading Title "ID" and tailing title "FN"
 names(trainDF)<-append("ID",append(bandNames,"FN"))
+
+tr<-trainDF
+drops <- c("ID","FN")
+tr<-tr[ , !(names(tr) %in% drops)]
+res<-tr[complete.cases(tr), ]
+res<-res[complete.cases(res), ]
+
+p.mat <- cor.mtest(res,na.action="na.omit")
+
+p2<-p.mat[,- caret::nearZeroVar(p.mat)]
+res2<-res[,- caret::nearZeroVar(p.mat)]
+
+res3<-res2[p2>0.5,]
+res3[complete.cases(res3), ]
+n<-names(res3) 
+
 
 # manipulate the data frame to you rneeds by dropping predictor variables
 n<-append("ID",append(n,"FN"))

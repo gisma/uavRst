@@ -400,7 +400,7 @@ ffs_train<-function(   trainingDF   = NULL,
                    method     = "rf",
                    metric     = metric,
                    trControl  = ctrl,
-                   withinSE   = withinSe,
+                   withinSE   = withinSE,
                    tuneGrid   = expand.grid(mtry = mtry)
   )
   
