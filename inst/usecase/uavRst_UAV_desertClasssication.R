@@ -191,14 +191,14 @@ tr<-tr[ , !(names(tr) %in% drops)]
 res<-tr[complete.cases(tr), ]
 res<-res[complete.cases(res), ]
 
-p.mat <- cor.mtest(res,na.action="na.omit")
+#p.mat <- cor.mtest(res,na.action="na.omit",conf.level = .95)
 
-p2<-p.mat[,- caret::nearZeroVar(p.mat)]
-res2<-res[,- caret::nearZeroVar(p.mat)]
+hc = caret::findCorrelation(res, cutoff=0.5)
+hc = sort(hc)
+reduced_Data = res[,-c(hc)]
 
-res3<-res2[p2>0.5,]
-res3[complete.cases(res3), ]
-n<-names(res3) 
+
+n<-names(reduced_Data) 
 
 
 # manipulate the data frame to you rneeds by dropping predictor variables
