@@ -30,12 +30,16 @@ cor.mtest <- function(mat, ...) {
 }
 
 p.mat <- cor.mtest(res,na.action="na.omit")
+
 p2<-p.mat[,- caret::nearZeroVar(p.mat)]
 res2<-res[,- caret::nearZeroVar(p.mat)]
+
 res3<-res2[p2>0.5,]
 res3[complete.cases(res3), ]
-t<-corrplot(cor(res2), type="upper", order="hclust", 
-         p.mat = p2>0.8, sig.level = 0.01,tl.col="black")
+n<-names(res3) 
+
+t<-corrplot(cor(res3), type="upper", order="hclust", 
+         p.mat = p.mat, sig.level = 0.01,tl.col="black")
 
 saveRDS(res3,"df3.rds")
 p<-class(p.mat)
