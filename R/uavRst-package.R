@@ -41,8 +41,8 @@
 #' @import crayon sf
 #' @import pROC
 #' @importFrom utils modifyList
-#' @importFrom ForestTools SegmentCrowns
-#' @importFrom ForestTools TreeTopFinder
+#' @importFrom ForestTools mcws
+#' @importFrom ForestTools  vwf
 #' @importFrom itcSegment itcIMG
 #' @import methods
 #' @import RSAGA

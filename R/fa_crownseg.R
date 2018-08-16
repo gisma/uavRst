@@ -260,7 +260,7 @@ chmseg_FT <- function(treepos = NULL,
   }
 
   # Crown segmentation
-  crownsFT <- ForestTools::SegmentCrowns(treetops = treepos,
+  crownsFT <- ForestTools:: mcws(treetops = treepos,
                                          CHM = chm,
                                          format = format,
                                          minHeight = minTreeAlt,

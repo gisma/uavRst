@@ -302,7 +302,7 @@ treepos_ft <- function(chm =NULL,
   # }
   maxcrown <- sqrt(maxCrownArea/ pi) * 4
 
-  localmaxima <- ForestTools::TreeTopFinder(CHM = chm,
+  localmaxima <- ForestTools::vwf(CHM = chm,
                                             winFun = winFun,
                                             minHeight = minTreeAlt,
                                             maxWinDiameter = ceiling(maxcrown),
