@@ -642,7 +642,12 @@ calc_ext<- function ( calculateBands    = FALSE,
                    numScale = numScale,
                    giLinks = giLinks)
         flist<-append(flist, Sys.glob(paste0(path_run,demType,".tif")))
-        flist<-append(flist, Sys.glob(paste0(path_run,demType,".sdat")))
+        if (RSAGA::rsaga.get.version() < "3.0.0"){
+          x <- unlist(strsplit(demType, " "))
+          x <- x[!x %in% "MTPI"]
+          demType<- paste(x, collapse = " ")
+          cat(getCrayon()[[2]]("\nPlease install SAGA >= 3.0.0\n Run without MTPI...\n"))
+        }
         dellist <- append(dellist, Sys.glob(paste0(path_run,demType,".*")))
         for (item in demType) 
           bandNames <-append(bandNames,make_bandnames(dem = item))

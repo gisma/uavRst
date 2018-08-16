@@ -623,7 +623,7 @@ morpho_dem<- function(dem,
             output = paste0(path_run,item,".tif"))
   }
 
-  if (length(saga_items>0) ) {
+  if (length(saga_items>0) && !("MTPI" %in% saga_items) ) {
     rdem<-raster::raster(paste0(path_run,'dem2.tif'))
     raster::writeRaster(rdem,paste0(path_run,"SAGA_dem.sdat"),overwrite = TRUE,NAflag = 0)
     # claculate the basics SAGA morphometric params
@@ -664,7 +664,7 @@ morpho_dem<- function(dem,
                                         TPI = paste(path_run,"MTPI.sgrd", sep = "")),
                            show.output.on.console = FALSE,invisible = TRUE,
                            env = env)
-      } else {cat(getCrayon()[[3]]("Please install SAGA >= 3.0.0\n Run without MTPI..."))
+      } else {cat(getCrayon()[[2]]("\nPlease install SAGA >= 3.0.0\n Run without MTPI...\n"))
         saga_items<-saga_items[  !(saga_items %in% "MTPI")]
         
       }
