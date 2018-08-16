@@ -5,8 +5,8 @@
 \title{Calculates local statistics for a given kernel size}
 \usage{
 otb_stat(input = NULL, out = "localStat", ram = "8192", radius = 3,
-  channel = NULL, retRaster = FALSE, outDir = NULL, verbose = FALSE,
-  giLinks = NULL)
+  channel = NULL, retRaster = FALSE, outDir = NULL,
+  verbose = FALSE, giLinks = NULL)
 }
 \arguments{
 \item{input}{of GeoTiff containing 1 ore more gray value bands}

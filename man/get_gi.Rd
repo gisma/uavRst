@@ -4,8 +4,8 @@
 \alias{get_gi}
 \title{convenient function to establish all link2GI links}
 \usage{
-get_gi(links = NULL, simple = TRUE, linkItems = c("saga", "grass7", "otb",
-  "gdal"), sagaArgs = "default", grassArgs = "default",
+get_gi(links = NULL, simple = TRUE, linkItems = c("saga", "grass7",
+  "otb", "gdal"), sagaArgs = "default", grassArgs = "default",
   otbArgs = "default",
   gdalArgs = c("quiet = TRUE,\\n                                     returnPaths = TRUE"))
 }

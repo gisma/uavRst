@@ -4,9 +4,9 @@
 \alias{rgb_indices}
 \title{RGB indices}
 \usage{
-rgb_indices(red, green, blue, rgbi = c("VVI", "VARI", "NDTI", "RI", "SCI",
-  "BI", "SI", "HI", "TGI", "GLI", "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT",
-  "SHP"))
+rgb_indices(red, green, blue, rgbi = c("VVI", "VARI", "NDTI", "RI",
+  "SCI", "BI", "SI", "HI", "TGI", "GLI", "NGRDI", "GRVI", "GLAI", "HUE",
+  "CI", "SAT", "SHP"))
 }
 \arguments{
 \item{red}{a single \code{Raster} or \code{RasterBrick} band.}

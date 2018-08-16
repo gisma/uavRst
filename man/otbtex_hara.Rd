@@ -4,11 +4,11 @@
 \alias{otbtex_hara}
 \title{OTB wrapper for Haralick's simple, advanced and higher order texture features.}
 \usage{
-otbtex_hara(x, texture = "all", output_name = "hara", path_output = NULL,
-  return_raster = FALSE, parameters.xyrad = list(c(1, 1)),
-  parameters.xyoff = list(c(1, 1)), parameters.minmax = c(0, 255),
-  parameters.nbbin = 8, channel = NULL, verbose = FALSE, giLinks = NULL,
-  ram = "8192")
+otbtex_hara(x, texture = "all", output_name = "hara",
+  path_output = NULL, return_raster = FALSE,
+  parameters.xyrad = list(c(1, 1)), parameters.xyoff = list(c(1, 1)),
+  parameters.minmax = c(0, 255), parameters.nbbin = 8,
+  channel = NULL, verbose = FALSE, giLinks = NULL, ram = "8192")
 }
 \arguments{
 \item{x}{A \code{Raster*} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands}

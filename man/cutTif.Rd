@@ -4,7 +4,8 @@
 \alias{cutTif}
 \title{clips a tif files according to a given extent.}
 \usage{
-cutTif(rasterFiles = NULL, ext = NULL, outPath = "cut", prefix = "cut")
+cutTif(rasterFiles = NULL, ext = NULL, outPath = "cut",
+  prefix = "cut")
 }
 \arguments{
 \item{rasterFiles}{character. vector containing a list of rasterfiles to be clipped}

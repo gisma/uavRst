@@ -5,8 +5,8 @@
 \title{imagemagick based function to transform the RGB color space into another}
 \usage{
 colorspace(input = NULL, colorspace = c("CIELab", "CMY", "Gray", "HCL",
-  "HSB", "HSI", "Log", "XYZ", "YUV"), compress = "None", verbose = FALSE,
-  retRaster = TRUE)
+  "HSB", "HSI", "Log", "XYZ", "YUV"), compress = "None",
+  verbose = FALSE, retRaster = TRUE)
 }
 \arguments{
 \item{input}{character. name of a (Geo)Tiff containing RGB data channels}

@@ -5,10 +5,11 @@
 \title{Create a Digital Surface Model from a UAV generated point cloud}
 \usage{
 pc3D_dsm(lasDir = NULL, gisdbasePath = NULL, GRASSlocation = "tmp/",
-  projSubFolder = c("data/", "output/", "run/", "las/"), gridSize = "0.25",
-  grass_lidar_method = "mean", grass_lidar_pth = 90, splineNumber = "4",
-  otb_gauss_radius = "0.5", smoothFilter = "gauss", dsm_minalt = 0,
-  dsm_maxalt = 4000, dsm_area = FALSE, cutExtent = NULL,
+  projSubFolder = c("data/", "output/", "run/", "las/"),
+  gridSize = "0.25", grass_lidar_method = "mean",
+  grass_lidar_pth = 90, splineNumber = "4", otb_gauss_radius = "0.5",
+  smoothFilter = "gauss", dsm_minalt = 0, dsm_maxalt = 4000,
+  dsm_area = FALSE, cutExtent = NULL,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
   gisdbase_exist = FALSE, pathLastools = NULL, giLinks = NULL,
   verbose = FALSE)

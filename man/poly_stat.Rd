@@ -5,7 +5,8 @@
 \title{Calculate decriptive raster statistics of mask polygons}
 \usage{
 poly_stat(x = NULL, spdf = NULL, count = 1, min = 1, max = 1,
-  sum = 1, range = 1, mean = 1, var = 1, stddev = 1, quantile = 10)
+  sum = 1, range = 1, mean = 1, var = 1, stddev = 1,
+  quantile = 10)
 }
 \arguments{
 \item{x}{list of spatial Raster* object(s)}

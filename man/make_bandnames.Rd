@@ -5,8 +5,8 @@
 \title{create name vector corresponding to the training image stack
 create vector containing the names of the image stack claculated using \code{\link{calc_ext}}}
 \usage{
-make_bandnames(rgbi = NA, bandNames = NA, stat = FALSE, morpho = NA,
-  edge = NA, rgbTrans = NA, dem = NA)
+make_bandnames(rgbi = NA, bandNames = NA, stat = FALSE,
+  morpho = NA, edge = NA, rgbTrans = NA, dem = NA)
 }
 \arguments{
 \item{rgbi}{character. codes of the RGB indices}

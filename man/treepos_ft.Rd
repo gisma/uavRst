@@ -4,8 +4,9 @@
 \alias{treepos_ft}
 \title{'ForestTools' tree top detection}
 \usage{
-treepos_ft(chm = NULL, winFun = function(x) {     0.5 * ((x^2) * 0.009 +
-  2.51) }, minTreeAlt = 2, maxCrownArea = maxCrownArea, verbose = TRUE)
+treepos_ft(chm = NULL, winFun = function(x) {     0.5 * ((x^2) * 0.009
+  + 2.51) }, minTreeAlt = 2, maxCrownArea = maxCrownArea,
+  verbose = TRUE)
 }
 \arguments{
 \item{chm}{Canopy height model in \code{raster}, \code{lasmetrics}, \code{matrix} or  object of \code{class LAS}.

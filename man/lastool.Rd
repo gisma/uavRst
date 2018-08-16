@@ -8,9 +8,9 @@ lastool(tool = "lasinfo", lasFile = NULL, thinGrid = "1.0",
   keepClass = "2", bulge = "1.5", stepSize = "city",
   subSize = "ultra_fine", gridSize = "1.0",
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
-  rscale = "0.01 0.01 0.01", stepoverlap = NULL, cores = "2", xoff = 0,
-  yoff = 0, outpath = NULL, pathLastools = NULL, verbose = FALSE,
-  cutExtent = NULL, cutSlice = NULL)
+  rscale = "0.01 0.01 0.01", stepoverlap = NULL, cores = "2",
+  xoff = 0, yoff = 0, outpath = NULL, pathLastools = NULL,
+  verbose = FALSE, cutExtent = NULL, cutSlice = NULL)
 }
 \arguments{
 \item{tool}{default is \code{lasinfo}   additionally you may choose lasrepair, lasthin,  lasmerge, lasground_new, las2dem, las2txt, lasoverage, lasclip}

@@ -5,11 +5,13 @@
 \title{create a Digital Terrain Model from preclassified point cloud data}
 \usage{
 pc3D_dtm(lasDir = NULL, gisdbasePath = NULL, thinGrid = "0.5",
-  keepClass = "2", bulge = "1.5", splineNumber = "4", stepSize = "city",
-  subSize = "ultra_fine", gridSize = "0.25", dtmarea = FALSE,
-  cutExtent = NULL, projSubFolder = c("data/", "output/", "run/", "las/"),
-  proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs", cores = "3",
-  pathLastools = NULL, giLinks = NULL, verbose = FALSE)
+  keepClass = "2", bulge = "1.5", splineNumber = "4",
+  stepSize = "city", subSize = "ultra_fine", gridSize = "0.25",
+  dtmarea = FALSE, cutExtent = NULL, projSubFolder = c("data/",
+  "output/", "run/", "las/"),
+  proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
+  cores = "3", pathLastools = NULL, giLinks = NULL,
+  verbose = FALSE)
 }
 \arguments{
 \item{lasDir}{character. default is \code{NULL} path  to the laz/las file(s)}

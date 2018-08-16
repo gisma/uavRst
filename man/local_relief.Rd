@@ -4,10 +4,10 @@
 \alias{local_relief}
 \title{Create a hillshading model from LiDAR/UAV generated point cloud}
 \usage{
-local_relief(lasDir = NULL, gisdbasePath = NULL, GRASSlocation = "tmp/",
-  projFolder = c("data/", "output/", "run/", "las/"), gridSize = "1.0",
-  paramList = c("i", "v", "n", "g", "f", "overwrite", "quiet"),
-  splineNumber = "9",
+local_relief(lasDir = NULL, gisdbasePath = NULL,
+  GRASSlocation = "tmp/", projFolder = c("data/", "output/", "run/",
+  "las/"), gridSize = "1.0", paramList = c("i", "v", "n", "g", "f",
+  "overwrite", "quiet"), splineNumber = "9",
   proj4 = "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
   gisdbase_exist = FALSE, pathLastools = NULL)
 }

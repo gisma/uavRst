@@ -6,7 +6,8 @@
 \usage{
 pc2D_dtm(laspcFile = NULL, gisdbasePath = NULL, tension = 20,
   method = "min", cutExtent = NULL, sampleGridSize = 25,
-  targetGridSize = 0.25, splineThresGridSize = 0.5, projFolder = NULL,
+  targetGridSize = 0.25, splineThresGridSize = 0.5,
+  projFolder = NULL,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
   giLinks = NULL, verbose = FALSE)
 }

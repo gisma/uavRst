@@ -5,9 +5,9 @@
 \title{Calculates edges for a given kernel size.}
 \usage{
 otbtex_edge(input = NULL, out = "edge", ram = "8192",
-  filter = "gradient", filter.touzi.xradius = 1, filter.touzi.yradius = 1,
-  channel = NULL, retRaster = FALSE, outDir = NULL, verbose = FALSE,
-  giLinks = NULL)
+  filter = "gradient", filter.touzi.xradius = 1,
+  filter.touzi.yradius = 1, channel = NULL, retRaster = FALSE,
+  outDir = NULL, verbose = FALSE, giLinks = NULL)
 }
 \arguments{
 \item{input}{of GeoTiff containing 1 ore more gray value band(s)}

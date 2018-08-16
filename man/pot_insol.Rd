@@ -4,11 +4,11 @@
 \alias{pot_insol}
 \title{calculates the amount of incoming solar radiation (insolation)}
 \usage{
-pot_insol(x = NULL, svf_radius = 10000, svf_method = 0, svf_dlevel = 3,
-  svf_ndirs = 8, pi_solarconst = 1367, pi_units = 0, pi_shadow = 1,
-  pi_day = "21/06/17", pi_day_stop = "21/06/17", pi_day_step = 1,
-  pi_hour_range_min = 0, pi_hour_range_max = 24, pi_hour_step = 0.5,
-  pi_lumped = 70)
+pot_insol(x = NULL, svf_radius = 10000, svf_method = 0,
+  svf_dlevel = 3, svf_ndirs = 8, pi_solarconst = 1367,
+  pi_units = 0, pi_shadow = 1, pi_day = "21/06/17",
+  pi_day_stop = "21/06/17", pi_day_step = 1, pi_hour_range_min = 0,
+  pi_hour_range_max = 24, pi_hour_step = 0.5, pi_lumped = 70)
 }
 \arguments{
 \item{x}{spatial raster object}
