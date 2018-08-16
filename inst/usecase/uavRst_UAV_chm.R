@@ -7,10 +7,15 @@ require(link2GI)
 require(uavRst)
 
 # define project settings, data folders etc
-# define project folder
-projRootDir <- "~/proj/uav/thesis/finn"
 
-# lidar data  can be a foldr or a file
+if (Sys.info()["sysname"] == "Windows"){
+  projRootDir<-"C:/Users/User/Documents/proj/tutorials/geostat18"
+} else {
+  projRootDir<-"~/proj/tutorials/geostat18"
+}
+
+
+# lidar data  can be a folder or a file
 las_data <- "~/proj/uav/thesis/finn/output/477375_000_5631900_000_477475_000_5632000_000.las"
 
 # proj subfolders

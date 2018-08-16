@@ -602,7 +602,7 @@ morpho_dem<- function(dem,
   gdal <- giLinks$gdal
   saga <- giLinks$saga
   sagaCmd<-saga$sagaCmd
-  invisible(env<-RSAGA::rsaga.env())
+  invisible(env<-RSAGA::rsaga.env(path = saga$sagaPath))
 
   s<-raster::raster(dem)
   y<-yres(s)
@@ -623,11 +623,12 @@ morpho_dem<- function(dem,
             output = paste0(path_run,item,".tif"))
   }
 
-  if (length(saga_items>0) && !("MTPI" %in% saga_items) ) {
+  if (length(saga_items>0))  {
     rdem<-raster::raster(paste0(path_run,'dem2.tif'))
     raster::writeRaster(rdem,paste0(path_run,"SAGA_dem.sdat"),overwrite = TRUE,NAflag = 0)
     # claculate the basics SAGA morphometric params
     cat(getCrayon()[[1]](":::: processing ",saga_items,"\n"))
+    if (length(saga_items>0) && !("MTPI" %in% saga_items)) {
     rsaga.geoprocessor(lib = "ta_morphometry", module = 0,
                        param = list(ELEVATION = paste(path_run,"SAGA_dem.sgrd", sep = ""), 
                                     UNIT_SLOPE = 1,
@@ -646,9 +647,9 @@ morpho_dem<- function(dem,
                                     C_ROTO = paste(path_run,"C_ROTO.sgrd", sep = ""),
                                     METHOD = morphoMethod),
                        show.output.on.console = FALSE, invisible = TRUE,
-                       env = env)
+                       env = env)}
     if ("MTPI" %in% saga_items){
-      if (RSAGA::rsaga.get.version() >= "3.0.0") {
+      if (RSAGA::rsaga.get.version(env = env) >= "3.0.0") {
         
         # calculate multiscale p
         # Topographic Position Index (TPI) calculation as proposed by Guisan et al. (1999).SAGA 

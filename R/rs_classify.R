@@ -642,7 +642,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                    numScale = numScale,
                    giLinks = giLinks)
         flist<-append(flist, Sys.glob(paste0(path_run,demType,".tif")))
-        if (RSAGA::rsaga.get.version() < "3.0.0"){
+        if (RSAGA::rsaga.get.version(env=RSAGA::rsaga.env(path = saga$sagaPath)) < "3.0.0"){
           x <- unlist(strsplit(demType, " "))
           x <- x[!x %in% "MTPI"]
           demType<- paste(x, collapse = " ")
