@@ -642,6 +642,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                    numScale = numScale,
                    giLinks = giLinks)
         flist<-append(flist, Sys.glob(paste0(path_run,demType,".tif")))
+        flist<-append(flist, Sys.glob(paste0(path_run,demType,".sdat")))
         dellist <- append(dellist, Sys.glob(paste0(path_run,demType,".*")))
         for (item in demType) 
           bandNames <-append(bandNames,make_bandnames(dem = item))
