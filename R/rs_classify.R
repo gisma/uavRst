@@ -395,7 +395,7 @@ ffs_train<-function(   trainingDF   = NULL,
   cl <- parallel::makeCluster(noClu)
   doParallel::registerDoParallel(cl)
   # run forward feature selection
-  ffs_model <- ffs(predictors = data_train[,predictors],
+  ffs_model <- CAST::ffs(predictors = data_train[,predictors],
                    response   = eval(parse(text=paste("data_train$",response,sep = ""))),
                    method     = "rf",
                    metric     = metric,
@@ -642,12 +642,6 @@ calc_ext<- function ( calculateBands    = FALSE,
                    numScale = numScale,
                    giLinks = giLinks)
         flist<-append(flist, Sys.glob(paste0(path_run,demType,".tif")))
-        if (RSAGA::rsaga.get.version(env=RSAGA::rsaga.env(path = saga$sagaPath)) < "3.0.0"){
-          x <- unlist(strsplit(demType, " "))
-          x <- x[!x %in% "MTPI"]
-          demType<- paste(x, collapse = " ")
-          cat(getCrayon()[[2]]("\nPlease install SAGA >= 3.0.0\n Run without MTPI...\n"))
-        }
         dellist <- append(dellist, Sys.glob(paste0(path_run,demType,".*")))
         for (item in demType) 
           bandNames <-append(bandNames,make_bandnames(dem = item))
@@ -866,7 +860,7 @@ cor.mtest <- function(mat, ...) {
   diag(p.mat) <- 0
   for (i in 1:(n - 1)) {
     for (j in (i + 1):n) {
-      tmp <- cor.test(mat[, i], mat[, j], ...)
+      tmp <- stats::cor.test(mat[, i], mat[, j], ...)
       p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
     }
   }
