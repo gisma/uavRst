@@ -26,7 +26,7 @@
 #'@importFrom lidR writeLAS
 #'@importFrom lidR readLAS
 #'@importFrom lidR lasclipRectangle
-#'@importFrom rlas readlasheader
+#'@importFrom rlas read.lasheader
 #'@export pc2D_dtm
 
 #'@examples
@@ -121,7 +121,7 @@ pc2D_dtmmw <- function(laspcFile = NULL,
   
   
   
-  las<-rlas::readlasheader(laspcFile)
+  las<-rlas::read.lasheader(laspcFile)
   sp_param <- c(as.character(las$`Min X`),as.character(las$`Min Y`),as.character(las$`Max X`),as.character(las$`Max Y`))
   # rename output file according to the extent
   fn<- paste(sp_param ,collapse=" ")

@@ -48,7 +48,7 @@
 #' @import RSAGA
 #' @import reshape2
 #' @import rgrass7
-#' @importFrom rlas readlasheader
+#' @importFrom rlas read.lasheader
 #'
 #' @useDynLib uavRst
 #' @keywords package
