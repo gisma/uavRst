@@ -82,7 +82,7 @@ glcm_texture <- function(x,
 
   glcm_filter<-list()
   for (j in 1:length(kernelSize)){
-    if (class (x)=="RasterStack"||class (x)=="RasterBrick"){
+    if ((class (x)=="RasterStack")||(class (x)=="RasterBrick")){
       if (parallel){
         glcm_filter[[j]]<-foreach::foreach(i=nrasters,
                                            .packages= c("glcm","raster"))%dopar%{

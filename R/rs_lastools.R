@@ -307,11 +307,11 @@ lastool <- function(  tool="lasinfo",
 
     # try to correct it
     if (TRUE %in% tmp){
-      if (as.numeric(spatial_params[1]) <= as.numeric("0.00") || as.numeric(spatial_params[2]) <= as.numeric("0.00") ){
+      if ((as.numeric(spatial_params[1]) <= as.numeric("0.00")) || (as.numeric(spatial_params[2])) <= as.numeric("0.00") ){
         spatial_params[1] <-as.numeric(spatial_params[3]) - 999.99
         spatial_params[2] <- as.numeric(spatial_params[4]) -999.99
       }
-      if (as.numeric(spatial_params[3]) <= as.numeric("0.00") || as.numeric(spatial_params[4]) <= as.numeric("0.00") ){
+      if ((as.numeric(spatial_params[3]) <= as.numeric("0.00")) || (as.numeric(spatial_params[4])) <= as.numeric("0.00") ){
         spatial_params[3] <-as.numeric(spatial_params[1]) + 999.99
         spatial_params[4] <- as.numeric(spatial_params[2]) +999.99
       }

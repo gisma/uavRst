@@ -108,9 +108,9 @@ digitize <- function(mapCenter=NULL,
     write.table(lns, paste(tmpPath, "jsondata", sep=.Platform$file.sep), sep="\n", row.names=FALSE, col.names=FALSE, quote = FALSE)
     features<-names(overlay)
     # correct if only Lines or Polygons (obsolete here?)
-    if (class(overlay)[1] == 'SpatialPolygonsDataFrame' | class(overlay)[1] == 'SpatialPolygons'){
+    if (class((overlay)[1] == 'SpatialPolygonsDataFrame') | (class(overlay)[1] == 'SpatialPolygons')){
       noFeature <- length(overlay@polygons)
-    } else if (class(overlay)[1] == 'SpatialLinesDataFrame' | class(overlay)[1] == 'SpatialLines'){
+    } else if ((class(overlay)[1] == 'SpatialLinesDataFrame') | (class(overlay)[1] == 'SpatialLines')){
       noFeature <- length(overlay@lines)
     } 
     jsondata<-1

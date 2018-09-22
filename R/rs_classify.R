@@ -607,7 +607,7 @@ calc_ext<- function ( calculateBands    = FALSE,
   currentDataFolder<- currentDataFolder #paste0(path_data_training)
   currentIdxFolder<- currentIdxFolder # paste0(path_data_training_idx)
   
-  if ((stat == TRUE || hara == TRUE || edge == TRUE || morpho == TRUE) & path_OTB == "") stop("OTB missing - please check")
+  if (((stat == TRUE) || (hara == TRUE) || (edge == TRUE) || (morpho == TRUE)) & path_OTB == "") stop("OTB missing - please check")
   
   ### ----- start preprocessing ---------------------------------------------------
   if (calculateBands) {
