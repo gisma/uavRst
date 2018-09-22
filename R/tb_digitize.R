@@ -82,12 +82,12 @@ digitize <- function(mapCenter=NULL,
   
   if (!is.null(overlay)){
     
-    if (class(overlay)  %in% c("SpatialPointsDataFrame","SpatialLinesDataFrame","SpatialLines","SpatialPoints")) {
+    if (class(overlay) %in% c("SpatialPointsDataFrame","SpatialLinesDataFrame","SpatialLines","SpatialPoints")) {
       #e <- as(raster::extent(overlay), "SpatialPolygons")
       #e <- sp::SpatialPolygonsDataFrame(e, data.frame(ID="overlay"))
       proj4string(overlay) <- sp::proj4string(overlay)
       overlay<-sp::spTransform(overlay,CRSobj = sp::CRS("+init=epsg:4326"))
-    } else if  (class(overlay)=="SpatialPolygonsDataFrame") {
+    } else if  (class(overlay)  %in% c("SpatialPolygonsDataFrame")) {
       overlay<-sp::spTransform(overlay,CRSobj = sp::CRS("+proj=longlat +datum=WGS84 +no_defs"))
       #overlay <- sp::SpatialPolygonsDataFrame(overlay, data.frame(ID="overlay"))
     }
@@ -108,9 +108,9 @@ digitize <- function(mapCenter=NULL,
     write.table(lns, paste(tmpPath, "jsondata", sep=.Platform$file.sep), sep="\n", row.names=FALSE, col.names=FALSE, quote = FALSE)
     features<-names(overlay)
     # correct if only Lines or Polygons (obsolete here?)
-    if (class((overlay)[1] == 'SpatialPolygonsDataFrame') | (class(overlay)[1] == 'SpatialPolygons')){
+    if ((class(overlay)  %in% c("SpatialPolygonsDataFrame")) | (class(overlay)  %in% c("SpatialPolygons"))){
       noFeature <- length(overlay@polygons)
-    } else if ((class(overlay)[1] == 'SpatialLinesDataFrame') | (class(overlay)[1] == 'SpatialLines')){
+    } else if ((class(overlay)  %in% c('SpatialLinesDataFrame')) | (class(overlay)  %in% c('SpatialLines'))){
       noFeature <- length(overlay@lines)
     } 
     jsondata<-1
