@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-GPL%20%28%3E=%203%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
 
 # Unmanned Aerial Vehicle Remote Sensing Tools
-The `uavR` "twins" consist of two packages:
+The `uavR` tools consist of two packages:
 
   * mission planning ```uavRmp``` (already on [CRAN](https://CRAN.R-project.org/package=uavRmp))
   * remote sensing toolbox ```uavRst```
