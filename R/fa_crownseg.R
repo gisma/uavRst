@@ -291,7 +291,7 @@ chmseg_FT <- function(treepos = NULL,
 #' @importFrom rLiDAR FindTreesCHM
 #' @export
 #' @examples
-#' 
+#' \dontrun{
 #' # required packages
 #'  require(uavRst)
 #'  require(link2GI)
@@ -330,7 +330,7 @@ chmseg_FT <- function(treepos = NULL,
 #'                        exclusion = 0.2)
 #'  # presentation
 #'  mapview::mapview(crownsRL)
-#'
+#'}
 
 
 
