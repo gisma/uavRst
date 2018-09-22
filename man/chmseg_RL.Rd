@@ -24,14 +24,13 @@ height of \code{treepos}.}
 Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
 }
 \examples{
-\dontrun{
 
 # required packages
  require(uavRst)
- require(curl)
  require(link2GI)
- 
-# check if SAGA is correctly installed 
+ require(mapview)
+
+# check if SAGA is correctly installed
 if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
 
 # project folder
@@ -44,13 +43,11 @@ projRootDir<-tempdir()
                          path_prefix = "path_")
 ## overide trailing backslash issue
  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)                                          
- unlink(paste0(path_run,"*"), force = TRUE
-                 
-# get the data
- url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
- res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
- unzip(zipfile = res, exdir = path_run)
+ setwd(path_run)
+ unlink(paste0(path_run,"*"), force = TRUE)
+ utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
+                       destfile='tutorial.zip')
+ unzip(zipfile = "tutorial.zip", exdir = path_run)
 
 # make the folders and linkages
  giLinks<-uavRst::get_gi()
@@ -64,5 +61,7 @@ projRootDir<-tempdir()
                        treepos= tPos,
                        maxCrownArea = 150,
                        exclusion = 0.2)
-}
+ # presentation
+ mapview::mapview(crownsRL)
+
 }

@@ -62,7 +62,7 @@ projRootDir<-tempdir()
 
 # get the rgb image, chm and training data 
  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
- res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
+ curl::curl_download(url, paste0(path_run,"tutorial.zip"))
  unzip(zipfile = res, exdir = path_run)
  img <- stack(paste0(path_run,"rgb_3.tif"))
  plotRGB(img)

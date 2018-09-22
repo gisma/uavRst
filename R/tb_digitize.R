@@ -26,6 +26,8 @@
 #' @examples
 #' 
 #' require(sp)
+#' 
+#' 
 #' # all features
 #' digitize()
 #' 
@@ -38,7 +40,7 @@
 #' uavRst::digitize(overlay = me)
 #'   
 #' # preset for digitizing extents
-#' digitize(preset="ext",overlay = me)
+#' uavRst::digitize(preset="ext",overlay = me)
 
 #' @export digitize
 

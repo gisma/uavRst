@@ -30,22 +30,26 @@
 #' Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data. 
 #' @export glcm_texture
 #' @examples
-#' \dontrun{
+
 #' ## example on how to calculate texture from a list of channels
 #' setwd(tempdir())
 #' #get some typical data as provided by the authority
-#' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
-#' res <- curl::curl_download(url, "testdata.zip")
-#' unzip(res,junkpaths = TRUE,overwrite = TRUE)
-#' r<- raster::stack(paste0(getwd(),"4490600_5321400.tif"))
+#' Sys.setlocale('LC_ALL','C')  
+#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip", 
+#'                      destfile="testdata.zip")
+#' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
+#' r<- raster::stack("4490600_5321400.tif")
 #'
 #' # call glcm wrapper
-#' result <- glcm_texture(r,nrasters=1:3,
-#' stats=c("mean", "variance", "homogeneity"))
+#' result <- glcm_texture(r,
+#'                        nrasters=1:3,
+#'                        stats=c("mean", "variance", "homogeneity"),
+#'                        parallel = FALSE)
 #'
-#' #plot the results from VIS0.6 channel:
-#' raster::plot(unlist(unlist(glcm$size_3$X4490600_5321400.1)))
-#' }
+#' #plot the results f VIS 0.6 channel:
+#' raster::plot(unlist(unlist(result$size_3$X4490600_5321400.1)))
+#' Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
+
 #' @seealso \code{\link{glcm}}
 
 glcm_texture <- function(x,
@@ -198,15 +202,24 @@ glcm_texture <- function(x,
 
 #' @export otbtex_hara
 #' @examples
-#' \dontrun{
+
+#' require(uavRst)
+#' # check if OTB is installed correctly
+#' if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
 #' setwd(tempdir())
 #' #get some typical data as provided by the authority
-#' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
-#' res <- curl::curl_download(url, "testdata.zip")
-#' unzip(res,junkpaths = TRUE,overwrite = TRUE)
-#' # calculate all Haralick-textures
-#' otbtex_hara(x="4490600_5321400.tif")
-#' }
+#' tmp<-Sys.setlocale('LC_ALL','C')  
+#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip", 
+#'                      destfile="testdata.zip")
+#' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
+#' 
+#' # calculate simple Haralick-textures
+#' result<- otbtex_hara(x="4490600_5321400.tif",texture = "simple",return_raster = TRUE)
+#' 
+#' #plot the results :
+#' raster::plot(result)
+#' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
+
 
 otbtex_hara<- function(x,
                    texture="all",
@@ -352,14 +365,21 @@ otbtex_hara<- function(x,
 #' @author Chris Reudenbach
 #' @export otb_stat
 #' @examples
-#' \dontrun{
+#' require(uavRst)
+#' # check if OTB is installed correctly
+#' if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
 #' setwd(tempdir())
 #' #get some typical data as provided by the authority
-#' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
-#' res <- curl::curl_download(url, "testdata.zip")
-#' unzip(res,junkpaths = TRUE,overwrite = TRUE)
-#' otb_stat(input="4490600_5321400.tif",radius=5)
-#' }
+#' #get some typical data as provided by the authority
+#' tmp<-Sys.setlocale('LC_ALL','C')  
+#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip", 
+#'                      destfile="testdata.zip")
+#' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
+
+#'result<- otb_stat(input="4490600_5321400.tif",radius=5,retRaster = TRUE)
+#' #plot the results :
+#' raster::plot(unlist(result)[[1]])
+#' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
 
 otb_stat<- function(input=NULL,
                         out="localStat",
@@ -427,7 +447,7 @@ otb_stat<- function(input=NULL,
 #' setwd(tempdir())
 #' #get some typical data as provided by the authority
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
-#' res <- curl::curl_download(url, "testdata.zip")
+#' curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
 #' otbtex_edge(input="4490600_5321400.tif",filter = "sobel")
 #' }
@@ -502,7 +522,7 @@ otbtex_edge<- function(input=NULL,
 #' setwd(tempdir())
 #' #get some typical data as provided by the authority
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
-#' res <- curl::curl_download(url, "testdata.zip")
+#' curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
 #' gm<-otbtex_gray(input="4490600_5321400.tif",retRaster = TRUE)
 #' raster::plot(gm[[1]])
@@ -577,7 +597,7 @@ otbtex_gray<- function(input=NULL,
 #' setwd(tempdir())
 #' #get some typical data as provided by the authority
 #' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
-#' res <- curl::curl_download(url, "testdata.zip")
+#' curl::curl_download(url, "testdata.zip")
 #' unzip(res,junkpaths = TRUE,overwrite = TRUE)
 #' gm<-morpho_dem(dem="4490600_5321400.tif")
 #' raster::plot(gm[[1]])
@@ -770,7 +790,7 @@ getOutputDir<- function (outDir){
 #' 
 #' # get the rgb image, chm and training data 
 #'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-#'  res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
+#'  curl::curl_download(url, paste0(path_run,"tutorial.zip"))
 #'  unzip(zipfile = res, exdir = path_run)
 #'  img <- stack(paste0(path_run,"rgb_3.tif"))
 #'  plotRGB(img)

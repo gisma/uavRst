@@ -45,7 +45,7 @@ the otb is used for filtering. please provide a GeoTiff file
 setwd(tempdir())
 #get some typical data as provided by the authority
 url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
-res <- curl::curl_download(url, "testdata.zip")
+curl::curl_download(url, "testdata.zip")
 unzip(res,junkpaths = TRUE,overwrite = TRUE)
 gm<-otbtex_gray(input="4490600_5321400.tif",retRaster = TRUE)
 raster::plot(gm[[1]])

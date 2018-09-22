@@ -70,7 +70,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
  
 ## get the data
 url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
+curl::curl_download(url, paste0(path_run,"tutorial.zip"))
 unzip(zipfile = res, exdir = path_run)
 
 ## linkages

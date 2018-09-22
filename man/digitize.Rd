@@ -58,6 +58,8 @@ You can either save the digitized object to a .json file or you may grab the .js
 \examples{
 
 require(sp)
+
+
 # all features
 digitize()
 
@@ -70,7 +72,7 @@ me<-sp::spTransform(meuse,CRSobj = sp::CRS("+init=epsg:4326"))
 uavRst::digitize(overlay = me)
   
 # preset for digitizing extents
-digitize(preset="ext",overlay = me)
+uavRst::digitize(preset="ext",overlay = me)
 }
 \author{
 Chris Reudenbach

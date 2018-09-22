@@ -53,22 +53,24 @@ glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogen
 Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data.
 }
 \examples{
-\dontrun{
 ## example on how to calculate texture from a list of channels
 setwd(tempdir())
 #get some typical data as provided by the authority
-url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
-res <- curl::curl_download(url, "testdata.zip")
-unzip(res,junkpaths = TRUE,overwrite = TRUE)
-r<- raster::stack(paste0(getwd(),"4490600_5321400.tif"))
+Sys.setlocale('LC_ALL','C')  
+utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip", 
+                     destfile="testdata.zip")
+unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
+r<- raster::stack("4490600_5321400.tif")
 
 # call glcm wrapper
-result <- glcm_texture(r,nrasters=1:3,
-stats=c("mean", "variance", "homogeneity"))
+result <- glcm_texture(r,
+                       nrasters=1:3,
+                       stats=c("mean", "variance", "homogeneity"),
+                       parallel = FALSE)
 
-#plot the results from VIS0.6 channel:
-raster::plot(unlist(unlist(glcm$size_3$X4490600_5321400.1)))
-}
+#plot the results f VIS 0.6 channel:
+raster::plot(unlist(unlist(result$size_3$X4490600_5321400.1)))
+Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
 }
 \seealso{
 \code{\link{glcm}}

@@ -49,7 +49,7 @@ if (!isGeneric('local_relief')) {
 #' # get the data
 #' # get a laz file from Mr. Isenburg
 #' url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz"
-#' res <- curl::curl_download(url=url,
+#' curl::curl_download(url=url,
 #'                            destfile=paste0(path_run,"test.laz"),  quiet = TRUE, mode = "wb")
 #' # convert from laz to las
 #' lastool(tool="las2las",paste0(path_run,"test.laz"))

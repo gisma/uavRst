@@ -48,7 +48,7 @@
 #'  
 #' ## get the data
 #' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-#' res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
+#' curl::curl_download(url, paste0(path_run,"tutorial.zip"))
 #' unzip(zipfile = res, exdir = path_run)
 #' 
 #' ## linkages
@@ -227,7 +227,7 @@ chmseg_uav <- function(treepos = NULL,
 #'                  
 #' # get the data
 #'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-#'  res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
+#'  curl::curl_download(url, paste0(path_run,"tutorial.zip"))
 #'  unzip(zipfile = res, exdir = path_run)
 #' 
 #' # make the folders and linkages
@@ -291,19 +291,18 @@ chmseg_FT <- function(treepos = NULL,
 #' @importFrom rLiDAR FindTreesCHM
 #' @export
 #' @examples
-#' \dontrun{
 #' 
 #' # required packages
 #'  require(uavRst)
-#'  require(curl)
 #'  require(link2GI)
-#'  
-#' # check if SAGA is correctly installed 
+#'  require(mapview)
+#'
+#' # check if SAGA is correctly installed
 #' if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
-#' 
+#'
 #' # project folder
 #' projRootDir<-tempdir()
-#' 
+#'
 #' # create subfolders please mind that the pathes are exported as global variables
 #'  paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
@@ -311,17 +310,15 @@ chmseg_FT <- function(treepos = NULL,
 #'                          path_prefix = "path_")
 #' ## overide trailing backslash issue
 #'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  setwd(path_run)                                          
-#'  unlink(paste0(path_run,"*"), force = TRUE
-#'                  
-#' # get the data
-#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-#'  res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
-#'  unzip(zipfile = res, exdir = path_run)
-#' 
+#'  setwd(path_run)
+#'  unlink(paste0(path_run,"*"), force = TRUE)
+#'  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
+#'                        destfile='tutorial.zip')
+#'  unzip(zipfile = "tutorial.zip", exdir = path_run)
+#'
 #' # make the folders and linkages
 #'  giLinks<-uavRst::get_gi()
-#' 
+#'
 #' # read chm data
 #'  chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
 #'  tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
@@ -331,38 +328,44 @@ chmseg_FT <- function(treepos = NULL,
 #'                        treepos= tPos,
 #'                        maxCrownArea = 150,
 #'                        exclusion = 0.2)
-#' }
+#'  # presentation
+#'  mapview::mapview(crownsRL)
+#'
+
 
 
 chmseg_RL <- function(treepos = NULL,
-                              chm = NULL,
-                              maxCrownArea = 150,
-                              exclusion = 0.2) {
-
+                      chm = NULL,
+                      maxCrownArea = 150,
+                      exclusion = 0.2) {
   # if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
   #   treepos <- raster::rasterToPoints(treepos,spatial = TRUE)
   # } else {
   #   r<-raster::raster(treepos)
   #   treepos <- raster::rasterToPoints(treepos,spatial = TRUE)
   # }
-
-  maxcrown <- sqrt(maxCrownArea/ pi)
+  
+  maxcrown <- sqrt(maxCrownArea / pi)
   # Crown segmentation
-
+  
   xyz <- as.data.frame(raster::rasterToPoints(treepos))
-  names(xyz)<- c("x","y","height")
-  canopy<-rLiDAR::ForestCAS(chm = chm,
-                            loc = xyz,
-                            maxcrown = maxcrown,
-                            exclusion =exclusion)
+  names(xyz) <- c("x", "y", "height")
+  canopy <- rLiDAR::ForestCAS(
+    chm = chm,
+    loc = xyz,
+    maxcrown = maxcrown,
+    exclusion = exclusion
+  )
   canopy[[1]]@proj4string <- chm@crs
   # Writing Shapefile
-  rgdal::writeOGR(obj = canopy[[1]],
-                  dsn = paste0(path_output, "crowns_LR"),
-                  layer = "crowns_LR",
-                  driver= "ESRI Shapefile",
-                  overwrite=TRUE)
-
+  rgdal::writeOGR(
+    obj = canopy[[1]],
+    dsn = paste0(path_output, "crowns_LR"),
+    layer = "crowns_LR",
+    driver = "ESRI Shapefile",
+    overwrite = TRUE
+  )
+  
   return(canopy[[1]])
 }
 
@@ -387,16 +390,16 @@ chmseg_RL <- function(treepos = NULL,
 #' @export chmseg_ITC
 #' @examples
 #' \dontrun{
-#' 
+#'
 #' # required packages
 #'  require(uavRst)
 #'  require(curl)
-#' # check if SAGA is correctly installed 
+#' # check if SAGA is correctly installed
 #' if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
-#' 
+#'
 #' # project folder
 #' projRootDir<-tempdir()
-#' 
+#'
 #' # create subfolders please mind that the pathes are exported as global variables
 #'  paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
@@ -404,17 +407,17 @@ chmseg_RL <- function(treepos = NULL,
 #'                          path_prefix = "path_")
 #' ## overide trailing backslash issue
 #'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  setwd(path_run)                                          
+#'  setwd(path_run)
 #'  unlink(paste0(path_run,"*"), force = TRUE
-#'                  
+#'
 #' # get the data
 #'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-#'  res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
+#'  curl::curl_download(url, paste0(path_run,"tutorial.zip"))
 #'  unzip(zipfile = res, exdir = path_run)
-#' 
+#'
 #' # make the folders and linkages
 #'  giLinks<-uavRst::get_gi()
-#' 
+#'
 #' # read chm data
 #'  chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
 #'  tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))

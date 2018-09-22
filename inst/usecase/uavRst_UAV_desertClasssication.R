@@ -158,8 +158,8 @@ res <- calc_ext(calculateBands    = F,
 
 imageTrainStack <- list()
 imageTrainFiles <- list.files(pattern="[.]envi$", path=currentIdxFolder, full.names=TRUE)
-
-
+trainDF<-res[[1]]
+bandNames<-unlist(res[[2]])
 idNumber=c(1,2,3,4,5,6,7,8,9)
 # rename them
 idNames= c("darkgreen","lightgreen","darksoil","lightsoil","shadow","cacti","lightgray","darkgray","molliswhite")
@@ -179,7 +179,7 @@ idNames= c("darkgreen","lightgreen","darksoil","lightsoil","shadow","cacti","lig
 
 # load raw training dataframe
 if (!(exists)("trainDF"))
-  trainDF1<-readRDS(paste0(currentIdxFolder,prefixRun ,"_trainDF",".rds"))
+  trainDF<-readRDS(paste0(currentIdxFolder,prefixRun ,"_trainDF",".rds"))
 if (!(exists)("bandNames"))
   load(paste0(currentIdxFolder,prefixRun ,"bandNames",".RData"))
 # add leading Title "ID" and tailing title "FN"
