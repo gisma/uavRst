@@ -38,6 +38,10 @@ ffs_train(trainingDF = NULL, predictors = c("R", "G", "B"),
 
 \item{seed}{numeric. number for seeding}
 
+\item{withinSE}{locical.  compares the performance to models that use less variables (e.g. if a model using 5 variables is better than a model using 4 variables but still in the standard error of the 4-variable model, then the 4-variable model is rated as the better model).}
+
+\item{mtry}{numerical. Number of variable is randomly collected to be sampled at each split time}
+
 \item{noClu}{numeric. number of cluster to be used}
 }
 \description{

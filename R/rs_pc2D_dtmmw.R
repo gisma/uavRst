@@ -11,6 +11,7 @@
 #'@param laspcFile  character. default is \code{NULL} path  to the laz/las file(s)
 #'@param gisdbasePath character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
 #'@param sampleGridSize  numeric, resolution extraction raster
+#'@param sampleMethod  character. sampling method of r.in.lidar Statistic to use for raster values Options: n, min, max, range, sum, mean, stddev, variance, coeff_var, median, percentile, skewness, trimmean Default: mean
 #'@param winRes  list of moving window resolution for optimize Ground model
 #'@param targetGridSize numeric. the resolution of the target DTM raster
 #'@param splineThresGridSize numeric. threshold of minimum gridsize tha is used for splininterpolation if the desired resolution is finer a two step approximation is choosen 
@@ -66,16 +67,18 @@
 pc2D_dtmmw <- function(laspcFile = NULL,
                        gisdbasePath = projRootDir,
                        tension = 30 ,
-                       method="min",
+                       sampleMethod="min",
                        cutExtent = NULL,
                        sampleGridSize=50,
-                       winRes = c(100,50,25), # beliebige Anzahl an "Suchfenstergrößen" und beliebige Werte. 
-                       # Nur mit Kommastellen kann diese Version noch nicht um. lässt sich aber einbauen, 
-                       # hab ich nur entfernt weil ich es nicht gebraucht habe
+                       winRes = c(100,50,25), 
+                       # beliebige Anzahl an "Suchfenstergrößen" und beliebige
+                       # Werte. Nur mit Kommastellen kann diese Version noch
+                       # nicht um. lässt sich aber einbauen, hab ich nur
+                       # entfernt weil ich es nicht gebraucht habe
                        targetGridSize = 0.05,
                        splineThresGridSize = 0.5,
                        projFolder = NULL,
-                       proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 ",
+                       proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84",
                        giLinks =giLinks,
                        verbose = FALSE) {
   
@@ -134,9 +137,11 @@ pc2D_dtmmw <- function(laspcFile = NULL,
   sp_param[5] <- proj4
   
   
-  ## der erste Schritt erstellt für jede gewählte Auflösung erstmal eine vectormap und speichert die in die "vdtms" Liste. 
-  ## Das Erstellen von der vectormap läuft über deinen Weg, sprich r.in.lidar zum einlesen (erstellen eines minimum rasters) 
-  ## und dann r.to.vect zum umwandeln in eine Punkte/vectormap.
+  ## der erste Schritt erstellt für jede gewählte Auflösung erstmal eine
+  ## vectormap und speichert die in die "vdtms" Liste. Das Erstellen von der
+  ## vectormap läuft über deinen Weg, sprich r.in.lidar zum einlesen (erstellen
+  ## eines minimum rasters) und dann r.to.vect zum umwandeln in eine
+  ## Punkte/vectormap.
   
   
   vdtms <- list()
@@ -154,7 +159,7 @@ pc2D_dtmmw <- function(laspcFile = NULL,
                               flags  = c("overwrite","quiet","o","e","n"),
                               input  = paste0(path_run,name),
                               output = paste0("dem",i),
-                              method = "min",
+                              sampleMethod = "min",
                               resolution = i,
                               # trim = 49,
                               intern = TRUE,
@@ -170,21 +175,26 @@ pc2D_dtmmw <- function(laspcFile = NULL,
                               ignore.stderr = TRUE
     )
     
-    ## Hier werden die erstellen vectormaps in die vdtms liste via rgrass7::readVECT gespeichert um sie in R verfügbar zumachen 
-    ## und die Grass logic zu verlassen.
+    ## Hier werden die erstellen vectormaps in die vdtms liste via
+    ## rgrass7::readVECT gespeichert um sie in R verfügbar zumachen und die
+    ## Grass logic zu verlassen.
     vdtms[paste0("vdtm",i)] <- rgrass7::readVECT(paste0("vdtm",i))
   }
   
-  ## Der nächste Schritt geht Punkt für Punkt die jeweilige Vectormap durch und sucht innerhalb eines Buffers nach Punkten,
-  ## die alle Kriterien erfüllen und dann als "keeps" ausgewählt werden. Die jeweilige Vectormap ist in Runde eins die vectormap
-  ## des größten Suchfensters, und ab Runde zwei die Vectormap der "keeps" Punkte. 
-  
-  keeps <- c() # erstellt leeren keeps vector der von runde zu runde neu gefüllt wird
-  # vdtms_edit <- vdtms
-  for (k in c(1:(length(winRes)-1))) { # hier wird festgelegt das er alle Suchfenstergrößen bis auf die letzte durch geht.
+  ## Der nächste Schritt geht Punkt für Punkt die jeweilige Vectormap durch und
+  #sucht innerhalb eines Buffers nach Punkten, # die alle Kriterien erfüllen und
+  #dann als "keeps" ausgewählt werden. Die jeweilige Vectormap ist in Runde eins
+  #die vectormap # des größten Suchfensters, und ab Runde zwei die Vectormap der
+  #"keeps" Punkte. erstellt leeren keeps vector der von runde zu runde neu
+  #gefüllt wird vdtms_edit <- vdtms
+  for (k in c(1:(length(winRes)-1))) { 
+    # hier wird festgelegt das er alle Suchfenstergrößen bis auf die letzte
+    # durch geht.
     
-    ## der if Schalter sorgt nur dafür das er in der ersten Runde wenn keeps noch leer ist die orgiginal Vectormap des größte 
-    ## Suchfensterns als "vdtm_run" nutzt. Sobald keeps gefüllt ist wird werden diese Punkte als "vdtm_run" genutzt.
+    ## der if Schalter sorgt nur dafür das er in der ersten Runde wenn keeps
+    ## noch leer ist die orgiginal Vectormap des größte Suchfensterns als
+    ## "vdtm_run" nutzt. Sobald keeps gefüllt ist wird werden diese Punkte als
+    ## "vdtm_run" genutzt.
     ## 
     if (length(keeps) > 1) {
       vdtm_run <- keeps
@@ -194,20 +204,27 @@ pc2D_dtmmw <- function(laspcFile = NULL,
     }
     
     
-    keeps <- vdtm_run[1,] ## hier wird keeps mit dem ersten Punkt aus der ersten Vectormap gefüllt damit keeps beim späteren
-    ## rbing nicht NULL ist und rausfliegt. Da werde ich mir bei Zeit nochmal was klügeres einfallen lasssen
-    ## aber da vermutlich kein Untersuchungsgebiet so am Rand liegt hab ich das vorerst ignoriert. 
+    keeps <- vdtm_run[1,] 
+    ## hier wird keeps mit dem ersten Punkt aus der ersten Vectormap gefüllt
+    ## damit keeps beim späteren rbing nicht NULL ist und rausfliegt. Da werde
+    ## ich mir bei Zeit nochmal was klügeres einfallen lasssen aber da
+    ## vermutlich kein Untersuchungsgebiet so am Rand liegt hab ich das vorerst
+    ## ignoriert.
     
-    for (o in c(1:length(vdtm_run))) { ## jeder Punkt des jweiligen vdtm_run soll nun einmal durch gespielt werden
+    for (o in c(1:length(vdtm_run))) {
+      ## jeder Punkt des jweiligen vdtm_run soll nun einmal durch gespielt werden
       
-      buffer <- gBuffer(vdtm_run[o,], capStyle= "SQUARE", width = winRes[k]/2) ## erstellt rechteckigen Buffer pro Punkt jeweils
+      buffer <- gBuffer(vdtm_run[o,], capStyle= "SQUARE", width = winRes[k]/2) 
+      ## erstellt rechteckigen Buffer pro Punkt jeweils
       ## halb so groß wie die Suchfenstergröße im entsprechenden durchlauf
       ## Da werde ich auch noch mal bei Zeit prüfen ob man das variable gestaltet 
       ## und als Funktionsparameter einfügt. Mal sehen wie sich das auswirkt.
       
-      vdtm_run_match <- vdtms[paste0("vdtm",winRes[k+1] )] ## vtdm_run_match wählt die vectormap des nächst kleineren Suchfensters aus.
+      vdtm_run_match <- vdtms[paste0("vdtm",winRes[k+1] )] 
+      ## vtdm_run_match wählt die vectormap des nächst kleineren Suchfensters aus.
       
-      hits <- which(gContains(buffer,vdtm_run_match[[1]] , byid=TRUE)) ## Und nun werden alle Punkte der nächst kleineren Punktewolke die im Buffer liegen
+      hits <- which(gContains(buffer,vdtm_run_match[[1]] , byid=TRUE))
+      ## Und nun werden alle Punkte der nächst kleineren Punktewolke die im Buffer liegen
       ## ausgewählt und als "hits" abgespeichert.
       
       #Einmal die kommende Zeile in einzelne Schritte aufgedröselt:

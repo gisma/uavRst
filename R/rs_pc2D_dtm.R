@@ -10,6 +10,7 @@
 #'
 #'@param laspcFile  character. default is \code{NULL} path  to the laz/las file(s)
 #'@param gisdbasePath character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
+#'@param sampleMethod  character. sampling method of r.in.lidar Statistic to use for raster values Options: n, min, max, range, sum, mean, stddev, variance, coeff_var, median, percentile, skewness, trimmean Default: mean
 #'@param sampleGridSize  numeric, resolution extraction raster
 #'@param targetGridSize numeric. the resolution of the target DTM raster
 #'@param splineThresGridSize numeric. threshold of minimum gridsize tha is used for splininterpolation if the desired resolution is finer a two step approximation is choosen 
@@ -66,7 +67,7 @@
 pc2D_dtm <- function(laspcFile = NULL,
                     gisdbasePath = NULL,
                     tension = 20 ,
-                    method="min",
+                    sampleMethod ="min",
                     cutExtent = NULL,
                     sampleGridSize=25,
                     targetGridSize = 0.25,
@@ -149,7 +150,7 @@ pc2D_dtm <- function(laspcFile = NULL,
                             flags  = c("overwrite","quiet","o","e","n"),
                             input  = paste0(path_run,name),
                             output = paste0("dem",sampleGridSize),
-                            method = method,
+                            sampleMethod  = sampleMethod ,
                             resolution = sampleGridSize,
                             intern = TRUE,
                             ignore.stderr = TRUE

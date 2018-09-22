@@ -21,6 +21,8 @@ height of \code{treepos}.}
 
 \item{minTreeAltParam}{character. code for the percentile that is used as tree height treshold. It is build using the key letters \code{chmQ} and adding the percentile i.e. "10". Default is \code{chmQ20}}
 
+\item{maxCrownArea}{numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.}
+
 \item{leafsize}{integer. bin size of grey value sampling range from 1 to 256 see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}}
 
 \item{normalize}{integer. logical switch if data will be normalized (1) see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}}

@@ -5,11 +5,11 @@
 \title{Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling}
 \usage{
 pc2D_dtmmw(laspcFile = NULL, gisdbasePath = projRootDir,
-  tension = 30, method = "min", cutExtent = NULL,
+  tension = 30, sampleMethod = "min", cutExtent = NULL,
   sampleGridSize = 50, winRes = c(100, 50, 25),
   targetGridSize = 0.05, splineThresGridSize = 0.5,
   projFolder = NULL,
-  proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 ",
+  proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84",
   giLinks = giLinks, verbose = FALSE)
 }
 \arguments{
@@ -18,6 +18,8 @@ pc2D_dtmmw(laspcFile = NULL, gisdbasePath = projRootDir,
 \item{gisdbasePath}{character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
 
 \item{tension}{numeric. tension of spline interpolation.}
+
+\item{sampleMethod}{character. sampling method of r.in.lidar Statistic to use for raster values Options: n, min, max, range, sum, mean, stddev, variance, coeff_var, median, percentile, skewness, trimmean Default: mean}
 
 \item{cutExtent}{clip area}
 

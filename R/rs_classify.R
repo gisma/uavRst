@@ -281,6 +281,8 @@ predict_rgb <- function(imageFiles=NULL,
 #' @param modelSaveName character. name pattern used for saving the model default is \code{"model.RData" }
 #' @param seed          numeric. number for seeding
 #' @param noClu         numeric. number of cluster to be used
+#' @param withinSE      locical.  compares the performance to models that use less variables (e.g. if a model using 5 variables is better than a model using 4 variables but still in the standard error of the 4-variable model, then the 4-variable model is rated as the better model).
+#' @param mtry          numerical. Number of variable is randomly collected to be sampled at each split time
 #' @param sumFunction   character. function to summarize default is "twoClassSummary"
 #' @export ffs_train
 #' @examples
