@@ -53,6 +53,8 @@ glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogen
 Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data.
 }
 \examples{
+\dontrun{
+require(glcm)
 ## example on how to calculate texture from a list of channels
 setwd(tempdir())
 #get some typical data as provided by the authority
@@ -71,6 +73,7 @@ result <- glcm_texture(r,
 #plot the results f VIS 0.6 channel:
 raster::plot(unlist(unlist(result$size_3$X4490600_5321400.1)))
 Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
+}
 }
 \seealso{
 \code{\link{glcm}}
