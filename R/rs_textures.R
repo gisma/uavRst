@@ -202,6 +202,7 @@ glcm_texture <- function(x,
 
 #' @export otbtex_hara
 #' @examples
+#' \dontrun{
 
 #' require(uavRst)
 #' # check if OTB is installed correctly
@@ -217,8 +218,9 @@ glcm_texture <- function(x,
 #' result<- otbtex_hara(x="4490600_5321400.tif",texture = "simple",return_raster = TRUE)
 #' 
 #' #plot the results :
-#' raster::plot(result)
-#' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
+#' raster::plot(result)UTF
+#' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.-8")
+#' }
 
 
 otbtex_hara<- function(x,
@@ -365,6 +367,7 @@ otbtex_hara<- function(x,
 #' @author Chris Reudenbach
 #' @export otb_stat
 #' @examples
+#' \dontrun{
 #' require(uavRst)
 #' # check if OTB is installed correctly
 #' if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
@@ -380,6 +383,7 @@ otbtex_hara<- function(x,
 #' #plot the results :
 #' raster::plot(unlist(result)[[1]])
 #' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
+#' }
 
 otb_stat<- function(input=NULL,
                         out="localStat",
