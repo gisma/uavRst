@@ -27,6 +27,10 @@
 #'@importFrom lidR readLAS
 #'@importFrom lidR lasclipRectangle
 #'@importFrom rlas read.lasheader
+#' @importFrom gdalUtils ogr2ogr
+#' @importFrom gdalUtils gdal_translate
+#' @importFrom gdalUtils gdalwarp
+#' @importFrom gdalUtils gdalinfo
 #'@export pc2D_dtm
 
 #'@examples

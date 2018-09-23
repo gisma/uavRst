@@ -25,7 +25,12 @@
 #' \cr
 #' \emph{Maintainer:} Chris Reudenbach \email{reudenbach@@uni-marburg.de}
 #'
-#' @import stringr zoo foreach sp raster htmlwidgets htmltools Rcpp rgeos rgdal gdalUtils tools maptools doParallel velox CAST 
+#' @import stringr zoo foreach sp raster htmlwidgets htmltools Rcpp rgeos rgdal tools maptools doParallel velox CAST 
+#' @importFrom gdalUtils ogr2ogr
+#' @importFrom gdalUtils gdal_translate
+#' @importFrom gdalUtils gdalwarp
+#' @importFrom gdalUtils gdalinfo
+#' @importFrom gdalUtils gdaldem
 #' @importFrom geosphere bearing
 #' @importFrom geosphere distGeo
 #' @importFrom geosphere destPoint

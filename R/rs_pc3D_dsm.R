@@ -34,7 +34,10 @@ if (!isGeneric('pc3D_dsm')) {
 #'@param pathLastools character. folder containing the Windows binary files of the lastools
 #'@param verbose logical. to be quiet FALSE
 #'@param cutExtent numerical. clip area c(mix,miny,maxx,maxy)
-#'
+#' @importFrom gdalUtils ogr2ogr
+#' @importFrom gdalUtils gdal_translate
+#' @importFrom gdalUtils gdalwarp
+#' @importFrom gdalUtils gdalinfo
 #'@export pc3D_dsm
 #'@examples
 #'\dontrun{

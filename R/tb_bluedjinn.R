@@ -205,6 +205,7 @@ line_maxpos <- function(dem,line){
 #' @param polySplit split polygon in single file, default is TRUE
 #' extract for all polygons the position of the maximum value
 #' @keywords internal
+#' @importFrom gdalUtils ogr2ogr
 #' @export poly_maxpos
 #'
 poly_maxpos <- function(fileName,layerName, polySplit=TRUE){
@@ -650,7 +651,7 @@ getPopupStyle <- function() {
 #' @param refFn character. reference image for resampling
 #' @param returnRaster logical. return as raster
 #' @name split2SAGA
-
+#' @importFrom gdalUtils gdal_translate
 #' @keywords internal
 #'@export
 split2SAGA<-function(fn=NULL,

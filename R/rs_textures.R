@@ -25,7 +25,7 @@
 #' GLCM Variance is correlated with Homogeneity,  r= -0.83\cr
 #' Entropy is correlated with ASM,  r= -0.87\cr
 #' GLCM Mean and Correlation are more independent. For the same image, GLCM Mean shows  r< 0.1 with any of the other texture measures demonstrated in this tutorial. GLCM Correlation shows  r<0.5 with any other measure.
-#' for a review of a lot of feature extraction algorithms look at: \href{http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
+#' for a review of a lot of feature extraction algorithms look at: \href{https://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
 #' glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogeneity" <-> "simple 4", "contrast"<-> "simple 5", "dissimilarity" <-> "advanced 2", "entropy" <-> "simple 2", "second_moment"<-> "simple 4", "correlation" <-> "simple 3"
 #' Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data. 
 #' @export glcm_texture
@@ -199,10 +199,13 @@ glcm_texture <- function(x,
 #' GLCM Variance is correlated with Homogeneity,  r= -0.83\cr
 #' Entropy is correlated with ASM,  r= -0.87\cr
 #' GLCM Mean and Correlation are more independent. For the same image, GLCM Mean shows  r< 0.1 with any of the other texture measures demonstrated in this tutorial. GLCM Correlation shows  r<0.5 with any other measure.
-#' for a review of a lot of feature extraction algorithms look at: \href{http://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
+#' for a review of a lot of feature extraction algorithms look at: \href{https://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
 #' glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogeneity" <-> "simple 4", "contrast"<-> "simple 5", "dissimilarity" <-> "advanced 2", "entropy" <-> "simple 2", "second_moment"<-> "simple 4", "correlation" <-> "simple 3"
 #' Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data. 
-
+#' @importFrom gdalUtils ogr2ogr
+#' @importFrom gdalUtils gdal_translate
+#' @importFrom gdalUtils gdalwarp
+#' @importFrom gdalUtils gdalinfo
 #' @export otbtex_hara
 #' @examples
 #' \dontrun{
@@ -368,6 +371,10 @@ otbtex_hara<- function(x,
 #' @param outDir output Directory
 #' @param giLinks        list. of GI tools cli pathes
 #' @author Chris Reudenbach
+#' @importFrom gdalUtils ogr2ogr
+#' @importFrom gdalUtils gdal_translate
+#' @importFrom gdalUtils gdalwarp
+#' @importFrom gdalUtils gdalinfo
 #' @export otb_stat
 #' @examples
 #' \dontrun{
@@ -524,6 +531,10 @@ otbtex_edge<- function(input=NULL,
 #' @param giLinks        list. of GI tools cli pathes
 #' @author Chris Reudenbach
 #' @export otbtex_gray
+#' @importFrom gdalUtils ogr2ogr
+#' @importFrom gdalUtils gdal_translate
+#' @importFrom gdalUtils gdalwarp
+#' @importFrom gdalUtils gdalinfo
 #' @examples
 #' \dontrun{
 #' setwd(tempdir())
@@ -597,7 +608,11 @@ otbtex_gray<- function(input=NULL,
 #' @param maxScale  numeric. max scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param numScale  numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param giLinks    list. of GI tools cli pathes
-
+#' @importFrom gdalUtils ogr2ogr
+#' @importFrom gdalUtils gdal_translate
+#' @importFrom gdalUtils gdalwarp
+#' @importFrom gdalUtils gdalinfo
+#' @importFrom gdalUtils gdaldem
 #' @export morpho_dem
 #' @examples
 #' \dontrun{
@@ -645,7 +660,7 @@ morpho_dem<- function(dem,
   
   for (item in gdal_items){
     cat(getCrayon()[[1]](":::: processing ",item,"\n"))
-    res<-   gdaldem(mode = item,
+    res<-   gdalUtils::gdaldem(mode = item,
             input_dem=paste0(path_run,"dem2.tif"),
             output = paste0(path_run,item,".tif"))
   }

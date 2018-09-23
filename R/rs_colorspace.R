@@ -9,6 +9,10 @@
 #' @param retRaster logical if true a rasterstack is returned
 #' @param verbose be quiet
 #' @export colorspace
+#' @importFrom gdalUtils ogr2ogr
+#' @importFrom gdalUtils gdal_translate
+#' @importFrom gdalUtils gdalwarp
+#' @importFrom gdalUtils gdalinfo
 #' @examples
 #' \dontrun{
 #' 

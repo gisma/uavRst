@@ -29,7 +29,10 @@
 #'@importFrom lidR lasclipRectangle
 #'@importFrom rlas read.lasheader
 #'@export pc2D_dtm
-
+#' @importFrom gdalUtils ogr2ogr
+#' @importFrom gdalUtils gdal_translate
+#' @importFrom gdalUtils gdalwarp
+#' @importFrom gdalUtils gdalinfo
 #'@examples
 #'\dontrun{
 #'
