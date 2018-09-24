@@ -48,7 +48,7 @@ GLCM Variance is correlated with Dissimilarity,  r= 0.91\cr
 GLCM Variance is correlated with Homogeneity,  r= -0.83\cr
 Entropy is correlated with ASM,  r= -0.87\cr
 GLCM Mean and Correlation are more independent. For the same image, GLCM Mean shows  r< 0.1 with any of the other texture measures demonstrated in this tutorial. GLCM Correlation shows  r<0.5 with any other measure.
-for a review of a lot of feature extraction algorithms look at: \href{https://homepages.dcc.ufmg.br/~william/papers/paper_2012_JEI.pdf}{Williams et al, 2012}\cr
+for a review of a lot of feature extraction algorithms look at: \href{https://doi.org/10.1117/1.JEI.21.2.023016}{Williams et al, 2012, J. of Electronic Imaging, 21(2), 023016 (2012)}\cr
 glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogeneity" <-> "simple 4", "contrast"<-> "simple 5", "dissimilarity" <-> "advanced 2", "entropy" <-> "simple 2", "second_moment"<-> "simple 4", "correlation" <-> "simple 3"
 Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data.
 }

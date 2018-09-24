@@ -21,7 +21,7 @@
 #'@param projFolder subfolders that will be created/linked for R related GRASS processing
 #'@param verbose to be quiet (1)
 #'@param cutExtent clip area
-#'
+#'@param grassVersion numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar
 #'@importFrom lidR tree_detection
 #'@importFrom lidR writeLAS
 #'@importFrom lidR readLAS
@@ -34,15 +34,15 @@
 #'@export pc2D_dtm
 
 #'@examples
+
 #'\dontrun{
-#'
 #' require(uavRst)
 #' require(raster)
 #' require(link2GI)
 #' 
 #' # proj subfolders
-#' projRootDir<-getwd()
-#' #setwd(paste0(projRootDir,"run"))
+#' projRootDir<-tempdir()
+#' setwd(paste0(projRootDir,"run"))
 #' 
 #' paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
@@ -53,8 +53,8 @@
 #' pal = mapview::mapviewPalette("mapviewTopoColors")
 #' 
 #' # get the data
-#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las"
-#' res <- curl::curl_download(url, "run/lasdata.las")
+#' utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",destfile=paste0(path_run,"lasdata.las"))
+#' 
 #' # make the folders and linkages
 #' giLinks<-uavRst::get_gi()
 #' 
@@ -65,10 +65,10 @@
 #'                 sampleGridSize = 25,
 #'                 targetGridSize = 0.5,
 #'                 giLinks = giLinks)
-#'                 
-#'}
+#' }               
 
 pc2D_dtm <- function(laspcFile = NULL,
+                     grassVersion=1,
                     gisdbasePath = NULL,
                     tension = 20 ,
                     sampleMethod ="min",
@@ -105,13 +105,14 @@ pc2D_dtm <- function(laspcFile = NULL,
   # create project structure and export global paths
   if (!nchar(Sys.getenv("GISDBASE")) > 0 ){
   link2GI::initProj(projRootDir = tempdir() ,
-                    projFolders =  projFolder)
+                    projFolders =  projFolder,global = TRUE
+                    )
   }
-
 
   
   if (!file.exists(paste0(path_run,name)))
     cat(":: create copy of the las file at the working directory... \n")
+  if (laspcFile != paste0(path_run,name))
     file.copy(from = laspcFile,
               to = paste0(path_run,name),
               overwrite = TRUE)
@@ -147,18 +148,19 @@ pc2D_dtm <- function(laspcFile = NULL,
                       spatial_params = sp_param, 
                       resolution = sampleGridSize, 
                       returnPaths = FALSE, 
-                      quiet = TRUE)
+                      quiet = TRUE,ver_select = grassVersion)
   
   cat(":: sampling minimum altitudes using : ", sampleGridSize ,"meter grid size\n")  
   ret <- rgrass7::execGRASS("r.in.lidar",
                             flags  = c("overwrite","quiet","o","e","n"),
                             input  = paste0(path_run,name),
                             output = paste0("dem",sampleGridSize),
-                            sampleMethod  = sampleMethod ,
+                            method  = sampleMethod ,
                             resolution = sampleGridSize,
                             intern = TRUE,
                             ignore.stderr = TRUE
   )
+
   # vectorize points
   ret <- rgrass7::execGRASS("r.to.vect",
                             flags  = c("overwrite","quiet","z","b"),

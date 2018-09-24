@@ -4,15 +4,17 @@
 \alias{pc2D_dtm}
 \title{Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling}
 \usage{
-pc2D_dtm(laspcFile = NULL, gisdbasePath = NULL, tension = 20,
-  sampleMethod = "min", cutExtent = NULL, sampleGridSize = 25,
-  targetGridSize = 0.25, splineThresGridSize = 0.5,
-  projFolder = NULL,
+pc2D_dtm(laspcFile = NULL, grassVersion = 1, gisdbasePath = NULL,
+  tension = 20, sampleMethod = "min", cutExtent = NULL,
+  sampleGridSize = 25, targetGridSize = 0.25,
+  splineThresGridSize = 0.5, projFolder = NULL,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
   giLinks = NULL, verbose = FALSE)
 }
 \arguments{
 \item{laspcFile}{character. default is \code{NULL} path  to the laz/las file(s)}
+
+\item{grassVersion}{version of GRAsSS}
 
 \item{gisdbasePath}{character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
 
@@ -44,14 +46,13 @@ resolution. this is a kind of an try and error process and provides fairly good 
 }
 \examples{
 \dontrun{
-
 require(uavRst)
 require(raster)
 require(link2GI)
 
 # proj subfolders
-projRootDir<-getwd()
-#setwd(paste0(projRootDir,"run"))
+projRootDir<-tempdir()
+setwd(paste0(projRootDir,"run"))
 
 paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
@@ -62,8 +63,8 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 pal = mapview::mapviewPalette("mapviewTopoColors")
 
 # get the data
-url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las"
-res <- curl::curl_download(url, "run/lasdata.las")
+utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",destfile=paste0(path_run,"lasdata.las"))
+
 # make the folders and linkages
 giLinks<-uavRst::get_gi()
 
@@ -74,8 +75,7 @@ dtm <- pc2D_dtm(laspcFile = paste0(path_run,"lasdata.las"),
                 sampleGridSize = 25,
                 targetGridSize = 0.5,
                 giLinks = giLinks)
-                
-}
+}               
 }
 \author{
 Chris Reudenbach

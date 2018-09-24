@@ -30,9 +30,8 @@
 #'@export pc3D_dtm
 #'
 #'@examples
-#'\dontrun{
-#'
-#'
+
+#' \dontrun{
 #' require(uavRst)
 #' require(raster)
 #' require(link2GI)
@@ -50,20 +49,20 @@
 #' pal = mapview::mapviewPalette("mapviewTopoColors")
 #' 
 #' # get the data
-#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/lidar.las"
-#' curl::curl_download(url, "run/lasdata.las")
+#' utils::download.file(url="https://github.com/gisma/gismaData/tree/master/uavRst/data/lidar.las", 
+#'                      destfile="lidar.las")
 #' # make the folders and linkages
 #' giLinks<-uavRst::get_gi()
 #' 
 #'# # create 3D DTM
-#' dtm2 <- pc3D_dtm(lasDir = l paste0(path_run,"lasdata.las"),
+#' dtm2 <- pc3D_dtm(lasDir =  paste0(path_run,"lasdata.las"),
 #'                       gisdbasePath = projRootDir,
 #'                       thinGrid = 1.,
 #'                       splineNumber = 5 ,
 #'                       gridSize = 0.5,
 #'                       giLinks = giLinks)
-#'                       
-#'}
+#'   }                    
+
 
 pc3D_dtm <- function(lasDir = NULL,
                       gisdbasePath = NULL,
