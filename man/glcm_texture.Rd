@@ -53,6 +53,7 @@ glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogen
 Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data.
 }
 \examples{
+
 \dontrun{
 require(glcm)
 ## example on how to calculate texture from a list of channels

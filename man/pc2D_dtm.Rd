@@ -14,7 +14,7 @@ pc2D_dtm(laspcFile = NULL, grassVersion = 1, gisdbasePath = NULL,
 \arguments{
 \item{laspcFile}{character. default is \code{NULL} path  to the laz/las file(s)}
 
-\item{grassVersion}{version of GRAsSS}
+\item{grassVersion}{numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar}
 
 \item{gisdbasePath}{character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
 
@@ -52,7 +52,6 @@ require(link2GI)
 
 # proj subfolders
 projRootDir<-tempdir()
-setwd(paste0(projRootDir,"run"))
 
 paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
@@ -63,7 +62,8 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 pal = mapview::mapviewPalette("mapviewTopoColors")
 
 # get the data
-utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",destfile=paste0(path_run,"lasdata.las"))
+utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
+destfile=paste0(path_run,"lasdata.las"))
 
 # make the folders and linkages
 giLinks<-uavRst::get_gi()

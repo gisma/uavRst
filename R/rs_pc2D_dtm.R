@@ -42,7 +42,6 @@
 #' 
 #' # proj subfolders
 #' projRootDir<-tempdir()
-#' setwd(paste0(projRootDir,"run"))
 #' 
 #' paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
@@ -53,7 +52,8 @@
 #' pal = mapview::mapviewPalette("mapviewTopoColors")
 #' 
 #' # get the data
-#' utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",destfile=paste0(path_run,"lasdata.las"))
+#' utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
+#' destfile=paste0(path_run,"lasdata.las"))
 #' 
 #' # make the folders and linkages
 #' giLinks<-uavRst::get_gi()
@@ -110,12 +110,12 @@ pc2D_dtm <- function(laspcFile = NULL,
   }
 
   
-  if (!file.exists(paste0(path_run,name)))
+  if (!file.exists(paste0(path_run,name))){
     cat(":: create copy of the las file at the working directory... \n")
   if (laspcFile != paste0(path_run,name))
     file.copy(from = laspcFile,
               to = paste0(path_run,name),
-              overwrite = TRUE)
+              overwrite = TRUE)}
   cat(":: get extent of the point cloud \n")
   if (!is.null(cutExtent)){
     las<-lidR::readLAS(paste0(path_run,name))

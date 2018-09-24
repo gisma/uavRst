@@ -4,9 +4,9 @@
 \alias{pc2D_dsm}
 \title{Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling}
 \usage{
-pc2D_dsm(laspcFile = NULL, gisdbasePath = NULL, sampleMethod = "max",
-  threshold = 20, cutExtent = NULL, targetGridSize = 0.25,
-  projFolder = NULL,
+pc2D_dsm(laspcFile = NULL, gisdbasePath = NULL, grassVersion = 1,
+  sampleMethod = "max", threshold = 20, cutExtent = NULL,
+  targetGridSize = 0.25, projFolder = NULL,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
   giLinks = NULL, verbose = FALSE)
 }
@@ -14,6 +14,8 @@ pc2D_dsm(laspcFile = NULL, gisdbasePath = NULL, sampleMethod = "max",
 \item{laspcFile}{character. default is \code{NULL} path  to the laz/las file(s)}
 
 \item{gisdbasePath}{character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
+
+\item{grassVersion}{numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar}
 
 \item{sampleMethod}{sampling method for point aggregation}
 
@@ -38,14 +40,12 @@ grid size and fills the no data holes if so.
 }
 \examples{
 \dontrun{
-
 require(uavRst)
 require(raster)
 require(link2GI)
 
 # proj subfolders
-projRootDir<-getwd()
-#setwd(paste0(projRootDir,"run"))
+projRootDir<-tempdir()
 
 paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
@@ -56,8 +56,9 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 pal = mapview::mapviewPalette("mapviewTopoColors")
 
 # get the data
-url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las"
-res <- curl::curl_download(url, "run/lasdata.las")
+utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
+destfile=paste0(path_run,"lasdata.las"))
+
 # make the folders and linkages
 giLinks<-uavRst::get_gi()
 

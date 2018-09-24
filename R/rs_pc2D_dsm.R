@@ -18,6 +18,7 @@
 #'@param projFolder subfolders that will be created/linked for R related GRASS processing
 #'@param verbose to be quiet (1)
 #'@param cutExtent clip area
+#'@param grassVersion numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar
 #'
 #'@importFrom lidR tree_detection
 #'@importFrom lidR writeLAS
@@ -27,15 +28,15 @@
 #'@export pc2D_dsm
 
 #'@examples
+
 #'\dontrun{
-#'
 #' require(uavRst)
 #' require(raster)
 #' require(link2GI)
 #' 
 #' # proj subfolders
-#' projRootDir<-getwd()
-#' #setwd(paste0(projRootDir,"run"))
+#' projRootDir<-tempdir()
+
 #' 
 #' paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
@@ -46,8 +47,9 @@
 #' pal = mapview::mapviewPalette("mapviewTopoColors")
 #' 
 #' # get the data
-#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las"
-#' res <- curl::curl_download(url, "run/lasdata.las")
+#' utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
+#' destfile=paste0(path_run,"lasdata.las"))
+#' 
 #' # make the folders and linkages
 #' giLinks<-uavRst::get_gi()
 #' 
@@ -61,6 +63,7 @@
 
 pc2D_dsm <- function(laspcFile = NULL,
                     gisdbasePath = NULL,
+                    grassVersion=1,
                     sampleMethod = "max",
                     threshold = 20 ,
                     cutExtent = NULL,
@@ -99,11 +102,11 @@ pc2D_dsm <- function(laspcFile = NULL,
 
 
   
-  if (!file.exists(paste0(path_run,name)))
+  if (!file.exists(paste0(path_run,name))){
     cat(":: create copy of the las file at the working directory... \n")
     file.copy(from = laspcFile,
               to = paste0(path_run,name),
-              overwrite = TRUE)
+              overwrite = TRUE)}
   cat(":: get extent of the point cloud \n")
   if (!is.null(cutExtent)){
     las<-lidR::readLAS(paste0(path_run,name))
@@ -135,7 +138,7 @@ pc2D_dsm <- function(laspcFile = NULL,
                       location = "pc2D_dsm", 
                       spatial_params = sp_param, 
                       resolution = targetGridSize, 
-                      returnPaths = FALSE, 
+                      returnPaths = FALSE, ver_select = grassVersion,
                       quiet = TRUE)
   
   cat(":: sampling ", sampleMethod, " altitudes using : ", targetGridSize ,"meter grid size\n")  
