@@ -5,8 +5,8 @@
 \title{Create a Digital Surface Model from a UAV generated point cloud}
 \usage{
 pc3D_dsm(lasDir = NULL, gisdbasePath = NULL, GRASSlocation = "tmp/",
-  projSubFolder = c("data/", "output/", "run/", "las/"),
-  gridSize = "0.25", grass_lidar_method = "mean",
+  grassVersion = 1, projSubFolder = c("data/", "output/", "run/",
+  "las/"), gridSize = "0.25", grass_lidar_method = "mean",
   grass_lidar_pth = 90, splineNumber = "4", otb_gauss_radius = "0.5",
   smoothFilter = "gauss", dsm_minalt = 0, dsm_maxalt = 4000,
   dsm_area = FALSE, cutExtent = NULL,
@@ -20,6 +20,8 @@ pc3D_dsm(lasDir = NULL, gisdbasePath = NULL, GRASSlocation = "tmp/",
 \item{gisdbasePath}{character. gisdbase will be linked or created depending on \code{gisdbase_exist}}
 
 \item{GRASSlocation}{character. location will be linked or created depending on \code{gisdbase_exist}}
+
+\item{grassVersion}{numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar}
 
 \item{projSubFolder}{character. subfolders that will be created/linked for R related GRASS processing}
 
@@ -60,35 +62,35 @@ It creates a \code{raster*} object.
 }
 \examples{
 \dontrun{
-
 require(uavRst)
 require(raster)
 require(link2GI)
 
 # proj subfolders
-projRootDir<-getwd()
+projRootDir<-tempdir()
 #setwd(paste0(projRootDir,"run"))
-
+projsubFolders<-c("data/","data/ref/","output/","run/","las/")
 paths<-link2GI::initProj(projRootDir = projRootDir,
-                         projFolders = c("data/","data/ref/","output/","run/","las/"),
-                         global = TRUE,
-                         path_prefix = "path_")
+                        projFolders = projsubFolders,
+                        global = TRUE,
+                        path_prefix = "path_")
 
 # get some colors
 pal = mapview::mapviewPalette("mapviewTopoColors")
 
 # get the data
-url <- "https://github.com/gisma/gismaData/raw/master/uavRst/lidar.las"
-res <- curl::curl_download(url, "run/lasdata.las")
+utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
+                    destfile=paste0(path_run,"lasdata.las"))
 # make the folders and linkages
 giLinks<-uavRst::get_gi()
 
-# create a DSM based on a uav point cloud
- pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),
+# create a DSM  based on a uav point cloud
+pc3DSM<-pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),
         gisdbasePath = projRootDir,
-        projSubFolder = c("data/","output/","run/","las/"),
-        gridSize = "0.5")
-        
+        projSubFolder = projSubFolder,
+        gridSize = "0.5", 
+        giLinks = giLinks)
+mapview::mapview(pc3DSM[[1]])
 }
 
 }

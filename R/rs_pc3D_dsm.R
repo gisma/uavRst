@@ -34,6 +34,9 @@ if (!isGeneric('pc3D_dsm')) {
 #'@param pathLastools character. folder containing the Windows binary files of the lastools
 #'@param verbose logical. to be quiet FALSE
 #'@param cutExtent numerical. clip area c(mix,miny,maxx,maxy)
+#'@param grassVersion numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar
+
+
 #' @importFrom gdalUtils ogr2ogr
 #' @importFrom gdalUtils gdal_translate
 #' @importFrom gdalUtils gdalwarp
@@ -41,41 +44,42 @@ if (!isGeneric('pc3D_dsm')) {
 #'@export pc3D_dsm
 #'@examples
 #'\dontrun{
+#'require(uavRst)
+#'require(raster)
+#'require(link2GI)
 #'
-#' require(uavRst)
-#' require(raster)
-#' require(link2GI)
-#' 
-#' # proj subfolders
-#' projRootDir<-getwd()
-#' #setwd(paste0(projRootDir,"run"))
-#' 
-#' paths<-link2GI::initProj(projRootDir = projRootDir,
-#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
-#'                          global = TRUE,
-#'                          path_prefix = "path_")
-#' 
-#' # get some colors
-#' pal = mapview::mapviewPalette("mapviewTopoColors")
-#' 
-#' # get the data
-#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/lidar.las"
-#' res <- curl::curl_download(url, "run/lasdata.las")
-#' # make the folders and linkages
-#' giLinks<-uavRst::get_gi()
-#' 
-#' # create a DSM based on a uav point cloud
-#'  pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),
+#'# proj subfolders
+#'projRootDir<-tempdir()
+#'#setwd(paste0(projRootDir,"run"))
+#'projsubFolders<-c("data/","data/ref/","output/","run/","las/")
+#'paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                         projFolders = projsubFolders,
+#'                         global = TRUE,
+#'                         path_prefix = "path_")
+#'
+#'# get some colors
+#'pal = mapview::mapviewPalette("mapviewTopoColors")
+#'
+#'# get the data
+#'utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
+#'                     destfile=paste0(path_run,"lasdata.las"))
+#'# make the folders and linkages
+#'giLinks<-uavRst::get_gi()
+#'
+#'# create a DSM  based on a uav point cloud
+#'pc3DSM<-pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),
 #'         gisdbasePath = projRootDir,
-#'         projSubFolder = c("data/","output/","run/","las/"),
-#'         gridSize = "0.5")
-#'         
+#'         projSubFolder = projSubFolder,
+#'         gridSize = "0.5", 
+#'         giLinks = giLinks)
+#'mapview::mapview(pc3DSM[[1]])
 #'}
 #'
 
 pc3D_dsm <- function(lasDir = NULL,
                    gisdbasePath = NULL,
                    GRASSlocation = "tmp/",
+                   grassVersion =1,
                    projSubFolder = c("data/","output/","run/","las/"),
                    gridSize = "0.25",
                    grass_lidar_method = "mean",
@@ -92,7 +96,10 @@ pc3D_dsm <- function(lasDir = NULL,
                    pathLastools = NULL,
                    giLinks =NULL,
                    verbose = FALSE) {
-
+  LASbin<-searchLastools()
+  if (length(LASbin)<1) stop("\n At ",MP," no LAStool binaries found")
+  else lasbin<- as.character(LASbin[[1]][,])
+  
   if (is.null(giLinks)){
     giLinks <- get_gi()
   }
@@ -113,24 +120,16 @@ pc3D_dsm <- function(lasDir = NULL,
   lasDir <- path.expand(lasDir)
   if (Sys.info()["sysname"] == "Windows") {
     #cmd <- pathLastools <- paste(system.file(package = "uavRst"), "lastools", sep="/")/lastools/bin
-    if (is.null(pathLastools)) {cmd <- pathLastools <- "C:/lastools/bin"
+    if (is.null(pathLastools)) {cmd <- pathLastools <- lasbin
     if (verbose) cat("\n You did not provide a path to your lastool binary folder. Assuming C:/lastools/bin\n")}
   } else {
     #cmd <- paste("wine ",pathLastools <- paste(system.file(package = "uavRst"), "lastools",  sep="/"))
-    if (is.null(pathLastools)) {cmd <- pathLastools <- paste0("wine ",path.expand("~/apps/lastools/bin"))
-    if (verbose) cat("\n You did not provide a path to your lastool binary folder. Assuming wine ~/apps/lastools/bin\n")}
-
+    if (is.null(pathLastools)) {cmd <- pathLastools <- paste0("wine ",lasbin)
+    if (verbose) cat("\n You did not provide a path to your lastool binary folder.\n
+                         Assumed to be somewher in your home directory")}
+    
   }
-  #if (grep(pattern = "lastools (by martin@rapidlasso.com)", ret, value = TRUE)) stop("no directory containing the Windows lastool binary files is provided...\n")
 
-  # command <- paste(cmd,"/lasinfo.exe ",sep = "/")
-  # command <- paste0(command," -i ",lasFile)
-  # command <- paste0(command," -h ")
-  # command <- paste0(command," -stdout ")
-  # ret <- system(command,intern = TRUE,ignore.stderr = F)
-  # tmp <- grep(pattern = "rapidlasso", ret, value = TRUE)
-  # grep(x = system(paste(cmd,"/lasinfo.exe -h",sep = "/"),intern = FALSE),pattern = "rapidlasso",ignore.case = TRUE)
-  #
   #create cmd strings
   lasmerge      <- paste(cmd,"lasmerge.exe",sep = "/")
   lasinfo       <- paste(cmd,"lasinfo.exe",sep = "/")
@@ -201,16 +200,16 @@ pc3D_dsm <- function(lasDir = NULL,
 
   # create GRASS7 connection according gisdbase_exist (permanent or temporary)
   if (gisdbase_exist)
-    paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath, location = GRASSlocation, gisdbase_exist = TRUE)
+    paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath, location = GRASSlocation, gisdbase_exist = TRUE,ver_select = grassVersion)
   else
-    paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath, location = GRASSlocation, spatial_params = sp_param,resolution = gridSize)
+    paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath, location = GRASSlocation, spatial_params = sp_param,resolution = gridSize,ver_select = grassVersion)
 
   # create raw DSM using r.in.lidar
   cat(":: calculate DSM...\n")
 
   ret <- rgrass7::execGRASS("r.in.lidar",
                             flags  = c("overwrite","quiet","o"),
-                            input  = paste0(path_run,name),
+                            input  = paste0(path_run,fn,".las"),
                             output = fn,
                             method = grass_lidar_method,
                             pth = grass_lidar_pth,

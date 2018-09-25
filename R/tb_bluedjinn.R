@@ -826,4 +826,32 @@ cutTif<- function(rasterFiles = NULL,
     system(paste0("gdal_translate -projwin ", te, " -of GTiff ",rasterFile, " ", path_run,outPath,"/",prefix,basename(rasterFile)))
   }
 }
+
+searchLastools <- function(MP = "~",
+                       quiet=TRUE) {
+  if (MP=="default") MP <- "~"
+  MP<-path.expand(MP)
+  if (!exists("GiEnv")) GiEnv <- new.env(parent=globalenv()) 
+  # trys to find a osgeo4w installation at the mounting point  disk returns root directory and version name
+  # recursive dir for otb*.bat returns all version of otb bat files
+  if (!quiet) cat("\nsearching for lastools windows binaries - this may take a while\n")
+  if (!quiet) cat("For providing the path manually see ?searchLastools \n")
+  raw_LAS <- system2("find", paste(MP," ! -readable -prune -o -type f -iname 'lasview.exe' -print"),stdout = TRUE)
+  if (!grepl(MP,raw_LAS)[[1]]) stop("\n At ",MP," no LAStool binaries found")
+  # trys to identify valid otb installations and their version numbers
+  LASbinaries <- lapply(seq(length(raw_LAS)), function(i){
+    
+    # TODO strip version from OTB /usr/bin/otbcli_BandMath -version
+    # "This is the BandMath application, version 6.0.0"
+    
+    # if the the tag "OSGEO4W64" exists set installation_type
+    root_dir <- data.frame(binDir = substr(raw_LAS[i],1, gregexpr(pattern = "lasview.exe", raw_LAS[i])[[1]][1] - 1))
+    # put the existing GISBASE directory, version number  and installation type in a data frame
+    #data.frame(binDir = root_dir,lastoolCmd = paste0(root_dir,"lasview.exe"), stringsAsFactors = FALSE)
+  }) # end lapply
+  # bind the df lines
+  otbInstallations <- do.call("rbind", LASbinaries )
   
+  
+  return(LASbinaries)
+}

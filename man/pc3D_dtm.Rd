@@ -58,30 +58,32 @@ require(raster)
 require(link2GI)
 
 # proj subfolders
-projRootDir<-getwd()
+projRootDir<-tempdir()
 #setwd(paste0(projRootDir,"run"))
-
+projsubFolders<-c("data/","data/ref/","output/","run/","las/")
 paths<-link2GI::initProj(projRootDir = projRootDir,
-                         projFolders = c("data/","data/ref/","output/","run/","las/"),
-                         global = TRUE,
-                         path_prefix = "path_")
+                        projFolders = projsubFolders,
+                        global = TRUE,
+                        path_prefix = "path_")
 
 # get some colors
 pal = mapview::mapviewPalette("mapviewTopoColors")
 
 # get the data
-utils::download.file(url="https://github.com/gisma/gismaData/tree/master/uavRst/data/lidar.las", 
-                     destfile="lidar.las")
+utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
+                    destfile=paste0(path_run,"lasdata.las"))
 # make the folders and linkages
 giLinks<-uavRst::get_gi()
 
-# # create 3D DTM
-dtm2 <- pc3D_dtm(lasDir =  paste0(path_run,"lasdata.las"),
+# create a DSM  based on a uav point cloud
+pc3DTM <- pc3D_dtm(lasDir =  paste0(path_run,"lasdata.las"),
                       gisdbasePath = projRootDir,
+                      projSubFolder = projSubFolder,
                       thinGrid = 1.,
                       splineNumber = 5 ,
                       gridSize = 0.5,
                       giLinks = giLinks)
+mapview::mapview(pc3DTM[[1]])                  
   }                    
 }
 \author{

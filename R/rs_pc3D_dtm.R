@@ -23,6 +23,7 @@
 #'@param projSubFolder list of character contaiing subfolders that will be created/linked for R related GRASS processing
 #'@param verbose logical. to be quiet (1)
 #'@param cutExtent object of typ extent deteerming the clip area
+
 #'@importFrom lidR tree_detection
 #'@importFrom lidR writeLAS
 #'@importFrom lidR readLAS
@@ -32,35 +33,37 @@
 #'@examples
 
 #' \dontrun{
-#' require(uavRst)
-#' require(raster)
-#' require(link2GI)
-#' 
-#' # proj subfolders
-#' projRootDir<-getwd()
-#' #setwd(paste0(projRootDir,"run"))
-#' 
-#' paths<-link2GI::initProj(projRootDir = projRootDir,
-#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
-#'                          global = TRUE,
-#'                          path_prefix = "path_")
-#' 
-#' # get some colors
-#' pal = mapview::mapviewPalette("mapviewTopoColors")
-#' 
-#' # get the data
-#' utils::download.file(url="https://github.com/gisma/gismaData/tree/master/uavRst/data/lidar.las", 
-#'                      destfile="lidar.las")
-#' # make the folders and linkages
-#' giLinks<-uavRst::get_gi()
-#' 
-#'# # create 3D DTM
-#' dtm2 <- pc3D_dtm(lasDir =  paste0(path_run,"lasdata.las"),
+#'require(uavRst)
+#'require(raster)
+#'require(link2GI)
+#'
+#'# proj subfolders
+#'projRootDir<-tempdir()
+#'#setwd(paste0(projRootDir,"run"))
+#'projsubFolders<-c("data/","data/ref/","output/","run/","las/")
+#'paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                         projFolders = projsubFolders,
+#'                         global = TRUE,
+#'                         path_prefix = "path_")
+#'
+#'# get some colors
+#'pal = mapview::mapviewPalette("mapviewTopoColors")
+#'
+#'# get the data
+#'utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
+#'                     destfile=paste0(path_run,"lasdata.las"))
+#'# make the folders and linkages
+#'giLinks<-uavRst::get_gi()
+#'
+#'# create a DSM  based on a uav point cloud
+#' pc3DTM <- pc3D_dtm(lasDir =  paste0(path_run,"lasdata.las"),
 #'                       gisdbasePath = projRootDir,
+#'                       projSubFolder = projSubFolder,
 #'                       thinGrid = 1.,
 #'                       splineNumber = 5 ,
 #'                       gridSize = 0.5,
 #'                       giLinks = giLinks)
+#'mapview::mapview(pc3DTM[[1]])                  
 #'   }                    
 
 
@@ -81,8 +84,9 @@ pc3D_dtm <- function(lasDir = NULL,
                    pathLastools = NULL,
                    giLinks =NULL,
                    verbose = FALSE) {
-
-
+  LASbin<-searchLastools()
+  if (length(LASbin)<1) stop("\n At ",MP," no LAStool binaries found")
+  else lasbin<- as.character(LASbin[[1]][,])
   if (is.null(giLinks)){
     giLinks <- get_gi()
   }
@@ -102,12 +106,13 @@ pc3D_dtm <- function(lasDir = NULL,
   lasDir <- path.expand(lasDir)
   if (Sys.info()["sysname"] == "Windows") {
     #cmd <- pathLastools <- paste(system.file(package = "uavRst"), "lastools", sep="/")/lastools/bin
-    if (is.null(pathLastools)) {cmd <- pathLastools <- "C:/lastools/bin"
+    if (is.null(pathLastools)) {cmd <- pathLastools <- lasbin
     if (verbose) cat("\n You did not provide a path to your lastool binary folder. Assuming C:/lastools/bin\n")}
   } else {
     #cmd <- paste("wine ",pathLastools <- paste(system.file(package = "uavRst"), "lastools",  sep="/"))
-    if (is.null(pathLastools)) {cmd <- pathLastools <- paste0("wine ",path.expand("~/apps/lastools/bin"))
-    if (verbose) cat("\n You did not provide a path to your lastool binary folder. Assuming wine ~/apps/lastools/bin\n")}
+    if (is.null(pathLastools)) {cmd <- pathLastools <- paste0("wine ",path.expand(lasbin))
+    if (verbose) cat("\n You did not provide a path to your lastool binary folder.\n
+                         Assumed to be somewher in your home directory")}
 
   }
 
@@ -117,27 +122,6 @@ pc3D_dtm <- function(lasDir = NULL,
   lasground_new <- paste(cmd,"lasground_new.exe",sep = "/")
   las2dem       <- paste(cmd,"las2dem.exe",sep = "/")
   las2txt       <- paste(cmd,"las2txt.exe",sep = "/")
-
-  # check las / laz files; laz will be preferred
-  # if (!(extension(lasDir)==".las"||extension(lasDir)==".laz")) {
-  #   tmplasDir<-dirname(lasDir)
-  #   lasFileNames <- list.files(pattern = "[.]las$", path = tmplasDir, full.names = TRUE)
-  #   lazFileNames <- list.files(pattern = "[.]laz$", path = tmplasDir, full.names = TRUE)
-  # } else {
-  #   if (extension(lasDir)==".las") {
-  #     lasFileNames <- lasDir
-  #     lazFileNames <- NULL}
-  #   else if (extension(lasDir)==".laz") {
-  #     lazFileNames <- lasDir
-  #     lasFileNames <- NULL}
-  #   
-  # }
-  # 
-  # if (length(lazFileNames) > 0 ) extFN <- substr(extension(basename(lazFileNames[1])),2,4)
-  # else if (length(lasFileNames) > 0) extFN <- substr(extension(basename(lasFileNames[1])),2,4)
-  # else stop("no valid las or laz files found...\n")
-
-
 
   # map the code words
   if (stepSize == "city") step <- "25"
@@ -217,14 +201,14 @@ pc3D_dtm <- function(lasDir = NULL,
   # copy it to the output folder
   file.rename(from = paste0(path_run,name),
             to = paste0(path_run,fn,".las"))
-
+  name<-paste0(path_run,fn,".las")
   # add proj4 string manually
   sp_param[5] <- proj4
 
   ### reduce the data amount
   cat("\n:: reducing the point density...\n")
   ret <- system(paste0(las2las,
-                       " -i ",path_run,name,
+                       " -i ",name,
                        " -odix _reduced ",
                        " -odir ",path_run,
                        " -o",extFN,
@@ -239,7 +223,7 @@ pc3D_dtm <- function(lasDir = NULL,
   # run lasground
   cat(":: classify ground points (lastools) ...\n")
   ret <- system(paste0(lasground_new,
-                       " -i ",path_run,tools::file_path_sans_ext(name),"_reduced.",extFN,
+                       " -i ",tools::file_path_sans_ext(name),"_reduced.",extFN,
                        " -all_returns ",
                        " -bulge ", bulge,
                        " -skip_files",
