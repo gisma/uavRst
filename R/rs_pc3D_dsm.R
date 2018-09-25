@@ -34,6 +34,7 @@ if (!isGeneric('pc3D_dsm')) {
 #'@param pathLastools character. folder containing the Windows binary files of the lastools
 #'@param verbose logical. to be quiet FALSE
 #'@param cutExtent numerical. clip area c(mix,miny,maxx,maxy)
+#'@param MP character mounting point / drive letter default is "~"
 #'@param grassVersion numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar
 
 
@@ -95,8 +96,9 @@ pc3D_dsm <- function(lasDir = NULL,
                    gisdbase_exist = FALSE,
                    pathLastools = NULL,
                    giLinks =NULL,
+                   MP ="~",
                    verbose = FALSE) {
-  LASbin<-searchLastools()
+  LASbin<-searchLastools(MP=MP)
   if (length(LASbin)<1) stop("\n At ",MP," no LAStool binaries found")
   else lasbin<- as.character(LASbin[[1]][,])
   

@@ -10,7 +10,7 @@ pc3D_dtm(lasDir = NULL, gisdbasePath = NULL, thinGrid = "0.5",
   dtmarea = FALSE, cutExtent = NULL, projSubFolder = c("data/",
   "output/", "run/", "las/"),
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
-  cores = "3", pathLastools = NULL, giLinks = NULL,
+  cores = "3", pathLastools = NULL, giLinks = NULL, MP = "~",
   verbose = FALSE)
 }
 \arguments{
@@ -45,6 +45,8 @@ pc3D_dtm(lasDir = NULL, gisdbasePath = NULL, thinGrid = "0.5",
 \item{pathLastools}{character. folder containing the Windows binary files of the lastools}
 
 \item{giLinks}{list of GI tools cli pathes, default is NULL}
+
+\item{MP}{character mounting point / drive letter default is "~"}
 
 \item{verbose}{logical. to be quiet (1)}
 }

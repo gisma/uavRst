@@ -23,7 +23,7 @@
 #'@param projSubFolder list of character contaiing subfolders that will be created/linked for R related GRASS processing
 #'@param verbose logical. to be quiet (1)
 #'@param cutExtent object of typ extent deteerming the clip area
-
+#'@param MP character mounting point / drive letter default is "~"
 #'@importFrom lidR tree_detection
 #'@importFrom lidR writeLAS
 #'@importFrom lidR readLAS
@@ -82,9 +82,10 @@ pc3D_dtm <- function(lasDir = NULL,
                       proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                       cores = "3",
                    pathLastools = NULL,
-                   giLinks =NULL,
+                   giLinks =NULL, 
+                   MP ="~",
                    verbose = FALSE) {
-  LASbin<-searchLastools()
+  LASbin<-searchLastools(MP=MP)
   if (length(LASbin)<1) stop("\n At ",MP," no LAStool binaries found")
   else lasbin<- as.character(LASbin[[1]][,])
   if (is.null(giLinks)){
