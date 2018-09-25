@@ -30,6 +30,8 @@
 #' require(uavRst)
 #' require(curl)
 #' require(link2GI)
+#' ## linkages
+#' giLinks<-uavRst::get_gi()
 #' # check if SAGA is correctly installed 
 #' if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
 #' 
@@ -48,18 +50,17 @@
 #'  
 #' ## get the data
 #' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-#' curl::curl_download(url, paste0(path_run,"tutorial.zip"))
-#' unzip(zipfile = res, exdir = path_run)
+#' utils::download.file(url, paste0(path_run,"tutorial.zip"))
+#' unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 #' 
-#' ## linkages
-#' giLinks<-uavRst::get_gi()
+
 #' 
 #' ## read chm data
 #' chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
 #' tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
 #' 
 #' ### tree segmentation
-#' crowns <- chmseg_uav( treepos = tPos, 
+#' crowns_gws <- chmseg_gws( treepos = tPos, 
 #'                       chm = chmR,
 #'                       minTreeAlt = 3,
 #'                       neighbour = 0,
@@ -67,12 +68,14 @@
 #'                       thVarSpatial = 1.,
 #'                       thSimilarity = 0.00001,
 #'                       giLinks = giLinks )
+#'                       
+#' mapview::mapview(crowns_gws,zcol="treepos_2")
 #'}
 
 
 
 
-chmseg_uav <- function(treepos = NULL,
+chmseg_gws <- function(treepos = NULL,
                             chm = NULL,
                             minTreeAlt         =2,
                             minTreeAltParam = "chmQ20",
@@ -157,7 +160,7 @@ chmseg_uav <- function(treepos = NULL,
                        " -CLASS_ID 1.0",
                        " -SPLIT 1"),
                 intern = TRUE)
-
+  #
 
   crowns <- rgdal::readOGR(path_run,"crowns", verbose = FALSE)
   #crowns<-tree_crowns[tree_crowns$VALUE > 0,]
@@ -226,9 +229,9 @@ chmseg_uav <- function(treepos = NULL,
 #'  unlink(paste0(path_run,"*"), force = TRUE
 #'                  
 #' # get the data
-#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-#'  curl::curl_download(url, paste0(path_run,"tutorial.zip"))
-#'  unzip(zipfile = res, exdir = path_run)
+#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
+#' utils::download.file(url, paste0(path_run,"tutorial.zip"))
+#' unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 #' 
 #' # make the folders and linkages
 #'  giLinks<-uavRst::get_gi()
@@ -411,9 +414,9 @@ chmseg_RL <- function(treepos = NULL,
 #'  unlink(paste0(path_run,"*"), force = TRUE
 #'
 #' # get the data
-#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-#'  curl::curl_download(url, paste0(path_run,"tutorial.zip"))
-#'  unzip(zipfile = res, exdir = path_run)
+#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
+#' utils::download.file(url, paste0(path_run,"tutorial.zip"))
+#' unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 #'
 #' # make the folders and linkages
 #'  giLinks<-uavRst::get_gi()

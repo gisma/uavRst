@@ -50,9 +50,9 @@ projRootDir<-tempdir()
  unlink(paste0(path_run,"*"), force = TRUE
                  
 # get the data
- url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
- unzip(zipfile = res, exdir = path_run)
+url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
+utils::download.file(url, paste0(path_run,"tutorial.zip"))
+unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 
 # make the folders and linkages
  giLinks<-uavRst::get_gi()
