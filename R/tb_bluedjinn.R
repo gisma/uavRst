@@ -420,7 +420,7 @@ funWhichmax <- function(mask,value) {
 #' unzip(zipfile = res, exdir = path_run)
 #' 
 #' # create the links to the GI software
-#' giLinks<-uavRst::get_gi()
+#' giLinks<-uavRst::linkAll()
 #' 
 #' # convert tif to SAGA
 #'   gdalUtils::gdalwarp(paste0(path_run,"rgb_3-3.tif"),
@@ -521,13 +521,13 @@ poly_stat <- function(x = NULL,
 #' require(link2GI)
 #' 
 #' # search, find and create the links to all supported  GI software
-#' giLinks<-uavRst::get_gi()
+#' giLinks<-uavRst::linkAll()
 #' 
 
 #'}
 
 #' @export
-get_gi <- function(links=NULL,
+linkAll <- function(links=NULL,
                         simple = TRUE,
                         linkItems = c("saga","grass7","otb","gdal"),
                         sagaArgs = "default",

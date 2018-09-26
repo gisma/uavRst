@@ -28,10 +28,9 @@
 #'\dontrun{
 #' # required packages
 #' require(uavRst)
-#' require(curl)
 #' require(link2GI)
 #' ## linkages
-#' giLinks<-uavRst::get_gi()
+#' giLinks<-uavRst::linkAll()
 #' # check if SAGA is correctly installed 
 #' if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
 #' 
@@ -69,7 +68,7 @@
 #'                       thSimilarity = 0.00001,
 #'                       giLinks = giLinks )
 #'                       
-#' mapview::mapview(crowns_gws,zcol="treepos_2")
+#' mapview::mapview(crowns_gws,zcol="chmMEAN")
 #'}
 
 
@@ -104,7 +103,7 @@ chmseg_gws <- function(treepos = NULL,
   # create correct param lists
   #segmentationBands<-c("HI","GLI")
   if (is.null(giLinks)){
-    giLinks <- get_gi()
+    giLinks <- linkAll()
   }
 
   gdal <- giLinks$gdal
@@ -117,7 +116,6 @@ chmseg_gws <- function(treepos = NULL,
   # Start final segmentation algorithm as provided by SAGA's seeded Region Growing segmentation (imagery_segmentation 3)
   # TODO sensitivity analysis of the parameters
 
-
   RSAGA::rsaga.geoprocessor(lib = "imagery_segmentation", module = 3,
                             param = list(SEEDS = paste(path_run,"treepos.sgrd", sep = ""),
                                          FEATURES = param_list,
@@ -128,7 +126,8 @@ chmseg_gws <- function(treepos = NULL,
                                          METHOD   =  method,
                                          SIG_1    =  thVarFeature,
                                          SIG_2    =  thVarSpatial,
-                                         THRESHOLD = thSimilarity),
+                                         THRESHOLD = thSimilarity), 
+                            env = env,
                             intern = TRUE,
                             invisible = FALSE,show.output.on.console = TRUE)
 
@@ -208,44 +207,46 @@ chmseg_gws <- function(treepos = NULL,
 #' @examples
 #'\dontrun{
 #' 
-#' # required packages
+#' ## required packages
 #' require(uavRst)
-#' require(curl)
+#' require(link2GI)
 #' 
-#' # check if SAGA is correctly installed 
-#' if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
-#' 
-#' # project folder
+#' ## make the folders and linkages
+#' giLinks<-uavRst::linkAll()
+#'  
+#' ## project folder
 #' projRootDir<-tempdir()
 #' 
-#' # create subfolders please mind that the pathes are exported as global variables
-#'  paths<-link2GI::initProj(projRootDir = projRootDir,
+#' ## create subfolders please mind that the pathes are exported as global variables
+#' paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
+#'                          
 #' ## overide trailing backslash issue
-#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  setwd(path_run)                                          
-#'  unlink(paste0(path_run,"*"), force = TRUE
+#' path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+#' setwd(path_run)                                          
+#' unlink(paste0(path_run,"*"), force = TRUE
 #'                  
-#' # get the data
-#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-#' utils::download.file(url, paste0(path_run,"tutorial.zip"))
+#' ## get the data
+#' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
+#'                      paste0(path_run,"tutorial.zip"))
 #' unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 #' 
-#' # make the folders and linkages
-#'  giLinks<-uavRst::get_gi()
+#' ## read chm data
+#' chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
+#' tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
 #' 
-#' # read chm data
-#'  chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
-#'  tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
-#' 
-#' # segmentation
-#'  crownsFT <- chmseg_FT(chm = chmR,
+#' ## segmentation
+#' crownsFT <- chmseg_FT(chm = chmR,
 #'                        treepos = tPos,
 #'                        format = "polygons",
 #'                        minTreeAlt = 2,
 #'                        verbose = FALSE)
+#'                        
+#' ## Visualisation
+#' mapview::mapview(crownsFT,zcol="treepos_2")                        
+#' 
 #'}
 
 
@@ -295,18 +296,18 @@ chmseg_FT <- function(treepos = NULL,
 #' @export
 #' @examples
 #' \dontrun{
-#' # required packages
+#' ## required packages
 #'  require(uavRst)
 #'  require(link2GI)
 #'  require(mapview)
-#'
-#' # check if SAGA is correctly installed
-#' if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
-#'
-#' # project folder
+#'  
+#' ## make the folders and linkages
+#'  giLinks<-uavRst::linkAll()
+#'  
+#' ## project folder
 #' projRootDir<-tempdir()
 #'
-#' # create subfolders please mind that the pathes are exported as global variables
+#' ## create subfolders please mind that the pathes are exported as global variables
 #'  paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
@@ -315,23 +316,21 @@ chmseg_FT <- function(treepos = NULL,
 #'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #'  setwd(path_run)
 #'  unlink(paste0(path_run,"*"), force = TRUE)
+#' ## download data
 #'  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
 #'                        destfile='tutorial.zip')
 #'  unzip(zipfile = "tutorial.zip", exdir = path_run)
 #'
-#' # make the folders and linkages
-#'  giLinks<-uavRst::get_gi()
-#'
-#' # read chm data
+#' ## read chm and tree position data
 #'  chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
 #'  tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
 #'
-#' # segmentation
+#' ## segmentation
 #'  crownsRL <- chmseg_RL(chm= chmR,
 #'                        treepos= tPos,
 #'                        maxCrownArea = 150,
 #'                        exclusion = 0.2)
-#'  # presentation
+#' ## visualisation
 #'  mapview::mapview(crownsRL)
 #'}
 
@@ -419,7 +418,7 @@ chmseg_RL <- function(treepos = NULL,
 #' unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 #'
 #' # make the folders and linkages
-#'  giLinks<-uavRst::get_gi()
+#'  giLinks<-uavRst::linkAll()
 #'
 #' # read chm data
 #'  chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
@@ -433,6 +432,9 @@ chmseg_RL <- function(treepos = NULL,
 #'                         TRESHCrown = 0.55,
 #'                         minTreeAlt = 2,
 #'                         maxCrownArea = 150)
+#'                         
+#' # visualisation                         
+#' mapview::mapview(crownsITC,zcol="Height_m")                         
 #' }
 
 

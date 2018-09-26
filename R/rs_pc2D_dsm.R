@@ -51,7 +51,7 @@
 #' destfile=paste0(path_run,"lasdata.las"))
 #' 
 #' # make the folders and linkages
-#' giLinks<-uavRst::get_gi()
+#' giLinks<-uavRst::linkAll()
 #' 
 #' # create 2D pointcloud DSM
 #' dsm <- pc2D_dsm(laspcFile = paste0(path_run,"lasdata.las"),
@@ -73,7 +73,7 @@ pc2D_dsm <- function(laspcFile = NULL,
                     giLinks =NULL,
                     verbose = FALSE) {
   if (is.null(giLinks)){
-    giLinks <- get_gi()
+    giLinks <- linkAll()
   }
   gdal <- giLinks$gdal
   saga <- giLinks$saga

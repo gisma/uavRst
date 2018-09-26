@@ -60,7 +60,7 @@ utils::download.file(url, paste0(path_run,"tutorial.zip"))
 unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 
 # make the folders and linkages
- giLinks<-uavRst::get_gi()
+ giLinks<-uavRst::linkAll()
 
 # read chm data
  chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
@@ -74,5 +74,8 @@ unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
                         TRESHCrown = 0.55,
                         minTreeAlt = 2,
                         maxCrownArea = 150)
+                        
+# visualisation                         
+mapview::mapview(crownsITC,zcol="Height_m")                         
 }
 }

@@ -138,7 +138,7 @@ res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
 unzip(zipfile = res,exdir = path_run)
 
 # create the links to the GI software
-giLinks<-uavRst::get_gi()
+giLinks<-uavRst::linkAll()
 
 # calculate synthetic channels for segmentation and extract the trainingdata
 trainDF <- calc_ext(calculateBands    = TRUE,

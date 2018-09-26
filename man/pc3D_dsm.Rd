@@ -59,8 +59,11 @@ pc3D_dsm(lasDir = NULL, gisdbasePath = NULL, GRASSlocation = "tmp/",
 }
 \description{
 Create a Digital Surface Model from a UAV generated point cloud. Basically returns a DSM.
-It uses the 'r.in.lidar' function to calculate LiDAR derived raster grids.
+It uses the 'r.in.lidar'/ 'r.in.pdal' function to calculate LiDAR derived raster grids.
 It creates a \code{raster*} object.
+}
+\note{
+For using 'PDAL'(since GRASS7.4.x) you have to install the PDAL binaries and python bindings if not bundled with GRASS. running Linux \code{sudo apt-get install libpdal-base5 libpdal-dev libpdal-plugin-python pdal}
 }
 \examples{
 \dontrun{
@@ -84,12 +87,12 @@ pal = mapview::mapviewPalette("mapviewTopoColors")
 utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
                     destfile=paste0(path_run,"lasdata.las"))
 # make the folders and linkages
-giLinks<-uavRst::get_gi()
+giLinks<-uavRst::linkAll()
 
 # create a DSM  based on a uav point cloud
 pc3DSM<-pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),
         gisdbasePath = projRootDir,
-        projSubFolder = projSubFolder,
+        projSubFolder = projsubFolder,
         gridSize = "0.5", 
         giLinks = giLinks)
 mapview::mapview(pc3DSM[[1]])

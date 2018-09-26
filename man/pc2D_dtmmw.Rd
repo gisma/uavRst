@@ -68,7 +68,7 @@ pal = mapview::mapviewPalette("mapviewTopoColors")
 url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las"
 res <- curl::curl_download(url, "run/lasdata.las")
 # make the folders and linkages
-giLinks<-uavRst::get_gi()
+giLinks<-uavRst::linkAll()
 
 # create 2D point cloud DTM
 dtm <- pc2D_dtm(laspcFile = paste0(path_run,"lasdata.las"),

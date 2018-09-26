@@ -507,7 +507,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' unzip(zipfile = res,exdir = path_run)
 #' 
 #' # create the links to the GI software
-#' giLinks<-uavRst::get_gi()
+#' giLinks<-uavRst::linkAll()
 #' 
 #' # calculate synthetic channels for segmentation and extract the trainingdata
 #' trainDF <- calc_ext(calculateBands    = TRUE,
@@ -581,7 +581,7 @@ calc_ext<- function ( calculateBands    = FALSE,
   
   if (!rgbi) rgbTrans <- hara <- stat <- edge <- morpho <- FALSE
   if (is.null(giLinks)){
-    giLinks <- get_gi()
+    giLinks <- linkAll()
   }
   
   gdal <- giLinks$gdal

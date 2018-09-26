@@ -53,7 +53,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
  chmR <- raster::raster(paste0(path_run,"chm_3-3.tif"))  
  
 # create the links to the GI software
- giLinks<-uavRst::get_gi()
+ giLinks<-uavRst::linkAll()
 
 # calculate treepos using uavRst generic approach
  tPos <- uavRst::treepos(chm = chmR,

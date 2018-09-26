@@ -60,7 +60,7 @@ utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/d
 destfile=paste0(path_run,"lasdata.las"))
 
 # make the folders and linkages
-giLinks<-uavRst::get_gi()
+giLinks<-uavRst::linkAll()
 
 # create 2D pointcloud DSM
 dsm <- pc2D_dsm(laspcFile = paste0(path_run,"lasdata.las"),
