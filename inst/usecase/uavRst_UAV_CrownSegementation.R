@@ -57,7 +57,7 @@ rgbImgFn<-c(paste0(path_data,"eme04.tif"),paste0(path_data,"eme07.tif"),paste0(p
 actual_grid_size<-0.1
 
 # link all CLI stuff
-giLinks<-get_gi()
+giLinks<-linkAll()
 
 # clean dirs
 #unlink(paste0(path_run,"*"), force = TRUE)

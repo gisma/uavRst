@@ -58,7 +58,7 @@ las_data <- paste0(path_data,"eme_dense.las")
 actual_grid_size<-0.1
 
 # link all CLI stuff
-giLinks<-get_gi()
+giLinks<-linkAll()
 
 # clean dirs
 #unlink(paste0(path_run,"*"), force = TRUE)

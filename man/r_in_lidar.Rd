@@ -53,15 +53,15 @@ simple wrapper for 'r.in.lidar' to calculate LiDAR derived raster grids. It crea
 \examples{
 \dontrun{
 # Straightforward approach to generate a DTM based on the class 2 minimum returns of a LiDAR file
-require(curl)
+path=setwd(tempdir())
 # get a laz file from Mr. Isenburg
 url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz"
-res <- curl::curl_download(url=url,
-                           destfile="test.laz",  quiet = TRUE, mode = "wb")
+utils::download.file(url=url,
+                     destfile="test.laz",  quiet = TRUE, mode = "wb")
 # convert it to las
 lastool(tool="las2las","test.laz")
 # extract extension for setting up GRASS region
-ext<-lastool(lasDir = "test.las")
+ext<-lastool(lasFile =  paste0(path,"/test.las"))
 # set up GRASS
 result<-link2GI::linkGRASS7(spatial_params = c(ext[2],ext[1],ext[4],ext[3],proj4),
                              resolution = gridsize)

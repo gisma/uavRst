@@ -46,7 +46,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 plot2<-raster::shapefile(paste0(path_data,"ref/plot_UTM.shp"))
 
 # link all CLI stuff
-giLinks<-get_gi()
+giLinks<-linkAll()
 
 # clean dirs
 
