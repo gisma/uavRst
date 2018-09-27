@@ -24,15 +24,14 @@ is local maximum with a fixed window size. Carlos A. Silva et all.: R package \h
 
 # required packages
  require(uavRst)
- require(curl)
 
 # runtime folde
 path_run<-tempdir()
 
 # get the rgb image, chm and training data 
- url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
- res <- curl::curl_download(url, paste0(path_run,"chm_3-3.tif"))
- tPosRL <- treepos_RL(chm = paste0(path_run,"chm_3-3.tif"), 
+url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
+utils::download.file(url, paste0(path_run,"chm_3-3.tif")
+tPosRL <- treepos_RL(chm = paste0(path_run,"chm_3-3.tif"), 
                       movingWin = 7, 
                       minTreeAlt = 2)
 }

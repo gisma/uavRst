@@ -60,7 +60,7 @@
 #' tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
 #' 
 #' ### tree segmentation
-#' crowns_gws <- chmseg_gws( treepos = tPos, 
+#' crowns_GWS <- chmseg_GWS( treepos = tPos, 
 #'                       chm = chmR,
 #'                       minTreeAlt = 3,
 #'                       neighbour = 0,
@@ -69,13 +69,13 @@
 #'                       thSimilarity = 0.00001,
 #'                       giLinks = giLinks )
 #'                       
-#' mapview::mapview(crowns_gws,zcol="treepos_2")
+#' mapview::mapview(crowns_GWS,zcol="treepos_2")
 #'}
 
 
 
 
-chmseg_gws <- function(treepos = NULL,
+chmseg_GWS <- function(treepos = NULL,
                             chm = NULL,
                             minTreeAlt         =2,
                             minTreeAltParam = "chmQ20",
