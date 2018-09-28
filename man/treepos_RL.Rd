@@ -25,7 +25,7 @@ is local maximum with a fixed window size. Carlos A. Silva et all.: R package \h
 ## required packages
 require(uavRst)
 
-## runtime folde
+## runtime folder
 path_run<-tempdir()
 
 ## get the rgb image, chm and training data 

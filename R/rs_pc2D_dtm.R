@@ -151,27 +151,27 @@ pc2D_dtm <- function(laspcFile = NULL,
                       quiet = TRUE,ver_select = grassVersion)
   
   cat(":: sampling minimum altitudes using : ", sampleGridSize ,"meter grid size\n") 
-  if (!grepl(system("g.extension -l",ignore.stdout = TRUE),pattern = "r.in.lidar"))
+  #if (!grepl(system("g.extension -l",ignore.stdout = TRUE),pattern = "r.in.lidar"))
     ret <- rgrass7::execGRASS("r.in.pdal",
-                              flags  = c("overwrite","quiet","e"),
+                              flags  = c("overwrite","quiet"),
                               input  = paste0(path_run,name),
                               output = paste0("dem",sampleGridSize),
                               method = sampleMethod,
                               proj_in = sp_param[5],
                               resolution = as.numeric(sampleGridSize),
                               intern = TRUE,
-                              ignore.stderr = TRUE
+                              ignore.stderr = FALSE
     )
-  else
-  ret <- rgrass7::execGRASS("r.in.lidar",
-                            flags  = c("overwrite","quiet","o","e","n"),
-                            input  = paste0(path_run,name),
-                            output = paste0("dem",sampleGridSize),
-                            method  = sampleMethod ,
-                            resolution = sampleGridSize,
-                            intern = TRUE,
-                            ignore.stderr = TRUE
-  )
+  # else
+  # ret <- rgrass7::execGRASS("r.in.lidar",
+  #                           flags  = c("overwrite","quiet","o","e","n"),
+  #                           input  = paste0(path_run,name),
+  #                           output = paste0("dem",sampleGridSize),
+  #                           method  = sampleMethod ,
+  #                           resolution = sampleGridSize,
+  #                           intern = TRUE,
+  #                           ignore.stderr = TRUE
+  # )
 
   # vectorize points
   ret <- rgrass7::execGRASS("r.to.vect",

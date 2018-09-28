@@ -208,9 +208,9 @@ pc3D_dsm <- function(lasDir = NULL,
 
   # create raw DSM using r.in.lidar
   cat(":: calculate DSM...\n")
-  if (!grepl(system("g.extension -l",ignore.stdout = TRUE),pattern = "r.in.lidar"))
+  #if (!grepl(system("g.extension -l",ignore.stdout = TRUE),pattern = "r.in.lidar"))
     ret <- rgrass7::execGRASS("r.in.pdal",
-                              flags  = c("overwrite","quiet","e"),
+                              flags  = c("overwrite","quiet"),
                               input  = paste0(path_run,fn,".las"),
                               output = fn,
                               method = grass_lidar_method,
@@ -220,17 +220,17 @@ pc3D_dsm <- function(lasDir = NULL,
                               intern = TRUE,
                               ignore.stderr = TRUE
     )
-  else
-  ret <- rgrass7::execGRASS("r.in.lidar",
-                            flags  = c("overwrite","quiet","o"),
-                            input  = paste0(path_run,fn,".las"),
-                            output = fn,
-                            method = grass_lidar_method,
-                            pth = grass_lidar_pth,
-                            resolution = as.numeric(gridSize),
-                            intern = TRUE,
-                            ignore.stderr = TRUE
-  )
+  # else
+  # ret <- rgrass7::execGRASS("r.in.lidar",
+  #                           flags  = c("overwrite","quiet","o"),
+  #                           input  = paste0(path_run,fn,".las"),
+  #                           output = fn,
+  #                           method = grass_lidar_method,
+  #                           pth = grass_lidar_pth,
+  #                           resolution = as.numeric(gridSize),
+  #                           intern = TRUE,
+  #                           ignore.stderr = TRUE
+  # )
 
 
 

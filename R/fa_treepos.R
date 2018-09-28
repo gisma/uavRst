@@ -3,7 +3,7 @@ if (!isGeneric('treepos')) {
     standardGeneric('treepos'))
 }
 
-#'@name treepos
+#'@name treepos_GWS
 #'@title Find potential tree positions using a canopy height model
 #'
 #'@description
@@ -16,13 +16,13 @@ if (!isGeneric('treepos')) {
 #'@param minTreeAltParam character. code for the percentile that is used as tree height treshold. It is build using the key letters \code{chmQ} and adding the percentile i.e. "10". Default is \code{chmQ20}
 #'@param minCrownArea    numeric. minimum area in square meter (if you use projected data) of the projected tree crowns
 #'@param maxCrownArea    numeric. maximum area in square meter (if you use projected data) of the projected tree crowns
-#'@param join        numeric. Join Segments based on Threshold Value, 0=no join, 1=treepos2saddle diff, 2=treepos2treepos diff. see also \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_0.html}{SAGA GIS Help}
+#'@param join        numeric. Join Segments based on Threshold Value, 0=no join, 1=treepos_GWS2saddle diff, 2=treepos_GWS2treepos diff. see also \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_0.html}{SAGA GIS Help}
 #'@param thresh      numeric. Specify a threshold value as minimum difference between neighboured segments in meter. see also \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_0.html}{SAGA GIS Help}
 #'@param giLinks        list. of GI tools cli paths
 
 #'
 #'
-#'@export treepos
+#'@export treepos_GWS
 #'@examples
 #'\dontrun{
 #'
@@ -51,7 +51,7 @@ if (!isGeneric('treepos')) {
 #'  giLinks<-uavRst::linkAll()
 #' 
 #' # calculate treepos using uavRst generic approach
-#'  tPos <- uavRst::treepos(chm = chmR,
+#'  tPos <- uavRst::treepos_GWS(chm = chmR,
 #'                          minTreeAlt = 2,
 #'                          maxCrownArea = 150,
 #'                          join = 1,
@@ -60,7 +60,7 @@ if (!isGeneric('treepos')) {
 #'                        
 #'}
 #'
-treepos <- function(chm = NULL,
+treepos_GWS <- function(chm = NULL,
                                   minTreeAlt       = 10,
                                   minTreeAltParam  = "chmQ20",
                                   minCrownArea     = 3,
@@ -179,7 +179,7 @@ treepos <- function(chm = NULL,
 #'## required packages
 #'require(uavRst)
 #'
-#'## runtime folde
+#'## runtime folder
 #'path_run<-tempdir()
 #'
 #'## get the rgb image, chm and training data 
@@ -195,6 +195,7 @@ treepos <- function(chm = NULL,
 #'                     minTreeAlt = 2)
 #'## visualisation
 #' mapview::mapview(tPosRL)
+
 #' }
 
 
@@ -282,7 +283,7 @@ treepos_lidR <- function(chm =NULL,
 #' @param verbose quiet (1)
 #' height of \code{treepos}.
 #' @importFrom rLiDAR ForestCAS
-#' @export treepos_ft
+#' @export treepos_FT
 #' @examples
 #' \dontrun{
 #' 
@@ -298,14 +299,14 @@ treepos_lidR <- function(chm =NULL,
 #'  res <- curl::curl_download(url, paste0(path_run,"chm_3-3.tif"))
 #' 
 #' # call ForestTools treepos 
-#'  treepos_ft(chm = paste0(path_run,"chm_3-3.tif"),
+#'  treepos_FT(chm = paste0(path_run,"chm_3-3.tif"),
 #'             minTreeAlt = 2, 
 #'             maxCrownArea = 150)
 #'                          
 #' }
 
 
-treepos_ft <- function(chm =NULL,
+treepos_FT <- function(chm =NULL,
                         winFun = function(x){0.5 * ((x^2) * 0.0090 + 2.51)},
                         minTreeAlt = 2,
                         maxCrownArea = maxCrownArea,

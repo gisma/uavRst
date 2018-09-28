@@ -158,9 +158,9 @@ pc2D_dtmmw <- function(laspcFile = NULL,
                         quiet = TRUE)
     
     # cat(":: sampling minimum altitudes using : ", sampleGridSize ,"meter grid size\n")  
-    if (!grepl(system("g.extension -l",ignore.stdout = TRUE),pattern = "r.in.lidar"))
+#    if (!grepl(system("g.extension -l",ignore.stdout = TRUE),pattern = "r.in.lidar"))
       ret <- rgrass7::execGRASS("r.in.pdal",
-                                flags  = c("overwrite","quiet","e"),
+                                flags  = c("overwrite","quiet"),
                                 input  = paste0(path_run,name),
                                 output = paste0("dem",i),
                                 method = "min",
@@ -169,17 +169,17 @@ pc2D_dtmmw <- function(laspcFile = NULL,
                                 intern = TRUE,
                                 ignore.stderr = TRUE
       )
-    else
-    ret <- rgrass7::execGRASS("r.in.lidar",
-                              flags  = c("overwrite","quiet","o","e","n"),
-                              input  = paste0(path_run,name),
-                              output = paste0("dem",i),
-                              method = "min",
-                              resolution = i,
-                              # trim = 49,
-                              intern = TRUE,
-                              ignore.stderr = TRUE
-    )
+    # else
+    # ret <- rgrass7::execGRASS("r.in.lidar",
+    #                           flags  = c("overwrite","quiet","o","e","n"),
+    #                           input  = paste0(path_run,name),
+    #                           output = paste0("dem",i),
+    #                           method = "min",
+    #                           resolution = i,
+    #                           # trim = 49,
+    #                           intern = TRUE,
+    #                           ignore.stderr = TRUE
+    # )
     
     ret <- rgrass7::execGRASS("r.to.vect",
                               flags  = c("overwrite","quiet","v", "z"),

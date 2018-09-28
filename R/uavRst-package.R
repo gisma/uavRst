@@ -21,7 +21,7 @@
 #'  You will find some tutorials and examples at the uavRst Wiki. Please feel free to participate. \cr\cr
 #' 
 #' 
-#' @author Hanna Meyer, Thomas Nauss, Lars Opgenoorth, Chris Reudenbach, Environmental Informatics Marburg \cr
+#' @author Hanna Meyer, Thomas Nauss,Florian Detsch, Lars Opgenoorth, Chris Reudenbach, Environmental Informatics Marburg \cr
 #' \cr
 #' \emph{Maintainer:} Chris Reudenbach \email{reudenbach@@uni-marburg.de}
 #'
