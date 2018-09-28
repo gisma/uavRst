@@ -48,7 +48,7 @@ if (!isGeneric('treepos')) {
 #'  chmR <- raster::raster(paste0(path_run,"chm_3-3.tif"))  
 #'  
 #' # create the links to the GI software
-#'  giLinks<-uavRst::get_gi()
+#'  giLinks<-uavRst::linkAll()
 #' 
 #' # calculate treepos using uavRst generic approach
 #'  tPos <- uavRst::treepos_GWS(chm = chmR,
@@ -74,7 +74,7 @@ treepos_GWS <- function(chm = NULL,
   options(warn=-1)
 
   if (is.null(giLinks)){
-    giLinks <- get_gi()
+    giLinks <- linkAll()
   }
 
   gdal <- giLinks$gdal
@@ -176,18 +176,26 @@ treepos_GWS <- function(chm = NULL,
 #' @examples
 #' \dontrun{
 #' 
-#' # required packages
-#'  require(uavRst)
-#' 
-#' # runtime folde
-#' path_run<-tempdir()
-#' 
-#' # get the rgb image, chm and training data 
-#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
-#' utils::download.file(url, paste0(path_run,"chm_3-3.tif")
-#' tPosRL <- treepos_RL(chm = paste0(path_run,"chm_3-3.tif"), 
-#'                       movingWin = 7, 
-#'                       minTreeAlt = 2)
+#'## required packages
+#'require(uavRst)
+#'
+#'## runtime folder
+#'path_run<-tempdir()
+#'
+#'## get the rgb image, chm and training data 
+#'utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif", 
+#'                     paste0("chm_3-3.tif"))
+#'
+#'## read tif
+#'chm<-raster::raster("chm_3-3.tif")
+#'
+#'## find trees
+#'tPosRL <- treepos_RL(chm = chm, 
+#'                     movingWin = 7, 
+#'                     minTreeAlt = 2)
+#'## visualisation
+#' mapview::mapview(tPosRL)
+
 #' }
 
 
@@ -221,19 +229,27 @@ treepos_RL <- function(chm =NULL,
 #' @examples
 #' \dontrun{
 #' 
-#' # required packages
-#'  require(uavRst)
-#'  require(curl)
-#' 
-#' # runtime folde
-#'  path_run<-tempdir()
-#' 
-#' # get the rgb image, chm and training data 
-#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
-#'  res <- curl::curl_download(url, paste0(path_run,"chm_3-3.tif"))
-#'  tPosliR <- treepos_lidR(chm = paste0(path_run,"chm_3-3.tif"),
-#'                          movingWin = 7, 
-#'                          minTreeAlt = 2)
+#'require(uavRst)
+#'## required packages
+#'require(uavRst)
+#'
+#'## runtime folde
+#'path_run<-tempdir()
+#'
+#'## get the rgb image, chm and training data 
+#'utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif", 
+#'                     paste0("chm_3-3.tif"))
+#'
+#'## read tif
+#'chm<-raster::raster("chm_3-3.tif")
+#'
+#'## find trees
+#'tPoslidR <- treepos_lidR(chm = chm, 
+#'                     movingWin = 7, 
+#'                     minTreeAlt = 2)
+#'## visualisation
+#' mapview::mapview(tPoslidR)
+
 #'                          
 #' }
 
@@ -299,7 +315,7 @@ treepos_FT <- function(chm =NULL,
   # if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
   #   chm <- raster::raster(chm)
   # }
-  maxcrown <- sqrt(maxCrownArea/ pi) * 4
+  maxcrown <- sqrt(maxCrownArea/ pi) * 4 * 1/raster::res(chm)[[1]]
 
   localmaxima <- ForestTools::vwf(CHM = chm,
                                             winFun = winFun,

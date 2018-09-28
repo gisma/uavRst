@@ -8,9 +8,9 @@ if (!isGeneric('pc3D_dsm')) {
 #'
 #'@description
 #' Create a Digital Surface Model from a UAV generated point cloud. Basically returns a DSM.
-#' It uses the 'r.in.lidar' function to calculate LiDAR derived raster grids.
+#' It uses the 'r.in.lidar'/ 'r.in.pdal' function to calculate LiDAR derived raster grids.
 #' It creates a \code{raster*} object.
-#'
+#' @note For using 'PDAL'(since GRASS7.4.x) you have to install the PDAL binaries and python bindings if not bundled with GRASS. running Linux \code{sudo apt-get install libpdal-base5 libpdal-dev libpdal-plugin-python pdal}
 #' @seealso \href{https://grass.osgeo.org/grass70/manuals/r.in.lidar.html}{r.in.lidar help}
 #'
 #'@author Chris Reudenbach
@@ -65,12 +65,12 @@ if (!isGeneric('pc3D_dsm')) {
 #'utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
 #'                     destfile=paste0(path_run,"lasdata.las"))
 #'# make the folders and linkages
-#'giLinks<-uavRst::get_gi()
+#'giLinks<-uavRst::linkAll()
 #'
 #'# create a DSM  based on a uav point cloud
 #'pc3DSM<-pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),
 #'         gisdbasePath = projRootDir,
-#'         projSubFolder = projSubFolder,
+#'         projSubFolder = projsubFolder,
 #'         gridSize = "0.5", 
 #'         giLinks = giLinks)
 #'mapview::mapview(pc3DSM[[1]])
@@ -103,7 +103,7 @@ pc3D_dsm <- function(lasDir = NULL,
   else lasbin<- as.character(LASbin[[1]][,])
   
   if (is.null(giLinks)){
-    giLinks <- get_gi()
+    giLinks <- linkAll()
   }
 
   gdal <- giLinks$gdal
@@ -208,17 +208,29 @@ pc3D_dsm <- function(lasDir = NULL,
 
   # create raw DSM using r.in.lidar
   cat(":: calculate DSM...\n")
-
-  ret <- rgrass7::execGRASS("r.in.lidar",
-                            flags  = c("overwrite","quiet","o"),
-                            input  = paste0(path_run,fn,".las"),
-                            output = fn,
-                            method = grass_lidar_method,
-                            pth = grass_lidar_pth,
-                            resolution = as.numeric(gridSize),
-                            intern = TRUE,
-                            ignore.stderr = TRUE
-  )
+  #if (!grepl(system("g.extension -l",ignore.stdout = TRUE),pattern = "r.in.lidar"))
+    ret <- rgrass7::execGRASS("r.in.pdal",
+                              flags  = c("overwrite","quiet"),
+                              input  = paste0(path_run,fn,".las"),
+                              output = fn,
+                              method = grass_lidar_method,
+                              pth = grass_lidar_pth,
+                              proj_in = sp_param[5],
+                              resolution = as.numeric(gridSize),
+                              intern = TRUE,
+                              ignore.stderr = TRUE
+    )
+  # else
+  # ret <- rgrass7::execGRASS("r.in.lidar",
+  #                           flags  = c("overwrite","quiet","o"),
+  #                           input  = paste0(path_run,fn,".las"),
+  #                           output = fn,
+  #                           method = grass_lidar_method,
+  #                           pth = grass_lidar_pth,
+  #                           resolution = as.numeric(gridSize),
+  #                           intern = TRUE,
+  #                           ignore.stderr = TRUE
+  # )
 
 
 

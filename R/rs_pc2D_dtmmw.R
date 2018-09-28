@@ -56,7 +56,7 @@
 #' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las"
 #' res <- curl::curl_download(url, "run/lasdata.las")
 #' # make the folders and linkages
-#' giLinks<-uavRst::get_gi()
+#' giLinks<-uavRst::linkAll()
 #' 
 #' # create 2D point cloud DTM
 #' dtm <- pc2D_dtm(laspcFile = paste0(path_run,"lasdata.las"),
@@ -90,7 +90,7 @@ pc2D_dtmmw <- function(laspcFile = NULL,
   
   
   if (is.null(giLinks)){
-    giLinks <- get_gi()
+    giLinks <- linkAll()
   }
   gdal <- giLinks$gdal
   saga <- giLinks$saga
@@ -158,16 +158,28 @@ pc2D_dtmmw <- function(laspcFile = NULL,
                         quiet = TRUE)
     
     # cat(":: sampling minimum altitudes using : ", sampleGridSize ,"meter grid size\n")  
-    ret <- rgrass7::execGRASS("r.in.lidar",
-                              flags  = c("overwrite","quiet","o","e","n"),
-                              input  = paste0(path_run,name),
-                              output = paste0("dem",i),
-                              sampleMethod = "min",
-                              resolution = i,
-                              # trim = 49,
-                              intern = TRUE,
-                              ignore.stderr = TRUE
-    )
+#    if (!grepl(system("g.extension -l",ignore.stdout = TRUE),pattern = "r.in.lidar"))
+      ret <- rgrass7::execGRASS("r.in.pdal",
+                                flags  = c("overwrite","quiet"),
+                                input  = paste0(path_run,name),
+                                output = paste0("dem",i),
+                                method = "min",
+                                proj_in = sp_param[5],
+                                resolution = as.numeric(i),
+                                intern = TRUE,
+                                ignore.stderr = TRUE
+      )
+    # else
+    # ret <- rgrass7::execGRASS("r.in.lidar",
+    #                           flags  = c("overwrite","quiet","o","e","n"),
+    #                           input  = paste0(path_run,name),
+    #                           output = paste0("dem",i),
+    #                           method = "min",
+    #                           resolution = i,
+    #                           # trim = 49,
+    #                           intern = TRUE,
+    #                           ignore.stderr = TRUE
+    # )
     
     ret <- rgrass7::execGRASS("r.to.vect",
                               flags  = c("overwrite","quiet","v", "z"),

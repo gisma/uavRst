@@ -50,10 +50,9 @@ Tree segmentation based on a CHM, basically returns a vector data set with the t
 \dontrun{
 # required packages
 require(uavRst)
-require(curl)
 require(link2GI)
 ## linkages
-giLinks<-uavRst::get_gi()
+giLinks<-uavRst::linkAll()
 # check if SAGA is correctly installed 
 if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
 
@@ -90,7 +89,7 @@ crowns_GWS <- chmseg_GWS( treepos = tPos,
                       thSimilarity = 0.00001,
                       giLinks = giLinks )
                       
-mapview::mapview(crowns_GWS,zcol="treepos_2")
+mapview::mapview(crowns_gws,zcol="chmMEAN")
 }
 }
 \author{

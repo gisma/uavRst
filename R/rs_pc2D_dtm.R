@@ -56,7 +56,7 @@
 #' destfile=paste0(path_run,"lasdata.las"))
 #' 
 #' # make the folders and linkages
-#' giLinks<-uavRst::get_gi()
+#' giLinks<-uavRst::linkAll()
 #' 
 #' # create 2D point cloud DTM
 #' dtm <- pc2D_dtm(laspcFile = paste0(path_run,"lasdata.las"),
@@ -81,7 +81,7 @@ pc2D_dtm <- function(laspcFile = NULL,
                     giLinks =NULL,
                     verbose = FALSE) {
   if (is.null(giLinks)){
-    giLinks <- get_gi()
+    giLinks <- linkAll()
   }
   gdal <- giLinks$gdal
   saga <- giLinks$saga
@@ -150,16 +150,28 @@ pc2D_dtm <- function(laspcFile = NULL,
                       returnPaths = FALSE, 
                       quiet = TRUE,ver_select = grassVersion)
   
-  cat(":: sampling minimum altitudes using : ", sampleGridSize ,"meter grid size\n")  
-  ret <- rgrass7::execGRASS("r.in.lidar",
-                            flags  = c("overwrite","quiet","o","e","n"),
-                            input  = paste0(path_run,name),
-                            output = paste0("dem",sampleGridSize),
-                            method  = sampleMethod ,
-                            resolution = sampleGridSize,
-                            intern = TRUE,
-                            ignore.stderr = TRUE
-  )
+  cat(":: sampling minimum altitudes using : ", sampleGridSize ,"meter grid size\n") 
+  #if (!grepl(system("g.extension -l",ignore.stdout = TRUE),pattern = "r.in.lidar"))
+    ret <- rgrass7::execGRASS("r.in.pdal",
+                              flags  = c("overwrite","quiet"),
+                              input  = paste0(path_run,name),
+                              output = paste0("dem",sampleGridSize),
+                              method = sampleMethod,
+                              proj_in = sp_param[5],
+                              resolution = as.numeric(sampleGridSize),
+                              intern = TRUE,
+                              ignore.stderr = FALSE
+    )
+  # else
+  # ret <- rgrass7::execGRASS("r.in.lidar",
+  #                           flags  = c("overwrite","quiet","o","e","n"),
+  #                           input  = paste0(path_run,name),
+  #                           output = paste0("dem",sampleGridSize),
+  #                           method  = sampleMethod ,
+  #                           resolution = sampleGridSize,
+  #                           intern = TRUE,
+  #                           ignore.stderr = TRUE
+  # )
 
   # vectorize points
   ret <- rgrass7::execGRASS("r.to.vect",

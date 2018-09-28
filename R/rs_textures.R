@@ -247,7 +247,7 @@ otbtex_hara<- function(x,
 
 
   if (is.null(giLinks)){
-    giLinks <- get_gi()
+    giLinks <- linkAll()
   }
   path_OTB <- giLinks$otb$pathOTB
   otb<- giLinks$otb
@@ -407,7 +407,7 @@ otb_stat<- function(input=NULL,
                         giLinks = NULL){
 
   if (is.null(giLinks)){
-    giLinks <- get_gi()
+    giLinks <- linkAll()
   }
   path_OTB <- giLinks$otb$pathOTB
 
@@ -481,7 +481,7 @@ otbtex_edge<- function(input=NULL,
                    giLinks = NULL){
 
     if (is.null(giLinks)){
-      giLinks <- get_gi()
+      giLinks <- linkAll()
     }
   path_OTB <- giLinks$otb$pathOTB
   retStack<-list()
@@ -561,7 +561,7 @@ otbtex_gray<- function(input=NULL,
                          giLinks = NULL){
 
   if (is.null(giLinks)){
-    giLinks <- get_gi()
+    giLinks <- linkAll()
   }
   path_OTB <- giLinks$otb$pathOTB
 
@@ -635,7 +635,7 @@ morpho_dem<- function(dem,
                     numScale = 2,
                     giLinks = NULL) {
   if (is.null(giLinks)){
-    giLinks <- get_gi()
+    giLinks <- linkAll()
   }
   issaga <- Vectorize(issagaitem)
   isgdal <- Vectorize(isgdaldemitem)

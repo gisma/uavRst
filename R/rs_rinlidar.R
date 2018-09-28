@@ -68,6 +68,7 @@ r_in_lidar<- function(input=NULL,
                       class_filter=NULL,
                       flags = c("e","n","overwrite","o")) {
   ### TODO some strange effects with zrange and file are passed by
+  stopifnot(!grepl(system("g.extension -l",ignore.stdout = TRUE),pattern = "r.in.lidar"),cat("NO r.in.lidar installed"))
   file=NULL
   input<-path.expand(input)
   if (!is.null(zrange)){

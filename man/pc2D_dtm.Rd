@@ -66,7 +66,7 @@ utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/d
 destfile=paste0(path_run,"lasdata.las"))
 
 # make the folders and linkages
-giLinks<-uavRst::get_gi()
+giLinks<-uavRst::linkAll()
 
 # create 2D point cloud DTM
 dtm <- pc2D_dtm(laspcFile = paste0(path_run,"lasdata.las"),

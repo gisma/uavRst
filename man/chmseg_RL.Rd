@@ -25,18 +25,18 @@ Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiD
 }
 \examples{
 \dontrun{
-# required packages
+## required packages
  require(uavRst)
  require(link2GI)
  require(mapview)
-
-# check if SAGA is correctly installed
-if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
-
-# project folder
+ 
+## make the folders and linkages
+ giLinks<-uavRst::linkAll()
+ 
+## project folder
 projRootDir<-tempdir()
 
-# create subfolders please mind that the pathes are exported as global variables
+## create subfolders please mind that the pathes are exported as global variables
  paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
@@ -45,23 +45,21 @@ projRootDir<-tempdir()
  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
  setwd(path_run)
  unlink(paste0(path_run,"*"), force = TRUE)
+## download data
  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
                        destfile='tutorial.zip')
  unzip(zipfile = "tutorial.zip", exdir = path_run)
 
-# make the folders and linkages
- giLinks<-uavRst::get_gi()
-
-# read chm data
+## read chm and tree position data
  chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
  tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
 
-# segmentation
+## segmentation
  crownsRL <- chmseg_RL(chm= chmR,
                        treepos= tPos,
                        maxCrownArea = 150,
                        exclusion = 0.2)
- # presentation
+## visualisation
  mapview::mapview(crownsRL)
 }
 }

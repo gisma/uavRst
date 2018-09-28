@@ -59,7 +59,7 @@ res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
 unzip(zipfile = res, exdir = path_run)
 
 # create the links to the GI software
-giLinks<-uavRst::get_gi()
+giLinks<-uavRst::linkAll()
 
 # convert tif to SAGA
   gdalUtils::gdalwarp(paste0(path_run,"rgb_3-3.tif"),

@@ -53,7 +53,7 @@
 #'utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
 #'                     destfile=paste0(path_run,"lasdata.las"))
 #'# make the folders and linkages
-#'giLinks<-uavRst::get_gi()
+#'giLinks<-uavRst::linkAll()
 #'
 #'# create a DSM  based on a uav point cloud
 #' pc3DTM <- pc3D_dtm(lasDir =  paste0(path_run,"lasdata.las"),
@@ -89,7 +89,7 @@ pc3D_dtm <- function(lasDir = NULL,
   if (length(LASbin)<1) stop("\n At ",MP," no LAStool binaries found")
   else lasbin<- as.character(LASbin[[1]][,])
   if (is.null(giLinks)){
-    giLinks <- get_gi()
+    giLinks <- linkAll()
   }
   gdal <- giLinks$gdal
   saga <- giLinks$saga

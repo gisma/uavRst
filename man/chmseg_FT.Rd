@@ -29,43 +29,45 @@ Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools
 \examples{
 \dontrun{
 
-# required packages
+## required packages
 require(uavRst)
-require(curl)
+require(link2GI)
 
-# check if SAGA is correctly installed 
-if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
-
-# project folder
+## make the folders and linkages
+giLinks<-uavRst::linkAll()
+ 
+## project folder
 projRootDir<-tempdir()
 
-# create subfolders please mind that the pathes are exported as global variables
- paths<-link2GI::initProj(projRootDir = projRootDir,
+## create subfolders please mind that the pathes are exported as global variables
+paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
                          path_prefix = "path_")
+                         
 ## overide trailing backslash issue
- path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)                                          
- unlink(paste0(path_run,"*"), force = TRUE
+path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+setwd(path_run)                                          
+unlink(paste0(path_run,"*"), force = TRUE
                  
-# get the data
-url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-utils::download.file(url, paste0(path_run,"tutorial.zip"))
+## get the data
+utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
+                     paste0(path_run,"tutorial.zip"))
 unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 
-# make the folders and linkages
- giLinks<-uavRst::get_gi()
+## read chm data
+chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
+tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
 
-# read chm data
- chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
- tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
-
-# segmentation
- crownsFT <- chmseg_FT(chm = chmR,
+## segmentation
+crownsFT <- chmseg_FT(chm = chmR,
                        treepos = tPos,
                        format = "polygons",
                        minTreeAlt = 2,
                        verbose = FALSE)
+                       
+## Visualisation
+mapview::mapview(crownsFT,zcol="treepos_2")                        
+
 }
 }
