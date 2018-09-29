@@ -65,7 +65,7 @@
 pc2D_dsm <- function(laspcFile = NULL,
                     gisdbasePath = NULL,
                     grassVersion=1,
-                    searchPath ="/usr",
+                    searchPath =NULL,
                     sampleMethod = "max",
                     threshold = 20 ,
                     cutExtent = NULL,
@@ -76,6 +76,8 @@ pc2D_dsm <- function(laspcFile = NULL,
                     verbose = FALSE) {
 
   gdal <- linkGDAL()
+  if (is.null(searchPath))
+  path_run<-ifelse(Sys.info()["sysname"]=="Windows", searchPath="C:",searchPath="/usr")
   
   if (!verbose){
     GV <- Sys.getenv("GRASS_VERBOSE")
