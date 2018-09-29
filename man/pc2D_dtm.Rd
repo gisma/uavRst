@@ -4,9 +4,9 @@
 \alias{pc2D_dtm}
 \title{Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling}
 \usage{
-pc2D_dtm(laspcFile = NULL, grassVersion = 1, gisdbasePath = NULL,
-  tension = 20, sampleMethod = "min", cutExtent = NULL,
-  sampleGridSize = 25, targetGridSize = 0.25,
+pc2D_dtm(laspcFile = NULL, grassVersion = 1, searchPath = NULL,
+  gisdbasePath = NULL, tension = 20, sampleMethod = "min",
+  cutExtent = NULL, sampleGridSize = 25, targetGridSize = 0.25,
   splineThresGridSize = 0.5, projFolder = NULL,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
   giLinks = NULL, verbose = FALSE)
@@ -15,6 +15,8 @@ pc2D_dtm(laspcFile = NULL, grassVersion = 1, gisdbasePath = NULL,
 \item{laspcFile}{character. default is \code{NULL} path  to the laz/las file(s)}
 
 \item{grassVersion}{numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar}
+
+\item{searchPath}{path to look for grass}
 
 \item{gisdbasePath}{character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
 

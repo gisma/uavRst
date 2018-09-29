@@ -5,9 +5,10 @@
 \title{Create a Digital Surface Model from a UAV generated point cloud}
 \usage{
 pc3D_dsm(lasDir = NULL, gisdbasePath = NULL, GRASSlocation = "tmp/",
-  grassVersion = 1, projSubFolder = c("data/", "output/", "run/",
-  "las/"), gridSize = "0.25", grass_lidar_method = "mean",
-  grass_lidar_pth = 90, splineNumber = "4", otb_gauss_radius = "0.5",
+  grassVersion = 1, searchPath = NULL, projSubFolder = c("data/",
+  "output/", "run/", "las/"), gridSize = "0.25",
+  grass_lidar_method = "mean", grass_lidar_pth = 90,
+  splineNumber = "4", otb_gauss_radius = "0.5",
   smoothFilter = "gauss", dsm_minalt = 0, dsm_maxalt = 4000,
   dsm_area = FALSE, cutExtent = NULL,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
@@ -22,6 +23,8 @@ pc3D_dsm(lasDir = NULL, gisdbasePath = NULL, GRASSlocation = "tmp/",
 \item{GRASSlocation}{character. location will be linked or created depending on \code{gisdbase_exist}}
 
 \item{grassVersion}{numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar}
+
+\item{searchPath}{path to look for grass}
 
 \item{projSubFolder}{character. subfolders that will be created/linked for R related GRASS processing}
 

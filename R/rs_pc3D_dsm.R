@@ -36,7 +36,7 @@ if (!isGeneric('pc3D_dsm')) {
 #'@param cutExtent numerical. clip area c(mix,miny,maxx,maxy)
 #'@param MP character mounting point / drive letter default is "~"
 #'@param grassVersion numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar
-
+#'@param searchPath path to look for grass
 
 #' @importFrom gdalUtils ogr2ogr
 #' @importFrom gdalUtils gdal_translate
@@ -80,7 +80,8 @@ if (!isGeneric('pc3D_dsm')) {
 pc3D_dsm <- function(lasDir = NULL,
                    gisdbasePath = NULL,
                    GRASSlocation = "tmp/",
-                   grassVersion =1,
+                   grassVersion=1,
+                   searchPath =NULL,
                    projSubFolder = c("data/","output/","run/","las/"),
                    gridSize = "0.25",
                    grass_lidar_method = "mean",
@@ -98,6 +99,18 @@ pc3D_dsm <- function(lasDir = NULL,
                    giLinks =NULL,
                    MP ="~",
                    verbose = FALSE) {
+
+  if (is.null(searchPath)){
+    if(Sys.info()["sysname"]=="Windows") {
+      searchPath="C:"
+      MP<- search
+    }
+    else {
+      searchPath <- "/usr"
+      MP<-"~"
+      }
+    }
+  
   LASbin<-searchLastools(MP=MP)
   if (length(LASbin)<1) stop("\n At ",MP," no LAStool binaries found")
   else lasbin<- as.character(LASbin[[1]][,])
@@ -202,9 +215,18 @@ pc3D_dsm <- function(lasDir = NULL,
 
   # create GRASS7 connection according gisdbase_exist (permanent or temporary)
   if (gisdbase_exist)
-    paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath, location = GRASSlocation, gisdbase_exist = TRUE,ver_select = grassVersion)
+    paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath, 
+                               location = GRASSlocation, 
+                               gisdbase_exist = TRUE,
+                               ver_select = grassVersion,
+                               search_path = searchPath)
   else
-    paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath, location = GRASSlocation, spatial_params = sp_param,resolution = gridSize,ver_select = grassVersion)
+    paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath,
+                               location = GRASSlocation, 
+                               spatial_params = sp_param,
+                               resolution = gridSize,   
+                               ver_select = grassVersion,
+                               search_path = searchPath)
 
   # create raw DSM using r.in.lidar
   cat(":: calculate DSM...\n")

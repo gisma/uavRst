@@ -75,7 +75,7 @@ pc2D_dsm <- function(laspcFile = NULL,
                     giLinks =NULL,
                     verbose = FALSE) {
 
-  gdal <- linkGDAL()
+  gdal <- link2GI::linkGDAL()
   if (is.null(searchPath)){
   if(Sys.info()["sysname"]=="Windows") searchPath="C:"
   else searchPath <- "/usr"}

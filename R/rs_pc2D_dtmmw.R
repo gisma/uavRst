@@ -22,6 +22,8 @@
 #'@param projFolder subfolders that will be created/linked for R related GRASS processing
 #'@param verbose to be quiet (1)
 #'@param cutExtent clip area
+#'@param grassVersion numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar
+#'@param searchPath path to look for grass
 #'
 #'@importFrom lidR tree_detection
 #'@importFrom lidR writeLAS
@@ -69,6 +71,8 @@
 #'}
 pc2D_dtmmw <- function(laspcFile = NULL,
                        gisdbasePath = projRootDir,
+                       grassVersion=1,
+                       searchPath =NULL,
                        tension = 30 ,
                        sampleMethod="min",
                        cutExtent = NULL,
@@ -88,15 +92,18 @@ pc2D_dtmmw <- function(laspcFile = NULL,
   
   ## Bis Zeile 69 ist das eins zu eins von dir
   
-  
-  if (is.null(giLinks)){
-    giLinks <- linkAll()
-  }
-  gdal <- giLinks$gdal
-  saga <- giLinks$saga
-  otb <- giLinks$otb
-  sagaCmd<-saga$sagaCmd
-  path_OTB <- otb$pathOTB
+  gdal <- link2GI::linkGDAL()
+  if (is.null(searchPath)){
+    if(Sys.info()["sysname"]=="Windows") searchPath="C:"
+    else searchPath <- "/usr"}
+  # if (is.null(giLinks)){
+  #   giLinks <- linkAll()
+  # }
+
+  #saga <- giLinks$saga
+  #otb <- giLinks$otb
+  #sagaCmd<-saga$sagaCmd
+  #path_OTB <- otb$pathOTB
   
   if (!verbose){
     GV <- Sys.getenv("GRASS_VERBOSE")
@@ -155,7 +162,9 @@ pc2D_dtmmw <- function(laspcFile = NULL,
                         spatial_params = sp_param, 
                         resolution = i, 
                         returnPaths = FALSE, 
-                        quiet = TRUE)
+                        quiet = TRUE,
+                        ver_select = grassVersion,
+                        search_path = searchPath)
     
     # cat(":: sampling minimum altitudes using : ", sampleGridSize ,"meter grid size\n")  
 #    if (!grepl(system("g.extension -l",ignore.stdout = TRUE),pattern = "r.in.lidar"))

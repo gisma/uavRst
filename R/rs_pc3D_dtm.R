@@ -88,14 +88,14 @@ pc3D_dtm <- function(lasDir = NULL,
   LASbin<-searchLastools(MP=MP)
   if (length(LASbin)<1) stop("\n At ",MP," no LAStool binaries found")
   else lasbin<- as.character(LASbin[[1]][,])
-  if (is.null(giLinks)){
-    giLinks <- linkAll()
-  }
-  gdal <- giLinks$gdal
-  saga <- giLinks$saga
-  otb <- giLinks$otb
+  # if (is.null(giLinks)){
+  #   giLinks <- linkAll()
+  # }
+  gdal <- link2GI::linkGDAL()
+  saga <- link2GI::linkSAGA()
+  #otb <- giLinks$otb
   sagaCmd<-saga$sagaCmd
-  path_OTB <- otb$pathOTB
+  #path_OTB <- otb$pathOTB
   if (!verbose){
     GV <- Sys.getenv("GRASS_VERBOSE")
     Sys.setenv("GRASS_VERBOSE"=0)

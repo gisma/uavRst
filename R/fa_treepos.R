@@ -310,7 +310,7 @@ treepos_FT <- function(chm =NULL,
                         winFun = function(x){0.5 * ((x^2) * 0.0090 + 2.51)},
                         minTreeAlt = 2,
                         maxCrownArea = maxCrownArea,
-                        verbose = TRUE) {x1
+                        verbose = TRUE) {
 
   # if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
   #   chm <- raster::raster(chm)
