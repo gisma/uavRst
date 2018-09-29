@@ -19,6 +19,7 @@
 #'@param verbose to be quiet (1)
 #'@param cutExtent clip area
 #'@param grassVersion numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar
+#'@param searchPath path to look for grass
 #'
 #'@importFrom lidR tree_detection
 #'@importFrom lidR writeLAS
@@ -64,6 +65,7 @@
 pc2D_dsm <- function(laspcFile = NULL,
                     gisdbasePath = NULL,
                     grassVersion=1,
+                    searchPath ="/usr",
                     sampleMethod = "max",
                     threshold = 20 ,
                     cutExtent = NULL,
@@ -72,14 +74,8 @@ pc2D_dsm <- function(laspcFile = NULL,
                     proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                     giLinks =NULL,
                     verbose = FALSE) {
-  if (is.null(giLinks)){
-    giLinks <- linkAll()
-  }
-  gdal <- giLinks$gdal
-  saga <- giLinks$saga
-  otb <- giLinks$otb
-  sagaCmd<-saga$sagaCmd
-  path_OTB <- otb$pathOTB
+
+  gdal <- linkGDAL()
   
   if (!verbose){
     GV <- Sys.getenv("GRASS_VERBOSE")
@@ -138,40 +134,42 @@ pc2D_dsm <- function(laspcFile = NULL,
                       location = "pc2D_dsm", 
                       spatial_params = sp_param, 
                       resolution = targetGridSize, 
-                      returnPaths = FALSE, ver_select = grassVersion,
+                      returnPaths = FALSE, 
+                      ver_select = grassVersion,
+                      search_path = searchPath,
                       quiet = TRUE)
   
   cat(":: sampling ", sampleMethod, " altitudes using : ", targetGridSize ,"meter grid size\n") 
     
-    ret <- rgrass7::execGRASS("r.in.pdal",
-                              flags  = c("overwrite","quiet"),
-                              input  = paste0(path_run,name),
-                              output = paste0("dsm",targetGridSize),
-                              method = sampleMethod,
-                              pth = threshold,
-                              proj_in = sp_param[5],
-                              resolution = as.numeric(targetGridSize),
-                              intern = TRUE,
-                              ignore.stderr = FALSE
-    )
+    # ret <- rgrass7::execGRASS("r.in.pdal",
+    #                           flags  = c("overwrite","quiet"),
+    #                           input  = paste0(path_run,name),
+    #                           output = paste0("dsm",targetGridSize),
+    #                           method = sampleMethod,
+    #                           pth = threshold,
+    #                           proj_in = sp_param[5],
+    #                           resolution = as.numeric(targetGridSize),
+    #                           intern = TRUE,
+    #                           ignore.stderr = FALSE
+    # )
 
   #else if (grepl(rgrass7::execGRASS(cmd = "g.extension",flags =  c("l"),Sys_show.output.on.console = TRUE),pattern = "r.in.lidar"))
-# rgrass7::execGRASS("r.in.lidar",
-#                             flags  = c("overwrite","quiet","o"),
-#                             input  = paste0(path_run,name),
-#                             output = paste0("dsm",targetGridSize),
-#                             method = sampleMethod,
-#                             pth    = threshold,
-#                             resolution = targetGridSize,
-#                             intern = TRUE,
-#                             ignore.stderr = FALSE
-#   )
+rgrass7::execGRASS("r.in.lidar",
+                            flags  = c("overwrite","quiet","o"),
+                            input  = paste0(path_run,name),
+                            output = paste0("dsm",targetGridSize),
+                            method = sampleMethod,
+                            pth    = threshold,
+                            resolution = targetGridSize,
+                            intern = TRUE,
+                            ignore.stderr = FALSE
+  )
     dsm<- raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("dsm",targetGridSize))),paste0(path_run,"dsm1.tif"), overwrite=TRUE,format="GTiff")
     
     if (Sys.info()["sysname"] == "Linux"){
   cat(":: filling no data values if so \n")
-  ret <- system(paste0("C:\\OSGeo4W64\\bin\\gdal_fillnodata.py ",
-                       path_run,"dsm1.tif",
+  ret <- system(paste0("gdal_fillnodata.py ",
+                       path_run,"dsm1.tif ",
                        path_run,"dsm.tif"),intern = TRUE)
   dsm <- raster::raster(paste0(path_run,"dsm.tif"))
     } 

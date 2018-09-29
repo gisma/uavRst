@@ -5,8 +5,8 @@
 \title{Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling}
 \usage{
 pc2D_dsm(laspcFile = NULL, gisdbasePath = NULL, grassVersion = 1,
-  sampleMethod = "max", threshold = 20, cutExtent = NULL,
-  targetGridSize = 0.25, projFolder = NULL,
+  searchPath = "/usr", sampleMethod = "max", threshold = 20,
+  cutExtent = NULL, targetGridSize = 0.25, projFolder = NULL,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
   giLinks = NULL, verbose = FALSE)
 }
@@ -16,6 +16,8 @@ pc2D_dsm(laspcFile = NULL, gisdbasePath = NULL, grassVersion = 1,
 \item{gisdbasePath}{character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}}
 
 \item{grassVersion}{numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar}
+
+\item{searchPath}{path to look for grass}
 
 \item{sampleMethod}{sampling method for point aggregation}
 

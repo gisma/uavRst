@@ -59,7 +59,7 @@ pc3D_dsm(lasDir = NULL, gisdbasePath = NULL, GRASSlocation = "tmp/",
 }
 \description{
 Create a Digital Surface Model from a UAV generated point cloud. Basically returns a DSM.
-It uses the 'r.in.lidar'/ 'r.in.pdal' function to calculate LiDAR derived raster grids.
+It uses the 'r.in.lidar' function to calculate LiDAR derived raster grids.
 It creates a \code{raster*} object.
 }
 \note{
