@@ -76,8 +76,9 @@ pc2D_dsm <- function(laspcFile = NULL,
                     verbose = FALSE) {
 
   gdal <- linkGDAL()
-  if (is.null(searchPath))
-  path_run<-ifelse(Sys.info()["sysname"]=="Windows", searchPath="C:",searchPath="/usr")
+  if (is.null(searchPath)){
+  if(Sys.info()["sysname"]=="Windows") searchPath="C:"
+  else searchPath <- "/usr"}
   
   if (!verbose){
     GV <- Sys.getenv("GRASS_VERBOSE")
