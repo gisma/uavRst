@@ -21,8 +21,6 @@ require(uavRst)
 require(curl)
 require(link2GI)
 
-##- check if SAGA is correctly installed 
-if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
 ##- project folder
 projRootDir<-tempdir()
 

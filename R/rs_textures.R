@@ -212,20 +212,22 @@ glcm_texture <- function(x,
 #' \dontrun{
 
 #' require(uavRst)
-#' # check if OTB is installed correctly
+#' require(link2GI)
+#' ## -check if OTB is installed correctly
 #' if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
 #' setwd(tempdir())
-#' #get some typical data as provided by the authority
+#' ##- get some typical data as provided by the authority
 #' tmp<-Sys.setlocale('LC_ALL','C')  
 #' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip", 
 #'                      destfile="testdata.zip")
 #' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
 #' 
 #' # calculate simple Haralick-textures
-#' result<- otbtex_hara(x="4490600_5321400.tif",texture = "simple",return_raster = TRUE)
+#' r<- otbtex_hara(x="4490600_5321400.tif",texture = "simple",return_raster = TRUE)
 #' 
 #' #plot the results :
-#' raster::plot(result)UTF
+#' ##- visualize all layers
+#' raster::plot(r)
 #' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.-8")
 #' }
 
@@ -459,12 +461,22 @@ otb_stat<- function(input=NULL,
 #' @export otbtex_edge
 #' @examples
 #' \dontrun{
+#' ##- required packages
+#' require(uavRst)
+#' require(link2GI)
 #' setwd(tempdir())
-#' #get some typical data as provided by the authority
-#' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
-#' curl::curl_download(url, "testdata.zip")
-#' unzip(res,junkpaths = TRUE,overwrite = TRUE)
-#' otbtex_edge(input="4490600_5321400.tif",filter = "sobel")
+#' if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
+#' 
+#' #get some typical iarborne imagery as provided by the authority
+#' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
+#'                      "testdata.zip")
+#' unzip("testdata.zip", junkpaths = TRUE,overwrite = TRUE)
+#' 
+#' ##- calculate Sobel edge detection
+#' r <- otbtex_edge(input="4490600_5321400.tif",filter = "sobel", retRaster = TRUE)
+#' 
+#' ##- visualize all layers
+#' ret <- lapply(r, raster::plot)
 #' }
 
 
@@ -538,13 +550,20 @@ otbtex_edge<- function(input=NULL,
 #' @importFrom gdalUtils gdalinfo
 #' @examples
 #' \dontrun{
+#' require(uavRst)
+#' require(link2GI)
 #' setwd(tempdir())
-#' #get some typical data as provided by the authority
-#' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
-#' curl::curl_download(url, "testdata.zip")
-#' unzip(res,junkpaths = TRUE,overwrite = TRUE)
-#' gm<-otbtex_gray(input="4490600_5321400.tif",retRaster = TRUE)
-#' raster::plot(gm[[1]])
+#' if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
+#' 
+#' #get some typical airborne imagery as provided by the authority
+#' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
+#'                      "testdata.zip")
+#' unzip("testdata.zip", junkpaths = TRUE,overwrite = TRUE)
+#' 
+#' r<-otbtex_gray(input="4490600_5321400.tif",retRaster = TRUE)
+#' 
+#' ##- visualize all layers
+#' ret <- lapply(r, raster::plot)
 #' }
 
 otbtex_gray<- function(input=NULL,

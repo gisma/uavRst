@@ -42,13 +42,20 @@ the otb is used for filtering. please provide a GeoTiff file
 }
 \examples{
 \dontrun{
+require(uavRst)
+require(link2GI)
 setwd(tempdir())
-#get some typical data as provided by the authority
-url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip"
-curl::curl_download(url, "testdata.zip")
-unzip(res,junkpaths = TRUE,overwrite = TRUE)
-gm<-otbtex_gray(input="4490600_5321400.tif",retRaster = TRUE)
-raster::plot(gm[[1]])
+if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
+
+#get some typical airborne imagery as provided by the authority
+utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",
+                     "testdata.zip")
+unzip("testdata.zip", junkpaths = TRUE,overwrite = TRUE)
+
+r<-otbtex_gray(input="4490600_5321400.tif",retRaster = TRUE)
+
+##- visualize all layers
+ret <- lapply(r, raster::plot)
 }
 }
 \author{

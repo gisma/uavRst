@@ -57,20 +57,22 @@ Furthermore using stats will cover mean and variance while dissimilarity is high
 \examples{
 \dontrun{
 require(uavRst)
-# check if OTB is installed correctly
+require(link2GI)
+## -check if OTB is installed correctly
 if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
 setwd(tempdir())
-#get some typical data as provided by the authority
+##- get some typical data as provided by the authority
 tmp<-Sys.setlocale('LC_ALL','C')  
 utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip", 
                      destfile="testdata.zip")
 unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
 
 # calculate simple Haralick-textures
-result<- otbtex_hara(x="4490600_5321400.tif",texture = "simple",return_raster = TRUE)
+r<- otbtex_hara(x="4490600_5321400.tif",texture = "simple",return_raster = TRUE)
 
 #plot the results :
-raster::plot(result)UTF
+##- visualize all layers
+raster::plot(r)
 tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.-8")
 }
 }
