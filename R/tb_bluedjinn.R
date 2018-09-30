@@ -48,14 +48,17 @@ read_gpx <- function(file,
 
 #' @examples
 #' \dontrun{
-#' #get some typical data as provided by the authority
-#' setwd(tempdir())
-#' url<-"http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip"
-#' res <- curl::curl_download(url, "testdata.zip")
-#' file<- unzip(res,list = TRUE)$Name[2]
-#' unzip(res,files = file,  overwrite = TRUE)
-#' head(read.csv(file))
-#' xyz2tif(file,epsgCode = "31468")
+#'setwd(tempdir())
+#'##- get data
+#'utils::download.file("http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip",
+#'                     "testdata.zip")
+#'file<- unzip("testdata.zip",list = TRUE)$Name[2]
+#'unzip("testdata.zip",files = file,  overwrite = TRUE)
+#'##- show structure
+#'head(read.csv(file))
+#'##- create tiff file
+#'##- NOTE  for creating a geotiff you have to provide the correct EPSG code from the meta data
+#'xyz2tif(file,epsgCode = "31468")
 #' }
 
 #'

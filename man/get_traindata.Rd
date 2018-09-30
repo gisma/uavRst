@@ -16,46 +16,49 @@ Extracts training data from a raster stack and returns a dataframe containing fo
 }
 \examples{
 \dontrun{
-# required packages
- require(uavRst)
- require(curl)
- require(link2GI)
- 
-# check if SAGA is correctly installed 
- if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
-# project folder
- projRootDir<-tempdir()
+##- required packages
+require(uavRst)
+require(curl)
+require(link2GI)
 
-# create subfolders please mind that the pathes are exported as global variables
- paths<-link2GI::initProj(projRootDir = projRootDir,
-                         projFolders = c("data/","data/ref/","output/","run/","las/"),
-                         global = TRUE,
-                         path_prefix = "path_")
-# overide trailing backslash issue
- path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)          
- unlink(paste0(path_run,"*"), force = TRUE)
- 
-# get the rgb image, chm and training data 
- url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
- res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
- unzip(res,exdir= path_run)
+##- check if SAGA is correctly installed 
+if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
+##- project folder
+projRootDir<-tempdir()
 
-# get the files  
- imageTrainStack <- list()
- geomTrainStack <- list()
- imageTrainFiles <- Sys.glob(paste0(path_run,"rgb*.tif"))
- geomTrainFiles <- Sys.glob(paste0(path_run,"rgb*.shp"))
- 
-# create stacks from image and geometry files
- imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
- geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
- names(imageTrainStack[[1]])<-c("red","green","blue")
- names(imageTrainStack[[2]])<-c("red","green","blue")
+##- create subfolders please mind that the pathes are exported as global variables
+paths<-link2GI::initProj(projRootDir = projRootDir,
+                        projFolders = c("data/","data/ref/","output/","run/","las/"),
+                        global = TRUE,
+                        path_prefix = "path_")
+##- overide trailing backslash issue
+path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+setwd(path_run)          
+unlink(paste0(path_run,"*"), force = TRUE)
 
-## get training data frame
- trainDF <- get_traindata(rasterStack  = imageTrainStack,
-                          trainPlots = geomTrainStack)
+##- get the tutorial data 
+res <- utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip", 
+                           paste0(path_run,"tutorial_data.zip"))
+unzip(res,exdir =  paste0(path_run,"tutorial_data.zip"))
+
+##- get the files  
+imageTrainStack <- list()
+geomTrainStack <- list()
+imageTrainFiles <- Sys.glob(paste0(path_run,"rgb*.tif"))
+geomTrainFiles <- Sys.glob(paste0(path_run,"rgb*.shp"))
+
+##- create stacks from image and geometry files
+imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
+geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
+names(imageTrainStack[[1]])<-c("red","green","blue")
+names(imageTrainStack[[2]])<-c("red","green","blue")
+
+##' finally extraxt the training data to a data frame
+trainDF <- get_traindata(rasterStack  = imageTrainStack,
+                        trainPlots = geomTrainStack)
+                        
+##- have a look at the training data
+head(trainDF)
 }
 }
 \author{

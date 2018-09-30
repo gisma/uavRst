@@ -13,46 +13,49 @@
 #'@export get_traindata
 #'@examples
 #'\dontrun{
-#' # required packages
-#'  require(uavRst)
-#'  require(curl)
-#'  require(link2GI)
-#'  
-#' # check if SAGA is correctly installed 
-#'  if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
-#' # project folder
-#'  projRootDir<-tempdir()
-#' 
-#' # create subfolders please mind that the pathes are exported as global variables
-#'  paths<-link2GI::initProj(projRootDir = projRootDir,
-#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
-#'                          global = TRUE,
-#'                          path_prefix = "path_")
-#' # overide trailing backslash issue
-#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  setwd(path_run)          
-#'  unlink(paste0(path_run,"*"), force = TRUE)
-#'  
-#' # get the rgb image, chm and training data 
-#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
-#'  res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
-#'  unzip(res,exdir= path_run)
-#' 
-#' # get the files  
-#'  imageTrainStack <- list()
-#'  geomTrainStack <- list()
-#'  imageTrainFiles <- Sys.glob(paste0(path_run,"rgb*.tif"))
-#'  geomTrainFiles <- Sys.glob(paste0(path_run,"rgb*.shp"))
-#'  
-#' # create stacks from image and geometry files
-#'  imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
-#'  geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
-#'  names(imageTrainStack[[1]])<-c("red","green","blue")
-#'  names(imageTrainStack[[2]])<-c("red","green","blue")
-#' 
-#' ## get training data frame
-#'  trainDF <- get_traindata(rasterStack  = imageTrainStack,
-#'                           trainPlots = geomTrainStack)
+#'##- required packages
+#'require(uavRst)
+#'require(curl)
+#'require(link2GI)
+#'
+#'##- check if SAGA is correctly installed 
+#'if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
+#'##- project folder
+#'projRootDir<-tempdir()
+#'
+#'##- create subfolders please mind that the pathes are exported as global variables
+#'paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                         global = TRUE,
+#'                         path_prefix = "path_")
+#'##- overide trailing backslash issue
+#'path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+#'setwd(path_run)          
+#'unlink(paste0(path_run,"*"), force = TRUE)
+#'
+#'##- get the tutorial data 
+#'res <- utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip", 
+#'                            paste0(path_run,"tutorial_data.zip"))
+#'unzip(res,exdir =  paste0(path_run,"tutorial_data.zip"))
+#'
+#'##- get the files  
+#'imageTrainStack <- list()
+#'geomTrainStack <- list()
+#'imageTrainFiles <- Sys.glob(paste0(path_run,"rgb*.tif"))
+#'geomTrainFiles <- Sys.glob(paste0(path_run,"rgb*.shp"))
+#'
+#'##- create stacks from image and geometry files
+#'imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
+#'geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
+#'names(imageTrainStack[[1]])<-c("red","green","blue")
+#'names(imageTrainStack[[2]])<-c("red","green","blue")
+#'
+#'##' finally extraxt the training data to a data frame
+#'trainDF <- get_traindata(rasterStack  = imageTrainStack,
+#'                         trainPlots = geomTrainStack)
+#'                         
+#'##- have a look at the training data
+#'head(trainDF)
 #'}
 
 
@@ -185,38 +188,40 @@ get_counts<- function(ids=c(1,2),
 #' @examples
 #'\dontrun{
 #' # required packages
-#' require(uavRst)
-#' require(curl)
-#' require(link2GI)
-#' 
-#' # project folder
-#' projRootDir<-tempdir()
-#' 
-#' # create subfolders pls notice the pathes are exported as global variables
-#' paths<-link2GI::initProj(projRootDir = projRootDir,
-#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
-#'                          global = TRUE,
-#'                          path_prefix = "path_")
-#' # overide trailing backslash issue
-#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  setwd(path_run)                                                 
-#'  unlink(paste0(path_run,"*"), force = TRUE)
-#'  
-#' # get the data rgb image, chm data and training data 
-#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip"
-#'  res <- curl::curl_download(url, paste0(path_run,"ffs.zip"))
-#'  unzip(zipfile = res, exdir = path_run)
-#'  
-#' 
-# read the files  
-#' imageFile <- paste0(path_run,"predict.tif")
-#' load(paste0(path_run,"tutorialbandNames.RData"))
-#' tutorialModel<-readRDS(file = paste0(path_run,"tutorialmodel.rds"))
-#' 
-#' ## start prediction taking the non optimized model
-#' predict_rgb(imageFiles=imageFile,
-#'             model = tutorialModel[[1]],
-#'             bandNames = bandNames)    
+#'require(uavRst)
+#'require(curl)
+#'require(link2GI)
+#'
+#'##- project folder
+#'projRootDir<-tempdir()
+#'
+#'##-create subfolders pls notice the pathes are exported as global variables
+#'paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                         global = TRUE,
+#'                         path_prefix = "path_")
+#'##- overide trailing backslash issue
+#'path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+#'setwd(path_run)                                                 
+#'unlink(paste0(path_run,"*"), force = TRUE)
+#'
+#'##- get the tutorial data 
+#'utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip", paste0(path_run,"ffs.zip"))
+#'unzip(zipfile =  paste0(path_run,"ffs.zip"), exdir = path_run)
+#'
+#'
+#'imageFile <- paste0(path_run,"predict.tif")
+#'load(paste0(path_run,"tutorialbandNames.RData"))
+#'tutorialModel<-readRDS(file = paste0(path_run,"tutorialmodel.rds"))
+#'
+#'##- start the  prediction taking the non optimized model
+#'##- please note the output is saved in the subdirectory path_output
+#'predict_rgb(imageFiles=imageFile,
+#'            model = tutorialModel[[1]],
+#'            bandNames = bandNames)    
+#'
+#'##- visualise the classification
+#'raster::plot(raster::raster(paste0(path_output,"classified_predict.tif")))    
 #'}                                         
 
 

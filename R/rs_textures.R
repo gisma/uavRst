@@ -793,31 +793,45 @@ getOutputDir<- function (outDir){
 #' @examples
 #' \dontrun{
 
-#' # required packages
-#' # required packages
-#'  require(uavRst)
-#'  require(curl)
-#' 
-#' # project folder
-#' projRootDir<-tempdir()
-#' 
-#' # create subfolders please mind that the pathes are exported as global variables
-#'  paths<-link2GI::initProj(projRootDir = projRootDir,
-#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
-#'                          global = TRUE,
-#'                          path_prefix = "path_")
-#' ## overide trailing backslash issue
-#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  setwd(path_run)                                          
-#'  unlink(paste0(path_run,"*"), force = TRUE
-#' 
-#' # get the rgb image, chm and training data 
-#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-#'  curl::curl_download(url, paste0(path_run,"tutorial.zip"))
-#'  unzip(zipfile = res, exdir = path_run)
-#'  img <- stack(paste0(path_run,"rgb_3.tif"))
-#'  plotRGB(img)
-#'  rgbI <- rgbI(img)
+#'##- setup environment
+#'require(uavRst)
+#'require(mapview)
+#'require(link2GI)
+#'projRootDir<-tempdir()
+#'
+#'##- create subfolders please mind that the pathes are exported as global variables
+#'
+#'paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+#'                         global = TRUE,
+#'                         path_prefix = "path_")                         
+#'##- overide trailing backslash issue
+#'path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+#'setwd(path_run)                                          
+#'unlink(paste0(path_run,"*"), force = TRUE
+#'
+#'##- get the tutorial data
+#'utils::download.file(url = "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
+#'                     destfile = paste0(path_run,"tutorial.zip"))
+#'unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
+#'
+#'##- take the RGB image of a conopy plot
+#'img <- raster::brick(paste0(path_run,"rgb_3.tif"))
+#'
+#'##- visualize the image
+#'raster::plotRGB(img)
+#'
+#'##- calculate the indices
+#'rgbI<-rgb_indices(red   = img[[1]],
+#'                  green = img[[2]],
+#'                  blue  = img[[3]])
+#'                  
+#'##- visualize the indices
+#'raster::plot(rgbI)
+#'
+#'##- map and interactively explore the indices
+#'mapview::mapview(rgbI)
+
 #'  }
 #'
 rgb_indices <- function(red,green,blue,rgbi=c("VVI","VARI","NDTI","RI","SCI","BI",

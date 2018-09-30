@@ -28,32 +28,35 @@ require(uavRst)
 require(curl)
 require(link2GI)
 
-# project folder
+##- project folder
 projRootDir<-tempdir()
 
-# create subfolders pls notice the pathes are exported as global variables
+##-create subfolders pls notice the pathes are exported as global variables
 paths<-link2GI::initProj(projRootDir = projRootDir,
-                         projFolders = c("data/","data/ref/","output/","run/","las/"),
-                         global = TRUE,
-                         path_prefix = "path_")
-# overide trailing backslash issue
- path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)                                                 
- unlink(paste0(path_run,"*"), force = TRUE)
- 
-# get the data rgb image, chm data and training data 
- url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip"
- res <- curl::curl_download(url, paste0(path_run,"ffs.zip"))
- unzip(zipfile = res, exdir = path_run)
- 
+                        projFolders = c("data/","data/ref/","output/","run/","las/"),
+                        global = TRUE,
+                        path_prefix = "path_")
+##- overide trailing backslash issue
+path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+setwd(path_run)                                                 
+unlink(paste0(path_run,"*"), force = TRUE)
+
+##- get the tutorial data 
+utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip", paste0(path_run,"ffs.zip"))
+unzip(zipfile =  paste0(path_run,"ffs.zip"), exdir = path_run)
+
 
 imageFile <- paste0(path_run,"predict.tif")
 load(paste0(path_run,"tutorialbandNames.RData"))
 tutorialModel<-readRDS(file = paste0(path_run,"tutorialmodel.rds"))
 
-## start prediction taking the non optimized model
+##- start the  prediction taking the non optimized model
+##- please note the output is saved in the subdirectory path_output
 predict_rgb(imageFiles=imageFile,
-            model = tutorialModel[[1]],
-            bandNames = bandNames)    
+           model = tutorialModel[[1]],
+           bandNames = bandNames)    
+
+##- visualise the classification
+raster::plot(raster::raster(paste0(path_output,"classified_predict.tif")))    
 }                                         
 }
