@@ -45,10 +45,10 @@ counts pixel values according to their classes
                           path_prefix = "path_")
 # overide trailing backslash issue
  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)                                                
+ setwd(path_run)
  unlink(paste0(path_run,"*"), force = TRUE)
- 
-# get the rgb image, chm and training data 
+
+# get the rgb image, chm and training data
  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
  res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
  unzip(zipfile = res,exdir = path_run)
@@ -62,7 +62,7 @@ counts pixel values according to their classes
  df1<-get_counts(position = position,
                       ids = c(100,200),
                imageFiles = imageFiles,
-                outPrefix = "", 
+                outPrefix = "",
                       ext = ".tif",
                      path = path_run)
 }

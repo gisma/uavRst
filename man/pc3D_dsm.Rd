@@ -75,7 +75,7 @@ require(link2GI)
 
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
+stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
 
 # proj subfolders
 projRootDir<-tempdir()
@@ -97,7 +97,7 @@ utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/d
 pc3DSM<-pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),
         gisdbasePath = projRootDir,
         projSubFolder = projsubFolder,
-        gridSize = "0.5", 
+        gridSize = "0.5",
         giLinks = giLinks)
 mapview::mapview(pc3DSM[[1]])
 }

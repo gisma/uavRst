@@ -37,12 +37,13 @@ the otb is used for the calculation of the statistics. Please provide a GeoTiff 
 \dontrun{
 require(uavRst)
 # check if OTB is installed correctly
-if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
+giLink <- uavRst::linkAll()
+stopifnot(giLinks$otb$exist)
 setwd(tempdir())
 #get some typical data as provided by the authority
 #get some typical data as provided by the authority
-tmp<-Sys.setlocale('LC_ALL','C')  
-utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip", 
+tmp<-Sys.setlocale('LC_ALL','C')
+utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",
                      destfile="testdata.zip")
 unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
 result<- otb_stat(input="4490600_5321400.tif",radius=5,retRaster = TRUE)

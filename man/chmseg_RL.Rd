@@ -29,11 +29,11 @@ Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiD
  require(uavRst)
  require(link2GI)
  require(mapview)
- 
+
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
- 
+stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+
 ## project folder
 projRootDir<-tempdir()
 

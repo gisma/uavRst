@@ -55,7 +55,7 @@ This is in fact the case while using time space variable vegetation patterns for
 For the UAV based RGB/NIR imagery, it provides an optimized preconfiguration for the classification goals.
 }
 \note{
-The workflow of \code{uavRst} is intended to use the forward feature selection as decribed by \href{https://www.sciencedirect.com/science/article/pii/S1364815217310976}{Meyer et al. (2018)}. 
+The workflow of \code{uavRst} is intended to use the forward feature selection as decribed by \href{https://www.sciencedirect.com/science/article/pii/S1364815217310976}{Meyer et al. (2018)}.
 This approach needs at least a pair of images that differ in time and/or space for a leave one location out validation mode. You may overcome this situation if you tile your image and provide for each tile seperate training data.
 If you just want to classify a single image by a single training file use the normal procedure as provided by the \code{\link[caret]{trainControl}} function.
 }
@@ -76,9 +76,9 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          path_prefix = "path_")
 # overide trailing backslash issue
 path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-setwd(path_run)                                          
+setwd(path_run)
 unlink(paste0(path_run,"*"), force = TRUE)
-# get the rgb image, chm and training data 
+# get the rgb image, chm and training data
 url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip"
 res <- curl::curl_download(url, paste0(path_run,"ffs.zip"))
 unzip(zipfile = res,exdir = path_run)
@@ -96,14 +96,14 @@ trainDF<-readRDS(paste0(path_run,"rgbImg_trainDF.rds"))
  for (i in 1:length(idNumber)){
    trainDF$ID[trainDF$ID==i]<-idNames[i]
  }
-# convert to factor (required by rf)   
+# convert to factor (required by rf)
  trainDF$ID <- as.factor(trainDF$ID)
-# now prepare the predictor and response variable names  
+# now prepare the predictor and response variable names
 # get actual name list from the DF
  name<-names(trainDF)
 # cut leading and tailing ID/FN
  predictNames<-name[3:length(name)-1]
- 
+
 # call Training
  model <-  ffs_train(trainingDF= trainDF,
                      predictors= predictNames,
@@ -111,7 +111,7 @@ trainDF<-readRDS(paste0(path_run,"rgbImg_trainDF.rds"))
                      spaceVar  = "FN",
                      names     = name,
                      pVal      = 0.1,
-                     noClu     = 4) 
+                     noClu     = 4)
 
 # for classification/prediction go ahead with the predict_RGB function
 }

@@ -37,10 +37,10 @@ Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}
 
 # required packages
  require(uavRst)
- 
+
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
+stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
 
 # project folder
 projRootDir<-tempdir()
@@ -73,8 +73,8 @@ unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
                         TRESHCrown = 0.55,
                         minTreeAlt = 2,
                         maxCrownArea = 150)
-                        
-# visualisation                         
-mapview::mapview(crownsITC,zcol="Height_m")                         
+
+# visualisation
+mapview::mapview(crownsITC,zcol="Height_m")
 }
 }

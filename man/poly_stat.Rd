@@ -42,9 +42,9 @@ require(link2GI)
 
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
+stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
 
-#' # check if SAGA is correctly installed 
+#' # check if SAGA is correctly installed
 if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
 # project folde
 projRootDir<-tempdir()
@@ -56,8 +56,8 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          path_prefix = "path_")
 # overide trailing backslash issue
  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- 
-# get the rgb image, chm and training data 
+
+# get the rgb image, chm and training data
 url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 utils::download.file(url, paste0(path_run,"tutorial_data.zip"))
 unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
@@ -71,7 +71,7 @@ unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
 
 polyStat <- poly_stat(paste0(path_run,"rgb_3-3.sgrd"),
                       spdf = paste0(path_run,"rgb_3-3.shp"))
-                      
+
 }
 
 }

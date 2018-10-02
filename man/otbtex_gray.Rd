@@ -45,7 +45,8 @@ the otb is used for filtering. please provide a GeoTiff file
 require(uavRst)
 require(link2GI)
 setwd(tempdir())
-if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
+giLink <- uavRst::linkAll()
+stopifnot(giLinks$otb$exist)
 
 #get some typical airborne imagery as provided by the authority
 utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",

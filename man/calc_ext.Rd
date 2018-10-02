@@ -91,8 +91,8 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE,
 }
 \description{
 Convenient function to preprocess synthetic raster bands from a given RGB image and/or DTM/DSM data.
-Optionally the raster values  can be extracted to data frames on base of vector data. This is useful 
-for for classification training purposes and covers usually step 1 of the random forest based 
+Optionally the raster values  can be extracted to data frames on base of vector data. This is useful
+for for classification training purposes and covers usually step 1 of the random forest based
 classification of UAV derived visible imagery and point clouds.
 }
 \details{
@@ -107,7 +107,7 @@ classification of UAV derived visible imagery and point clouds.
 \note{
 If the function is used for stand alone extraction of the training data please provide both, the imagestack containing the raster data plus the corresponding band names (usually saved as an Rdata file) and the corresponding shape file.
 
-The workflow is intended to use the forward feature selection as decribed by \href{https://www.sciencedirect.com/science/article/pii/S1364815217310976}{Meyer et al. (2018)}. 
+The workflow is intended to use the forward feature selection as decribed by \href{https://www.sciencedirect.com/science/article/pii/S1364815217310976}{Meyer et al. (2018)}.
 This approach needs at least a pair of images that differ in time and/or space for a leave one location out validation mode. You may overcome this situation if you tile your image and provide for each tile seperate training data.
 If you just want to classify a single image by a single training file use the normal procedure as provided by the \code{\link[caret]{trainControl}} function.
 }
@@ -120,12 +120,12 @@ require(link2GI)
 
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE)
+stopifnot(giLinks$saga$exist & giLinks$otb$exist)
 
 ##- set root folder
 projRootDir<-tempdir()
 
-##- create and set subfolders 
+##- create and set subfolders
 ##- please mind that the pathes are exported as global variables
 paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
@@ -134,7 +134,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 
 ##- overide trailing backslash issue
 path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-setwd(path_run)                                          
+setwd(path_run)
 
 ##- clean runtime folder
 unlink(paste0(path_run,"*"), force = TRUE)
@@ -145,7 +145,7 @@ utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/
 unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
 
 
-##- calculate some synthetic channels from the RGB image and the canopy height model 
+##- calculate some synthetic channels from the RGB image and the canopy height model
 ##- then extract the from the corresponding training geometries the data values aka trainingdata
 trainDF <- calc_ext(calculateBands    = TRUE,
                     extractTrain      = TRUE,
@@ -164,15 +164,15 @@ trainDF <- calc_ext(calculateBands    = TRUE,
                     stat              = FALSE,
                     edge              = FALSE,
                     morpho            = FALSE,
-                    pardem            = TRUE, 
+                    pardem            = TRUE,
                     demType           = c("slope", "MTPI"),
                     kernel            = 3,
                     currentDataFolder = path_run,
                     currentIdxFolder  = path_run,
                     giLinks = giLinks)
-                    
+
 ##- show the result
-head(trainDF)           
+head(trainDF)
 # head on with ffs_train
 }
 }

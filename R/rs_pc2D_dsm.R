@@ -3,7 +3,7 @@
 #'
 #'@description
 #' Create a Digital Surface Model from a high density point cloud as typically derived by an
-#' optical UAV retrieval. It simply samples the maximum or whatever values of a given target 
+#' optical UAV retrieval. It simply samples the maximum or whatever values of a given target
 #' grid size and fills the no data holes if so.
 #'
 #'@author Chris Reudenbach
@@ -33,31 +33,31 @@
 #'\dontrun{
 #' require(uavRst)
 #' require(link2GI)
-#' 
+#'
 #' # create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
-#' stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
-#' 
+#' stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+#'
 #' # proj subfolders
 #' projRootDir<-tempdir()
-#' 
+#'
 #' paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
-#' 
+#'
 #' # get some colors
 #' pal = mapview::mapviewPalette("mapviewTopoColors")
-#' 
+#'
 #' # get the data
 #' utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
 #' destfile=paste0(path_run,"lasdata.las"))
-#' 
+#'
 #' # create 2D pointcloud DSM
 #' dsm <- pc2D_dsm(laspcFile = paste0(path_run,"lasdata.las"),
 #'                 gisdbasePath = projRootDir,
 #'                 sampleMethod = "max",
-#'                 targetGridSize = 0.5, 
+#'                 targetGridSize = 0.5,
 #'                 giLinks = giLinks)
 #'}
 
@@ -78,20 +78,20 @@ pc2D_dsm <- function(laspcFile = NULL,
   if (is.null(searchPath)){
   if(Sys.info()["sysname"]=="Windows") searchPath="C:"
   else searchPath <- "/usr"}
-  
+
   if (!verbose){
     GV <- Sys.getenv("GRASS_VERBOSE")
     Sys.setenv("GRASS_VERBOSE"=0)
     ois <- get.ignore.stderrOption()
     set.ignore.stderrOption(TRUE)}
-  
+
   if (is.null(projFolder)) projFolder <-  c("data/","output/","run/","las/")
-  
+
   # get/map the las binary folder and create the base command line
   if (is.null(laspcFile)) stop("no directory containing las/laz files provided...\n")
   else laspcFile <- path.expand(laspcFile)
   name<-basename(laspcFile)
-  
+
   # create project structure and export global paths
   if (!nchar(Sys.getenv("GISDBASE")) > 0 ){
   link2GI::initProj(projRootDir = tempdir() ,
@@ -99,7 +99,7 @@ pc2D_dsm <- function(laspcFile = NULL,
   }
 
 
-  
+
   if (!file.exists(paste0(path_run,name))){
     cat(":: create copy of the las file at the working directory... \n")
     file.copy(from = laspcFile,
@@ -118,7 +118,7 @@ pc2D_dsm <- function(laspcFile = NULL,
     name<-paste0(gsub(tmp,pattern = "[.]",replacement = "_"),".las")
     file.rename(from =paste0(path_run,"cut_point_cloud.las"),
                 to = paste0(path_run,name))
-    
+
   } else {
     las<-rlas::read.lasheader(paste0(path_run,name))
     sp_param <- c(as.character(las$`Min X`),as.character(las$`Min Y`),as.character(las$`Max X`),as.character(las$`Max Y`))
@@ -133,16 +133,16 @@ pc2D_dsm <- function(laspcFile = NULL,
   sp_param[5] <- proj4
   cat(":: link to GRASS\n")
   link2GI::linkGRASS7(gisdbase = gisdbasePath,
-                      location = "pc2D_dsm", 
-                      spatial_params = sp_param, 
-                      resolution = targetGridSize, 
-                      returnPaths = FALSE, 
+                      location = "pc2D_dsm",
+                      spatial_params = sp_param,
+                      resolution = targetGridSize,
+                      returnPaths = FALSE,
                       ver_select = grassVersion,
                       search_path = searchPath,
                       quiet = TRUE)
-  
-  cat(":: sampling ", sampleMethod, " altitudes using : ", targetGridSize ,"meter grid size\n") 
-    
+
+  cat(":: sampling ", sampleMethod, " altitudes using : ", targetGridSize ,"meter grid size\n")
+
     # ret <- rgrass7::execGRASS("r.in.pdal",
     #                           flags  = c("overwrite","quiet"),
     #                           input  = paste0(path_run,name),
@@ -167,15 +167,15 @@ rgrass7::execGRASS("r.in.lidar",
                             ignore.stderr = FALSE
   )
     dsm<- raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("dsm",targetGridSize))),paste0(path_run,"dsm1.tif"), overwrite=TRUE,format="GTiff")
-    
+
     if (Sys.info()["sysname"] == "Linux"){
   cat(":: filling no data values if so \n")
   ret <- system(paste0("gdal_fillnodata.py ",
                        path_run,"dsm1.tif ",
                        path_run,"dsm.tif"),intern = TRUE)
   dsm <- raster::raster(paste0(path_run,"dsm.tif"))
-    } 
-    else 
+    }
+    else
   dsm <- raster::raster(paste0(path_run,"dsm1.tif"))
   if (!verbose)  {
     Sys.setenv("GRASS_VERBOSE"=GV)

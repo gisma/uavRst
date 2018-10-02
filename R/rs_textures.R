@@ -27,19 +27,19 @@
 #' GLCM Mean and Correlation are more independent. For the same image, GLCM Mean shows  r< 0.1 with any of the other texture measures demonstrated in this tutorial. GLCM Correlation shows  r<0.5 with any other measure.
 #' for a review of a lot of feature extraction algorithms look at: \href{https://doi.org/10.1117/1.JEI.21.2.023016}{Williams et al, 2012, J. of Electronic Imaging, 21(2), 023016 (2012)}\cr
 #' glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogeneity" <-> "simple 4", "contrast"<-> "simple 5", "dissimilarity" <-> "advanced 2", "entropy" <-> "simple 2", "second_moment"<-> "simple 4", "correlation" <-> "simple 3"
-#' Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data. 
+#' Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data.
 #' @seealso \code{\link{glcm}}
 #' @export glcm_texture
 #' @examples
-#' 
+#'
 #' \dontrun{
 
 #' require(glcm)
 #' ## example on how to calculate texture from a list of channels
 #' setwd(tempdir())
 #' #get some typical data as provided by the authority
-#' Sys.setlocale('LC_ALL','C')  
-#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip", 
+#' Sys.setlocale('LC_ALL','C')
+#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
 #'                      destfile="testdata.zip")
 #' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
 #' r<- raster::stack("4490600_5321400.tif")
@@ -128,10 +128,10 @@ glcm_texture <- function(x,
 }
 
 
-#' OTB wrapper for Haralick's simple, advanced and higher order texture features. 
-#' 
+#' OTB wrapper for Haralick's simple, advanced and higher order texture features.
+#'
 #' @description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image
-#' 
+#'
 #' @param x A \code{Raster*} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands
 #' @param output_name string pattern vor individual naming of the output file(s)
 #' @param parameters.xyrad list with the x and y radius in pixel indicating the kernel sizes for which the textures are calculated
@@ -202,7 +202,7 @@ glcm_texture <- function(x,
 #' GLCM Mean and Correlation are more independent. For the same image, GLCM Mean shows  r< 0.1 with any of the other texture measures demonstrated in this tutorial. GLCM Correlation shows  r<0.5 with any other measure.
 #' for a review of a lot of feature extraction algorithms look at: \href{https://doi.org/10.1117/1.JEI.21.2.023016}{Williams et al, 2012, J. of Electronic Imaging, 21(2), 023016 (2012)}\cr
 #' glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogeneity" <-> "simple 4", "contrast"<-> "simple 5", "dissimilarity" <-> "advanced 2", "entropy" <-> "simple 2", "second_moment"<-> "simple 4", "correlation" <-> "simple 3"
-#' Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data. 
+#' Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data.
 #' @importFrom gdalUtils ogr2ogr
 #' @importFrom gdalUtils gdal_translate
 #' @importFrom gdalUtils gdalwarp
@@ -214,17 +214,18 @@ glcm_texture <- function(x,
 #' require(uavRst)
 #' require(link2GI)
 #' ## -check if OTB is installed correctly
-#' if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
+#' giLink <- uavRst::linkAll()
+#' stopifnot(giLinks$otb$exist)
 #' setwd(tempdir())
 #' ##- get some typical data as provided by the authority
-#' tmp<-Sys.setlocale('LC_ALL','C')  
-#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip", 
+#' tmp<-Sys.setlocale('LC_ALL','C')
+#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
 #'                      destfile="testdata.zip")
 #' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
-#' 
+#'
 #' # calculate simple Haralick-textures
 #' r<- otbtex_hara(x="4490600_5321400.tif",texture = "simple",return_raster = TRUE)
-#' 
+#'
 #' #plot the results :
 #' ##- visualize all layers
 #' raster::plot(r)
@@ -383,12 +384,13 @@ otbtex_hara<- function(x,
 #' \dontrun{
 #' require(uavRst)
 #' # check if OTB is installed correctly
-#' if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
+#' giLink <- uavRst::linkAll()
+#' stopifnot(giLinks$otb$exist)
 #' setwd(tempdir())
 #' #get some typical data as provided by the authority
 #' #get some typical data as provided by the authority
-#' tmp<-Sys.setlocale('LC_ALL','C')  
-#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip", 
+#' tmp<-Sys.setlocale('LC_ALL','C')
+#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
 #'                      destfile="testdata.zip")
 #' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
 
@@ -465,16 +467,17 @@ otb_stat<- function(input=NULL,
 #' require(uavRst)
 #' require(link2GI)
 #' setwd(tempdir())
-#' if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
-#' 
+#' giLink <- uavRst::linkAll()
+#' stopifnot(giLinks$otb$exist)
+#'
 #' #get some typical iarborne imagery as provided by the authority
 #' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
 #'                      "testdata.zip")
 #' unzip("testdata.zip", junkpaths = TRUE,overwrite = TRUE)
-#' 
+#'
 #' ##- calculate Sobel edge detection
 #' r <- otbtex_edge(input="4490600_5321400.tif",filter = "sobel", retRaster = TRUE)
-#' 
+#'
 #' ##- visualize all layers
 #' ret <- lapply(r, raster::plot)
 #' }
@@ -553,15 +556,16 @@ otbtex_edge<- function(input=NULL,
 #' require(uavRst)
 #' require(link2GI)
 #' setwd(tempdir())
-#' if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
-#' 
+#' giLink <- uavRst::linkAll()
+#' stopifnot(giLinks$otb$exist)
+#'
 #' #get some typical airborne imagery as provided by the authority
 #' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
 #'                      "testdata.zip")
 #' unzip("testdata.zip", junkpaths = TRUE,overwrite = TRUE)
-#' 
+#'
 #' r<-otbtex_gray(input="4490600_5321400.tif",retRaster = TRUE)
-#' 
+#'
 #' ##- visualize all layers
 #' ret <- lapply(r, raster::plot)
 #' }
@@ -660,7 +664,7 @@ morpho_dem<- function(dem,
   isgdal <- Vectorize(isgdaldemitem)
   saga_items<-item[issaga(item)]
   gdal_items<-item[isgdal(item)]
-  
+
   gdal <- giLinks$gdal
   saga <- giLinks$saga
   sagaCmd<-saga$sagaCmd
@@ -677,7 +681,7 @@ morpho_dem<- function(dem,
                            tr=paste(x,' ', y),
                            overwrite = TRUE,
                            multi = TRUE)
-  
+
   for (item in gdal_items){
     cat(getCrayon()[[1]](":::: processing ",item,"\n"))
     res<-   gdalUtils::gdaldem(mode = item,
@@ -692,9 +696,9 @@ morpho_dem<- function(dem,
     cat(getCrayon()[[1]](":::: processing ",saga_items,"\n"))
     if (length(saga_items>0) && !("MTPI" %in% saga_items)) {
     rsaga.geoprocessor(lib = "ta_morphometry", module = 0,
-                       param = list(ELEVATION = paste(path_run,"SAGA_dem.sgrd", sep = ""), 
+                       param = list(ELEVATION = paste(path_run,"SAGA_dem.sgrd", sep = ""),
                                     UNIT_SLOPE = 1,
-                                    UNIT_ASPECT = 1, 
+                                    UNIT_ASPECT = 1,
                                     SLOPE = paste(path_run,"SLOPE.sgrd", sep = ""),
                                     ASPECT = paste(path_run,"ASPECT.sgrd", sep = ""),
                                     C_GENE = paste(path_run,"C_GENE.sgrd", sep = ""),
@@ -712,15 +716,15 @@ morpho_dem<- function(dem,
                        env = env)}
     if ("MTPI" %in% saga_items){
       if (RSAGA::rsaga.get.version(env = env) >= "3.0.0") {
-        
+
         # calculate multiscale p
-        # Topographic Position Index (TPI) calculation as proposed by Guisan et al. (1999).SAGA 
-        # This implementation calculates the TPI for different scales and integrates these into 
-        # one single grid. The hierarchical integration is achieved by starting with the 
+        # Topographic Position Index (TPI) calculation as proposed by Guisan et al. (1999).SAGA
+        # This implementation calculates the TPI for different scales and integrates these into
+        # one single grid. The hierarchical integration is achieved by starting with the
         # standardized TPI values of the largest scale, then adding standardized values from smaller
-        # scales where the (absolute) values from the smaller scale exceed those from the larger scale. 
+        # scales where the (absolute) values from the smaller scale exceed those from the larger scale.
         rsaga.geoprocessor(lib = "ta_morphometry", module = 28,
-                           param = list(DEM = paste(path_run,"SAGA_dem.sgrd", sep = ""), 
+                           param = list(DEM = paste(path_run,"SAGA_dem.sgrd", sep = ""),
                                         SCALE_MIN = minScale,
                                         SCALE_MAX = maxScale,
                                         SCALE_NUM = numScale,
@@ -729,7 +733,7 @@ morpho_dem<- function(dem,
                            env = env)
       } else {cat(getCrayon()[[2]]("\nPlease install SAGA >= 3.0.0\n Run without MTPI...\n"))
         saga_items<-saga_items[  !(saga_items %in% "MTPI")]
-        
+
       }
     }
     for (item in saga_items){
@@ -823,10 +827,10 @@ getOutputDir<- function (outDir){
 #'paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                         projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                         global = TRUE,
-#'                         path_prefix = "path_")                         
+#'                         path_prefix = "path_")
 #'##- overide trailing backslash issue
 #'path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'setwd(path_run)                                          
+#'setwd(path_run)
 #'unlink(paste0(path_run,"*"), force = TRUE
 #'
 #'##- get the tutorial data
@@ -844,7 +848,7 @@ getOutputDir<- function (outDir){
 #'rgbI<-rgb_indices(red   = img[[1]],
 #'                  green = img[[2]],
 #'                  blue  = img[[3]])
-#'                  
+#'
 #'##- visualize the indices
 #'raster::plot(rgbI)
 #'

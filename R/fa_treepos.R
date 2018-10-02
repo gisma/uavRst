@@ -7,7 +7,7 @@ if (!isGeneric('treepos')) {
 #'@title Find potential tree positions using a canopy height model
 #'
 #'@description
-#' Find potential tree positions using a canopy height model by using an iterative watershed algorithm. Basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices. 
+#' Find potential tree positions using a canopy height model by using an iterative watershed algorithm. Basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices.
 #'
 #'@author Chris Reudenbach
 #'
@@ -29,27 +29,27 @@ if (!isGeneric('treepos')) {
 #' # required packages
 #' require(uavRst)
 #' require(link2GI)
-#' 
+#'
 #' # create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
-#' stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
-#' 
+#' stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+#'
 #' # project folder
 #' projRootDir<-tempdir()
-#' 
+#'
 #' # create subfolders please mind that the pathes are exported as global variables
 #' paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
 #'
-#' # get the rgb image, chm and training data 
+#' # get the rgb image, chm and training data
 #'  utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
 #'                        paste0(path_run,"chm_3-3.tif"))
 #'
-#' # read data  
-#'  chmR <- raster::raster(paste0(path_run,"chm_3-3.tif"))  
-#'  
+#' # read data
+#'  chmR <- raster::raster(paste0(path_run,"chm_3-3.tif"))
+#'
 #' # calculate treepos using uavRst generic approach
 #'  tPos <- uavRst::treepos_GWS(chm = chmR,
 #'                          minTreeAlt = 2,
@@ -57,7 +57,7 @@ if (!isGeneric('treepos')) {
 #'                          join = 1,
 #'                          thresh = 0.35,
 #'                          giLinks = giLinks )
-#'                        
+#'
 #'}
 #'
 treepos_GWS <- function(chm = NULL,
@@ -129,7 +129,7 @@ treepos_GWS <- function(chm = NULL,
     # create raw zero mask ts[[1]] = seeds ts[[2]] = maxpos
     treepos <- ts[[1]] * chm
     raster::writeRaster(treepos,paste0(path_run,"treepos0.sdat"),overwrite = TRUE,NAflag = 0)
-    
+
     # reclass extracted treeposs to minTreeAlt
     ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
                          " -INPUT "  ,path_run,"treepos0.sgrd",
@@ -164,7 +164,7 @@ treepos_GWS <- function(chm = NULL,
 }
 
 
-#' 'rLiDAR' based tree detection of a LiDAR-derived Canopy Height Model (CHM) 
+#' 'rLiDAR' based tree detection of a LiDAR-derived Canopy Height Model (CHM)
 #' @description Detects and computes the location and height of individual trees within
 #' the LiDAR-derived Canopy Height Model (CHM). The algorithm implemented in this function
 #' is local maximum with a fixed window size. Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
@@ -175,23 +175,23 @@ treepos_GWS <- function(chm = NULL,
 #' @export treepos_RL
 #' @examples
 #' \dontrun{
-#' 
+#'
 #'## required packages
 #'require(uavRst)
 #'
 #'## runtime folder
 #'path_run<-tempdir()
 #'
-#'## get the rgb image, chm and training data 
-#'utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif", 
+#'## get the rgb image, chm and training data
+#'utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
 #'                     paste0("chm_3-3.tif"))
 #'
 #'## read tif
 #'chm<-raster::raster("chm_3-3.tif")
 #'
 #'## find trees
-#'tPosRL <- treepos_RL(chm = chm, 
-#'                     movingWin = 7, 
+#'tPosRL <- treepos_RL(chm = chm,
+#'                     movingWin = 7,
 #'                     minTreeAlt = 2)
 #'## visualisation
 #' mapview::mapview(tPosRL)
@@ -228,7 +228,7 @@ treepos_RL <- function(chm =NULL,
 #' @export treepos_lidR
 #' @examples
 #' \dontrun{
-#' 
+#'
 #'require(uavRst)
 #'## required packages
 #'require(uavRst)
@@ -236,21 +236,21 @@ treepos_RL <- function(chm =NULL,
 #'## runtime folde
 #'path_run<-tempdir()
 #'
-#'## get the rgb image, chm and training data 
-#'utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif", 
+#'## get the rgb image, chm and training data
+#'utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
 #'                     paste0("chm_3-3.tif"))
 #'
 #'## read tif
 #'chm<-raster::raster("chm_3-3.tif")
 #'
 #'## find trees
-#'tPoslidR <- treepos_lidR(chm = chm, 
-#'                     movingWin = 7, 
+#'tPoslidR <- treepos_lidR(chm = chm,
+#'                     movingWin = 7,
 #'                     minTreeAlt = 2)
 #'## visualisation
 #' mapview::mapview(tPoslidR)
 
-#'                          
+#'
 #' }
 
 
@@ -286,23 +286,23 @@ treepos_lidR <- function(chm =NULL,
 #' @export treepos_FT
 #' @examples
 #' \dontrun{
-#' 
+#'
 #' # required packages
 #'  require(uavRst)
 #'  require(curl)
-#' 
+#'
 #' # runtime folde
 #'  path_run<-tempdir()
-#' 
-#' # get the rgb image, chm and training data 
+#'
+#' # get the rgb image, chm and training data
 #'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
 #'  res <- curl::curl_download(url, paste0(path_run,"chm_3-3.tif"))
-#' 
-#' # call ForestTools treepos 
+#'
+#' # call ForestTools treepos
 #'  treepos_FT(chm = paste0(path_run,"chm_3-3.tif"),
-#'             minTreeAlt = 2, 
+#'             minTreeAlt = 2,
 #'             maxCrownArea = 150)
-#'                          
+#'
 #' }
 
 

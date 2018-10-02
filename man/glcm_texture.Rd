@@ -59,8 +59,8 @@ require(glcm)
 ## example on how to calculate texture from a list of channels
 setwd(tempdir())
 #get some typical data as provided by the authority
-Sys.setlocale('LC_ALL','C')  
-utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip", 
+Sys.setlocale('LC_ALL','C')
+utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",
                      destfile="testdata.zip")
 unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
 r<- raster::stack("4490600_5321400.tif")

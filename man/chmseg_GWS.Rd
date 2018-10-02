@@ -54,7 +54,7 @@ require(link2GI)
 ## linkages
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
+stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
 
 # project folder
 projRootDir<-tempdir()
@@ -66,9 +66,9 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          path_prefix = "path_")
 ## overide trailing backslash issue
  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)                                          
+ setwd(path_run)
  unlink(paste0(path_run,"*"), force = TRUE)
- 
+
 ## get the data
 url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
 utils::download.file(url, paste0(path_run,"tutorial.zip"))
@@ -80,7 +80,7 @@ chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
 tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
 
 ### tree segmentation
-crowns_GWS <- chmseg_GWS( treepos = tPos, 
+crowns_GWS <- chmseg_GWS( treepos = tPos,
                       chm = chmR,
                       minTreeAlt = 3,
                       neighbour = 0,
@@ -88,7 +88,7 @@ crowns_GWS <- chmseg_GWS( treepos = tPos,
                       thVarSpatial = 1.,
                       thSimilarity = 0.00001,
                       giLinks = giLinks )
-                      
+
 mapview::mapview(crowns_gws,zcol="chmMEAN")
 }
 }

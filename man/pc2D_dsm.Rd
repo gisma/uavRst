@@ -37,7 +37,7 @@ pc2D_dsm(laspcFile = NULL, gisdbasePath = NULL, grassVersion = 1,
 }
 \description{
 Create a Digital Surface Model from a high density point cloud as typically derived by an
-optical UAV retrieval. It simply samples the maximum or whatever values of a given target 
+optical UAV retrieval. It simply samples the maximum or whatever values of a given target
 grid size and fills the no data holes if so.
 }
 \examples{
@@ -47,7 +47,7 @@ require(link2GI)
 
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
+stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
 
 # proj subfolders
 projRootDir<-tempdir()
@@ -68,7 +68,7 @@ destfile=paste0(path_run,"lasdata.las"))
 dsm <- pc2D_dsm(laspcFile = paste0(path_run,"lasdata.las"),
                 gisdbasePath = projRootDir,
                 sampleMethod = "max",
-                targetGridSize = 0.5, 
+                targetGridSize = 0.5,
                 giLinks = giLinks)
 }
 }

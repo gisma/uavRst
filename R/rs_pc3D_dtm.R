@@ -38,8 +38,8 @@
 #'
 #' # create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
-#' stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
-#' 
+#' stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+#'
 #'# proj subfolders
 #'projRootDir<-tempdir()
 #'#setwd(paste0(projRootDir,"run"))
@@ -64,8 +64,8 @@
 #'                       splineNumber = 5 ,
 #'                       gridSize = 0.5,
 #'                       giLinks = giLinks)
-#'mapview::mapview(pc3DTM[[1]])                  
-#'   }                    
+#'mapview::mapview(pc3DTM[[1]])
+#'   }
 
 
 pc3D_dtm <- function(lasDir = NULL,
@@ -83,7 +83,7 @@ pc3D_dtm <- function(lasDir = NULL,
                       proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                       cores = "3",
                    pathLastools = NULL,
-                   giLinks =NULL, 
+                   giLinks =NULL,
                    MP ="~",
                    verbose = FALSE) {
   LASbin<-searchLastools(MP=MP)
@@ -185,7 +185,7 @@ pc3D_dtm <- function(lasDir = NULL,
 
 
   }
-  
+
   if (!is.null(cutExtent)){
     #lastool(tool = "lasclip",lasFile = lasfile,cutExtent = cutExtent)
     las = lidR::readLAS(paste0(path_run,name))
@@ -195,7 +195,7 @@ pc3D_dtm <- function(lasDir = NULL,
   }
   # get extent of merged file
   sp_param <-lastool(lasFile= paste0(path_run,name))
-  
+
   # rename output file according to the extent
   fn<- paste(sp_param ,collapse=" ")
   tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
@@ -295,7 +295,7 @@ pc3D_dtm <- function(lasDir = NULL,
                 ignore.stderr = TRUE)
 
   # saga spline interpolation of the alt values
-  
+
   ret <- system(paste0(sagaCmd,' grid_spline 4 ',
                        ' -SHAPES ', path_run,'pointcloud.spc',
                        ' -FIELD 2',

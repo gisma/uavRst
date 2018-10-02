@@ -60,7 +60,7 @@ require(link2GI)
 
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
+stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
 
 # proj subfolders
 projRootDir<-tempdir()
@@ -86,8 +86,8 @@ pc3DTM <- pc3D_dtm(lasDir =  paste0(path_run,"lasdata.las"),
                       splineNumber = 5 ,
                       gridSize = 0.5,
                       giLinks = giLinks)
-mapview::mapview(pc3DTM[[1]])                  
-  }                    
+mapview::mapview(pc3DTM[[1]])
+  }
 }
 \author{
 Chris Reudenbach

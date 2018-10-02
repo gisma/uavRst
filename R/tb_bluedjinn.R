@@ -2,7 +2,7 @@
 
 #' @description Read a GPX file. By default, it reads all possible GPX layers, and only returns shapes for layers that have any features.
 #' if the layer has any features a sp object is returned.
-#' 
+#'
 #' @param file a GPX filename (including directory)
 #' @param layers vector of GPX layers. Possible options are \code{"waypoints"}, \code{"tracks"}, \code{"routes"}, \code{"track_points"}, \code{"route_points"}. By dedault, all those layers are read.
 #' @keywords internal
@@ -153,7 +153,7 @@ sp_line <- function(startPoint,endPoint,ID,
   }
   return(line)
 }
-#   
+#
 #' create an spatialpointobject from 1 points.
 #' @description
 #' create an spatialpointobject from 1 points, optional export as shapefile
@@ -403,16 +403,16 @@ funWhichmax <- function(mask,value) {
 #' # required packages
 #' require(uavRst)
 #' require(link2GI)
-#' 
+#'
 #' # create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
-#' stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
-#' 
-#' #' # check if SAGA is correctly installed 
+#' stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+#'
+#' #' # check if SAGA is correctly installed
 #'if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
 #' # project folde
 #' projRootDir<-tempdir()
-#' 
+#'
 #' # create subfolders please mind that the pathes are exported as global variables
 #' paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
@@ -420,22 +420,22 @@ funWhichmax <- function(mask,value) {
 #'                          path_prefix = "path_")
 #' # overide trailing backslash issue
 #'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  
-#' # get the rgb image, chm and training data 
+#'
+#' # get the rgb image, chm and training data
 #' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 #' utils::download.file(url, paste0(path_run,"tutorial_data.zip"))
 #' unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
-#' 
+#'
 #' # convert tif to SAGA
 #'   gdalUtils::gdalwarp(paste0(path_run,"rgb_3-3.tif"),
 #'                       paste0(path_run,"rgb_3-3.sdat"),
 #'                       overwrite = TRUE,
 #'                       of = 'SAGA',
 #'                       verbose = FALSE)
-#' 
+#'
 #' polyStat <- poly_stat(paste0(path_run,"rgb_3-3.sgrd"),
 #'                       spdf = paste0(path_run,"rgb_3-3.shp"))
-#'                       
+#'
 #'}
 #'
 poly_stat <- function(x = NULL,
@@ -508,7 +508,7 @@ poly_stat <- function(x = NULL,
 
 #'  convenient function to establish all link2GI links
 #' @description brute force search, find and linkl of all link2GI link functions
-#' 
+#'
 #' @note You may also use the full parameterization of the \code{link2GI} package, but you are strungly advaced to use the \code{link2GI} functions in a direct way.
 #' @param links character. links
 #' @param linkItems character. list of c("saga","grass7","otb","gdal")
@@ -517,16 +517,16 @@ poly_stat <- function(x = NULL,
 #' @param grassArgs character. grassArgs full string of grassArgs
 #' @param otbArgs character. full string of otbArgs
 #' @param gdalArgs character. full string of gdalArgs
-#' 
+#'
 #'@examples
 #'\dontrun{
 #' # required packages
 #' require(uavRst)
 #' require(link2GI)
-#' 
+#'
 #' # search, find and create the links to all supported  GI software
 #' giLinks<-uavRst::linkAll()
-#' 
+#'
 
 #'}
 
@@ -540,7 +540,7 @@ linkAll <- function(links=NULL,
                         gdalArgs =  c("quiet = TRUE,
                                      returnPaths = TRUE")
                    )  {
-  
+
   if (sagaArgs == "default") sagaArgs <- "default_SAGA = NULL, searchLocation = 'default', ver_select = FALSE, quiet = TRUE, returnPaths = TRUE"
   if (grassArgs == "default") grassArgs <- "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist = FALSE, gisdbase = NULL,
                                      location = NULL, spatial_params = NULL, resolution = NULL, quiet = TRUE, returnPaths = FALSE"
@@ -647,11 +647,11 @@ getPopupStyle <- function() {
   return(paste(pop[1:(end-2)], collapse = ""))
 }
 #' Split multiband image to single band SAGA files
-#' @description Split multiband image to single band SAGA files. If a reference file is given, it performs a resample if necessary to avoid the numerical noise problem of SAGA extent. 
+#' @description Split multiband image to single band SAGA files. If a reference file is given, it performs a resample if necessary to avoid the numerical noise problem of SAGA extent.
 #' @param fn character. filename
 #' @param bandname character. list of bandnames c("red","green","blue")
-#' @param startBand numerical. first band to export 
-#' @param startBand numerial. last band to export 
+#' @param startBand numerical. first band to export
+#' @param startBand numerial. last band to export
 #' @param refFn character. reference image for resampling
 #' @param returnRaster logical. return as raster
 #' @name split2SAGA
@@ -669,9 +669,9 @@ split2SAGA<-function(fn=NULL,
     outFn<-paste0(path_run,bandName[i],".sdat")
     #raster::writeRaster(raster::raster(fn),outFn,overwrite = TRUE,NAflag = 0,process="text")
     if (!is.null(refFn))
-      r<-raster::raster(refFn) 
-    else  
-      r<-raster::raster(fn) 
+      r<-raster::raster(refFn)
+    else
+      r<-raster::raster(fn)
     res<-gdalUtils::gdal_translate(src_dataset = fn[[i]]@file@name,
                               dst_dataset = outFn,
                               tr= paste0(raster::xres(r)," ",
@@ -682,7 +682,7 @@ split2SAGA<-function(fn=NULL,
                               a_srs = as.character(r@crs) )
   r<-raster::writeRaster(raster::resample(raster::raster(outFn),raster::raster(refFn)),
                        filename	= outFn,
-                       NAflag = 0,	
+                       NAflag = 0,
                        format="SAGA",
                        overwrite=TRUE,progress="text")
     flist<-append(flist, r)
@@ -690,8 +690,8 @@ split2SAGA<-function(fn=NULL,
   if (returnRaster) return(flist)
 }
 
-#' colorize the cat outputs 
-#'@description colorize the cat outputs 
+#' colorize the cat outputs
+#'@description colorize the cat outputs
 #'@export
 #'@keywords internal
 getCrayon<-function(){
@@ -702,8 +702,8 @@ getCrayon<-function(){
   return(list(note,err,ok,head))
 }
 #' create name vector corresponding to the training image stack
-#' create vector containing the names of the image stack claculated using \code{\link{calc_ext}} 
-#' @param rgbi character. codes of the RGB indices 
+#' create vector containing the names of the image stack claculated using \code{\link{calc_ext}}
+#' @param rgbi character. codes of the RGB indices
 #' @param bandNames character.  band names
 #' @param stat character.  stat codes
 #' @param morpho character.  morpho codes
@@ -711,7 +711,7 @@ getCrayon<-function(){
 #' @param rgbTrans character.  rgbTrans codes
 #' @param dem charater. dem codes
 #' @keywords internal
-#' 
+#'
 #' @export make_bandnames
 
 make_bandnames <- function(rgbi    = NA,
@@ -724,94 +724,94 @@ make_bandnames <- function(rgbi    = NA,
   if (!is.na(rgbi[1])) bandNames <- append(c("red","green","blue"),rgbi)
   if (!is.na(bandNames[1])) {
     if(bandNames[1] == "simple"){
-      bandNames <- c("Energy", "Entropy", "Correlation", 
-                  "Inverse_Difference_Moment", "Inertia", 
+      bandNames <- c("Energy", "Entropy", "Correlation",
+                  "Inverse_Difference_Moment", "Inertia",
                   "Cluster_Shade", "Cluster_Prominence",
                   "Haralick_Correlation")
     } else if(bandNames[1] == "advanced"){
       bandNames <- c("Hara_Mean", "Hara_Variance", "Dissimilarity",
-                  "Sum_Average", 
-                  "Sum_Variance", "Sum_Entropy", 
-                  "Difference_of_Variances", 
-                  "Difference_of_Entropies", 
+                  "Sum_Average",
+                  "Sum_Variance", "Sum_Entropy",
+                  "Difference_of_Variances",
+                  "Difference_of_Entropies",
                   "IC1", "IC2")
     } else if(bandNames[1] == "higher"){
-      bandNames <- c("Short_Run_Emphasis", 
-                  "Long_Run_Emphasis", 
-                  "Grey-Level_Nonuniformity", 
-                  "Run_Length_Nonuniformity", 
-                  "Run_Percentage", 
-                  "Low_Grey-Level_Run_Emphasis", 
-                  "High_Grey-Level_Run_Emphasis", 
-                  "Short_Run_Low_Grey-Level_Emphasis", 
-                  "Short_Run_High_Grey-Level_Emphasis", 
+      bandNames <- c("Short_Run_Emphasis",
+                  "Long_Run_Emphasis",
+                  "Grey-Level_Nonuniformity",
+                  "Run_Length_Nonuniformity",
+                  "Run_Percentage",
+                  "Low_Grey-Level_Run_Emphasis",
+                  "High_Grey-Level_Run_Emphasis",
+                  "Short_Run_Low_Grey-Level_Emphasis",
+                  "Short_Run_High_Grey-Level_Emphasis",
                   "Long_Run_Low_Grey-Level_Emphasis",
                   "Long_Run_High_Grey-Level_Emphasis")
     } else if(bandNames[1] == "all"){
-      bandNames <- c("Energy", "Entropy", "Correlation", 
-                  "Inverse_Difference_Moment", "Inertia", 
+      bandNames <- c("Energy", "Entropy", "Correlation",
+                  "Inverse_Difference_Moment", "Inertia",
                   "Cluster_Shade", "Cluster_Prominence",
                   "Haralick_Correlation",
                   "Hara_Mean", "Hara_Variance", "Dissimilarity",
-                  "Sum_Average", 
-                  "Sum_Variance", "Sum_Entropy", 
-                  "Difference_of_Variances", 
-                  "Difference_of_Entropies", 
+                  "Sum_Average",
+                  "Sum_Variance", "Sum_Entropy",
+                  "Difference_of_Variances",
+                  "Difference_of_Entropies",
                   "IC1", "IC2",
-                  "Short_Run_Emphasis", 
-                  "Long_Run_Emphasis", 
-                  "Grey-Level_Nonuniformity", 
-                  "Run_Length_Nonuniformity", 
-                  "Run_Percentage", 
-                  "Low_Grey-Level_Run_Emphasis", 
-                  "High_Grey-Level_Run_Emphasis", 
-                  "Short_Run_Low_Grey-Level_Emphasis", 
-                  "Short_Run_High_Grey-Level_Emphasis", 
+                  "Short_Run_Emphasis",
+                  "Long_Run_Emphasis",
+                  "Grey-Level_Nonuniformity",
+                  "Run_Length_Nonuniformity",
+                  "Run_Percentage",
+                  "Low_Grey-Level_Run_Emphasis",
+                  "High_Grey-Level_Run_Emphasis",
+                  "Short_Run_Low_Grey-Level_Emphasis",
+                  "Short_Run_High_Grey-Level_Emphasis",
                   "Long_Run_Low_Grey-Level_Emphasis",
                   "Long_Run_High_Grey-Level_Emphasis")
     }
   }
   if (stat == TRUE)  {
     bandNames    = c("Stat_Mean","Stat_Variance", "Skewness", "Kurtosis")
-  } 
+  }
   if (!is.na(dem))  {
     bandNames    =  dem
-  } 
-  
+  }
+
   if (!is.na(morpho))  {
     bandNames    =  morpho
-  } 
-  
+  }
+
   if (!is.na(edge))  {
     bandNames    =  edge
-  } 
+  }
   if (!is.na(rgbTrans))  {
     if (rgbTrans %in% c("Gray"))
       bandNames    =  bandNames <- c(paste0(rgbTrans,"_b1"))
-    else 
+    else
       bandNames    =  bandNames <- c(paste0(rgbTrans,"_b1"),paste0(rgbTrans,"_b2"),paste0(rgbTrans,"_b3"))
-  } 
+  }
   return(bandNames)
-  
+
 }
 
 # returns the saga items from a list --
-issagaitem <- function(x) 
+issagaitem <- function(x)
 {
   if (x %in%  c("SLOPE","ASPECT","C_GENE","C_PROF","C_PLAN","C_TANG","C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI") ) return(TRUE) else return(FALSE)
-}             
+}
 
 # returns the gdal items from a list ---
-isgdaldemitem <- function(x) 
+isgdaldemitem <- function(x)
 {
   if (x %in%  c("hillshade","slope", "aspect","TRI","TPI","Roughness")) return(TRUE) else return(FALSE)
 }
 
 #' clips a tif files according to a given extent.
-#' 
+#'
 #' clips a tif files according to a given extent
 #' @param rasterFiles character. vector containing a list of rasterfiles to be clipped
-#' @param ext extent 
+#' @param ext extent
 #' @param outPath character. subfolder of current runtime folder. clipped files will be stored there
 #' @param prefix character. prefic string that is added to the filenames
 #'@export
@@ -825,7 +825,7 @@ cutTif<- function(rasterFiles = NULL,
            extent(ext)[3],' ',
            extent(ext)[2],' ',
            extent(ext)[4])
-  if (!file.exists(paste0(path_run, outPath))) dir.create(file.path(paste0(path_run, outPath)), recursive = TRUE,showWarnings = FALSE)  
+  if (!file.exists(paste0(path_run, outPath))) dir.create(file.path(paste0(path_run, outPath)), recursive = TRUE,showWarnings = FALSE)
   for (rasterFile in rasterFiles) {
     system(paste0("gdal_translate -projwin ", te, " -of GTiff ",rasterFile, " ", path_run,outPath,"/",prefix,basename(rasterFile)))
   }
@@ -835,7 +835,7 @@ searchLastools <- function(MP = "~",
                        quiet=TRUE) {
   if (MP=="default") MP <- "~"
   MP<-path.expand(MP)
-  if (!exists("GiEnv")) GiEnv <- new.env(parent=globalenv()) 
+  if (!exists("GiEnv")) GiEnv <- new.env(parent=globalenv())
   # trys to find a osgeo4w installation at the mounting point  disk returns root directory and version name
   # recursive dir for otb*.bat returns all version of otb bat files
   if (!quiet) cat("\nsearching for lastools windows binaries - this may take a while\n")
@@ -844,10 +844,10 @@ searchLastools <- function(MP = "~",
   if (!grepl(MP,raw_LAS)[[1]]) stop("\n At ",MP," no LAStool binaries found")
   # trys to identify valid otb installations and their version numbers
   LASbinaries <- lapply(seq(length(raw_LAS)), function(i){
-    
+
     # TODO strip version from OTB /usr/bin/otbcli_BandMath -version
     # "This is the BandMath application, version 6.0.0"
-    
+
     # if the the tag "OSGEO4W64" exists set installation_type
     root_dir <- data.frame(binDir = substr(raw_LAS[i],1, gregexpr(pattern = "lasview.exe", raw_LAS[i])[[1]][1] - 1))
     # put the existing GISBASE directory, version number  and installation type in a data frame
@@ -855,7 +855,7 @@ searchLastools <- function(MP = "~",
   }) # end lapply
   # bind the df lines
   otbInstallations <- do.call("rbind", LASbinaries )
-  
-  
+
+
   return(LASbinaries)
 }

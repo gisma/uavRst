@@ -37,7 +37,7 @@ require(link2GI)
 
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
+stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
 
 # project folder
 projRootDir<-tempdir()
@@ -48,13 +48,13 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          global = TRUE,
                          path_prefix = "path_")
 
-# get the rgb image, chm and training data 
+# get the rgb image, chm and training data
  utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
                        paste0(path_run,"chm_3-3.tif"))
 
-# read data  
- chmR <- raster::raster(paste0(path_run,"chm_3-3.tif"))  
- 
+# read data
+ chmR <- raster::raster(paste0(path_run,"chm_3-3.tif"))
+
 # calculate treepos using uavRst generic approach
  tPos <- uavRst::treepos_GWS(chm = chmR,
                          minTreeAlt = 2,
@@ -62,7 +62,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          join = 1,
                          thresh = 0.35,
                          giLinks = giLinks )
-                       
+
 }
 
 }

@@ -50,8 +50,8 @@ if (!isGeneric('pc3D_dsm')) {
 #'
 #' # create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
-#' stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
-#' 
+#' stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+#'
 #'# proj subfolders
 #'projRootDir<-tempdir()
 #'#setwd(paste0(projRootDir,"run"))
@@ -72,7 +72,7 @@ if (!isGeneric('pc3D_dsm')) {
 #'pc3DSM<-pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),
 #'         gisdbasePath = projRootDir,
 #'         projSubFolder = projsubFolder,
-#'         gridSize = "0.5", 
+#'         gridSize = "0.5",
 #'         giLinks = giLinks)
 #'mapview::mapview(pc3DSM[[1]])
 #'}
@@ -111,11 +111,11 @@ pc3D_dsm <- function(lasDir = NULL,
       MP<-"~"
       }
     }
-  
+
   LASbin<-searchLastools(MP=MP)
   if (length(LASbin)<1) stop("\n At ",MP," no LAStool binaries found")
   else lasbin<- as.character(LASbin[[1]][,])
-  
+
   if (is.null(giLinks)){
     giLinks <- linkAll()
   }
@@ -143,7 +143,7 @@ pc3D_dsm <- function(lasDir = NULL,
     if (is.null(pathLastools)) {cmd <- pathLastools <- paste0("wine ",lasbin)
     if (verbose) cat("\n You did not provide a path to your lastool binary folder.\n
                          Assumed to be somewher in your home directory")}
-    
+
   }
 
   #create cmd strings
@@ -216,16 +216,16 @@ pc3D_dsm <- function(lasDir = NULL,
 
   # create GRASS7 connection according gisdbase_exist (permanent or temporary)
   if (gisdbase_exist)
-    paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath, 
-                               location = GRASSlocation, 
+    paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath,
+                               location = GRASSlocation,
                                gisdbase_exist = TRUE,
                                ver_select = grassVersion,
                                search_path = searchPath)
   else
     paths<-link2GI::linkGRASS7(gisdbase = gisdbasePath,
-                               location = GRASSlocation, 
+                               location = GRASSlocation,
                                spatial_params = sp_param,
-                               resolution = gridSize,   
+                               resolution = gridSize,
                                ver_select = grassVersion,
                                search_path = searchPath)
 

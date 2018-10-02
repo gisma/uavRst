@@ -59,11 +59,12 @@ Furthermore using stats will cover mean and variance while dissimilarity is high
 require(uavRst)
 require(link2GI)
 ## -check if OTB is installed correctly
-if (length(link2GI::findOTB()) < 1) stop("No valid OTB installation found")
+giLink <- uavRst::linkAll()
+stopifnot(giLinks$otb$exist)
 setwd(tempdir())
 ##- get some typical data as provided by the authority
-tmp<-Sys.setlocale('LC_ALL','C')  
-utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip", 
+tmp<-Sys.setlocale('LC_ALL','C')
+utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",
                      destfile="testdata.zip")
 unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
 

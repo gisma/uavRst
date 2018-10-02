@@ -38,10 +38,10 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                         path_prefix = "path_")
 ##- overide trailing backslash issue
 path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-setwd(path_run)                                                 
+setwd(path_run)
 unlink(paste0(path_run,"*"), force = TRUE)
 
-##- get the tutorial data 
+##- get the tutorial data
 utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip",
 paste0(path_run,"ffs.zip"))
 unzip(zipfile =  paste0(path_run,"ffs.zip"), exdir = path_run)
@@ -55,9 +55,9 @@ tutorialModel<-readRDS(file = paste0(path_run,"tutorialmodel.rds"))
 ##- please note the output is saved in the subdirectory path_output
 predict_rgb(imageFiles=imageFile,
            model = tutorialModel[[1]],
-           bandNames = bandNames)    
+           bandNames = bandNames)
 
 ##- visualise the classification
-raster::plot(raster::raster(paste0(path_output,"classified_predict.tif")))    
-}                                         
+raster::plot(raster::raster(paste0(path_output,"classified_predict.tif")))
+}
 }

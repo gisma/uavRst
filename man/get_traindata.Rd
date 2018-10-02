@@ -31,15 +31,15 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                         path_prefix = "path_")
 ##- overide trailing backslash issue
 path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-setwd(path_run)          
+setwd(path_run)
 unlink(paste0(path_run,"*"), force = TRUE)
 
-##- get the tutorial data 
+##- get the tutorial data
 url<-"https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 utils::download.file(url, paste0(path_run,"tutorial_data.zip"))
 unzip(res,exdir =  paste0(path_run,"tutorial_data.zip"))
 
-##- get the files  
+##- get the files
 imageTrainStack <- list()
 geomTrainStack <- list()
 imageTrainFiles <- Sys.glob(paste0(path_run,"rgb*.tif"))
@@ -54,7 +54,7 @@ names(imageTrainStack[[2]])<-c("red","green","blue")
 ##' finally extraxt the training data to a data frame
 trainDF <- get_traindata(rasterStack  = imageTrainStack,
                         trainPlots = geomTrainStack)
-                        
+
 ##- have a look at the training data
 head(trainDF)
 }

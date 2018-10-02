@@ -35,8 +35,8 @@ require(link2GI)
 
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
- 
+stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+
 ## project folder
 projRootDir<-tempdir()
 
@@ -45,12 +45,12 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
                          path_prefix = "path_")
-                         
+
 ## overide trailing backslash issue
 path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-setwd(path_run)                                          
+setwd(path_run)
 unlink(paste0(path_run,"*"), force = TRUE
-                 
+
 ## get the data
 utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
                      paste0(path_run,"tutorial.zip"))
@@ -66,9 +66,9 @@ crownsFT <- chmseg_FT(chm = chmR,
                        format = "polygons",
                        minTreeAlt = 2,
                        verbose = FALSE)
-                       
+
 ## Visualisation
-mapview::mapview(crownsFT,zcol="treepos_2")                        
+mapview::mapview(crownsFT,zcol="treepos_2")
 
 }
 }

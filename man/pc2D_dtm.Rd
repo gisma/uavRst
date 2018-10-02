@@ -30,7 +30,7 @@ pc2D_dtm(laspcFile = NULL, grassVersion = 1, searchPath = NULL,
 
 \item{targetGridSize}{numeric. the resolution of the target DTM raster}
 
-\item{splineThresGridSize}{numeric. threshold of minimum gridsize tha is used for splininterpolation if the desired resolution is finer a two step approximation is choosen 
+\item{splineThresGridSize}{numeric. threshold of minimum gridsize tha is used for splininterpolation if the desired resolution is finer a two step approximation is choosen
 first step spline interpolation using the treshold gridsize second step bilinear resampling to the desired targetGridSize.}
 
 \item{projFolder}{subfolders that will be created/linked for R related GRASS processing}
@@ -42,8 +42,8 @@ first step spline interpolation using the treshold gridsize second step bilinear
 \item{verbose}{to be quiet (1)}
 }
 \description{
-Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval. Due to the poor estimation of ground points 
-a minimum samopling approach is applied. It retrieves on a coarse sampling gridsize the minimum value and interpolates on these samples a surface grid with a higher target 
+Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval. Due to the poor estimation of ground points
+a minimum samopling approach is applied. It retrieves on a coarse sampling gridsize the minimum value and interpolates on these samples a surface grid with a higher target
 resolution. this is a kind of an try and error process and provides fairly good results if the point cloud shows at least some real surface points on a not to coarse grid.
 }
 \examples{
@@ -53,7 +53,7 @@ require(link2GI)
 
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
+stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
 
 # proj subfolders
 projRootDir<-tempdir()
@@ -77,7 +77,7 @@ dtm <- pc2D_dtm(laspcFile = paste0(path_run,"lasdata.las"),
                 sampleGridSize = 25,
                 targetGridSize = 0.5,
                 giLinks = giLinks)
-}               
+}
 }
 \author{
 Chris Reudenbach

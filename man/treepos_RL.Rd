@@ -28,16 +28,16 @@ require(uavRst)
 ## runtime folder
 path_run<-tempdir()
 
-## get the rgb image, chm and training data 
-utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif", 
+## get the rgb image, chm and training data
+utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
                     paste0("chm_3-3.tif"))
 
 ## read tif
 chm<-raster::raster("chm_3-3.tif")
 
 ## find trees
-tPosRL <- treepos_RL(chm = chm, 
-                    movingWin = 7, 
+tPosRL <- treepos_RL(chm = chm,
+                    movingWin = 7,
                     minTreeAlt = 2)
 ## visualisation
 mapview::mapview(tPosRL)
