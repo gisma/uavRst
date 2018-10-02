@@ -113,34 +113,39 @@ If you just want to classify a single image by a single training file use the no
 }
 \examples{
 \dontrun{
-# required packages
+#'
+##- required packages
 require(uavRst)
-require(curl)
 require(link2GI)
-
-# project folde
-projRootDir<-tempdir()
-
-# create subfolders please mind that the pathes are exported as global variables
-paths<-link2GI::initProj(projRootDir = projRootDir,
-                         projFolders = c("data/","data/ref/","output/","run/","las/"),
-                         global = TRUE,
-                         path_prefix = "path_")
-# overide trailing backslash issue
-# overide trailing backslash issue
- path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)                                          
- unlink(paste0(path_run,"*"), force = TRUE)
- 
-# get the rgb image, chm and training data 
-url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
-unzip(zipfile = res,exdir = path_run)
 
 # create the links to the GI software
 giLinks<-uavRst::linkAll()
 
-# calculate synthetic channels for segmentation and extract the trainingdata
+##- set root folder
+projRootDir<-tempdir()
+
+##- create and set subfolders 
+##- please mind that the pathes are exported as global variables
+paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+                         global = TRUE,
+                         path_prefix = "path_")
+
+##- overide trailing backslash issue
+path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+setwd(path_run)                                          
+
+##- clean runtime folder
+unlink(paste0(path_run,"*"), force = TRUE)
+
+# get the tutorial data
+utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip",
+                     paste0(path_run,"tutorial_data.zip"))
+unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
+
+
+##- calculate some synthetic channels from the RGB image and the canopy height model 
+##- then extract the from the corresponding training geometries the data values aka trainingdata
 trainDF <- calc_ext(calculateBands    = TRUE,
                     extractTrain      = TRUE,
                     suffixTrainGeom   = "",
@@ -164,7 +169,8 @@ trainDF <- calc_ext(calculateBands    = TRUE,
                     currentDataFolder = path_run,
                     currentIdxFolder  = path_run,
                     giLinks = giLinks)
-                
+##- show the result
+head(trainDF)           
 # head on with ffs_train
 }
 }
