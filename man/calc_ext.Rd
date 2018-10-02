@@ -113,13 +113,14 @@ If you just want to classify a single image by a single training file use the no
 }
 \examples{
 \dontrun{
-#'
+
 ##- required packages
 require(uavRst)
 require(link2GI)
 
-# create the links to the GI software
+# create and check the links to the GI software
 giLinks<-uavRst::linkAll()
+stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE)
 
 ##- set root folder
 projRootDir<-tempdir()
@@ -169,6 +170,7 @@ trainDF <- calc_ext(calculateBands    = TRUE,
                     currentDataFolder = path_run,
                     currentIdxFolder  = path_run,
                     giLinks = giLinks)
+                    
 ##- show the result
 head(trainDF)           
 # head on with ffs_train

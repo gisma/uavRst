@@ -402,8 +402,12 @@ funWhichmax <- function(mask,value) {
 #'\dontrun{
 #' # required packages
 #' require(uavRst)
-#' require(curl)
 #' require(link2GI)
+#' 
+#' # create and check the links to the GI software
+#' giLinks<-uavRst::linkAll()
+#' stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
+#' 
 #' #' # check if SAGA is correctly installed 
 #'if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
 #' # project folde
@@ -419,11 +423,8 @@ funWhichmax <- function(mask,value) {
 #'  
 #' # get the rgb image, chm and training data 
 #' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
-#' res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
-#' unzip(zipfile = res, exdir = path_run)
-#' 
-#' # create the links to the GI software
-#' giLinks<-uavRst::linkAll()
+#' utils::download.file(url, paste0(path_run,"tutorial_data.zip"))
+#' unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
 #' 
 #' # convert tif to SAGA
 #'   gdalUtils::gdalwarp(paste0(path_run,"rgb_3-3.tif"),

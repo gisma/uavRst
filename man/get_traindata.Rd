@@ -35,8 +35,8 @@ setwd(path_run)
 unlink(paste0(path_run,"*"), force = TRUE)
 
 ##- get the tutorial data 
-res <- utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip", 
-                           paste0(path_run,"tutorial_data.zip"))
+url<-"https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
+utils::download.file(url, paste0(path_run,"tutorial_data.zip"))
 unzip(res,exdir =  paste0(path_run,"tutorial_data.zip"))
 
 ##- get the files  

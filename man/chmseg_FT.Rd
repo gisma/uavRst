@@ -33,8 +33,9 @@ Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools
 require(uavRst)
 require(link2GI)
 
-## make the folders and linkages
+# create and check the links to the GI software
 giLinks<-uavRst::linkAll()
+stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
  
 ## project folder
 projRootDir<-tempdir()

@@ -42,7 +42,8 @@ setwd(path_run)
 unlink(paste0(path_run,"*"), force = TRUE)
 
 ##- get the tutorial data 
-utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip", paste0(path_run,"ffs.zip"))
+utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip",
+paste0(path_run,"ffs.zip"))
 unzip(zipfile =  paste0(path_run,"ffs.zip"), exdir = path_run)
 
 

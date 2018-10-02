@@ -39,8 +39,11 @@
 #'\dontrun{
 #'
 #' require(uavRst)
-#' require(raster)
 #' require(link2GI)
+#' 
+#' # create and check the links to the GI software
+#' giLinks<-uavRst::linkAll()
+#' stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
 #' 
 #' # proj subfolders
 #' projRootDir<-getwd()
@@ -56,9 +59,7 @@
 #' 
 #' # get the data
 #' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las"
-#' res <- curl::curl_download(url, "run/lasdata.las")
-#' # make the folders and linkages
-#' giLinks<-uavRst::linkAll()
+#' utils::download.file(url, "run/lasdata.las")
 #' 
 #' # create 2D point cloud DTM
 #' dtm <- pc2D_dtm(laspcFile = paste0(path_run,"lasdata.las"),

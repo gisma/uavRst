@@ -30,8 +30,9 @@ Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiD
  require(link2GI)
  require(mapview)
  
-## make the folders and linkages
- giLinks<-uavRst::linkAll()
+# create and check the links to the GI software
+giLinks<-uavRst::linkAll()
+stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
  
 ## project folder
 projRootDir<-tempdir()

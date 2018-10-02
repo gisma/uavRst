@@ -32,8 +32,8 @@
 #'unlink(paste0(path_run,"*"), force = TRUE)
 #'
 #'##- get the tutorial data 
-#'res <- utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip", 
-#'                            paste0(path_run,"tutorial_data.zip"))
+#'url<-"https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
+#'utils::download.file(url, paste0(path_run,"tutorial_data.zip"))
 #'unzip(res,exdir =  paste0(path_run,"tutorial_data.zip"))
 #'
 #'##- get the files  
@@ -204,7 +204,8 @@ get_counts<- function(ids=c(1,2),
 #'unlink(paste0(path_run,"*"), force = TRUE)
 #'
 #'##- get the tutorial data 
-#'utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip", paste0(path_run,"ffs.zip"))
+#'utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip",
+#' paste0(path_run,"ffs.zip"))
 #'unzip(zipfile =  paste0(path_run,"ffs.zip"), exdir = path_run)
 #'
 #'
@@ -485,13 +486,14 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param giLinks     list. GI tools cli paths
 #' @examples
 #'\dontrun{
-#' #'
+#'
 #' ##- required packages
 #' require(uavRst)
 #' require(link2GI)
 #' 
-#' # create the links to the GI software
+#' # create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
+#' stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE)
 #' 
 #' ##- set root folder
 #' projRootDir<-tempdir()
@@ -542,6 +544,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                     currentDataFolder = path_run,
 #'                     currentIdxFolder  = path_run,
 #'                     giLinks = giLinks)
+#'                     
 #' ##- show the result
 #' head(trainDF)           
 #' # head on with ffs_train

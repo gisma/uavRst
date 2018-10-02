@@ -37,9 +37,10 @@ Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}
 
 # required packages
  require(uavRst)
- require(curl)
-# check if SAGA is correctly installed
-if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
+ 
+# create and check the links to the GI software
+giLinks<-uavRst::linkAll()
+stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
 
 # project folder
 projRootDir<-tempdir()
@@ -59,8 +60,6 @@ url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
 utils::download.file(url, paste0(path_run,"tutorial.zip"))
 unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 
-# make the folders and linkages
- giLinks<-uavRst::linkAll()
 
 # read chm data
  chmR<- raster::raster(paste0(path_run,"chm_2.tif"))

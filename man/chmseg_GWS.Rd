@@ -52,9 +52,9 @@ Tree segmentation based on a CHM, basically returns a vector data set with the t
 require(uavRst)
 require(link2GI)
 ## linkages
+# create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-# check if SAGA is correctly installed 
-if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
+stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
 
 # project folder
 projRootDir<-tempdir()

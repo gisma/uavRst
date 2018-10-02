@@ -71,8 +71,11 @@ For using 'PDAL'(since GRASS7.4.x) you have to install the PDAL binaries and pyt
 \examples{
 \dontrun{
 require(uavRst)
-require(raster)
 require(link2GI)
+
+# create and check the links to the GI software
+giLinks<-uavRst::linkAll()
+stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
 
 # proj subfolders
 projRootDir<-tempdir()
@@ -89,8 +92,6 @@ pal = mapview::mapviewPalette("mapviewTopoColors")
 # get the data
 utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
                     destfile=paste0(path_run,"lasdata.las"))
-# make the folders and linkages
-giLinks<-uavRst::linkAll()
 
 # create a DSM  based on a uav point cloud
 pc3DSM<-pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),

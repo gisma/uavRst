@@ -28,8 +28,11 @@ if (!isGeneric('treepos')) {
 #'
 #' # required packages
 #' require(uavRst)
-#' require(curl)
 #' require(link2GI)
+#' 
+#' # create and check the links to the GI software
+#' giLinks<-uavRst::linkAll()
+#' stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
 #' 
 #' # project folder
 #' projRootDir<-tempdir()
@@ -41,15 +44,12 @@ if (!isGeneric('treepos')) {
 #'                          path_prefix = "path_")
 #'
 #' # get the rgb image, chm and training data 
-#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
-#'  res <- curl::curl_download(url, paste0(path_run,"chm_3-3.tif"))
+#'  utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
+#'                        paste0(path_run,"chm_3-3.tif"))
 #'
 #' # read data  
 #'  chmR <- raster::raster(paste0(path_run,"chm_3-3.tif"))  
 #'  
-#' # create the links to the GI software
-#'  giLinks<-uavRst::linkAll()
-#' 
 #' # calculate treepos using uavRst generic approach
 #'  tPos <- uavRst::treepos_GWS(chm = chmR,
 #'                          minTreeAlt = 2,

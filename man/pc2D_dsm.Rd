@@ -43,8 +43,11 @@ grid size and fills the no data holes if so.
 \examples{
 \dontrun{
 require(uavRst)
-require(raster)
 require(link2GI)
+
+# create and check the links to the GI software
+giLinks<-uavRst::linkAll()
+stopifnot(giLinks$saga != FALSE & giLinks$OTB != FALSE & giLink$grass != FALSE)
 
 # proj subfolders
 projRootDir<-tempdir()
@@ -60,9 +63,6 @@ pal = mapview::mapviewPalette("mapviewTopoColors")
 # get the data
 utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
 destfile=paste0(path_run,"lasdata.las"))
-
-# make the folders and linkages
-giLinks<-uavRst::linkAll()
 
 # create 2D pointcloud DSM
 dsm <- pc2D_dsm(laspcFile = paste0(path_run,"lasdata.las"),
