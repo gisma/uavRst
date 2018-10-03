@@ -47,7 +47,7 @@ height of \code{treepos}.}
 Tree segmentation based on a CHM, basically returns a vector data set with the tree crown geometries and a bunch of corresponding indices. After the segementation itself, the results are hole filled and optionally, it can be filtered by a majority filter.
 }
 \examples{
-## ## ##
+\dontrun{
 ##- required packages
 require(uavRst)
 require(link2GI)
@@ -90,7 +90,7 @@ crowns_GWS <- chmseg_GWS( treepos = tPos,
 
 ##- visualize it
 mapview::mapview(crowns_GWS,zcol="chmMEAN")
-##+##
+##+}
 }
 \author{
 Chris Reudenbach

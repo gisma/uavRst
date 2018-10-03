@@ -112,7 +112,7 @@ This approach needs at least a pair of images that differ in time and/or space f
 If you just want to classify a single image by a single training file use the normal procedure as provided by the \code{\link[caret]{trainControl}} function.
 }
 \examples{
-## ## ##
+\dontrun{
 
 ##- required packages
 require(uavRst)
@@ -174,5 +174,5 @@ trainDF <- calc_ext(calculateBands    = TRUE,
 ##- show the result
 head(trainDF)
 # head on with ffs_train
-##+##
+##+}
 }

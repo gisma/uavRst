@@ -26,7 +26,6 @@ r_packages:
   - parallel
   - spatial.tools
   - velox
-  - link2GI
   - doParallel
   - CAST
   - curl
@@ -47,7 +46,7 @@ r_packages:
   - rgrass7
   - RSAGA
 r_github_packages:
-  -r-spatial/link2GI
+  - r-spatial/link2GI
   
 r_build_args: "--no-build-vignettes"
 r_check_args: "--no-build-vignettes --as-cran"
