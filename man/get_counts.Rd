@@ -29,7 +29,7 @@ get_counts(ids = c(1, 2), position = NULL, imageFiles = NULL,
 counts pixel values according to their classes
 }
 \examples{
-## ## ##
+\dontrun{
 ##- required packages
  require(uavRst)
  require(link2GI)
@@ -48,7 +48,7 @@ counts pixel values according to their classes
  unlink(paste0(path_run,"*"), force = TRUE)
 
 ##- get the rgb image, chm and training data
- utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip", 
+ utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
                       paste0(path_run,"tutorial_data.zip"))
  unzip(zipfile = paste0(path_run,"tutorial_data.zip"),exdir = path_run)
 
@@ -64,5 +64,5 @@ counts pixel values according to their classes
                 outPrefix = "",
                       ext = ".tif",
                      path = path_run)
-##+##
+##+}
 }

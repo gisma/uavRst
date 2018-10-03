@@ -27,7 +27,7 @@ height of \code{treepos}.}
 Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools}{'ForestTools'}
 }
 \examples{
-## ## ##
+\dontrun{
 
 ## required packages
 require(uavRst)
@@ -69,5 +69,5 @@ crownsFT <- chmseg_FT(chm = chmR,
 
 ## Visualisation
 mapview::mapview(crownsFT,zcol="treepos_2")
-##+##
+##+}
 }

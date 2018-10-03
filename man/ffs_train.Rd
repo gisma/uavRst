@@ -60,7 +60,7 @@ This approach needs at least a pair of images that differ in time and/or space f
 If you just want to classify a single image by a single training file use the normal procedure as provided by the \code{\link[caret]{trainControl}} function.
 }
 \examples{
-## ## ##
+\dontrun{
 require(uavRst)
 
 ##- project folder
@@ -114,5 +114,5 @@ load(paste0(path_run,"tutorialbandNames.RData"))
                      noClu     = 4)
 
 ##- for classification/prediction go ahead with the predict_RGB function
-##+##
+##+}
 }

@@ -39,7 +39,7 @@ Calculates edges for a given kernel size. return list of geotiffs containing the
 the otb is used for filtering. please provide a GeoTiff file
 }
 \examples{
-## ## ##
+\dontrun{
 ##- required packages
 require(uavRst)
 require(link2GI)
@@ -58,7 +58,7 @@ r <- otbtex_edge(input="4490600_5321400.tif",filter = "sobel", retRaster = TRUE)
 ##- visualize all layers
 ret <- lapply(r, raster::plot)
 Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
-##+##
+##+}
 }
 \author{
 Chris Reudenbach

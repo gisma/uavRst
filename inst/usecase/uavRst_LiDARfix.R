@@ -36,7 +36,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          path_prefix = path_prefix)
 
 # link all CLI stuff
-giLinks<-get_gi()
+giLinks<-linkAll()
 
 # expand las folder
 las_data_dir<-path.expand(las_data_dir)

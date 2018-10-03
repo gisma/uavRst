@@ -45,7 +45,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 pal = mapview::mapviewPalette("mapviewTopoColors")
 c<-uavRst:::getCrayon()
 # make the folders and linkages
-giLinks<-uavRst::get_gi()
+giLinks<-uavRst::linkAll()
 
 # set processing switches
 startcalc_ext  = TRUE

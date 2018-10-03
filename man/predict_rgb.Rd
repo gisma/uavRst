@@ -22,7 +22,7 @@ predict_rgb(imageFiles = NULL, model = NULL, inPrefix = "index_",
 classify images using raster predict
 }
 \examples{
-## ## ##
+\dontrun{
 ##- required packages
 require(uavRst)
 require(link2GI)
@@ -58,5 +58,5 @@ predict_rgb(imageFiles=imageFile,
 
 ##- visualise the classification
 raster::plot(raster::raster(paste0(path_output,"classified_predict.tif")))
-##+##
+##+}
 }

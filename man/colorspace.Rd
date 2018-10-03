@@ -26,7 +26,7 @@ Imagemagick is used for the calculation of the transformations. Please provide a
 you need to install imagemagick on your system, please look at see \href{https://www.systutorials.com/qa/1954/how-to-convert-tiff-images-from-rgb-color-cmyk-color-on-linux}{transform RGB colorspace} seealso \href{https://www.imagemagick.org/script/download.php}{imagemagick download section}.
 }
 \examples{
-## ## ##
+\dontrun{
 
 ##- required packages
  require(uavRst)
@@ -52,8 +52,8 @@ unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
 
 ##- change colorspace from RGB to CIElab
  r2 <- colorspace(input=paste0("4490600_5321400.tif"),colorspace="CIELab")
- 
+
 ##- visualize it
 mapview::mapview(r2)
-##+##
+##+}
 }

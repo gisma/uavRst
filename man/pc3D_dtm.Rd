@@ -54,7 +54,7 @@ pc3D_dtm(lasDir = NULL, gisdbasePath = NULL, thinGrid = "0.5",
 Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.
 }
 \examples{
-## ## ##
+\dontrun{
 require(uavRst)
 require(link2GI)
 
@@ -87,7 +87,7 @@ pc3DTM <- pc3D_dtm(lasDir =  paste0(path_run,"lasdata.las"),
                       gridSize = 0.5,
                       giLinks = giLinks)
 mapview::mapview(pc3DTM[[1]])
-##+##
+##+}
 }
 \author{
 Chris Reudenbach

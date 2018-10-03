@@ -55,7 +55,7 @@ glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogen
 Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data.
 }
 \examples{
-## ## ##
+\dontrun{
 require(uavRst)
 require(link2GI)
 ## -check if OTB is installed correctly
@@ -75,7 +75,7 @@ r<- otbtex_hara(x="4490600_5321400.tif",texture = "simple",return_raster = TRUE)
 ##- visualize all layers
 raster::plot(r)
 tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.-8")
-##+##
+##+}
 }
 \references{
 Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.

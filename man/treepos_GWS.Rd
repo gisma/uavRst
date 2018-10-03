@@ -29,7 +29,7 @@ treepos_GWS(chm = NULL, minTreeAlt = 10, minTreeAltParam = "chmQ20",
 Find potential tree positions using a canopy height model by using an iterative watershed algorithm. Basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices.
 }
 \examples{
-## ## ##
+\dontrun{
 
 # required packages
 require(uavRst)
@@ -63,7 +63,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          thresh = 0.35,
                          giLinks = giLinks )
 
-##+##
+##+}
 
 }
 \author{

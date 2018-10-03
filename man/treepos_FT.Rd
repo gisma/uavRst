@@ -30,7 +30,7 @@ for detecting treetops from a canopy height model. Andrew Plowright:
 R package \href{https://CRAN.R-project.org/package=ForestTools}{ForestTools}\cr
 }
 \examples{
-## ## ##
+\dontrun{
 
 # required packages
  require(uavRst)
@@ -48,5 +48,5 @@ utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/
             maxCrownArea = 150)
 # visualize it
 raster::plot(tposFT)
-##+##
+##+}
 }

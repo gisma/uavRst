@@ -20,7 +20,7 @@ calculate morphometric features of polygons. Calculate some crown related metric
 }
 \examples{
 
-## ## ##
+\dontrun{
 # required packages
 require(uavRst)
 require(link2GI)
@@ -48,7 +48,7 @@ polymetric <- poly_metrics(spdf = paste0(path_run,"rgb_2.shp"))
 
 # visualize it
 mapview::mapview(polymetric)
-##+##
+##+}
 }
 \seealso{
 \href{https://CRAN.R-project.org/package=Momocs}{Momocs}

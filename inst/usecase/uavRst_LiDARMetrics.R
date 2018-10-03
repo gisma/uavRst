@@ -30,24 +30,26 @@
 #'\dontrun{
 #' # Straightforward approach to generate a DTM based on the class 2 minimum returns of a LiDAR file
 #' require(curl)
-#' # get a laz file from Mr. Isenburg
-#' url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz"
-#' res <- curl::curl_download(url=url,
+#' ##- get a laz file from Mr. Isenburg
+#' utils::download.file(url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz",
 #'                            destfile="test.laz",  quiet = TRUE, mode = "wb")
-#' # convert it to las
+#' ##- convert it to las
 #' lastool(tool="las2las","test.laz")
-#' # extract extension for setting up GRASS region
+#' 
+#' ##- extract extension for setting up GRASS region
 #' ext<-lastool(lasDir = "test.las")
-#' # set up GRASS
+#' 
+#' ##- set up GRASS
 #' result<-link2GI::linkGRASS7(spatial_params = c(ext[2],ext[1],ext[4],ext[3],proj4),
 #'                              resolution = gridsize)
-#' # use the r.in.lidar tool to generate a pseudo surface model
+#'                              
+#' ##- use the r.in.lidar tool to generate a pseudo surface model
 #' r_in_lidar(input = paste0(getwd(),"/test.las"),
 #'            output = "testdem",
 #'            method = "min",
 #'            resolution = 10,
 #'            class_filter = 2)
-#'}
+#' ##+}
 
 
 r_in_lidar<- function(input=NULL,
