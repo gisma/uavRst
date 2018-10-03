@@ -47,39 +47,38 @@ height of \code{treepos}.}
 Tree segmentation based on a CHM, basically returns a vector data set with the tree crown geometries and a bunch of corresponding indices. After the segementation itself, the results are hole filled and optionally, it can be filtered by a majority filter.
 }
 \examples{
-\dontrun{
-# required packages
+## ## ##
+##- required packages
 require(uavRst)
 require(link2GI)
-## linkages
-# create and check the links to the GI software
+##- linkages
+##- create and check the links to the GI software
 giLinks<-uavRst::linkAll()
 stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
 
-# project folder
+##- project folder
 projRootDir<-tempdir()
 
-## create subfolders please mind that the pathes are exported as global variables
+##- create subfolders please mind that the pathes are exported as global variables
 paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
                          path_prefix = "path_")
-## overide trailing backslash issue
+##- overide trailing backslash issue
  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
  setwd(path_run)
  unlink(paste0(path_run,"*"), force = TRUE)
 
-## get the data
-url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-utils::download.file(url, paste0(path_run,"tutorial.zip"))
+##- get the data
+utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
+                      paste0(path_run,"tutorial.zip"))
 unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 
-
-## read chm data
+##- read chm data
 chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
 tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
 
-### tree segmentation
+##- tree segmentation
 crowns_GWS <- chmseg_GWS( treepos = tPos,
                       chm = chmR,
                       minTreeAlt = 3,
@@ -89,8 +88,9 @@ crowns_GWS <- chmseg_GWS( treepos = tPos,
                       thSimilarity = 0.00001,
                       giLinks = giLinks )
 
-mapview::mapview(crowns_gws,zcol="chmMEAN")
-}
+##- visualize it
+mapview::mapview(crowns_GWS,zcol="chmMEAN")
+##+##
 }
 \author{
 Chris Reudenbach

@@ -24,7 +24,7 @@ height of \code{treepos}.}
 Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
 }
 \examples{
-\dontrun{
+## ## ##
 ## required packages
  require(uavRst)
  require(link2GI)
@@ -62,5 +62,5 @@ projRootDir<-tempdir()
                        exclusion = 0.2)
 ## visualisation
  mapview::mapview(crownsRL)
-}
+##+##
 }

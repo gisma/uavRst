@@ -53,7 +53,7 @@
 #' #plot the results f VIS 0.6 channel:
 #' raster::plot(unlist(unlist(result$size_3$X4490600_5321400.1)))
 #' Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
-#' }
+#' ##+}
 
 
 
@@ -230,7 +230,7 @@ glcm_texture <- function(x,
 #' ##- visualize all layers
 #' raster::plot(r)
 #' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.-8")
-#' }
+#' ##+}
 
 
 otbtex_hara<- function(x,
@@ -398,7 +398,7 @@ otbtex_hara<- function(x,
 #' #plot the results :
 #' raster::plot(unlist(result)[[1]])
 #' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
-#' }
+#' ##+}
 
 otb_stat<- function(input=NULL,
                         out="localStat",
@@ -469,7 +469,7 @@ otb_stat<- function(input=NULL,
 #' setwd(tempdir())
 #' giLink <- uavRst::linkAll()
 #' stopifnot(giLinks$otb$exist)
-#'
+#' Sys.setlocale('LC_ALL','C')
 #' #get some typical iarborne imagery as provided by the authority
 #' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
 #'                      "testdata.zip")
@@ -480,7 +480,8 @@ otb_stat<- function(input=NULL,
 #'
 #' ##- visualize all layers
 #' ret <- lapply(r, raster::plot)
-#' }
+#' Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
+#' ##+}
 
 
 otbtex_edge<- function(input=NULL,
@@ -558,7 +559,7 @@ otbtex_edge<- function(input=NULL,
 #' setwd(tempdir())
 #' giLink <- uavRst::linkAll()
 #' stopifnot(giLinks$otb$exist)
-#'
+#' Sys.setlocale('LC_ALL','C')
 #' #get some typical airborne imagery as provided by the authority
 #' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
 #'                      "testdata.zip")
@@ -568,7 +569,8 @@ otbtex_edge<- function(input=NULL,
 #'
 #' ##- visualize all layers
 #' ret <- lapply(r, raster::plot)
-#' }
+#' Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
+#' ##+}
 
 otbtex_gray<- function(input=NULL,
                          out="morpho",
@@ -641,14 +643,13 @@ otbtex_gray<- function(input=NULL,
 #' @examples
 #' \dontrun{
 #' setwd(tempdir())
-#' #get some typical data as provided by the authority
-#' url<-"http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip"
-#' curl::curl_download(url, "testdata.zip")
-#' unzip(res,junkpaths = TRUE,overwrite = TRUE)
+#' ##- get some typical data as provided by the authority
+#' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
+#'  "testdata.zip")
+#' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
 #' gm<-morpho_dem(dem="4490600_5321400.tif")
-#' raster::plot(gm[[1]])
 #' }
-# calculate gdal derived DEM params
+
 morpho_dem<- function(dem,
                     item=c("hillshade","slope", "aspect","TRI","TPI","Roughness","SLOPE","ASPECT", "C_GENE","C_PROF","C_PLAN"," C_TANG"," C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI"),
                     verbose=FALSE,
@@ -831,7 +832,7 @@ getOutputDir<- function (outDir){
 #'##- overide trailing backslash issue
 #'path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #'setwd(path_run)
-#'unlink(paste0(path_run,"*"), force = TRUE
+#'unlink(paste0(path_run,"*"), force = TRUE)
 #'
 #'##- get the tutorial data
 #'utils::download.file(url = "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
@@ -855,8 +856,8 @@ getOutputDir<- function (outDir){
 #'##- map and interactively explore the indices
 #'mapview::mapview(rgbI)
 
-#'  }
-#'
+#'##+}
+
 rgb_indices <- function(red,green,blue,rgbi=c("VVI","VARI","NDTI","RI","SCI","BI",
                                               "SI","HI",
                                               "TGI","GLI",

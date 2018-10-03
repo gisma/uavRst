@@ -32,10 +32,9 @@ crown_filter(crownFn, minTreeAlt = 10, minCrownArea = 5,
 applies basic filtering of crown polygons using altitude, area and other optional thresholds. crown_filter basically returns SPDF with the crown polygons and all calculated parameters.
 }
 \examples{
-\dontrun{
+## ## ##
 
  require(uavRst)
- require(curl)
  require(link2GI)
 
 # project folder
@@ -51,18 +50,19 @@ applies basic filtering of crown polygons using altitude, area and other optiona
  setwd(path_run)                                               
  
 # get the data
- url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/crowns.zip"
- res <- curl::curl_download(url, paste0(path_run,"crowns.zip"))
- unzip(zipfile = res, exdir = path_run)
+utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/crowns.zip",
+                       paste0(path_run,"crowns.zip"))
+unzip(zipfile = paste0(path_run,"crowns.zip"), exdir = path_run)
  
 # start postclassification of segements  
- tree_crowns <- crown_filter(crownFn =  paste0(path_run,"crowns.shp"),
+tree_crowns <- crown_filter(crownFn =  paste0(path_run,"polyStat.shp"),
                              minTreeAlt = 3,
                              minCrownArea = 1,
                              maxCrownArea = 150,
                              minTreeAltParam = "chmQ20" )
-                             
-}
+# visualize it
+mapview::mapview(tree_crowns[[2]])                             
+##+##
 
 }
 \author{

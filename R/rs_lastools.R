@@ -34,11 +34,9 @@
 #'\dontrun{
 #'
 #' require(uavRst)
-#' require(curl)
 #' require(link2GI)
 #' # get a laz file from Mr. Isenburg
-#' url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz"
-#' res <- curl::curl_download(url=url,
+#' utils::download.file(url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz",
 #'                            destfile="test.laz",  quiet = TRUE, mode = "wb")
 #' # convert from laz to las
 #' lastool(tool="las2las","test.laz")

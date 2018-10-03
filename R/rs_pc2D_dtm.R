@@ -66,7 +66,7 @@
 #'                 sampleGridSize = 25,
 #'                 targetGridSize = 0.5,
 #'                 giLinks = giLinks)
-#' }
+#' ##+}
 
 pc2D_dtm <- function(laspcFile = NULL,
                      grassVersion=1,

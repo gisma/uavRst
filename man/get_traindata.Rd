@@ -18,7 +18,6 @@ Extracts training data from a raster stack and returns a dataframe containing fo
 \dontrun{
 ##- required packages
 require(uavRst)
-require(curl)
 require(link2GI)
 
 ##- project folder
@@ -35,9 +34,9 @@ setwd(path_run)
 unlink(paste0(path_run,"*"), force = TRUE)
 
 ##- get the tutorial data
-url<-"https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
-utils::download.file(url, paste0(path_run,"tutorial_data.zip"))
-unzip(res,exdir =  paste0(path_run,"tutorial_data.zip"))
+utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip",
+                     paste0(path_run,"tutorial_data.zip"))
+unzip(paste0(path_run,"tutorial_data.zip"),exdir =  path_run)
 
 ##- get the files
 imageTrainStack <- list()

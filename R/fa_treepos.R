@@ -58,7 +58,7 @@ if (!isGeneric('treepos')) {
 #'                          thresh = 0.35,
 #'                          giLinks = giLinks )
 #'
-#'}
+#'##+}
 #'
 treepos_GWS <- function(chm = NULL,
                                   minTreeAlt       = 10,
@@ -196,7 +196,7 @@ treepos_GWS <- function(chm = NULL,
 #'## visualisation
 #' mapview::mapview(tPosRL)
 
-#' }
+#' ##+}
 
 
 treepos_RL <- function(chm =NULL,
@@ -251,7 +251,7 @@ treepos_RL <- function(chm =NULL,
 #' mapview::mapview(tPoslidR)
 
 #'
-#' }
+#' ##+}
 
 
 treepos_lidR <- function(chm =NULL,
@@ -289,21 +289,21 @@ treepos_lidR <- function(chm =NULL,
 #'
 #' # required packages
 #'  require(uavRst)
-#'  require(curl)
 #'
-#' # runtime folde
+#' # runtime folder
 #'  path_run<-tempdir()
 #'
 #' # get the rgb image, chm and training data
-#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
-#'  res <- curl::curl_download(url, paste0(path_run,"chm_3-3.tif"))
+#' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
+#'                       paste0(path_run,"chm_3-3.tif"))
 #'
 #' # call ForestTools treepos
-#'  treepos_FT(chm = paste0(path_run,"chm_3-3.tif"),
+#'  tposFT <- treepos_FT(chm = paste0(path_run,"chm_3-3.tif"),
 #'             minTreeAlt = 2,
 #'             maxCrownArea = 150)
-#'
-#' }
+#' # visualize it
+#' raster::plot(tposFT)
+#' ##+}
 
 
 treepos_FT <- function(chm =NULL,

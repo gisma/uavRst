@@ -59,7 +59,7 @@ read_gpx <- function(file,
 #'##- create tiff file
 #'##- NOTE  for creating a geotiff you have to provide the correct EPSG code from the meta data
 #'xyz2tif(file,epsgCode = "31468")
-#' }
+#' ##+}
 
 #'
 

@@ -41,7 +41,7 @@ This function calculates various spectral indices from a RGB. It returns at leas
 \code{Raster*} object.
 }
 \examples{
-\dontrun{
+## ## ##
 ##- setup environment
 require(uavRst)
 require(mapview)
@@ -57,7 +57,7 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 ##- overide trailing backslash issue
 path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 setwd(path_run)
-unlink(paste0(path_run,"*"), force = TRUE
+unlink(paste0(path_run,"*"), force = TRUE)
 
 ##- get the tutorial data
 utils::download.file(url = "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
@@ -80,8 +80,7 @@ raster::plot(rgbI)
 
 ##- map and interactively explore the indices
 mapview::mapview(rgbI)
- }
-
+##+##
 }
 \references{
 Planetary Habitability Laboratory (2015): Visible Vegetation Index (VVI). Available online via \href{http://phl.upr.edu/projects/visible-vegetation-index-vvi}{VVI}.\cr

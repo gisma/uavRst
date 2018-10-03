@@ -15,7 +15,7 @@ xyz2tif(xyzFN = NULL, epsgCode = "25832")
 Read xyz data and generate a Raster* object.
 }
 \examples{
-\dontrun{
+## ## ##
 setwd(tempdir())
 ##- get data
 utils::download.file("http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip",
@@ -27,6 +27,6 @@ head(read.csv(file))
 ##- create tiff file
 ##- NOTE  for creating a geotiff you have to provide the correct EPSG code from the meta data
 xyz2tif(file,epsgCode = "31468")
-}
+##+##
 
 }

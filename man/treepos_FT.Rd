@@ -30,23 +30,23 @@ for detecting treetops from a canopy height model. Andrew Plowright:
 R package \href{https://CRAN.R-project.org/package=ForestTools}{ForestTools}\cr
 }
 \examples{
-\dontrun{
+## ## ##
 
 # required packages
  require(uavRst)
- require(curl)
 
-# runtime folde
+# runtime folder
  path_run<-tempdir()
 
 # get the rgb image, chm and training data
- url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif"
- res <- curl::curl_download(url, paste0(path_run,"chm_3-3.tif"))
+utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
+                      paste0(path_run,"chm_3-3.tif"))
 
 # call ForestTools treepos
- treepos_FT(chm = paste0(path_run,"chm_3-3.tif"),
+ tposFT <- treepos_FT(chm = paste0(path_run,"chm_3-3.tif"),
             minTreeAlt = 2,
             maxCrownArea = 150)
-
-}
+# visualize it
+raster::plot(tposFT)
+##+##
 }

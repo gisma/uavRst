@@ -26,31 +26,34 @@ Imagemagick is used for the calculation of the transformations. Please provide a
 you need to install imagemagick on your system, please look at see \href{https://www.systutorials.com/qa/1954/how-to-convert-tiff-images-from-rgb-color-cmyk-color-on-linux}{transform RGB colorspace} seealso \href{https://www.imagemagick.org/script/download.php}{imagemagick download section}.
 }
 \examples{
-\dontrun{
+## ## ##
 
-# required packages
+##- required packages
  require(uavRst)
- require(curl)
- 
-# project folder
+ require(link2GI)
+
+##- project folder
 projRootDir<-tempdir()
 
-# create subfolders please mind that the pathes are exported as global variables
+##- create subfolders please mind that the pathes are exported as global variables
  paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
                          path_prefix = "path_")
-## overide trailing backslash issue
+##- overide trailing backslash issue
  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)                                          
- unlink(paste0(path_run,"*"), force = TRUE
+ setwd(path_run)
+ unlink(paste0(path_run,"*"), force = TRUE)
+
+##- download tutorial data
+utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",
+                     destfile="testdata.zip")
+unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
+
+##- change colorspace from RGB to CIElab
+ r2 <- colorspace(input=paste0("4490600_5321400.tif"),colorspace="CIELab")
  
- url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
- res <- curl::curl_download(url, paste0(path_run,"tutorial.zip"))
- unzip(zipfile = res, exdir = path_run)
- 
-# change colorspace from RGB to CIElab  
- r2 <- colorspace(input=paste0(path_run,"rgb_1.tif"),colorspace="CIELab")
- raster::plotRGB(r2)
-}
+##- visualize it
+mapview::mapview(r2)
+##+##
 }

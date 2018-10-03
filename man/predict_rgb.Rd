@@ -22,10 +22,9 @@ predict_rgb(imageFiles = NULL, model = NULL, inPrefix = "index_",
 classify images using raster predict
 }
 \examples{
-\dontrun{
-# required packages
+## ## ##
+##- required packages
 require(uavRst)
-require(curl)
 require(link2GI)
 
 ##- project folder
@@ -46,7 +45,7 @@ utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/
 paste0(path_run,"ffs.zip"))
 unzip(zipfile =  paste0(path_run,"ffs.zip"), exdir = path_run)
 
-
+##- assign tutorial data
 imageFile <- paste0(path_run,"predict.tif")
 load(paste0(path_run,"tutorialbandNames.RData"))
 tutorialModel<-readRDS(file = paste0(path_run,"tutorialmodel.rds"))
@@ -54,10 +53,10 @@ tutorialModel<-readRDS(file = paste0(path_run,"tutorialmodel.rds"))
 ##- start the  prediction taking the non optimized model
 ##- please note the output is saved in the subdirectory path_output
 predict_rgb(imageFiles=imageFile,
-           model = tutorialModel[[1]],
-           bandNames = bandNames)
+            model = tutorialModel[[1]],
+            bandNames = bandNames)
 
 ##- visualise the classification
 raster::plot(raster::raster(paste0(path_output,"classified_predict.tif")))
-}
+##+##
 }

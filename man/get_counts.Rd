@@ -29,29 +29,28 @@ get_counts(ids = c(1, 2), position = NULL, imageFiles = NULL,
 counts pixel values according to their classes
 }
 \examples{
-\dontrun{
-# required packages
+## ## ##
+##- required packages
  require(uavRst)
- require(curl)
  require(link2GI)
 
-# project folde
+##- project root folder
  projRootDir<-tempdir()
 
-# create subfolders please mind that the pathes are exported as global variables
+##- create subfolders please mind that the pathes are exported as global variables
  paths<-link2GI::initProj(projRootDir = projRootDir,
                           projFolders = c("data/","data/ref/","output/","run/","las/"),
                           global = TRUE,
                           path_prefix = "path_")
-# overide trailing backslash issue
+##- overide trailing backslash issue
  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
  setwd(path_run)
  unlink(paste0(path_run,"*"), force = TRUE)
 
-# get the rgb image, chm and training data
- url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
- res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
- unzip(zipfile = res,exdir = path_run)
+##- get the rgb image, chm and training data
+ utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip", 
+                      paste0(path_run,"tutorial_data.zip"))
+ unzip(zipfile = paste0(path_run,"tutorial_data.zip"),exdir = path_run)
 
 # read data
  position <- raster::shapefile(paste0(path_run,"position.shp"))
@@ -65,5 +64,5 @@ counts pixel values according to their classes
                 outPrefix = "",
                       ext = ".tif",
                      path = path_run)
-}
+##+##
 }

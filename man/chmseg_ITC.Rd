@@ -33,48 +33,49 @@ Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}
  European Journal of Remote Sensing, Vol. 48, pp. 365-382, 2015.
 }
 \examples{
-\dontrun{
+## ## ##
 
-# required packages
- require(uavRst)
+##- required packages
+require(uavRst)
+require(link2GI)
 
-# create and check the links to the GI software
+##- create and check the links to the GI software
 giLinks<-uavRst::linkAll()
 stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
 
-# project folder
+##- project folder
 projRootDir<-tempdir()
 
-# create subfolders please mind that the pathes are exported as global variables
- paths<-link2GI::initProj(projRootDir = projRootDir,
+##- create subfolders please mind that the pathes are exported as global variables
+paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
                          path_prefix = "path_")
-## overide trailing backslash issue
- path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)
- unlink(paste0(path_run,"*"), force = TRUE
+##- overide trailing backslash issue
+path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+setwd(path_run)
+unlink(paste0(path_run,"*"), force = TRUE)
 
-# get the data
-url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-utils::download.file(url, paste0(path_run,"tutorial.zip"))
+##- get the data
+utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
+                     paste0(path_run,"tutorial.zip"))
 unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 
 
-# read chm data
- chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
- tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
+##- read chm data
+chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
+tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
 
-# segmentation
- crownsITC<- chmseg_ITC(chm = chmR,
-                        EPSG =3064,
-                        movingWin = 3,
-                        TRESHSeed = 0.45,
-                        TRESHCrown = 0.55,
-                        minTreeAlt = 2,
-                        maxCrownArea = 150)
+##- segmentation
+crownsITC<- chmseg_ITC(chm = chmR,
+                       EPSG =3064,
+                       movingWin = 3,
+                       TRESHSeed = 0.45,
+                       TRESHCrown = 0.55,
+                       minTreeAlt = 2,
+                       maxCrownArea = 150)
 
-# visualisation
+##- visualisation
 mapview::mapview(crownsITC,zcol="Height_m")
-}
+##+##
 }

@@ -11,7 +11,7 @@ poly_metrics(crownarea, funNames = c("length", "elongation",
 \arguments{
 \item{crownarea}{sp*  spatialpolygon object}
 
-\item{funNames}{character. names of morphometrics to be calculated 
+\item{funNames}{character. names of morphometrics to be calculated
 available are ("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen",
 "calliper","rectangularity","circularityharalick","convexity")}
 }
@@ -20,11 +20,11 @@ calculate morphometric features of polygons. Calculate some crown related metric
 }
 \examples{
 
-\dontrun{
+## ## ##
 # required packages
 require(uavRst)
-require(curl)
 require(link2GI)
+require(mapview)
 
 # project folder
 projRootDir<-tempdir()
@@ -36,17 +36,19 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          path_prefix = "path_")
 # overide trailing backslash issue
  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)                         
-                           
-# get the rgb image, chm and training data 
-url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
-res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
-unzip(zipfile = res, exdir = path_run)
+ setwd(path_run)
+
+# get the rgb image, chm and training data
+utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip",
+                      paste0(path_run,"tutorial_data.zip"))
+unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
 
 ## calculate polygon morpho metrics
 polymetric <- poly_metrics(spdf = paste0(path_run,"rgb_2.shp"))
 
-}
+# visualize it
+mapview::mapview(polymetric)
+##+##
 }
 \seealso{
 \href{https://CRAN.R-project.org/package=Momocs}{Momocs}

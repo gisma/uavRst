@@ -4,7 +4,7 @@
 #' \href{https://www.researchgate.net/profile/Paul_Rosin/publication/228382248_Computing_global_shape_measures/links/0fcfd510802e598c31000000.pdf?origin=publication_detail}{Paul Rosin}
 #'
 #'@param crownarea sp*  spatialpolygon object
-#'@param funNames character. names of morphometrics to be calculated 
+#'@param funNames character. names of morphometrics to be calculated
 #'available are ("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen",
 #'"calliper","rectangularity","circularityharalick","convexity")
 #'@export
@@ -14,12 +14,12 @@
 #'\dontrun{
 #' # required packages
 #' require(uavRst)
-#' require(curl)
 #' require(link2GI)
-#' 
+#' require(mapview)
+#'
 #' # project folder
 #' projRootDir<-tempdir()
-#' 
+#'
 #' # create subfolders please mind that the pathes are exported as global variables
 #' paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
@@ -27,17 +27,19 @@
 #'                          path_prefix = "path_")
 #' # overide trailing backslash issue
 #'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  setwd(path_run)                         
-#'                            
-#' # get the rgb image, chm and training data 
-#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
-#' res <- curl::curl_download(url, paste0(path_run,"tutorial_data.zip"))
-#' unzip(zipfile = res, exdir = path_run)
-#' 
+#'  setwd(path_run)
+#'
+#' # get the rgb image, chm and training data
+#' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip",
+#'                       paste0(path_run,"tutorial_data.zip"))
+#' unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
+#'
 #' ## calculate polygon morpho metrics
 #' polymetric <- poly_metrics(spdf = paste0(path_run,"rgb_2.shp"))
-#' 
-#' }
+#'
+#' # visualize it
+#' mapview::mapview(polymetric)
+#' ##+}
 
 
 

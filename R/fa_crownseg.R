@@ -1,4 +1,3 @@
-
 #'@title seeded region growing tree crown segmentation based on 'SAGA GIS'
 #'
 #'@description
@@ -26,39 +25,37 @@
 #'@export
 #'@examples
 #'\dontrun{
-#' # required packages
+#' ##- required packages
 #' require(uavRst)
 #' require(link2GI)
-#' ## linkages
-#' # create and check the links to the GI software
+#' ##- linkages
+#' ##- create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
 #' stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
 #'
-#' # project folder
+#' ##- project folder
 #' projRootDir<-tempdir()
 #'
-#' ## create subfolders please mind that the pathes are exported as global variables
+#' ##- create subfolders please mind that the pathes are exported as global variables
 #' paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
-#' ## overide trailing backslash issue
+#' ##- overide trailing backslash issue
 #'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #'  setwd(path_run)
 #'  unlink(paste0(path_run,"*"), force = TRUE)
 #'
-#' ## get the data
-#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-#' utils::download.file(url, paste0(path_run,"tutorial.zip"))
+#' ##- get the data
+#' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
+#'                       paste0(path_run,"tutorial.zip"))
 #' unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 #'
-
-#'
-#' ## read chm data
+#' ##- read chm data
 #' chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
 #' tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
 #'
-#' ### tree segmentation
+#' ##- tree segmentation
 #' crowns_GWS <- chmseg_GWS( treepos = tPos,
 #'                       chm = chmR,
 #'                       minTreeAlt = 3,
@@ -68,27 +65,28 @@
 #'                       thSimilarity = 0.00001,
 #'                       giLinks = giLinks )
 #'
-#' mapview::mapview(crowns_gws,zcol="chmMEAN")
-#'}
+#'##- visualize it
+#' mapview::mapview(crowns_GWS,zcol="chmMEAN")
+#'##+}
 
 
 
 
 chmseg_GWS <- function(treepos = NULL,
-                            chm = NULL,
-                            minTreeAlt         =2,
-                            minTreeAltParam = "chmQ20",
-                            maxCrownArea = 100,
-                            leafsize       = 256,
-                            normalize      = 0,
-                            neighbour      = 1,
-                            method         = 0,
-                            thVarFeature   = 1.,
-                            thVarSpatial   = 1.,
-                            thSimilarity   = 0.002,
-                            segmentationBands    = c("chm"),
+                       chm = NULL,
+                       minTreeAlt         =2,
+                       minTreeAltParam = "chmQ20",
+                       maxCrownArea = 100,
+                       leafsize       = 256,
+                       normalize      = 0,
+                       neighbour      = 1,
+                       method         = 0,
+                       thVarFeature   = 1.,
+                       thVarSpatial   = 1.,
+                       thSimilarity   = 0.002,
+                       segmentationBands    = c("chm"),
                        majorityRadius    = 3.000,
-                            giLinks = NULL) {
+                       giLinks = NULL) {
   proj<- raster::crs(treepos)
   if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
     raster::writeRaster(treepos,file.path(path_run,"treepos.sdat"),overwrite = TRUE,NAflag = 0)
@@ -159,8 +157,6 @@ chmseg_GWS <- function(treepos = NULL,
                        " -CLASS_ID 1.0",
                        " -SPLIT 1"),
                 intern = TRUE)
-  #
-
   crowns <- rgdal::readOGR(path_run,"crowns", verbose = FALSE)
   #crowns<-tree_crowns[tree_crowns$VALUE > 0,]
   sp::proj4string(crowns)<-proj
@@ -176,10 +172,10 @@ chmseg_GWS <- function(treepos = NULL,
                   overwrite=TRUE)
   # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
   tree_crowns <- crown_filter(crownFn = paste0(path_run,"crowns.shp"),
-                                                 minTreeAlt = 0.0,
-                                                 minCrownArea = 0,
-                                                 maxCrownArea = maxCrownArea,
-                                                 minTreeAltParam = "chmQ20" )[[2]]
+                              minTreeAlt = 0.0,
+                              minCrownArea = 0,
+                              maxCrownArea = maxCrownArea,
+                              minTreeAltParam = "chmQ20" )[[2]]
 
   options(warn=0)
   cat("segmentation finsihed...\n")
@@ -205,7 +201,7 @@ chmseg_GWS <- function(treepos = NULL,
 #'
 #' @export
 #' @examples
-#'\dontrun{
+#' \dontrun{
 #'
 #' ## required packages
 #' require(uavRst)
@@ -227,7 +223,7 @@ chmseg_GWS <- function(treepos = NULL,
 #' ## overide trailing backslash issue
 #' path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #' setwd(path_run)
-#' unlink(paste0(path_run,"*"), force = TRUE
+#' unlink(paste0(path_run,"*"), force = TRUE)
 #'
 #' ## get the data
 #' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
@@ -247,16 +243,13 @@ chmseg_GWS <- function(treepos = NULL,
 #'
 #' ## Visualisation
 #' mapview::mapview(crownsFT,zcol="treepos_2")
-#'
-#'}
-
-
+#'##+}
 
 chmseg_FT <- function(treepos = NULL,
-                              chm = NULL,
-                              minTreeAlt = 2,
-                              format = "polygons",
-                              verbose = FALSE) {
+                      chm = NULL,
+                      minTreeAlt = 2,
+                      format = "polygons",
+                      verbose = FALSE) {
 
   if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
     treepos <- raster::rasterToPoints(treepos,spatial = TRUE)
@@ -267,10 +260,10 @@ chmseg_FT <- function(treepos = NULL,
 
   # Crown segmentation
   crownsFT <- ForestTools:: mcws(treetops = treepos,
-                                         CHM = chm,
-                                         format = format,
-                                         minHeight = minTreeAlt,
-                                         verbose = verbose)
+                                 CHM = chm,
+                                 format = format,
+                                 minHeight = minTreeAlt,
+                                 verbose = verbose)
 
   # # Writing Shapefile
   # rgdal::writeOGR(obj = crownsFT,
@@ -334,9 +327,7 @@ chmseg_FT <- function(treepos = NULL,
 #'                        exclusion = 0.2)
 #' ## visualisation
 #'  mapview::mapview(crownsRL)
-#'}
-
-
+#' ##+}
 
 chmseg_RL <- function(treepos = NULL,
                       chm = NULL,
@@ -395,57 +386,57 @@ chmseg_RL <- function(treepos = NULL,
 #' @examples
 #' \dontrun{
 #'
-#' # required packages
-#'  require(uavRst)
+#' ##- required packages
+#' require(uavRst)
+#' require(link2GI)
 #'
-#' # create and check the links to the GI software
+#' ##- create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
 #' stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
 #'
-#' # project folder
+#' ##- project folder
 #' projRootDir<-tempdir()
 #'
-#' # create subfolders please mind that the pathes are exported as global variables
-#'  paths<-link2GI::initProj(projRootDir = projRootDir,
+#' ##- create subfolders please mind that the pathes are exported as global variables
+#' paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
-#' ## overide trailing backslash issue
-#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  setwd(path_run)
-#'  unlink(paste0(path_run,"*"), force = TRUE
+#' ##- overide trailing backslash issue
+#' path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+#' setwd(path_run)
+#' unlink(paste0(path_run,"*"), force = TRUE)
 #'
-#' # get the data
-#' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip"
-#' utils::download.file(url, paste0(path_run,"tutorial.zip"))
+#' ##- get the data
+#' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
+#'                      paste0(path_run,"tutorial.zip"))
 #' unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 #'
 #'
-#' # read chm data
-#'  chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
-#'  tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
+#' ##- read chm data
+#' chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
+#' tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
 #'
-#' # segmentation
-#'  crownsITC<- chmseg_ITC(chm = chmR,
-#'                         EPSG =3064,
-#'                         movingWin = 3,
-#'                         TRESHSeed = 0.45,
-#'                         TRESHCrown = 0.55,
-#'                         minTreeAlt = 2,
-#'                         maxCrownArea = 150)
+#' ##- segmentation
+#' crownsITC<- chmseg_ITC(chm = chmR,
+#'                        EPSG =3064,
+#'                        movingWin = 3,
+#'                        TRESHSeed = 0.45,
+#'                        TRESHCrown = 0.55,
+#'                        minTreeAlt = 2,
+#'                        maxCrownArea = 150)
 #'
-#' # visualisation
+#' ##- visualisation
 #' mapview::mapview(crownsITC,zcol="Height_m")
-#' }
-
+#' ##+}
 
 chmseg_ITC <- function(chm =NULL,
-                               EPSG =3064,
-                               movingWin = 7,
-                               TRESHSeed = 0.45,
-                               TRESHCrown = 0.55,
-                               minTreeAlt = 2,
-                               maxCrownArea = 100) {
+                       EPSG =3064,
+                       movingWin = 7,
+                       TRESHSeed = 0.45,
+                       TRESHCrown = 0.55,
+                       minTreeAlt = 2,
+                       maxCrownArea = 100) {
 
   # if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
   #   chm <- raster::raster(chm)
@@ -461,17 +452,10 @@ chmseg_ITC <- function(chm =NULL,
                                       th = minTreeAlt,
                                       DIST = maxcrown,
                                       ischm = TRUE)
-
   rgdal::writeOGR(crown_polygon,
                   dsn = paste0(path_output, "crowns_itc", "localMax", minTreeAlt, "_crownDiam", maxCrownArea),
                   layer = "result",
                   driver= "ESRI Shapefile",
                   overwrite=TRUE)
-
-
-
   return(crown_polygon)
 }
-
-
-

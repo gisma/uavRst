@@ -41,13 +41,13 @@ Calculates Gray scale morphological operations for a given kernel size. return l
 the otb is used for filtering. please provide a GeoTiff file
 }
 \examples{
-\dontrun{
+## ## ##
 require(uavRst)
 require(link2GI)
 setwd(tempdir())
 giLink <- uavRst::linkAll()
 stopifnot(giLinks$otb$exist)
-
+Sys.setlocale('LC_ALL','C')
 #get some typical airborne imagery as provided by the authority
 utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",
                      "testdata.zip")
@@ -57,7 +57,8 @@ r<-otbtex_gray(input="4490600_5321400.tif",retRaster = TRUE)
 
 ##- visualize all layers
 ret <- lapply(r, raster::plot)
-}
+Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
+##+##
 }
 \author{
 Chris Reudenbach

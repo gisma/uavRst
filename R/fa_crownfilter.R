@@ -27,16 +27,15 @@ if (!isGeneric('crown_filter')) {
 #'
 #'@export crown_filter
 #'
-#'@examples 
+#'@examples
 #'\dontrun{
 #'
 #'  require(uavRst)
-#'  require(curl)
 #'  require(link2GI)
-#' 
+#'
 #' # project folder
 #'  projRootDir<-tempdir()
-#' 
+#'
 #' # create subfolders please mind that the pathes are exported as global variables
 #'  paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
@@ -44,21 +43,22 @@ if (!isGeneric('crown_filter')) {
 #'                          path_prefix = "path_")
 #' # overide trailing backslash issue
 #'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  setwd(path_run)                                               
-#'  
+#'  setwd(path_run)
+#'
 #' # get the data
-#'  url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/crowns.zip"
-#'  res <- curl::curl_download(url, paste0(path_run,"crowns.zip"))
-#'  unzip(zipfile = res, exdir = path_run)
-#'  
-#' # start postclassification of segements  
-#'  tree_crowns <- crown_filter(crownFn =  paste0(path_run,"crowns.shp"),
+#' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/crowns.zip",
+#'                        paste0(path_run,"crowns.zip"))
+#' unzip(zipfile = paste0(path_run,"crowns.zip"), exdir = path_run)
+#'
+#' # start postclassification of segements
+#' tree_crowns <- crown_filter(crownFn =  paste0(path_run,"polyStat.shp"),
 #'                              minTreeAlt = 3,
 #'                              minCrownArea = 1,
 #'                              maxCrownArea = 150,
 #'                              minTreeAltParam = "chmQ20" )
-#'                              
-#'}
+#' # visualize it
+#' mapview::mapview(tree_crowns[[2]])
+#'##+}
 #'
 
 
@@ -73,7 +73,7 @@ crown_filter<- function(crownFn,
                                    proj4string="+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs") {
   # read crown vector data set
   if (class(crownFn)=="character")
-    crownarea <- rgdal::readOGR(path_run,tools::file_path_sans_ext(basename(crownFn)), verbose = FALSE)
+    crownarea <- rgdal::readOGR(path_run,tools::file_path_sans_ext(basename(crownFn)), verbose = FALSE,use_iconv = TRUE)
   else
     crownarea <- crownFn
 
