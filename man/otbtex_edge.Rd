@@ -44,7 +44,7 @@ the otb is used for filtering. please provide a GeoTiff file
 require(uavRst)
 require(link2GI)
 setwd(tempdir())
-giLink <- uavRst::linkAll()
+giLinks <- uavRst::linkAll()
 if (giLinks$otb$exist) {
 Sys.setlocale('LC_ALL','C')
 #get some typical iarborne imagery as provided by the authority

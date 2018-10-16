@@ -59,7 +59,7 @@ Furthermore using stats will cover mean and variance while dissimilarity is high
 require(uavRst)
 require(link2GI)
 ## -check if OTB is installed correctly
-giLink <- uavRst::linkAll()
+giLinks <- uavRst::linkAll()
 if (giLinks$otb$exist) {
 setwd(tempdir())
 ##- get some typical data as provided by the authority

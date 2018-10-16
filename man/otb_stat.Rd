@@ -37,7 +37,7 @@ the otb is used for the calculation of the statistics. Please provide a GeoTiff 
 ## ## ##
 require(uavRst)
 # check if OTB is installed correctly
-giLink <- uavRst::linkAll()
+giLinks <- uavRst::linkAll()
 if (giLinks$otb$exist) {
 setwd(tempdir())
 #get some typical data as provided by the authority
