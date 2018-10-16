@@ -209,7 +209,10 @@ chmseg_GWS <- function(treepos = NULL,
 #' require(link2GI)
 #'
 #' # create and check the links to the GI software
-#' giLinks<-uavRst::linkAll()
+#' giLinks <- list()
+#' giLinks$saga<-link2GI::linkSAGA()
+#' giLinks$otb<-link2GI::linkOTB()
+#' giLinks$grass<-link2GI::linkGRASS7(returnPath = TRUE)
 #' if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
 #'
 #' ## project folder
