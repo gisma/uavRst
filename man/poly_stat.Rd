@@ -42,7 +42,7 @@ require(link2GI)
 
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
 
 #' # check if SAGA is correctly installed
 if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
@@ -71,8 +71,8 @@ unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
 
 polyStat <- poly_stat(paste0(path_run,"rgb_3-3.sgrd"),
                       spdf = paste0(path_run,"rgb_3-3.shp"))
-
 }
+##+}
 
 }
 \author{

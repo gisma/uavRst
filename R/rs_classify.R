@@ -482,7 +482,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param cleanRunDir  logical. TRUE logical switch for deleting the calculated tifs, default is TRUE
 #' @param giLinks     list. GI tools cli paths
 #' @examples
-#' \dontrun{
+#' ## ## ##
 #'
 #' ##- required packages
 #' require(uavRst)
@@ -490,7 +490,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #'
 #' # create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
-#' stopifnot(giLinks$saga$exist & giLinks$otb$exist)
+#' if (giLinks$saga$exist & giLinks$otb$exist){
 #'
 #' ##- set root folder
 #' projRootDir<-tempdir()
@@ -544,8 +544,9 @@ ffs_train<-function(   trainingDF   = NULL,
 #'
 #' ##- show the result
 #' head(trainDF)
-#' # head on with ffs_train
-#' ##+}
+#' # use ffs_train as next step for rf classification issues
+#' }
+#' ##+
 
 #' @import crayon
 #' @export calc_ext

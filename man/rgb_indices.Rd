@@ -41,7 +41,7 @@ This function calculates various spectral indices from a RGB. It returns at leas
 \code{Raster*} object.
 }
 \examples{
-\dontrun{
+## ## ##
 ##- setup environment
 require(uavRst)
 require(mapview)
@@ -80,7 +80,7 @@ raster::plot(rgbI)
 
 ##- map and interactively explore the indices
 mapview::mapview(rgbI)
-##+}
+##+
 }
 \references{
 Planetary Habitability Laboratory (2015): Visible Vegetation Index (VVI). Available online via \href{http://phl.upr.edu/projects/visible-vegetation-index-vvi}{VVI}.\cr

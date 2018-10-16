@@ -112,7 +112,7 @@ This approach needs at least a pair of images that differ in time and/or space f
 If you just want to classify a single image by a single training file use the normal procedure as provided by the \code{\link[caret]{trainControl}} function.
 }
 \examples{
-\dontrun{
+## ## ##
 
 ##- required packages
 require(uavRst)
@@ -120,7 +120,7 @@ require(link2GI)
 
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga$exist & giLinks$otb$exist)
+if (giLinks$saga$exist & giLinks$otb$exist){
 
 ##- set root folder
 projRootDir<-tempdir()
@@ -173,6 +173,7 @@ trainDF <- calc_ext(calculateBands    = TRUE,
 
 ##- show the result
 head(trainDF)
-# head on with ffs_train
-##+}
+# use ffs_train as next step for rf classification issues
+}
+##+
 }

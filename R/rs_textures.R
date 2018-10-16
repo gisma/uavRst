@@ -32,7 +32,7 @@
 #' @export glcm_texture
 #' @examples
 #'
-#' \dontrun{
+#' ## ## ##
 
 #' require(glcm)
 #' ## example on how to calculate texture from a list of channels
@@ -53,7 +53,7 @@
 #' #plot the results f VIS 0.6 channel:
 #' raster::plot(unlist(unlist(result$size_3$X4490600_5321400.1)))
 #' Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
-#' ##+}
+#' ##+
 
 
 
@@ -209,13 +209,13 @@ glcm_texture <- function(x,
 #' @importFrom gdalUtils gdalinfo
 #' @export otbtex_hara
 #' @examples
-#' \dontrun{
+#' ## ## ##
 
 #' require(uavRst)
 #' require(link2GI)
 #' ## -check if OTB is installed correctly
 #' giLink <- uavRst::linkAll()
-#' stopifnot(giLinks$otb$exist)
+#' if (giLinks$otb$exist) {
 #' setwd(tempdir())
 #' ##- get some typical data as provided by the authority
 #' tmp<-Sys.setlocale('LC_ALL','C')
@@ -230,7 +230,8 @@ glcm_texture <- function(x,
 #' ##- visualize all layers
 #' raster::plot(r)
 #' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.-8")
-#' ##+}
+#' }
+#' ##+
 
 
 otbtex_hara<- function(x,
@@ -381,11 +382,11 @@ otbtex_hara<- function(x,
 #' @importFrom gdalUtils gdalinfo
 #' @export otb_stat
 #' @examples
-#' \dontrun{
+#' ## ## ##
 #' require(uavRst)
 #' # check if OTB is installed correctly
 #' giLink <- uavRst::linkAll()
-#' stopifnot(giLinks$otb$exist)
+#' if (giLinks$otb$exist) {
 #' setwd(tempdir())
 #' #get some typical data as provided by the authority
 #' #get some typical data as provided by the authority
@@ -398,7 +399,8 @@ otbtex_hara<- function(x,
 #' #plot the results :
 #' raster::plot(unlist(result)[[1]])
 #' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
-#' ##+}
+#' }
+#' ##+
 
 otb_stat<- function(input=NULL,
                         out="localStat",
@@ -462,13 +464,13 @@ otb_stat<- function(input=NULL,
 #' @author Chris Reudenbach
 #' @export otbtex_edge
 #' @examples
-#' \dontrun{
+#' ## ## ##
 #' ##- required packages
 #' require(uavRst)
 #' require(link2GI)
 #' setwd(tempdir())
 #' giLink <- uavRst::linkAll()
-#' stopifnot(giLinks$otb$exist)
+#' if (giLinks$otb$exist) {
 #' Sys.setlocale('LC_ALL','C')
 #' #get some typical iarborne imagery as provided by the authority
 #' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
@@ -481,7 +483,8 @@ otb_stat<- function(input=NULL,
 #' ##- visualize all layers
 #' ret <- lapply(r, raster::plot)
 #' Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
-#' ##+}
+#' }
+#' ##+
 
 
 otbtex_edge<- function(input=NULL,
@@ -553,12 +556,12 @@ otbtex_edge<- function(input=NULL,
 #' @importFrom gdalUtils gdalwarp
 #' @importFrom gdalUtils gdalinfo
 #' @examples
-#' \dontrun{
+#' ## ## ##
 #' require(uavRst)
 #' require(link2GI)
 #' setwd(tempdir())
 #' giLink <- uavRst::linkAll()
-#' stopifnot(giLinks$otb$exist)
+#' if (giLinks$otb$exist) {
 #' Sys.setlocale('LC_ALL','C')
 #' #get some typical airborne imagery as provided by the authority
 #' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
@@ -570,7 +573,8 @@ otbtex_edge<- function(input=NULL,
 #' ##- visualize all layers
 #' ret <- lapply(r, raster::plot)
 #' Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
-#' ##+}
+#' }
+#' ##+
 
 otbtex_gray<- function(input=NULL,
                          out="morpho",
@@ -641,7 +645,7 @@ otbtex_gray<- function(input=NULL,
 #' @importFrom gdalUtils gdaldem
 #' @export morpho_dem
 #' @examples
-#' \dontrun{
+#' ## ## ##
 #' setwd(tempdir())
 #' ##- get some typical data as provided by the authority
 #' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
@@ -815,7 +819,7 @@ getOutputDir<- function (outDir){
 #' \href{http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=2161&context=usdaarsfacpub}{Hunt et al., 2005}. However check the manual of your camera.
 #'
 #' @examples
-#' \dontrun{
+#' ## ## ##
 
 #'##- setup environment
 #'require(uavRst)
@@ -856,7 +860,7 @@ getOutputDir<- function (outDir){
 #'##- map and interactively explore the indices
 #'mapview::mapview(rgbI)
 
-#'##+}
+#'##+
 
 rgb_indices <- function(red,green,blue,rgbi=c("VVI","VARI","NDTI","RI","SCI","BI",
                                               "SI","HI",

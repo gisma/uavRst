@@ -33,7 +33,7 @@ Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}
  European Journal of Remote Sensing, Vol. 48, pp. 365-382, 2015.
 }
 \examples{
-\dontrun{
+## ## ##
 
 ##- required packages
 require(uavRst)
@@ -41,7 +41,7 @@ require(link2GI)
 
 ##- create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
 
 ##- project folder
 projRootDir<-tempdir()
@@ -77,5 +77,6 @@ crownsITC<- chmseg_ITC(chm = chmR,
 
 ##- visualisation
 mapview::mapview(crownsITC,zcol="Height_m")
-##+}
+}
+##+
 }

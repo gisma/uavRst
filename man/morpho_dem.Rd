@@ -33,13 +33,3 @@ calculate gdal derived DEM params
 \note{
 please provide a GeoTiff file
 }
-\examples{
-\dontrun{
-setwd(tempdir())
-##- get some typical data as provided by the authority
-utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",
- "testdata.zip")
-unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
-gm<-morpho_dem(dem="4490600_5321400.tif")
-}
-}

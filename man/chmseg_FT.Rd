@@ -27,7 +27,7 @@ height of \code{treepos}.}
 Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools}{'ForestTools'}
 }
 \examples{
-\dontrun{
+## ## ##
 
 ## required packages
 require(uavRst)
@@ -35,7 +35,7 @@ require(link2GI)
 
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
 
 ## project folder
 projRootDir<-tempdir()
@@ -69,5 +69,6 @@ crownsFT <- chmseg_FT(chm = chmR,
 
 ## Visualisation
 mapview::mapview(crownsFT,zcol="treepos_2")
-##+}
+}
+##+
 }

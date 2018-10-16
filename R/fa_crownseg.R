@@ -24,14 +24,14 @@
 #'@param majorityRadius numeric. kernel size for the majority filter out spurious pixel
 #'@export
 #'@examples
-#'\dontrun{
+#'## ## ##
 #' ##- required packages
 #' require(uavRst)
 #' require(link2GI)
 #' ##- linkages
 #' ##- create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
-#' stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+#' if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
 #'
 #' ##- project folder
 #' projRootDir<-tempdir()
@@ -67,7 +67,8 @@
 #'
 #'##- visualize it
 #' mapview::mapview(crowns_GWS,zcol="chmMEAN")
-#'##+}
+#' }
+#'##+
 
 
 
@@ -201,7 +202,7 @@ chmseg_GWS <- function(treepos = NULL,
 #'
 #' @export
 #' @examples
-#' \dontrun{
+#' ## ## ##
 #'
 #' ## required packages
 #' require(uavRst)
@@ -209,7 +210,7 @@ chmseg_GWS <- function(treepos = NULL,
 #'
 #' # create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
-#' stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+#' if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
 #'
 #' ## project folder
 #' projRootDir<-tempdir()
@@ -243,7 +244,8 @@ chmseg_GWS <- function(treepos = NULL,
 #'
 #' ## Visualisation
 #' mapview::mapview(crownsFT,zcol="treepos_2")
-#'##+}
+#' }
+#'##+
 
 chmseg_FT <- function(treepos = NULL,
                       chm = NULL,
@@ -289,7 +291,7 @@ chmseg_FT <- function(treepos = NULL,
 #' @importFrom rLiDAR FindTreesCHM
 #' @export
 #' @examples
-#' \dontrun{
+#' ## ## ##
 #' ## required packages
 #'  require(uavRst)
 #'  require(link2GI)
@@ -297,7 +299,7 @@ chmseg_FT <- function(treepos = NULL,
 #'
 #' # create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
-#' stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+#' if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
 #'
 #' ## project folder
 #' projRootDir<-tempdir()
@@ -326,8 +328,9 @@ chmseg_FT <- function(treepos = NULL,
 #'                        maxCrownArea = 150,
 #'                        exclusion = 0.2)
 #' ## visualisation
-#'  mapview::mapview(crownsRL)
-#' ##+}
+#'  mapview::mapview(crownsRL) 
+#'  }
+#' ##+
 
 chmseg_RL <- function(treepos = NULL,
                       chm = NULL,
@@ -384,7 +387,7 @@ chmseg_RL <- function(treepos = NULL,
 #' @import itcSegment
 #' @export chmseg_ITC
 #' @examples
-#' \dontrun{
+#' ## ## ##
 #'
 #' ##- required packages
 #' require(uavRst)
@@ -392,7 +395,7 @@ chmseg_RL <- function(treepos = NULL,
 #'
 #' ##- create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
-#' stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+#' if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
 #'
 #' ##- project folder
 #' projRootDir<-tempdir()
@@ -428,7 +431,8 @@ chmseg_RL <- function(treepos = NULL,
 #'
 #' ##- visualisation
 #' mapview::mapview(crownsITC,zcol="Height_m")
-#' ##+}
+#' }
+#' ##+
 
 chmseg_ITC <- function(chm =NULL,
                        EPSG =3064,

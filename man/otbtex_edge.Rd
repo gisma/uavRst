@@ -39,13 +39,13 @@ Calculates edges for a given kernel size. return list of geotiffs containing the
 the otb is used for filtering. please provide a GeoTiff file
 }
 \examples{
-\dontrun{
+## ## ##
 ##- required packages
 require(uavRst)
 require(link2GI)
 setwd(tempdir())
 giLink <- uavRst::linkAll()
-stopifnot(giLinks$otb$exist)
+if (giLinks$otb$exist) {
 Sys.setlocale('LC_ALL','C')
 #get some typical iarborne imagery as provided by the authority
 utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",
@@ -58,7 +58,8 @@ r <- otbtex_edge(input="4490600_5321400.tif",filter = "sobel", retRaster = TRUE)
 ##- visualize all layers
 ret <- lapply(r, raster::plot)
 Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
-##+}
+}
+##+
 }
 \author{
 Chris Reudenbach

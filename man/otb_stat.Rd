@@ -34,11 +34,11 @@ Calculates local statistics for a given kernel size
 the otb is used for the calculation of the statistics. Please provide a GeoTiff file
 }
 \examples{
-\dontrun{
+## ## ##
 require(uavRst)
 # check if OTB is installed correctly
 giLink <- uavRst::linkAll()
-stopifnot(giLinks$otb$exist)
+if (giLinks$otb$exist) {
 setwd(tempdir())
 #get some typical data as provided by the authority
 #get some typical data as provided by the authority
@@ -50,7 +50,8 @@ result<- otb_stat(input="4490600_5321400.tif",radius=5,retRaster = TRUE)
 #plot the results :
 raster::plot(unlist(result)[[1]])
 tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
-##+}
+}
+##+
 }
 \author{
 Chris Reudenbach
