@@ -482,7 +482,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param cleanRunDir  logical. TRUE logical switch for deleting the calculated tifs, default is TRUE
 #' @param giLinks     list. GI tools cli paths
 #' @examples
-#' ## ## ##
+#' \dontrun{
 #'
 #' ##- required packages
 #' require(uavRst)
@@ -546,7 +546,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' head(trainDF)
 #' # use ffs_train as next step for rf classification issues
 #' }
-#' ##+
+#' ##+}
 
 #' @import crayon
 #' @export calc_ext
