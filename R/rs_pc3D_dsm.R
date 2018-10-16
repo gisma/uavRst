@@ -44,7 +44,7 @@ if (!isGeneric('pc3D_dsm')) {
 #' @importFrom gdalUtils gdalinfo
 #'@export pc3D_dsm
 #'@examples
-#' ## ## ##
+#' \dontrun{
 #'require(uavRst)
 #'require(link2GI)
 #'
@@ -76,7 +76,7 @@ if (!isGeneric('pc3D_dsm')) {
 #'         giLinks = giLinks)
 #'mapview::mapview(pc3DSM[[1]])
 #'}
-#'##+
+#'##+}
 #'
 
 pc3D_dsm <- function(lasDir = NULL,

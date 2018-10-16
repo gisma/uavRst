@@ -627,13 +627,13 @@ otbtex_gray<- function(input=NULL,
   }
   return(retStack)
 }
-#' calculate gdal derived DEM params
+#' calculates most important DEM parameters
 #'
 #' @note please provide a GeoTiff file
 #' @param dem  character filname to GeoTiff containing one channel DEM
-#' @param item index. to be calculated default are c("hillshade","slope", "aspect","TRI","TPI","Roughness")
+#' @param item character list containing the keywords of the DEM parameter to be calculated. Default parameter are c("hillshade", "slope", "aspect", "TRI", "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", " C_TANG"," C_LONG", "C_CROS", "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI")
 #' @param verbose logical. be quiet
-#' @param morphoMethod  numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}
+#' @param morphoMethod  numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}. GDAL parameters see also: \href{https://www.gdal.org/gdaldem.html}{gdaldem}
 #' @param minScale  numeric. in scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param maxScale  numeric. max scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param numScale  numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
@@ -646,12 +646,31 @@ otbtex_gray<- function(input=NULL,
 #' @export morpho_dem
 #' @examples
 #' ## ## ##
-#' setwd(tempdir())
-#' ##- get some typical data as provided by the authority
+#' ##- required packages
+#' require(uavRst)
+#' require(link2GI)
+#' giLinks <- uavRst::linkAll()
+#' 
+#' if (giLinks$saga$exist & nchar(giLinks$gdal[[1]][1]) > 0 ) {
+#' ##- project folder
+#' projRootDir<-tempdir()
+#' ##- create subfolders please mind that the pathes are exported as global variables
+#' paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = c("run/"),
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
+#' ##- overide trailing backslash issue
+#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+#'  setwd(path_run)
+#'  unlink(paste0(path_run,"*"), force = TRUE)
+#' Sys.setlocale('LC_ALL','C')
+#' # get some typical iarborne imagery as provided by the authority
 #' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
-#'  "testdata.zip")
-#' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
+#'                      "testdata.zip")
+#' unzip("testdata.zip", junkpaths = TRUE,overwrite = TRUE)
+#' 
 #' gm<-morpho_dem(dem="4490600_5321400.tif")
+#' }
 #' ##+
 
 morpho_dem<- function(dem,
@@ -699,7 +718,7 @@ morpho_dem<- function(dem,
     raster::writeRaster(rdem,paste0(path_run,"SAGA_dem.sdat"),overwrite = TRUE,NAflag = 0)
     # claculate the basics SAGA morphometric params
     cat(getCrayon()[[1]](":::: processing ",saga_items,"\n"))
-    if (length(saga_items>0) && !("MTPI" %in% saga_items)) {
+    if (length(saga_items>0) )  { #&& !("MTPI" %in% saga_items)
     rsaga.geoprocessor(lib = "ta_morphometry", module = 0,
                        param = list(ELEVATION = paste(path_run,"SAGA_dem.sgrd", sep = ""),
                                     UNIT_SLOPE = 1,
@@ -736,6 +755,7 @@ morpho_dem<- function(dem,
                                         TPI = paste(path_run,"MTPI.sgrd", sep = "")),
                            show.output.on.console = FALSE,invisible = TRUE,
                            env = env)
+        
       } else {cat(getCrayon()[[2]]("\nPlease install SAGA >= 3.0.0\n Run without MTPI...\n"))
         saga_items<-saga_items[  !(saga_items %in% "MTPI")]
 

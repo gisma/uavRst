@@ -69,7 +69,7 @@ It creates a \code{raster*} object.
 For using 'PDAL'(since GRASS7.4.x) you have to install the PDAL binaries and python bindings if not bundled with GRASS. running Linux \code{sudo apt-get install libpdal-base5 libpdal-dev libpdal-plugin-python pdal}
 }
 \examples{
-## ## ##
+\dontrun{
 require(uavRst)
 require(link2GI)
 
@@ -101,7 +101,7 @@ pc3DSM<-pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),
         giLinks = giLinks)
 mapview::mapview(pc3DSM[[1]])
 }
-##+
+##+}
 
 }
 \seealso{

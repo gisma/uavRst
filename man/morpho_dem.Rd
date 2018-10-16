@@ -2,7 +2,7 @@
 % Please edit documentation in R/rs_textures.R
 \name{morpho_dem}
 \alias{morpho_dem}
-\title{calculate gdal derived DEM params}
+\title{calculates most important DEM parameters}
 \usage{
 morpho_dem(dem, item = c("hillshade", "slope", "aspect", "TRI", "TPI",
   "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", " C_TANG",
@@ -13,11 +13,11 @@ morpho_dem(dem, item = c("hillshade", "slope", "aspect", "TRI", "TPI",
 \arguments{
 \item{dem}{character filname to GeoTiff containing one channel DEM}
 
-\item{item}{index. to be calculated default are c("hillshade","slope", "aspect","TRI","TPI","Roughness")}
+\item{item}{character list containing the keywords of the DEM parameter to be calculated. Default parameter are c("hillshade", "slope", "aspect", "TRI", "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", " C_TANG"," C_LONG", "C_CROS", "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI")}
 
 \item{verbose}{logical. be quiet}
 
-\item{morphoMethod}{numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}}
+\item{morphoMethod}{numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}. GDAL parameters see also: \href{https://www.gdal.org/gdaldem.html}{gdaldem}}
 
 \item{minScale}{numeric. in scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}}
 
@@ -28,18 +28,37 @@ morpho_dem(dem, item = c("hillshade", "slope", "aspect", "TRI", "TPI",
 \item{giLinks}{list. of GI tools cli pathes}
 }
 \description{
-calculate gdal derived DEM params
+calculates most important DEM parameters
 }
 \note{
 please provide a GeoTiff file
 }
 \examples{
 ## ## ##
-setwd(tempdir())
-##- get some typical data as provided by the authority
+##- required packages
+require(uavRst)
+require(link2GI)
+giLinks <- uavRst::linkAll()
+
+if (giLinks$saga$exist & nchar(giLinks$gdal[[1]][1]) > 0 ) {
+##- project folder
+projRootDir<-tempdir()
+##- create subfolders please mind that the pathes are exported as global variables
+paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("run/"),
+                         global = TRUE,
+                         path_prefix = "path_")
+##- overide trailing backslash issue
+ path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
+ setwd(path_run)
+ unlink(paste0(path_run,"*"), force = TRUE)
+Sys.setlocale('LC_ALL','C')
+# get some typical iarborne imagery as provided by the authority
 utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",
- "testdata.zip")
-unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
+                     "testdata.zip")
+unzip("testdata.zip", junkpaths = TRUE,overwrite = TRUE)
+
 gm<-morpho_dem(dem="4490600_5321400.tif")
+}
 ##+
 }
