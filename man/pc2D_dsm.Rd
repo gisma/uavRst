@@ -41,13 +41,13 @@ optical UAV retrieval. It simply samples the maximum or whatever values of a giv
 grid size and fills the no data holes if so.
 }
 \examples{
-\dontrun{
+## ## ##
 require(uavRst)
 require(link2GI)
 
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
+if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
 
 # proj subfolders
 projRootDir<-tempdir()
@@ -70,7 +70,8 @@ dsm <- pc2D_dsm(laspcFile = paste0(path_run,"lasdata.las"),
                 sampleMethod = "max",
                 targetGridSize = 0.5,
                 giLinks = giLinks)
-}
+                }
+##+
 }
 \author{
 Chris Reudenbach

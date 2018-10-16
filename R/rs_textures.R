@@ -214,7 +214,7 @@ glcm_texture <- function(x,
 #' require(uavRst)
 #' require(link2GI)
 #' ## -check if OTB is installed correctly
-#' giLink <- uavRst::linkAll()
+#' giLinks <- uavRst::linkAll()
 #' if (giLinks$otb$exist) {
 #' setwd(tempdir())
 #' ##- get some typical data as provided by the authority
@@ -385,7 +385,7 @@ otbtex_hara<- function(x,
 #' ## ## ##
 #' require(uavRst)
 #' # check if OTB is installed correctly
-#' giLink <- uavRst::linkAll()
+#' giLinks <- uavRst::linkAll()
 #' if (giLinks$otb$exist) {
 #' setwd(tempdir())
 #' #get some typical data as provided by the authority
@@ -469,7 +469,7 @@ otb_stat<- function(input=NULL,
 #' require(uavRst)
 #' require(link2GI)
 #' setwd(tempdir())
-#' giLink <- uavRst::linkAll()
+#' giLinks <- uavRst::linkAll()
 #' if (giLinks$otb$exist) {
 #' Sys.setlocale('LC_ALL','C')
 #' #get some typical iarborne imagery as provided by the authority
@@ -560,7 +560,7 @@ otbtex_edge<- function(input=NULL,
 #' require(uavRst)
 #' require(link2GI)
 #' setwd(tempdir())
-#' giLink <- uavRst::linkAll()
+#' giLinks <- uavRst::linkAll()
 #' if (giLinks$otb$exist) {
 #' Sys.setlocale('LC_ALL','C')
 #' #get some typical airborne imagery as provided by the authority
@@ -652,7 +652,7 @@ otbtex_gray<- function(input=NULL,
 #'  "testdata.zip")
 #' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
 #' gm<-morpho_dem(dem="4490600_5321400.tif")
-#' }
+#' ##+
 
 morpho_dem<- function(dem,
                     item=c("hillshade","slope", "aspect","TRI","TPI","Roughness","SLOPE","ASPECT", "C_GENE","C_PROF","C_PLAN"," C_TANG"," C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI"),

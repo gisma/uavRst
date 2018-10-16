@@ -44,14 +44,14 @@ if (!isGeneric('pc3D_dsm')) {
 #' @importFrom gdalUtils gdalinfo
 #'@export pc3D_dsm
 #'@examples
-#'\dontrun{
+#' ## ## ##
 #'require(uavRst)
 #'require(link2GI)
 #'
 #' # create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
-#' stopifnot(giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist)
-#'
+#' (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) 
+#'{
 #'# proj subfolders
 #'projRootDir<-tempdir()
 #'#setwd(paste0(projRootDir,"run"))
@@ -76,6 +76,7 @@ if (!isGeneric('pc3D_dsm')) {
 #'         giLinks = giLinks)
 #'mapview::mapview(pc3DSM[[1]])
 #'}
+#'##+
 #'
 
 pc3D_dsm <- function(lasDir = NULL,
