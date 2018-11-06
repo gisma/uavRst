@@ -9,8 +9,9 @@ require(uavRst)
 projRootDir <- "~/data/chile/working"
 
 ### web data
-# url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/477369_800_5631924_000_477469_800_5632024_000.las"
-# res <- curl::curl_download(url, "~/proj/uav/thesis/finn/output/lasdata.las")
+# url <- 
+# utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/477369_800_5631924_000_477469_800_5632024_000.las",
+# "~/proj/uav/thesis/finn/output/lasdata.las")
 # uav_data<-paste0(path_output,"lasdata.las")
 
 # proj subfolders

@@ -259,8 +259,7 @@ chmseg_FT <- function(treepos = NULL,
   if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
     treepos <- raster::rasterToPoints(treepos,spatial = TRUE)
   } else {
-    r<-raster::raster(treepos)
-    treepos <- raster::rasterToPoints(treepos,spatial = TRUE)
+    stop("Please provide an object of tye raster*")
   }
 
   # Crown segmentation
@@ -339,12 +338,11 @@ chmseg_RL <- function(treepos = NULL,
                       chm = NULL,
                       maxCrownArea = 150,
                       exclusion = 0.2) {
-  # if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
-  #   treepos <- raster::rasterToPoints(treepos,spatial = TRUE)
-  # } else {
-  #   r<-raster::raster(treepos)
-  #   treepos <- raster::rasterToPoints(treepos,spatial = TRUE)
-  # }
+  if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
+    treepos <- raster::rasterToPoints(treepos,spatial = TRUE)
+  } else {
+    stop("Please provide an object of tye raster*")
+  }
 
   maxcrown <- sqrt(maxCrownArea / pi)
   # Crown segmentation
