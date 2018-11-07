@@ -859,3 +859,37 @@ searchLastools <- function(MP = "~",
 
   return(LASbinaries)
 }
+
+# if (substr(Sys.getenv("COMPUTERNAME"),1,5) == "PCRZP") {
+#   gdalUtils::gdal_setInstallation(search_path = shQuote("C:/Program Files/QGIS 2.14/bin/"))
+# } else {
+#   ## (gdalUtils) check for a valid GDAL binary installation on your system
+#   if (!quiet) gdalUtils::gdal_setInstallation(verbose = TRUE)
+#   else gdalUtils::gdal_setInstallation()
+# }
+
+
+#'@title Checks if running on a specified computer domain
+#'@name setHomePath
+#'@description  Checks if the computer name belongs to a specified group i.e. aq network domain Marburg Universitys computer pools
+#'@param homeDir full path  to the real folder location the project
+#'@param prefixPC contains  an arbitrary part of the computer name. It always starts with the first letter.
+#'@author CR
+#'@keywords internal
+#'@examples
+#' \dontrun{
+#' # add path
+#' setHomePath("saga",prefixPC="PCRZP")
+#' }
+#'@export setHomePath
+setHomePath<- function(homeDir="F:/MPG", prefixPC="PCRZP") {
+  if (!exists("GiEnv")) GiEnv <- new.env(parent=globalenv()) 
+  if (substr(Sys.getenv("COMPUTERNAME"),1,nchar(prefixPC)) == substr(prefixPC,1,nchar(prefixPC))) {
+      projHomeDir <- shQuote(homeDir)
+      return(path.expand(projHomeDir))
+    } else {
+      return(path.expand("~/edu"))  
+    }
+  } 
+  
+  
