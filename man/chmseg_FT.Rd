@@ -8,7 +8,7 @@ chmseg_FT(treepos = NULL, chm = NULL, minTreeAlt = 2,
   format = "polygons", verbose = FALSE)
 }
 \arguments{
-\item{treepos}{\code{SpatialPointsDataFrame}. The point locations of treetops. The function will generally produce a
+\item{treepos}{\code{raster*}. The positions of the estimated top of trees. The function will generally produce a
 number of crown segments equal to the number of treetops.}
 
 \item{chm}{raster*. Canopy height model in \code{raster} format. Should be the same that was used to create

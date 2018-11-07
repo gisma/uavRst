@@ -188,7 +188,7 @@ chmseg_GWS <- function(treepos = NULL,
 #' Watershed segmentation based on 'ForestTools'
 #' @description  'ForestTools' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Very fast algorithm based on the imagr watershed algorithm.
 #' Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools}{'ForestTools'}
-#' @param treepos \code{SpatialPointsDataFrame}. The point locations of treetops. The function will generally produce a
+#' @param treepos \code{raster*}. The positions of the estimated top of trees. The function will generally produce a
 #' number of crown segments equal to the number of treetops.
 #' @param chm raster*. Canopy height model in \code{raster} format. Should be the same that was used to create
 #' the input for \code{treepos}.
