@@ -1,16 +1,13 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r
-sudo: false
-cache: packages
+warnings_are_errors: false
+
+r_packages:
+  - ncdf4
   
-#- oldrel # breaks on lacking isFALSE#/isTRUE
+r_github_packages:
+  - r-spatial/link2GI
+  
+r_build_args: "--no-build-vignettes"
+r_check_args: "--no-build-vignettes --as-cran"
 
-
-addons:
-  apt:
-    sources:
-      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
-    packages:
-      - saga 
-      - grass
-      - otb-bin
