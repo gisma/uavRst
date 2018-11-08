@@ -5,8 +5,6 @@ cache: packages
   
 #- oldrel # breaks on lacking isFALSE#/isTRUE
 
-r_github_packages: 
-  - gisma/uavRst
 
 addons:
   apt:
