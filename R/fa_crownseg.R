@@ -24,7 +24,7 @@
 #'@param majorityRadius numeric. kernel size for the majority filter out spurious pixel
 #'@export
 #'@examples
-#'## ## ##
+#' \dontrun{
 #' ##- required packages
 #' require(uavRst)
 #' require(link2GI)
@@ -68,7 +68,7 @@
 #'##- visualize it
 #' mapview::mapview(crowns_GWS,zcol="chmMEAN")
 #' }
-#'##+
+#'g}
 
 
 
@@ -202,7 +202,7 @@ chmseg_GWS <- function(treepos = NULL,
 #'
 #' @export
 #' @examples
-#' ## ## ##
+#' \dontrun{
 #'
 #' ## required packages
 #' require(uavRst)
@@ -248,7 +248,7 @@ chmseg_GWS <- function(treepos = NULL,
 #' ## Visualisation
 #' mapview::mapview(crownsFT,zcol="treepos_2")
 #' }
-#'##+
+#'##+}
 
 chmseg_FT <- function(treepos = NULL,
                       chm = NULL,
@@ -293,7 +293,7 @@ chmseg_FT <- function(treepos = NULL,
 #' @importFrom rLiDAR FindTreesCHM
 #' @export
 #' @examples
-#' ## ## ##
+#' \dontrun{
 #' ## required packages
 #'  require(uavRst)
 #'  require(link2GI)
@@ -332,7 +332,7 @@ chmseg_FT <- function(treepos = NULL,
 #' ## visualisation
 #'  mapview::mapview(crownsRL) 
 #'  }
-#' ##+
+#' ##+}
 
 chmseg_RL <- function(treepos = NULL,
                       chm = NULL,
@@ -388,7 +388,7 @@ chmseg_RL <- function(treepos = NULL,
 #' @import itcSegment
 #' @export chmseg_ITC
 #' @examples
-#' ## ## ##
+#' \dontrun{
 #'
 #' ##- required packages
 #' require(uavRst)
@@ -433,7 +433,7 @@ chmseg_RL <- function(treepos = NULL,
 #' ##- visualisation
 #' mapview::mapview(crownsITC,zcol="Height_m")
 #' }
-#' ##+
+#' ##+}
 
 chmseg_ITC <- function(chm =NULL,
                        EPSG =3064,
