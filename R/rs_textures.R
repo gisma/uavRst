@@ -655,8 +655,7 @@ otbtex_gray<- function(input=NULL,
 #' r<-morpho_dem(dem="dem.tif",c("hillshade", "slope", "aspect", "TRI", "TPI",
 #'                               "Roughness", "SLOPE", "ASPECT",  "C_GENE", "C_PROF",
 #'                               "C_PLAN", " C_TANG"," C_LONG", "C_CROS"))
-#' par(mfrow = c(3, 4))
-#' r_st=stack(r)
+#' r_st=raster::stack(r)
 #' names(r_st)=names(r)
 #' raster::plot(r_st)
 #' }
