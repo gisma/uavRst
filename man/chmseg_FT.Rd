@@ -27,41 +27,16 @@ height of \code{treepos}.}
 Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools}{'ForestTools'}
 }
 \examples{
-\dontrun{
 
-## required packages
-require(uavRst)
-require(link2GI)
-
-# create and check the links to the GI software
-giLinks <- list()
-giLinks$saga<-link2GI::linkSAGA()
-giLinks$otb<-link2GI::linkOTB()
-giLinks$grass<-link2GI::linkGRASS7(returnPath = TRUE)
-if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
-
-## project folder
-projRootDir<-tempdir()
-
-## create subfolders please mind that the pathes are exported as global variables
-paths<-link2GI::initProj(projRootDir = projRootDir,
-                         projFolders = c("data/","data/ref/","output/","run/","las/"),
-                         global = TRUE,
-                         path_prefix = "path_")
-
-## overide trailing backslash issue
-path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-setwd(path_run)
-unlink(paste0(path_run,"*"), force = TRUE)
 
 ## get the data
 utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
-                     paste0(path_run,"tutorial.zip"))
-unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
+                     paste0(tempdir(),"tutorial.zip"))
+unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
 
 ## read chm data
-chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
-tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
+chmR<- raster::raster(paste0(tempdir(),"chm_2.tif"))
+tPos<- raster::raster(paste0(tempdir(),"treepos_2.tif"))
 
 ## segmentation
 crownsFT <- chmseg_FT(chm = chmR,
@@ -72,6 +47,4 @@ crownsFT <- chmseg_FT(chm = chmR,
 
 ## Visualisation
 mapview::mapview(crownsFT,zcol="treepos_2")
-}
-##+}
 }

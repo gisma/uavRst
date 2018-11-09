@@ -91,7 +91,7 @@ crowns_GWS <- chmseg_GWS( treepos = tPos,
 ##- visualize it
 mapview::mapview(crowns_GWS,zcol="chmMEAN")
 }
-g}
+}
 }
 \author{
 Chris Reudenbach
