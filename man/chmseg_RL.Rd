@@ -27,7 +27,14 @@ Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiD
 ## required packages
  require(uavRst)
  require(mapview)
+##- project folder
+projRootDir<-tempdir()
 
+##- create subfolders please mind that the pathes are exported as global variables
+paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = c("run/"),
+                         global = TRUE,
+                         path_prefix = "path_")
  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
                        destfile=paste0(tempdir(),'tutorial.zip'))
  unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())

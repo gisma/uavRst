@@ -36,7 +36,6 @@ Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}
 
  require(uavRst)
  require(mapview)
-
  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
                        destfile=paste0(tempdir(),'tutorial.zip'))
  unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
