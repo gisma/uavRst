@@ -5,6 +5,8 @@ warnings_are_errors: false
 
 r_packages:
   - ncdf4
+  - V8
+  - ForestTools
   
 r_github_packages:
   - r-spatial/link2GI
