@@ -56,25 +56,17 @@ Furthermore using stats will cover mean and variance while dissimilarity is high
 
 ## ## ##
 require(glcm)
-## example on how to calculate texture from a list of channels
+## example on how to calculate texture with glcm
 setwd(tempdir())
-#get some typical data as provided by the authority
-Sys.setlocale('LC_ALL','C')
-utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",
-                     destfile="testdata.zip")
-unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
-r<- raster::stack("4490600_5321400.tif")
-
+data("pacman")
 # call glcm wrapper
-result <- glcm_texture(r,
+result <- glcm_texture(pacman,
                        nrasters=1:3,
                        stats=c("mean", "variance", "homogeneity"),
                        parallel = FALSE)
 
-#plot the results f VIS 0.6 channel:
-raster::plot(unlist(unlist(result$size_3$X4490600_5321400.1)))
-Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
-##+
+#plot the result:
+raster::plot(result[[1]])
 }
 \seealso{
 \code{\link{glcm}}

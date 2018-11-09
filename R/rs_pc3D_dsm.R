@@ -18,7 +18,7 @@ if (!isGeneric('pc3D_dsm')) {
 #'@param lasDir  character. default is \code{NULL} path  to the laz/las file(s)
 #'@param gisdbasePath character. gisdbase will be linked or created depending on \code{gisdbase_exist}
 #'@param GRASSlocation character. location will be linked or created depending on \code{gisdbase_exist}
-#'@param projSubFolder character. subfolders that will be created/linked for R related GRASS processing
+#'@param projsubFolders character. subfolders that will be created/linked for R related GRASS processing
 #'@param gridSize numeric. resolution for raster operations
 #'@param smoothFilter  character. default is \code{gauss} alternatives are \code{spline} or for no smoothing at all \code{no}
 #'@param splineNumber numeric. default is 4 number ob spline iterations
@@ -71,7 +71,7 @@ if (!isGeneric('pc3D_dsm')) {
 #'# create a DSM  based on a uav point cloud
 #'pc3DSM<-pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),
 #'         gisdbasePath = projRootDir,
-#'         projSubFolder = projsubFolder,
+#'         projsubFolders = projsubFolders,
 #'         gridSize = "0.5",
 #'         giLinks = giLinks)
 #'mapview::mapview(pc3DSM[[1]])
@@ -84,7 +84,7 @@ pc3D_dsm <- function(lasDir = NULL,
                    GRASSlocation = "tmp/",
                    grassVersion=1,
                    searchPath =NULL,
-                   projSubFolder = c("data/","output/","run/","las/"),
+                   projsubFolders = c("data/","output/","run/","las/"),
                    gridSize = "0.25",
                    grass_lidar_method = "mean",
                    grass_lidar_pth = 90,
@@ -213,7 +213,7 @@ pc3D_dsm <- function(lasDir = NULL,
   # create and export globally project folder structure
   paths<-link2GI::initProj(projRootDir = gisdbasePath,
                            GRASSlocation = GRASSlocation,
-                           projFolders =  projSubFolder)
+                           projFolders =  projsubFolders)
 
   # create GRASS7 connection according gisdbase_exist (permanent or temporary)
   if (gisdbase_exist)

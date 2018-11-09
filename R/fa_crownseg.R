@@ -204,15 +204,16 @@ chmseg_GWS <- function(treepos = NULL,
 #' 
 #' @examples
 #' 
-#'
+#'  require(uavRst)
+#'  require(mapview)
 #' ## get the data
 #' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
 #'                      paste0(tempdir(),"tutorial.zip"))
 #' unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
 #'
 #' ## read chm data
-#' chmR<- raster::raster(paste0(tempdir(),"chm_2.tif"))
-#' tPos<- raster::raster(paste0(tempdir(),"treepos_2.tif"))
+#' chmR<- raster::raster(paste0(tempdir(),"/chm_2.tif"))
+#' tPos<- raster::raster(paste0(tempdir(),"/treepos_2.tif"))
 #'
 #' ## segmentation
 #' crownsFT <- chmseg_FT(chm = chmR,
@@ -270,36 +271,17 @@ chmseg_FT <- function(treepos = NULL,
 #' @importFrom rLiDAR FindTreesCHM
 #' @export
 #' @examples
-#' \dontrun{
 #' ## required packages
 #'  require(uavRst)
-#'  require(link2GI)
 #'  require(mapview)
 #'
-#' # create and check the links to the GI software
-#' giLinks<-uavRst::linkAll()
-#' if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
-#'
-#' ## project folder
-#' projRootDir<-tempdir()
-#'
-#' ## create subfolders please mind that the pathes are exported as global variables
-#'  paths<-link2GI::initProj(projRootDir = projRootDir,
-#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
-#'                          global = TRUE,
-#'                          path_prefix = "path_")
-#' ## overide trailing backslash issue
-#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  setwd(path_run)
-#'  unlink(paste0(path_run,"*"), force = TRUE)
-#' ## download data
 #'  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
-#'                        destfile='tutorial.zip')
-#'  unzip(zipfile = "tutorial.zip", exdir = path_run)
+#'                        destfile=paste0(tempdir(),'tutorial.zip'))
+#'  unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
 #'
 #' ## read chm and tree position data
-#'  chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
-#'  tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
+#'  chmR<- raster::raster(paste0(tempdir(),"/chm_2.tif"))
+#'  tPos<- raster::raster(paste0(tempdir(),"/treepos_2.tif"))
 #'
 #' ## segmentation
 #'  crownsRL <- chmseg_RL(chm= chmR,
@@ -308,8 +290,8 @@ chmseg_FT <- function(treepos = NULL,
 #'                        exclusion = 0.2)
 #' ## visualisation
 #'  mapview::mapview(crownsRL) 
-#'  }
-#' ##+}
+
+
 
 chmseg_RL <- function(treepos = NULL,
                       chm = NULL,
@@ -324,11 +306,12 @@ chmseg_RL <- function(treepos = NULL,
   maxcrown <- sqrt(maxCrownArea / pi)
   # Crown segmentation
 
-  xyz <- as.data.frame(raster::rasterToPoints(treepos))
-  names(xyz) <- c("x", "y", "height")
+  xyz <- as.data.frame(treepos)
+  xyz2 = xyz[,c(2,3,1)]
+  names(xyz2) <- c("x", "y", "height")
   canopy <- rLiDAR::ForestCAS(
     chm = chm,
-    loc = xyz,
+    loc = xyz2,
     maxcrown = maxcrown,
     exclusion = exclusion
   )
@@ -365,38 +348,18 @@ chmseg_RL <- function(treepos = NULL,
 #' @import itcSegment
 #' @export chmseg_ITC
 #' @examples
-#' \dontrun{
+#' 
+#'  require(uavRst)
+#'  require(mapview)
 #'
-#' ##- required packages
-#' require(uavRst)
-#' require(link2GI)
+#'  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
+#'                        destfile=paste0(tempdir(),'tutorial.zip'))
+#'  unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
 #'
-#' ##- create and check the links to the GI software
-#' giLinks<-uavRst::linkAll()
-#' if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
-#'
-#' ##- project folder
-#' projRootDir<-tempdir()
-#'
-#' ##- create subfolders please mind that the pathes are exported as global variables
-#' paths<-link2GI::initProj(projRootDir = projRootDir,
-#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
-#'                          global = TRUE,
-#'                          path_prefix = "path_")
-#' ##- overide trailing backslash issue
-#' path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#' setwd(path_run)
-#' unlink(paste0(path_run,"*"), force = TRUE)
-#'
-#' ##- get the data
-#' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
-#'                      paste0(path_run,"tutorial.zip"))
-#' unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
-#'
-#'
-#' ##- read chm data
-#' chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
-#' tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
+#' ## read chm and tree position data
+#'  chmR<- raster::raster(paste0(tempdir(),"/chm_2.tif"))
+#'  tPos<- raster::raster(paste0(tempdir(),"/treepos_2.tif"))
+
 #'
 #' ##- segmentation
 #' crownsITC<- chmseg_ITC(chm = chmR,
@@ -409,8 +372,8 @@ chmseg_RL <- function(treepos = NULL,
 #'
 #' ##- visualisation
 #' mapview::mapview(crownsITC,zcol="Height_m")
-#' }
-#' ##+}
+
+
 
 chmseg_ITC <- function(chm =NULL,
                        EPSG =3064,

@@ -8,7 +8,7 @@ morpho_dem(dem, item = c("hillshade", "slope", "aspect", "TRI", "TPI",
   "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", " C_TANG",
   " C_LONG", "C_CROS", "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI"),
   verbose = FALSE, morphoMethod = 6, minScale = 1, maxScale = 8,
-  numScale = 2, giLinks = NULL)
+  numScale = 2, retRaster = TRUE, giLinks = NULL)
 }
 \arguments{
 \item{dem}{character filname to GeoTiff containing one channel DEM}
@@ -25,6 +25,8 @@ morpho_dem(dem, item = c("hillshade", "slope", "aspect", "TRI", "TPI",
 
 \item{numScale}{numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}}
 
+\item{retRaster}{boolean if TRUE a raster stack is returned}
+
 \item{giLinks}{list. of GI tools cli pathes}
 }
 \description{
@@ -34,31 +36,26 @@ calculates most important DEM parameters
 please provide a GeoTiff file
 }
 \examples{
-## ## ##
 ##- required packages
 require(uavRst)
 require(link2GI)
-giLinks <- uavRst::linkAll()
+setwd(tempdir())
+giLinks<-list()
+## check if OTB exists
+giLinks$otb <- link2GI::linkOTB()
+giLinks$saga <- link2GI::linkSAGA()
 
-if (giLinks$saga$exist & nchar(giLinks$gdal[[1]][1]) > 0 ) {
-##- project folder
-projRootDir<-tempdir()
-##- create subfolders please mind that the pathes are exported as global variables
-paths<-link2GI::initProj(projRootDir = projRootDir,
-                         projFolders = c("run/"),
-                         global = TRUE,
-                         path_prefix = "path_")
-##- overide trailing backslash issue
- path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)
- unlink(paste0(path_run,"*"), force = TRUE)
-Sys.setlocale('LC_ALL','C')
-# get some typical iarborne imagery as provided by the authority
-utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",
-                     "testdata.zip")
-unzip("testdata.zip", junkpaths = TRUE,overwrite = TRUE)
-
-gm<-morpho_dem(dem="4490600_5321400.tif")
+if (giLinks$otb$exist & giLinks$saga$exist) {
+data("mrbiko")
+proj = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
+mrbiko <- raster::projectRaster(mrbiko, crs = proj,method = "ngb",res = 20)
+raster::writeRaster(mrbiko,"dem.tif",overwrite=TRUE)
+r<-morpho_dem(dem="dem.tif",c("hillshade", "slope", "aspect", "TRI", "TPI",
+                              "Roughness", "SLOPE", "ASPECT",  "C_GENE", "C_PROF",
+                              "C_PLAN", " C_TANG"," C_LONG", "C_CROS"))
+par(mfrow = c(3, 4))
+r_st=stack(r)
+names(r_st)=names(r)
+raster::plot(r_st)
 }
-##+
 }

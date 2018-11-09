@@ -35,25 +35,18 @@
 #' ## ## ##
 
 #' require(glcm)
-#' ## example on how to calculate texture from a list of channels
+#' ## example on how to calculate texture with glcm
 #' setwd(tempdir())
-#' #get some typical data as provided by the authority
-#' Sys.setlocale('LC_ALL','C')
-#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
-#'                      destfile="testdata.zip")
-#' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
-#' r<- raster::stack("4490600_5321400.tif")
-#'
+#' data("pacman")
 #' # call glcm wrapper
-#' result <- glcm_texture(r,
+#' result <- glcm_texture(pacman,
 #'                        nrasters=1:3,
 #'                        stats=c("mean", "variance", "homogeneity"),
 #'                        parallel = FALSE)
 #'
-#' #plot the results f VIS 0.6 channel:
-#' raster::plot(unlist(unlist(result$size_3$X4490600_5321400.1)))
-#' Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
-#' ##+
+#' #plot the result:
+#' raster::plot(result[[1]])
+
 
 
 
@@ -388,19 +381,15 @@ otbtex_hara<- function(x,
 #' giLinks <- uavRst::linkAll()
 #' if (giLinks$otb$exist) {
 #' setwd(tempdir())
-#' #get some typical data as provided by the authority
-#' #get some typical data as provided by the authority
-#' tmp<-Sys.setlocale('LC_ALL','C')
-#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
-#'                      destfile="testdata.zip")
-#' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
-
-#'result<- otb_stat(input="4490600_5321400.tif",radius=5,retRaster = TRUE)
+#' data("pacman")
+#' raster::writeRaster(pacman,"pacman.tif",overwrite=TRUE)
+#' 
+#' # calculate statistics
+#' result<- otb_stat(input="pacman.tif",radius=5,retRaster = TRUE)
 #' #plot the results :
-#' raster::plot(unlist(result)[[1]])
-#' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
+#' raster::plot(result[[1]])
 #' }
-#' ##+
+
 
 otb_stat<- function(input=NULL,
                         out="localStat",
@@ -464,27 +453,32 @@ otb_stat<- function(input=NULL,
 #' @author Chris Reudenbach
 #' @export otbtex_edge
 #' @examples
-#' ## ## ##
+
 #' ##- required packages
 #' require(uavRst)
 #' require(link2GI)
 #' setwd(tempdir())
-#' giLinks <- uavRst::linkAll()
+#' 
+#' ## check if OTB exists
+#' giLinks$otb <- link2GI::linkOTB()
+#' 
 #' if (giLinks$otb$exist) {
-#' Sys.setlocale('LC_ALL','C')
-#' #get some typical iarborne imagery as provided by the authority
-#' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
-#'                      "testdata.zip")
-#' unzip("testdata.zip", junkpaths = TRUE,overwrite = TRUE)
+#' data("pacman")
+#' pacman<-raster::disaggregate(pacman,10)
+#' raster::writeRaster(pacman,"pacman.tif",overwrite=TRUE)
 #'
 #' ##- calculate Sobel edge detection
-#' r <- otbtex_edge(input="4490600_5321400.tif",filter = "sobel", retRaster = TRUE)
+#' r<-otbtex_gray(input="pacman.tif",
+#'                filter = "erode",
+#'                structype = "ball", 
+#'                structype.ball.xradius = 3,
+#'                structype.ball.yradius = 3 ,
+#'                retRaster = TRUE)
 #'
 #' ##- visualize all layers
-#' ret <- lapply(r, raster::plot)
-#' Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
+#' raster::plot(r[[1]])
 #' }
-#' ##+
+#' 
 
 
 otbtex_edge<- function(input=NULL,
@@ -556,25 +550,22 @@ otbtex_edge<- function(input=NULL,
 #' @importFrom gdalUtils gdalwarp
 #' @importFrom gdalUtils gdalinfo
 #' @examples
-#' ## ## ##
+
 #' require(uavRst)
 #' require(link2GI)
 #' setwd(tempdir())
-#' giLinks <- uavRst::linkAll()
+#' ## check if OTB exists
+#' giLinks$otb <- link2GI::linkOTB()
+#' 
 #' if (giLinks$otb$exist) {
-#' Sys.setlocale('LC_ALL','C')
-#' #get some typical airborne imagery as provided by the authority
-#' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
-#'                      "testdata.zip")
-#' unzip("testdata.zip", junkpaths = TRUE,overwrite = TRUE)
-#'
-#' r<-otbtex_gray(input="4490600_5321400.tif",retRaster = TRUE)
+#' data("pacman")
+#' raster::writeRaster(pacman,"pacman.tif",overwrite=TRUE)
+#' r<-otbtex_gray(input="pacman.tif",retRaster = TRUE)
 #'
 #' ##- visualize all layers
-#' ret <- lapply(r, raster::plot)
-#' Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
+#' raster::plot(r[[1]])
 #' }
-#' ##+
+
 
 otbtex_gray<- function(input=NULL,
                          out="morpho",
@@ -637,6 +628,7 @@ otbtex_gray<- function(input=NULL,
 #' @param minScale  numeric. in scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param maxScale  numeric. max scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param numScale  numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
+#' @param retRaster boolean if TRUE a raster stack is returned
 #' @param giLinks    list. of GI tools cli pathes
 #' @importFrom gdalUtils ogr2ogr
 #' @importFrom gdalUtils gdal_translate
@@ -645,33 +637,30 @@ otbtex_gray<- function(input=NULL,
 #' @importFrom gdalUtils gdaldem
 #' @export morpho_dem
 #' @examples
-#' ## ## ##
+
 #' ##- required packages
 #' require(uavRst)
 #' require(link2GI)
-#' giLinks <- uavRst::linkAll()
+#' setwd(tempdir())
+#' giLinks<-list()
+#' ## check if OTB exists
+#' giLinks$otb <- link2GI::linkOTB()
+#' giLinks$saga <- link2GI::linkSAGA()
 #' 
-#' if (giLinks$saga$exist & nchar(giLinks$gdal[[1]][1]) > 0 ) {
-#' ##- project folder
-#' projRootDir<-tempdir()
-#' ##- create subfolders please mind that the pathes are exported as global variables
-#' paths<-link2GI::initProj(projRootDir = projRootDir,
-#'                          projFolders = c("run/"),
-#'                          global = TRUE,
-#'                          path_prefix = "path_")
-#' ##- overide trailing backslash issue
-#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  setwd(path_run)
-#'  unlink(paste0(path_run,"*"), force = TRUE)
-#' Sys.setlocale('LC_ALL','C')
-#' # get some typical iarborne imagery as provided by the authority
-#' utils::download.file("http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
-#'                      "testdata.zip")
-#' unzip("testdata.zip", junkpaths = TRUE,overwrite = TRUE)
-#' 
-#' gm<-morpho_dem(dem="4490600_5321400.tif")
+#' if (giLinks$otb$exist & giLinks$saga$exist) {
+#' data("mrbiko")
+#' proj = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
+#' mrbiko <- raster::projectRaster(mrbiko, crs = proj,method = "ngb",res = 20)
+#' raster::writeRaster(mrbiko,"dem.tif",overwrite=TRUE)
+#' r<-morpho_dem(dem="dem.tif",c("hillshade", "slope", "aspect", "TRI", "TPI",
+#'                               "Roughness", "SLOPE", "ASPECT",  "C_GENE", "C_PROF",
+#'                               "C_PLAN", " C_TANG"," C_LONG", "C_CROS"))
+#' par(mfrow = c(3, 4))
+#' r_st=stack(r)
+#' names(r_st)=names(r)
+#' raster::plot(r_st)
 #' }
-#' ##+
+
 
 morpho_dem<- function(dem,
                     item=c("hillshade","slope", "aspect","TRI","TPI","Roughness","SLOPE","ASPECT", "C_GENE","C_PROF","C_PLAN"," C_TANG"," C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI"),
@@ -680,7 +669,10 @@ morpho_dem<- function(dem,
                     minScale = 1,
                     maxScale = 8,
                     numScale = 2,
+                    retRaster = TRUE,
                     giLinks = NULL) {
+  if (!exists("path_run")) path_run = getwd()
+  retStack<-list()
   if (is.null(giLinks)){
     giLinks <- linkAll()
   }
@@ -711,6 +703,7 @@ morpho_dem<- function(dem,
     res<-   gdalUtils::gdaldem(mode = item,
             input_dem=paste0(path_run,"dem2.tif"),
             output = paste0(path_run,item,".tif"))
+    if (retRaster) retStack[[item]]<-assign(item,raster::stack(paste0(path_run,item,".tif")))
   }
 
   if (length(saga_items>0))  {
@@ -765,8 +758,12 @@ morpho_dem<- function(dem,
       cat(getCrayon()[[1]](":::: converting ",item,"\n"))
       ritem<-raster::raster(paste(path_run,item,".sdat", sep = ""))
       raster::writeRaster(ritem,paste(path_run,item,".tif", sep = ""), overwrite = TRUE, NAflag = 0)
+      if (retRaster) retStack[[item]]<-assign(item,raster::stack(paste(path_run,item,".tif", sep = "")))
     }
+    
+    
   }
+  if (retRaster) return(retStack)
 }
 
 # if necessary creates additional folders for the resulting files

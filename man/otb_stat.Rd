@@ -40,18 +40,14 @@ require(uavRst)
 giLinks <- uavRst::linkAll()
 if (giLinks$otb$exist) {
 setwd(tempdir())
-#get some typical data as provided by the authority
-#get some typical data as provided by the authority
-tmp<-Sys.setlocale('LC_ALL','C')
-utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",
-                     destfile="testdata.zip")
-unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
-result<- otb_stat(input="4490600_5321400.tif",radius=5,retRaster = TRUE)
+data("pacman")
+raster::writeRaster(pacman,"pacman.tif",overwrite=TRUE)
+
+# calculate statistics
+result<- otb_stat(input="pacman.tif",radius=5,retRaster = TRUE)
 #plot the results :
-raster::plot(unlist(result)[[1]])
-tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.UTF-8")
+raster::plot(result[[1]])
 }
-##+
 }
 \author{
 Chris Reudenbach

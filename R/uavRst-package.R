@@ -31,15 +31,8 @@
 #' @importFrom gdalUtils gdalwarp
 #' @importFrom gdalUtils gdalinfo
 #' @importFrom gdalUtils gdaldem
-#' @importFrom geosphere bearing
-#' @importFrom geosphere distGeo
-#' @importFrom geosphere destPoint
-#' @importFrom igraph clusters
-#' @importFrom igraph graph
-#' @importFrom igraph V
 #' @importFrom data.table fread
 #' @importFrom spatial.tools create_blank_raster 
-#' @import log4r
 #' @import caret
 #' @importFrom utils write.table
 #' @importFrom grDevices colorRampPalette

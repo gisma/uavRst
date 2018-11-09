@@ -312,10 +312,6 @@ predict_rgb <- function(imageFiles=NULL,
 #' trainDF<-readRDS(paste0(path_run,"tutorial_trainDF.rds"))
 #' load(paste0(path_run,"tutorialbandNames.RData"))
 #'
-#' ##- get image data assuming that you have used before the calc_ext function
-#' trainDF<-readRDS(paste0(path_run,"rgbImg_trainDF.rds"))
-#' load(paste0(path_run,"tutorialbandNames.RData"))
-#'
 #' ##- define the classes
 #'  idNumber=c(1,2,3)
 #'  idNames= c("green tree","yellow tree","no tree")

@@ -24,36 +24,17 @@ height of \code{treepos}.}
 Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
 }
 \examples{
-\dontrun{
 ## required packages
  require(uavRst)
- require(link2GI)
  require(mapview)
 
-# create and check the links to the GI software
-giLinks<-uavRst::linkAll()
-if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
-
-## project folder
-projRootDir<-tempdir()
-
-## create subfolders please mind that the pathes are exported as global variables
- paths<-link2GI::initProj(projRootDir = projRootDir,
-                         projFolders = c("data/","data/ref/","output/","run/","las/"),
-                         global = TRUE,
-                         path_prefix = "path_")
-## overide trailing backslash issue
- path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)
- unlink(paste0(path_run,"*"), force = TRUE)
-## download data
  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
-                       destfile='tutorial.zip')
- unzip(zipfile = "tutorial.zip", exdir = path_run)
+                       destfile=paste0(tempdir(),'tutorial.zip'))
+ unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
 
 ## read chm and tree position data
- chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
- tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
+ chmR<- raster::raster(paste0(tempdir(),"/chm_2.tif"))
+ tPos<- raster::raster(paste0(tempdir(),"/treepos_2.tif"))
 
 ## segmentation
  crownsRL <- chmseg_RL(chm= chmR,
@@ -62,6 +43,4 @@ projRootDir<-tempdir()
                        exclusion = 0.2)
 ## visualisation
  mapview::mapview(crownsRL) 
- }
-##+}
 }

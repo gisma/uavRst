@@ -5,7 +5,7 @@
 \title{Create a Digital Surface Model from a UAV generated point cloud}
 \usage{
 pc3D_dsm(lasDir = NULL, gisdbasePath = NULL, GRASSlocation = "tmp/",
-  grassVersion = 1, searchPath = NULL, projSubFolder = c("data/",
+  grassVersion = 1, searchPath = NULL, projsubFolders = c("data/",
   "output/", "run/", "las/"), gridSize = "0.25",
   grass_lidar_method = "mean", grass_lidar_pth = 90,
   splineNumber = "4", otb_gauss_radius = "0.5",
@@ -26,7 +26,7 @@ pc3D_dsm(lasDir = NULL, gisdbasePath = NULL, GRASSlocation = "tmp/",
 
 \item{searchPath}{path to look for grass}
 
-\item{projSubFolder}{character. subfolders that will be created/linked for R related GRASS processing}
+\item{projsubFolders}{character. subfolders that will be created/linked for R related GRASS processing}
 
 \item{gridSize}{numeric. resolution for raster operations}
 
@@ -96,7 +96,7 @@ utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/d
 # create a DSM  based on a uav point cloud
 pc3DSM<-pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),
         gisdbasePath = projRootDir,
-        projSubFolder = projsubFolder,
+        projsubFolders = projsubFolders,
         gridSize = "0.5",
         giLinks = giLinks)
 mapview::mapview(pc3DSM[[1]])

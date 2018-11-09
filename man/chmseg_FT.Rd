@@ -28,15 +28,16 @@ Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools
 }
 \examples{
 
-
+ require(uavRst)
+ require(mapview)
 ## get the data
 utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
                      paste0(tempdir(),"tutorial.zip"))
 unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
 
 ## read chm data
-chmR<- raster::raster(paste0(tempdir(),"chm_2.tif"))
-tPos<- raster::raster(paste0(tempdir(),"treepos_2.tif"))
+chmR<- raster::raster(paste0(tempdir(),"/chm_2.tif"))
+tPos<- raster::raster(paste0(tempdir(),"/treepos_2.tif"))
 
 ## segmentation
 crownsFT <- chmseg_FT(chm = chmR,

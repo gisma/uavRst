@@ -227,7 +227,7 @@ treepos_RL <- function(chm =NULL,
 #' @importFrom lidR lasclipRectangle
 #' @export treepos_lidR
 #' @examples
-#' \dontrun{
+
 #'
 #'require(uavRst)
 #'## required packages
@@ -250,8 +250,7 @@ treepos_RL <- function(chm =NULL,
 #'## visualisation
 #' mapview::mapview(tPoslidR)
 
-#'
-#' ##+}
+
 
 
 treepos_lidR <- function(chm =NULL,

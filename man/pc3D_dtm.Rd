@@ -7,7 +7,7 @@
 pc3D_dtm(lasDir = NULL, gisdbasePath = NULL, thinGrid = "0.5",
   keepClass = "2", bulge = "1.5", splineNumber = "4",
   stepSize = "city", subSize = "ultra_fine", gridSize = "0.25",
-  dtmarea = FALSE, cutExtent = NULL, projSubFolder = c("data/",
+  dtmarea = FALSE, cutExtent = NULL, projsubFolders = c("data/",
   "output/", "run/", "las/"),
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
   cores = "3", pathLastools = NULL, giLinks = NULL, MP = "~",
@@ -36,7 +36,7 @@ pc3D_dtm(lasDir = NULL, gisdbasePath = NULL, thinGrid = "0.5",
 
 \item{cutExtent}{object of typ extent deteerming the clip area}
 
-\item{projSubFolder}{list of character contaiing subfolders that will be created/linked for R related GRASS processing}
+\item{projsubFolders}{list of character contaiing subfolders that will be created/linked for R related GRASS processing}
 
 \item{proj4}{default is EPSG 32632, any valid proj4 string that is assumingly the correct one}
 
@@ -81,7 +81,7 @@ utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/d
 # create a DSM  based on a uav point cloud
 pc3DTM <- pc3D_dtm(lasDir =  paste0(path_run,"lasdata.las"),
                       gisdbasePath = projRootDir,
-                      projSubFolder = projSubFolder,
+                      projsubFolders = projsubFolders,
                       thinGrid = 1.,
                       splineNumber = 5 ,
                       gridSize = 0.5,

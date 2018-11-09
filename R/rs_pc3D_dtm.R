@@ -20,7 +20,7 @@
 #'@param cores numerical. number of cores that will be used
 #'@param proj4  default is EPSG 32632, any valid proj4 string that is assumingly the correct one
 #'@param giLinks list of GI tools cli pathes, default is NULL
-#'@param projSubFolder list of character contaiing subfolders that will be created/linked for R related GRASS processing
+#'@param projsubFolders list of character contaiing subfolders that will be created/linked for R related GRASS processing
 #'@param verbose logical. to be quiet (1)
 #'@param cutExtent object of typ extent deteerming the clip area
 #'@param MP character mounting point / drive letter default is "~"
@@ -59,7 +59,7 @@
 #'# create a DSM  based on a uav point cloud
 #' pc3DTM <- pc3D_dtm(lasDir =  paste0(path_run,"lasdata.las"),
 #'                       gisdbasePath = projRootDir,
-#'                       projSubFolder = projSubFolder,
+#'                       projsubFolders = projsubFolders,
 #'                       thinGrid = 1.,
 #'                       splineNumber = 5 ,
 #'                       gridSize = 0.5,
@@ -80,7 +80,7 @@ pc3D_dtm <- function(lasDir = NULL,
                       gridSize = "0.25",
                       dtmarea = FALSE,
                    cutExtent = NULL,
-                      projSubFolder = c("data/","output/","run/","las/"),
+                      projsubFolders = c("data/","output/","run/","las/"),
                       proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                       cores = "3",
                    pathLastools = NULL,
@@ -141,7 +141,7 @@ pc3D_dtm <- function(lasDir = NULL,
 
   # create project structure and export global paths
   link2GI::initProj(projRootDir = gisdbasePath,
-                    projFolders =  projSubFolder)
+                    projFolders =  projsubFolders)
 
   # set lastool folder
   pathLastools <- path.expand(pathLastools)
