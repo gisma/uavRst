@@ -88,6 +88,7 @@ chmseg_GWS <- function(treepos = NULL,
                        segmentationBands    = c("chm"),
                        majorityRadius    = 3.000,
                        giLinks = NULL) {
+  if (!exists("path_run")) path_run = getwd()
   proj<- raster::crs(treepos)
   if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
     raster::writeRaster(treepos,file.path(path_run,"treepos.sdat"),overwrite = TRUE,NAflag = 0)
@@ -203,7 +204,7 @@ chmseg_GWS <- function(treepos = NULL,
 #' @export
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #'  require(uavRst)
 #'  require(mapview)
 #' ## get the data
@@ -224,6 +225,7 @@ chmseg_GWS <- function(treepos = NULL,
 #'
 #' ## Visualisation
 #' mapview::mapview(crownsFT,zcol="treepos_2")
+#' }
 
 
 
@@ -233,7 +235,7 @@ chmseg_FT <- function(treepos = NULL,
                       minTreeAlt = 2,
                       format = "polygons",
                       verbose = FALSE) {
-
+  if (!exists("path_run")) path_run = getwd()
   if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
     treepos <- raster::rasterToPoints(treepos,spatial = TRUE)
   } else {
@@ -249,7 +251,7 @@ chmseg_FT <- function(treepos = NULL,
 
   # # Writing Shapefile
   # rgdal::writeOGR(obj = crownsFT,
-  #                 dsn = paste0(path_output, "crowns_FT"),
+  #                 dsn = paste0(path_run, "crowns_FT"),
   #                 layer = "crowns_FT",
   #                 driver= "ESRI Shapefile",
   #                 overwrite=TRUE)
@@ -274,7 +276,14 @@ chmseg_FT <- function(treepos = NULL,
 #' ## required packages
 #'  require(uavRst)
 #'  require(mapview)
+#' ##- project folder
+#' projRootDir<-tempdir()
 #'
+#' ##- create subfolders please mind that the pathes are exported as global variables
+#' paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = c("run/"),
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
 #'  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
 #'                        destfile=paste0(tempdir(),'tutorial.zip'))
 #'  unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
@@ -297,6 +306,7 @@ chmseg_RL <- function(treepos = NULL,
                       chm = NULL,
                       maxCrownArea = 150,
                       exclusion = 0.2) {
+  if (!exists("path_run")) path_run = getwd()
   if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
     treepos <- raster::rasterToPoints(treepos,spatial = TRUE)
   } else {
@@ -319,7 +329,7 @@ chmseg_RL <- function(treepos = NULL,
   # Writing Shapefile
   rgdal::writeOGR(
     obj = canopy[[1]],
-    dsn = paste0(path_output, "crowns_LR"),
+    dsn = paste0(path_run, "crowns_LR"),
     layer = "crowns_LR",
     driver = "ESRI Shapefile",
     overwrite = TRUE
@@ -351,7 +361,6 @@ chmseg_RL <- function(treepos = NULL,
 #' 
 #'  require(uavRst)
 #'  require(mapview)
-#'
 #'  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
 #'                        destfile=paste0(tempdir(),'tutorial.zip'))
 #'  unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
@@ -386,7 +395,7 @@ chmseg_ITC <- function(chm =NULL,
   # if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
   #   chm <- raster::raster(chm)
   # }
-
+  if (!exists("path_run")) path_run = getwd()
   maxcrown <- sqrt(maxCrownArea/ pi)*2
 
   crown_polygon <- itcSegment::itcIMG(imagery = chm,
@@ -398,7 +407,7 @@ chmseg_ITC <- function(chm =NULL,
                                       DIST = maxcrown,
                                       ischm = TRUE)
   rgdal::writeOGR(crown_polygon,
-                  dsn = paste0(path_output, "crowns_itc", "localMax", minTreeAlt, "_crownDiam", maxCrownArea),
+                  dsn = paste0(path_run, "crowns_itc", "localMax", minTreeAlt, "_crownDiam", maxCrownArea),
                   layer = "result",
                   driver= "ESRI Shapefile",
                   overwrite=TRUE)
