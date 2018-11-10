@@ -12,7 +12,7 @@ r_github_packages:
   - r-spatial/link2GI
   
 r_build_args: "--no-build-vignettes"
-r_check_args: "--no-build-vignettes --as-cran --run-dontrun  --timings "
+r_check_args: "--no-build-vignettes --as-cran"
 
 addons:
   apt:
@@ -28,3 +28,4 @@ addons:
       - libgdal-dev
       - netcdf-bin 
       - libudunits2-dev
+      - libv8-3.14-dev
