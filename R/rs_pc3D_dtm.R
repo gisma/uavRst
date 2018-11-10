@@ -67,7 +67,7 @@
 #'                       giLinks = giLinks)
 #'mapview::mapview(pc3DTM[[1]]) 
 #'}
-#' ##+}
+#'}
 
 
 pc3D_dtm <- function(lasDir = NULL,

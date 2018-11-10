@@ -88,7 +88,7 @@ pc3DTM <- pc3D_dtm(lasDir =  "lasdata.las",
                       giLinks = giLinks)
 mapview::mapview(pc3DTM[[1]]) 
 }
-##+}
+}
 }
 \author{
 Chris Reudenbach

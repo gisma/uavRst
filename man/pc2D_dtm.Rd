@@ -50,7 +50,7 @@ a minimum samopling approach is applied. It retrieves on a coarse sampling grids
 resolution. this is a kind of an try and error process and provides fairly good results if the point cloud shows at least some real surface points on a not to coarse grid.
 }
 \examples{
-## ## ##
+\dontrun{
 
 require(uavRst)
 require(link2GI)
@@ -85,7 +85,7 @@ dtm <- pc2D_dtm(laspcFile = "lasdata.las",
                 giLinks = giLinks)
  raster::plot(dtm)
 }
-##+
+}
 }
 \author{
 Chris Reudenbach, Finn Möller

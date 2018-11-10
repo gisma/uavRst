@@ -36,7 +36,7 @@
 #' @importFrom gdalUtils gdalwarp
 #' @importFrom gdalUtils gdalinfo
 #'@examples
-#'## ## ##
+#'\dontrun{
 #'
 #' require(uavRst)
 #' require(link2GI)
@@ -72,7 +72,7 @@
 #'                 giLinks = giLinks)
 #'  raster::plot(dtm)
 #'}
-#'##+
+#'}
 pc2D_dtm <- function(laspcFile = NULL,
                        gisdbasePath = projRootDir,
                        grassVersion=1,
