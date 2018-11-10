@@ -85,10 +85,7 @@ r_in_lidar(input = paste0(getwd(),"/test.las"),
            class_filter = 2)
            
 ##- visualize it
-raster::plot(raster::raster(rgrass7::readRAST("dem")),
-                            paste0(path,"dem"), 
-                            overwrite=TRUE,
-                            format="GTiff")
+raster::plot(raster::raster(rgrass7::readRAST("dem")))
                             
 }
 }
