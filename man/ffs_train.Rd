@@ -9,7 +9,7 @@ ffs_train(trainingDF = NULL, predictors = c("R", "G", "B"),
   "A", "FN"), noLoc = NULL, sumFunction = "twoClassSummary",
   pVal = 0.5, prefin = "final_", preffs = "ffs_",
   modelSaveName = "model.RData", runtest = FALSE, seed = 100,
-  withinSE = TRUE, mtry = 2, noClu = 3)
+  withinSE = TRUE, mtry = 2, noClu = 1)
 }
 \arguments{
 \item{trainingDF}{dataframe. containing training data}
@@ -107,7 +107,7 @@ load(paste0(path_run,"tutorialbandNames.RData"))
                      spaceVar  = "FN",
                      names     = name,
                      pVal      = 0.1,
-                     noClu     = 4)
+                     noClu     = 1)
 
 ##- for classification/prediction go ahead with the predict_RGB function
 ##+}

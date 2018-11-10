@@ -52,25 +52,29 @@ simple wrapper for 'r.in.lidar' to calculate LiDAR derived raster grids. It crea
 }
 \examples{
 \dontrun{
+require(uavRst)
 # Straightforward approach to generate a DTM based on the class 2 minimum returns of a LiDAR file
-path=setwd(tempdir())
+path<-tempdir()
+setwd(path)
 # get a laz file from Mr. Isenburg
 url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz"
 utils::download.file(url=url,
                      destfile="test.laz",  quiet = TRUE, mode = "wb")
 # convert it to las
-lastool(tool="las2las","test.laz")
+lastool(tool="laz2las",paste0(path,"/test.laz"))
 # extract extension for setting up GRASS region
 ext<-lastool(lasFile =  paste0(path,"/test.las"))
 # set up GRASS
+proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs"
 result<-link2GI::linkGRASS7(spatial_params = c(ext[2],ext[1],ext[4],ext[3],proj4),
-                             resolution = gridsize)
+                             resolution = 0.5)
 # use the r.in.lidar tool to generate a pseudo surface model
 r_in_lidar(input = paste0(getwd(),"/test.las"),
            output = "testdem",
            method = "min",
-           resolution = 10,
+           resolution = 30,
            class_filter = 2)
+raster::plot(raster::raster(rgrass7::readRAST("testdem")),paste0(path,"testdem"), overwrite=TRUE,format="GTiff")
 }
 }
 \seealso{

@@ -6,7 +6,7 @@
 \usage{
 poly_stat(x = NULL, spdf = NULL, count = 1, min = 1, max = 1,
   sum = 1, range = 1, mean = 1, var = 1, stddev = 1,
-  quantile = 10)
+  quantile = 10, giLinks = NULL)
 }
 \arguments{
 \item{x}{list of spatial Raster* object(s)}
@@ -30,6 +30,8 @@ poly_stat(x = NULL, spdf = NULL, count = 1, min = 1, max = 1,
 \item{stddev}{0 1 switch}
 
 \item{quantile}{number of quantile}
+
+\item{giLinks}{list of GI tools cli pathes, default is NULL}
 }
 \description{
 calculate statitiscs of polygon based raster extraction. Returns a spatialpolygon dataframe containing decriptive statistics
@@ -44,14 +46,11 @@ require(link2GI)
 giLinks<-uavRst::linkAll()
 if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
 
-#' # check if SAGA is correctly installed
-if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
-# project folde
+# project folder
 projRootDir<-tempdir()
 
 # create subfolders please mind that the pathes are exported as global variables
-paths<-link2GI::initProj(projRootDir = projRootDir,
-                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+paths<-link2GI::initProj(projRootDir = projRootDir, projFolders = c("run/"),
                          global = TRUE,
                          path_prefix = "path_")
 # overide trailing backslash issue
@@ -63,14 +62,18 @@ utils::download.file(url, paste0(path_run,"tutorial_data.zip"))
 unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
 
 # convert tif to SAGA
-  gdalUtils::gdalwarp(paste0(path_run,"rgb_3-3.tif"),
-                      paste0(path_run,"rgb_3-3.sdat"),
-                      overwrite = TRUE,
-                      of = 'SAGA',
-                      verbose = FALSE)
+gdalUtils::gdal_translate(paste0(path_run,"rgb_3-3_train1.tif"),
+                          paste0(path_run,"rgb_3-3_train1.sdat"),
+                          overwrite = TRUE,
+                          b = 1,
+                          of = 'SAGA',
+                          verbose = FALSE)
 
-polyStat <- poly_stat(paste0(path_run,"rgb_3-3.sgrd"),
-                      spdf = paste0(path_run,"rgb_3-3.shp"))
+polyStat <- poly_stat("rgb_3-3_train1",
+                      spdf = "rgb_3-3_train1.shp",
+                      giLinks=giLinks)
+                      
+mapview::mapview(polyStat)
 }
 ##+}
 

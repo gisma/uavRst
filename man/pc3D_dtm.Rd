@@ -59,9 +59,9 @@ require(uavRst)
 require(link2GI)
 
 # create and check the links to the GI software
-giLinks<-uavRst::linkAll()
-if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
-
+giLinks<-list()
+giLinks$saga<-link2GI::linkSAGA()
+if (giLinks$saga$exist) {
 # proj subfolders
 projRootDir<-tempdir()
 #setwd(paste0(projRootDir,"run"))

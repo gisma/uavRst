@@ -286,22 +286,27 @@ treepos_lidR <- function(chm =NULL,
 #' @examples
 #' \dontrun{
 #'
-#' # required packages
+#' ##- required packages
 #'  require(uavRst)
 #'
-#' # runtime folder
+#' ##- runtime folder
 #'  path_run<-tempdir()
 #'
+#' ##- get the rgb image, chm and training data
 #' # get the rgb image, chm and training data
-#' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
-#'                       paste0(path_run,"chm_3-3.tif"))
+#'  utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
+#'                        paste0(path_run,"chm_3-3.tif"))
 #'
-#' # call ForestTools treepos
-#'  tposFT <- treepos_FT(chm = paste0(path_run,"chm_3-3.tif"),
+#' # read data
+#'  chmR <- raster::raster(paste0(path_run,"chm_3-3.tif"))
+#' 
+#' ##- call ForestTools treepos function
+#'  tposFT <- treepos_FT(chm = chmR,
 #'             minTreeAlt = 2,
 #'             maxCrownArea = 150)
-#' # visualize it
-#' raster::plot(tposFT)
+#'             
+#' ##- visualize it
+#' mapview::mapview(tposFT)
 #' ##+}
 
 

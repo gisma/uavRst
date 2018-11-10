@@ -41,8 +41,9 @@
 #' require(link2GI)
 #'
 #' # create and check the links to the GI software
-#' giLinks<-uavRst::linkAll()
-#' if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
+#' giLinks<-list()
+#' giLinks$grass<-link2GI::linkGRASS7(returnPaths = TRUE)
+#' if (giLinks$grass$exist) {
 #'
 #' # proj subfolders
 #' projRootDir<-tempdir()
@@ -67,6 +68,7 @@
 #'                 targetGridSize = 0.5,
 #'                 giLinks = giLinks)
 #'                 }
+#' mapview::mapview(dtm)
 #' ##+
 
 pc2D_dtm <- function(laspcFile = NULL,

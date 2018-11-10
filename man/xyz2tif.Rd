@@ -16,17 +16,24 @@ Read xyz data and generate a Raster* object.
 }
 \examples{
 \dontrun{
+##- libraries
+require(uavRst)
+
 setwd(tempdir())
-##- get data
+##- get typical xyz DEM data in this case from the Bavarian authority 
 utils::download.file("http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip",
                     "testdata.zip")
 file<- unzip("testdata.zip",list = TRUE)$Name[2]
 unzip("testdata.zip",files = file,  overwrite = TRUE)
 ##- show structure
-head(read.csv(file))
+head(read.table(file))
 ##- create tiff file
 ##- NOTE  for creating a geotiff you have to provide the correct EPSG code from the meta data
 xyz2tif(file,epsgCode = "31468")
+
+##- visualize it
+raster::plot(raster::raster(file))
+
 ##+}
 
 }

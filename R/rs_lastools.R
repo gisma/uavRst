@@ -174,7 +174,7 @@ lastool <- function(  tool="lasinfo",
   if (tool=="laz2las"){
     cat("\n:: converting laz to las..\n")
     # build command
-    command <- las2dem
+    command <- laz2las
     command <- paste0(command, " -i ",lasFile)
     command <- paste0(command," -odir ",outpath)
     command <- paste0(command," -olas")

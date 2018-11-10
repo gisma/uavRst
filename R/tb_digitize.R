@@ -24,7 +24,7 @@
 #' @param opacity opacity
 #'
 #' @examples
-#' 
+#' \dontrun{
 #' require(sp)
 #' 
 #' 
@@ -41,7 +41,7 @@
 #'   
 #' # preset for digitizing extents
 #' uavRst::digitize(preset="ext",overlay = me)
-
+#' }
 #' @export digitize
 
 digitize <- function(mapCenter=NULL,

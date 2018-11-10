@@ -393,6 +393,7 @@ funWhichmax <- function(mask,value) {
 #'@param var    0 1 switch
 #'@param stddev 0 1 switch
 #'@param quantile number of quantile
+#'@param giLinks list of GI tools cli pathes, default is NULL
 #'
 
 #'
@@ -407,15 +408,12 @@ funWhichmax <- function(mask,value) {
 #' # create and check the links to the GI software
 #' giLinks<-uavRst::linkAll()
 #' if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
-#'
-#' #' # check if SAGA is correctly installed
-#'if (length(link2GI::findSAGA()) < 1) stop("No valid SAGA GIS instalation found")
-#' # project folde
+#' 
+#' # project folder
 #' projRootDir<-tempdir()
 #'
 #' # create subfolders please mind that the pathes are exported as global variables
-#' paths<-link2GI::initProj(projRootDir = projRootDir,
-#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
+#' paths<-link2GI::initProj(projRootDir = projRootDir, projFolders = c("run/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
 #' # overide trailing backslash issue
@@ -425,16 +423,20 @@ funWhichmax <- function(mask,value) {
 #' url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 #' utils::download.file(url, paste0(path_run,"tutorial_data.zip"))
 #' unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
-#'
+#' 
 #' # convert tif to SAGA
-#'   gdalUtils::gdalwarp(paste0(path_run,"rgb_3-3.tif"),
-#'                       paste0(path_run,"rgb_3-3.sdat"),
-#'                       overwrite = TRUE,
-#'                       of = 'SAGA',
-#'                       verbose = FALSE)
+#' gdalUtils::gdal_translate(paste0(path_run,"rgb_3-3_train1.tif"),
+#'                           paste0(path_run,"rgb_3-3_train1.sdat"),
+#'                           overwrite = TRUE,
+#'                           b = 1,
+#'                           of = 'SAGA',
+#'                           verbose = FALSE)
 #'
-#' polyStat <- poly_stat(paste0(path_run,"rgb_3-3.sgrd"),
-#'                       spdf = paste0(path_run,"rgb_3-3.shp"))
+#' polyStat <- poly_stat("rgb_3-3_train1",
+#'                       spdf = "rgb_3-3_train1.shp",
+#'                       giLinks=giLinks)
+#'                       
+#' mapview::mapview(polyStat)
 #'}
 #' ##+}
 #'
@@ -448,14 +450,21 @@ poly_stat <- function(x = NULL,
                       mean = 1,
                       var = 1,
                       stddev = 1,
-                      quantile = 10)   {
+                      quantile = 10,
+                      giLinks =NULL )   {
 
   #cat(":: run statistics...\n")
   # calculate chm statistics for each crown
-
-  saga <- link2GI::linkSAGA()
-  sagaCmd<-saga$sagaCmd
-
+  if (is.null(giLinks)){
+    giLinks <- list()
+    giLinks$saga <- link2GI::linkSAGA()
+    giLinks$gdal <- link2GI::linkGDAL()
+  }
+  
+  gdal <- giLinks$gdal
+  saga <- giLinks$saga
+  sagaCmd<-giLinks$saga$sagaCmd
+  
   if (class(spdf)!="character")     {
     rgdal::writeOGR(obj    = spdf,
                     layer  = "spdf",
@@ -482,10 +491,10 @@ poly_stat <- function(x = NULL,
                           " -STDDEV ",stddev,
                           " -QUANTILE ",quantile,
                           " -PARALLELIZED 1",
-                          " -RESULT ",path_run,x[i],"Stat.shp"),
+                          " -RESULT ",path_run,basename(x[i]),"Stat.shp"),
                    intern = TRUE)
 
-    stat1 <- rgdal::readOGR(path_run,paste0(x[i],"Stat"), verbose = FALSE)
+    stat1 <- rgdal::readOGR(path_run,paste0(basename(x[i]),"Stat"), verbose = TRUE)
     names(stat1) <- gsub(names(stat1),pattern = "\\.",replacement = "")
 
     if (i == 1) {

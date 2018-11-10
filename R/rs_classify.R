@@ -334,7 +334,7 @@ predict_rgb <- function(imageFiles=NULL,
 #'                      spaceVar  = "FN",
 #'                      names     = name,
 #'                      pVal      = 0.1,
-#'                      noClu     = 4)
+#'                      noClu     = 1)
 #'
 #' ##- for classification/prediction go ahead with the predict_RGB function
 #' ##+}
@@ -354,7 +354,7 @@ ffs_train<-function(   trainingDF   = NULL,
                        seed         = 100,
                        withinSE     = TRUE,
                        mtry         = 2,
-                       noClu = 3) {
+                       noClu = 1) {
 
   if (is.null(noLoc)) noLoc <- length(unique(trainingDF$FN))
   # create subset according to pval

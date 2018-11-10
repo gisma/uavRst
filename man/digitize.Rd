@@ -56,7 +56,7 @@ digitize is based on the leaflet draw plugin. It provides a bunch of leaflet map
 You can either save the digitized object to a .json file or you may grab the .json string via the clipboard
 }
 \examples{
-
+\dontrun{
 require(sp)
 
 
@@ -73,6 +73,7 @@ uavRst::digitize(overlay = me)
   
 # preset for digitizing extents
 uavRst::digitize(preset="ext",overlay = me)
+}
 }
 \author{
 Chris Reudenbach

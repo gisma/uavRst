@@ -42,9 +42,9 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip",
                       paste0(path_run,"tutorial_data.zip"))
 unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
-
+crown<-raster::shapefile(paste0(path_run,"rgb_3-3_train2.shp"))
 ## calculate polygon morpho metrics
-polymetric <- poly_metrics(spdf = paste0(path_run,"rgb_2.shp"))
+polymetric <- poly_metrics(crown)
 
 # visualize it
 mapview::mapview(polymetric)
