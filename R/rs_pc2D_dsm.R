@@ -169,7 +169,8 @@ rgrass7::execGRASS("r.in.lidar",
                             intern = TRUE,
                             ignore.stderr = FALSE
   )
-    dsm<- raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("dsm",targetGridSize))),paste0(path_run,"dsm1.tif"), overwrite=TRUE,format="GTiff")
+    dsm<- raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("dsm",targetGridSize))),paste0(path_run,"dsm1.tif"),
+                              overwrite=TRUE,format="GTiff")
 
     if (Sys.info()["sysname"] == "Linux"){
   cat(":: filling no data values if so \n")
