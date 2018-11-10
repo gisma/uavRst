@@ -54,7 +54,7 @@
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
-#'
+#'  unlink(paste0(path_run,"*"), force = TRUE)
 #' # get some colors
 #' pal = mapview::mapviewPalette("mapviewTopoColors")
 #'
