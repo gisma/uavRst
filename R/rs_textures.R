@@ -460,6 +460,7 @@ otb_stat<- function(input=NULL,
 #' setwd(tempdir())
 #' 
 #' ## check if OTB exists
+#' giLinks <- list()
 #' giLinks$otb <- link2GI::linkOTB()
 #' 
 #' if (giLinks$otb$exist) {
@@ -670,7 +671,7 @@ morpho_dem<- function(dem,
                     numScale = 2,
                     retRaster = TRUE,
                     giLinks = NULL) {
-  if (!exists("path_run")) path_run = getwd()
+  if (!exists("path_run")) path_run = paste0(getwd(),"/")
   retStack<-list()
   if (is.null(giLinks)){
     giLinks <- linkAll()

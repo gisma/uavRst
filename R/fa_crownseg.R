@@ -88,7 +88,7 @@ chmseg_GWS <- function(treepos = NULL,
                        segmentationBands    = c("chm"),
                        majorityRadius    = 3.000,
                        giLinks = NULL) {
-  if (!exists("path_run")) path_run = getwd()
+  if (!exists("path_run")) path_run = paste0(getwd(),"/")
   proj<- raster::crs(treepos)
   if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
     raster::writeRaster(treepos,file.path(path_run,"treepos.sdat"),overwrite = TRUE,NAflag = 0)
@@ -235,7 +235,7 @@ chmseg_FT <- function(treepos = NULL,
                       minTreeAlt = 2,
                       format = "polygons",
                       verbose = FALSE) {
-  if (!exists("path_run")) path_run = getwd()
+  if (!exists("path_run")) path_run = paste0(getwd(),"/")
   if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
     treepos <- raster::rasterToPoints(treepos,spatial = TRUE)
   } else {
@@ -306,7 +306,7 @@ chmseg_RL <- function(treepos = NULL,
                       chm = NULL,
                       maxCrownArea = 150,
                       exclusion = 0.2) {
-  if (!exists("path_run")) path_run = getwd()
+  if (!exists("path_run")) path_run = paste0(getwd(),"/")
   if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
     treepos <- raster::rasterToPoints(treepos,spatial = TRUE)
   } else {
@@ -395,7 +395,7 @@ chmseg_ITC <- function(chm =NULL,
   # if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
   #   chm <- raster::raster(chm)
   # }
-  if (!exists("path_run")) path_run = getwd()
+  if (!exists("path_run")) path_run = paste0(getwd(),"/")
   maxcrown <- sqrt(maxCrownArea/ pi)*2
 
   crown_polygon <- itcSegment::itcIMG(imagery = chm,

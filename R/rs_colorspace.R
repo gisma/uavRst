@@ -1,11 +1,12 @@
 #' imagemagick based function to transform the RGB color space into another
 #'
 #' @description Imagemagick is used for the calculation of the transformations. Please provide a tif file
-#' @note you need to install imagemagick on your system, please look at see \href{https://www.systutorials.com/qa/1954/how-to-convert-tiff-images-from-rgb-color-cmyk-color-on-linux}{transform RGB colorspace} seealso \href{https://www.imagemagick.org/script/download.php}{imagemagick download section}.
+#' @note you need to install imagemagick on your system, please look at see \href{https://www.imagemagick.org/script/download.php}{imagemagick download section}.
 #'
 #' @param input character. name of a (Geo)Tiff containing RGB data channels
-#' @param colorspace character. argument to determine colorspace see \href{https://www.systutorials.com/qa/1954/how-to-convert-tiff-images-from-rgb-color-cmyk-color-on-linux}{transform RGB colorspace} seealso \href{https://www.imagemagick.org/script/command-line-options.php#colorspace}{colorspace manual}
+#' @param colorspace character. For a list of argument to determine colorspace see \href{https://www.imagemagick.org/script/command-line-options.php#colorspace}{colorspace manual}
 #' @param compress character. compression type depending on the imagemagick version the choices are: None, BZip, Fax, Group4, JPEG, JPEG2000, Lossless, LZW, RLE or Zip.
+#' @param depth numeric. color space depth in bit default is 8 
 #' @param retRaster logical if true a rasterstack is returned
 #' @param verbose be quiet
 #' @export colorspace
@@ -17,32 +18,21 @@
 #' \dontrun{
 #'
 #' ##- required packages
-#'  require(uavRst)
-#'  require(link2GI)
+#' require(uavRst)
+#' setwd(tempdir())
+#' data("pacman")
+#' red<- trunc(pacman * 0.5)
+#' green<- trunc(pacman * 0.8)
+#' blue<- trunc(pacman * 0.1)
+#' b <- raster::brick(pacman)
+#' names(b)<-c("red","green","blue")
+#' raster::writeRaster(b,"pacman2.tif",overwrite=TRUE)
 #'
-#' ##- project folder
-#' projRootDir<-tempdir()
-#'
-#' ##- create subfolders please mind that the pathes are exported as global variables
-#'  paths<-link2GI::initProj(projRootDir = projRootDir,
-#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
-#'                          global = TRUE,
-#'                          path_prefix = "path_")
-#' ##- overide trailing backslash issue
-#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  setwd(path_run)
-#'  unlink(paste0(path_run,"*"), force = TRUE)
-#'
-#' ##- download tutorial data
-#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
-#'                      destfile="testdata.zip")
-#' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
-#'
-#' ##- change colorspace from RGB to CIElab
-#'  r2 <- colorspace(input=paste0("4490600_5321400.tif"),colorspace="CIELab")
+#' ##- change colorspace from RGB to HSI
+#'  r2 <- colorspace(input=paste0("pacman2.tif"),colorspace="HSI")
 #'
 #' ##- visualize it
-#' mapview::mapview(r2)
+#' raster::plotRGB(r2)
 #' ##+}
 
 
@@ -51,10 +41,10 @@
 colorspace<- function(input=NULL,
                       colorspace =c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
                       compress="None",
+                      depth = 8,
                       verbose=FALSE,
                       retRaster=TRUE){
-
-
+  if (!exists("path_run")) path_run = paste0(getwd(),"/")
 
   #convert 2017_05_20_RGB_DEFS17_16_OrthoMosaic.tif -colorspace cmyk -compress LZW to.tif
 
@@ -67,6 +57,7 @@ colorspace<- function(input=NULL,
     command<-paste(command, input)
     command<-paste(command, " -colorspace ", colMod)
     command<-paste(command, " -compress ",compress)
+    command<-paste(command, " -depth ", depth)
     command<-paste(command,  outName)
 
     if (verbose) {
@@ -75,11 +66,13 @@ colorspace<- function(input=NULL,
     else{
       ret<-system(command,intern = TRUE,ignore.stdout = TRUE,ignore.stderr = TRUE)}
 
-    ex<-raster::extent(raster::raster(input))
+    
     pr<-raster::crs(raster::projection(raster::raster(input)))
-    r2<-raster::raster(outName)
+    if (is.na(pr@projargs)) {
+    ex<-raster::extent(raster::raster(input))  
+    r2<-raster::stack(outName)
     raster::projection(r2) <- pr
-    raster::extent(r2) <-ex
+    raster::extent(r2) <-ex}
     if (retRaster) retStack[[paste0(tools::file_path_sans_ext(basename(outName)))]]<-assign(paste0(tools::file_path_sans_ext(basename(outName))),r2)
   }
   return(retStack[[1]])
