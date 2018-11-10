@@ -20,19 +20,24 @@
 #' ##- required packages
 #' require(uavRst)
 #' setwd(tempdir())
-#' data("pacman")
-#' red<- trunc(pacman * 0.5)
-#' green<- trunc(pacman * 0.8)
-#' blue<- trunc(pacman * 0.1)
-#' b <- raster::brick(pacman)
-#' names(b)<-c("red","green","blue")
-#' raster::writeRaster(b,"pacman2.tif",overwrite=TRUE)
-#'
+#' ##- set locale
+#' tmp<-Sys.setlocale('LC_ALL','C')
+#' ##- get some typical data as provided by the authority
+#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
+#'                      destfile="testdata.zip")
+#' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
+
+#' ##- original color space
+#' raster::plotRGB(raster::stack("4490600_5321400.tif"))
+
 #' ##- change colorspace from RGB to HSI
-#'  r2 <- colorspace(input=paste0("pacman2.tif"),colorspace="HSI")
-#'
+#' r2 <- colorspace(input="4490600_5321400.tif",colorspace="HSI")
+#' 
 #' ##- visualize it
 #' raster::plotRGB(r2)
+#' 
+#' ##- reset locale
+#' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.-8")
 #' ##+}
 
 
@@ -68,11 +73,14 @@ colorspace<- function(input=NULL,
 
     
     pr<-raster::crs(raster::projection(raster::raster(input)))
-    if (is.na(pr@projargs)) {
+    if (!is.na(pr@projargs)) {
     ex<-raster::extent(raster::raster(input))  
     r2<-raster::stack(outName)
     raster::projection(r2) <- pr
     raster::extent(r2) <-ex}
+    else {
+    r2<-raster::stack(outName)
+    }
     if (retRaster) retStack[[paste0(tools::file_path_sans_ext(basename(outName)))]]<-assign(paste0(tools::file_path_sans_ext(basename(outName))),r2)
   }
   return(retStack[[1]])
