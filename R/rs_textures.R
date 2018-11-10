@@ -844,7 +844,7 @@ getOutputDir<- function (outDir){
 #'require(mapview)
 #'require(link2GI)
 #'projRootDir<-tempdir()
-#'
+#'unlink(paste0(projRootDir,"*"), force = TRUE)
 #'##- create subfolders please mind that the pathes are exported as global variables
 #'
 #'paths<-link2GI::initProj(projRootDir = projRootDir,
@@ -854,7 +854,6 @@ getOutputDir<- function (outDir){
 #'##- overide trailing backslash issue
 #'path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #'setwd(path_run)
-#'unlink(paste0(path_run,"*"), force = TRUE)
 #'
 #'##- get the tutorial data
 #'utils::download.file(url = "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",

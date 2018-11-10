@@ -42,13 +42,14 @@
 #' if (giLinks$saga$exist) {
 #'# proj subfolders
 #'projRootDir<-tempdir()
-#'#setwd(paste0(projRootDir,"run"))
+#'unlink(paste0(projRootDir,"*"), force = TRUE)
+
 #'projsubFolders<-c("data/","data/ref/","output/","run/","las/")
 #'paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                         projFolders = projsubFolders,
 #'                         global = TRUE,
 #'                         path_prefix = "path_")
-#'
+#'setwd(paste0(projRootDir,"run"))
 #'# get some colors
 #'pal = mapview::mapviewPalette("mapviewTopoColors")
 #'
@@ -146,7 +147,6 @@ pc3D_dtm <- function(lasDir = NULL,
   # set lastool folder
   pathLastools <- path.expand(pathLastools)
 
-  #unlink(paste0(path_run,"*"), force = TRUE)
 
   setwd(path_run)
 

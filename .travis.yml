@@ -8,6 +8,10 @@ r_packages:
   - V8
   - ForestTools
   
+bioc_packages:
+  - BiocGenerics
+  - Biobase
+  
 r_github_packages:
   - r-spatial/link2GI
   

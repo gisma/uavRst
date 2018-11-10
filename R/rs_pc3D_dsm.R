@@ -54,13 +54,14 @@ if (!isGeneric('pc3D_dsm')) {
 #'{
 #'# proj subfolders
 #'projRootDir<-tempdir()
-#'#setwd(paste0(projRootDir,"run"))
+#'unlink(paste0(projRootDir,"*"), force = TRUE)
+#'
 #'projsubFolders<-c("data/","data/ref/","output/","run/","las/")
 #'paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                         projFolders = projsubFolders,
 #'                         global = TRUE,
 #'                         path_prefix = "path_")
-#'
+#'setwd(paste0(projRootDir,"run"))
 #'# get some colors
 #'pal = mapview::mapviewPalette("mapviewTopoColors")
 #'
@@ -152,7 +153,7 @@ pc3D_dsm <- function(lasDir = NULL,
   lasinfo       <- paste(cmd,"lasinfo.exe",sep = "/")
   las2dem       <- paste(cmd,"las2dem.exe",sep = "/")
   # delete content in run directory
-  #unlink(paste0(path_run,"*"), force = TRUE)
+
 
   # some basic checks
 

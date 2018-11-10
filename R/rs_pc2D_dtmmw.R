@@ -48,6 +48,7 @@
 #'
 #' # proj subfolders
 #' projRootDir<-getwd()
+
 #' #setwd(paste0(projRootDir,"run"))
 #'
 #' paths<-link2GI::initProj(projRootDir = projRootDir,
