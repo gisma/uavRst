@@ -53,17 +53,17 @@ digitize(mapCenter = NULL, zoom = 15, line = TRUE,
 digitize is based on the leaflet draw plugin. It provides a bunch of leaflet maps as base layers for digitizing vector features.
 }
 \note{
-You can either save the digitized object to a .json file or you may grab the .json string via the clipboard
+You can either save the digitized object to a \code{JSON} or \code{KML} file to your hard disk. As an alternative you may grab the \code{JSON} string via the clipboard.
 }
 \examples{
 \dontrun{
+##- libs
 require(sp)
 
-
-# all features
+##- all features
 digitize()
 
-# preset for digitizing uav flight areas in Meuse
+##- preset for digitizing uav flight areas in Meuse
 require(sp)
 data(meuse) 
 coordinates(meuse) <- ~x+y 
@@ -71,8 +71,9 @@ proj4string(meuse) <-CRS("+init=epsg:28992")
 me<-sp::spTransform(meuse,CRSobj = sp::CRS("+init=epsg:4326"))
 uavRst::digitize(overlay = me)
   
-# preset for digitizing extents
+##- preset for digitizing extents
 uavRst::digitize(preset="ext",overlay = me)
+
 }
 }
 \author{

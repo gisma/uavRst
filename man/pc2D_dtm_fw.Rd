@@ -72,14 +72,16 @@ utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/d
 destfile=paste0(path_run,"lasdata.las"))
 
 # create 2D point cloud DTM
-dtm <- pc2D_dtm_fw_fw(laspcFile = paste0(path_run,"lasdata.las"),
+dtm <- pc2D_dtm_fw(laspcFile = paste0(path_run,"lasdata.las"),
                 gisdbasePath = projRootDir,
                 tension = 20 ,
                 sampleGridSize = 25,
                 targetGridSize = 0.5,
                 giLinks = giLinks)
+                
+mapview::mapview(dtm)                 
                 }
-mapview::mapview(dtm)
+
 ##+
 }
 \author{
