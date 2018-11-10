@@ -12,7 +12,7 @@ r_github_packages:
   - r-spatial/link2GI
   
 r_build_args: "--no-build-vignettes"
-r_check_args: "--no-build-vignettes --as-cran"
+r_check_args: "--no-build-vignettes --as-cran --run-dontrun  --timings "
 
 addons:
   apt:

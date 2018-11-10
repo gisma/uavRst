@@ -39,6 +39,7 @@ Calculates edges for a given kernel size. return list of geotiffs containing the
 the otb is used for filtering. please provide a GeoTiff file
 }
 \examples{
+\dontrun{
 ##- required packages
 require(uavRst)
 require(link2GI)
@@ -64,7 +65,7 @@ r<-otbtex_gray(input="pacman.tif",
 ##- visualize all layers
 raster::plot(r[[1]])
 }
-
+}
 }
 \author{
 Chris Reudenbach

@@ -453,7 +453,7 @@ otb_stat<- function(input=NULL,
 #' @author Chris Reudenbach
 #' @export otbtex_edge
 #' @examples
-
+#'\dontrun{
 #' ##- required packages
 #' require(uavRst)
 #' require(link2GI)
@@ -479,7 +479,7 @@ otb_stat<- function(input=NULL,
 #' ##- visualize all layers
 #' raster::plot(r[[1]])
 #' }
-#' 
+#' }
 
 
 otbtex_edge<- function(input=NULL,
@@ -556,6 +556,7 @@ otbtex_edge<- function(input=NULL,
 #' require(link2GI)
 #' setwd(tempdir())
 #' ## check if OTB exists
+#' giLinks<-list()
 #' giLinks$otb <- link2GI::linkOTB()
 #' 
 #' if (giLinks$otb$exist) {

@@ -45,6 +45,7 @@ require(uavRst)
 require(link2GI)
 setwd(tempdir())
 ## check if OTB exists
+giLinks<-list()
 giLinks$otb <- link2GI::linkOTB()
 
 if (giLinks$otb$exist) {
