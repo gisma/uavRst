@@ -1,7 +1,8 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r
-
+cache: packages
 warnings_are_errors: false
+bundler_args: --retry 7
 
 r_packages:
   - ncdf4
