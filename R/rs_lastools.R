@@ -25,7 +25,7 @@
 #'@param verbose keep it quiet
 #'@param cutExtent NULL
 #'@param cutSlice NULL
-
+#' @importFrom stringr str_trim
 #'
 #'
 #'@export

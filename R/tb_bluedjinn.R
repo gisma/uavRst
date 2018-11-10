@@ -215,7 +215,6 @@ line_maxpos <- function(dem,line){
 #' @param polySplit split polygon in single file, default is TRUE
 #' extract for all polygons the position of the maximum value
 #' @keywords internal
-#' @importFrom gdalUtils ogr2ogr
 #' @export poly_maxpos
 #'
 poly_maxpos <- function(fileName,layerName, polySplit=TRUE){

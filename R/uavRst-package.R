@@ -25,7 +25,14 @@
 #' \cr
 #' \emph{Maintainer:} Chris Reudenbach \email{reudenbach@@uni-marburg.de}
 #'
-#' @import stringr zoo foreach sp raster htmlwidgets htmltools Rcpp rgeos rgdal tools maptools doParallel velox CAST 
+#' @import sp raster Rcpp rgeos rgdal tools doParallel CAST 
+#' @import velox
+#' @importFrom htmltools htmlDependency
+#' @importFrom htmlwidgets sizingPolicy
+#' @importFrom htmlwidgets createWidget
+#' @importFrom htmlwidgets shinyWidgetOutput
+#' @importFrom htmlwidgets shinyRenderWidget
+#' @importFrom foreach foreach
 #' @importFrom gdalUtils ogr2ogr
 #' @importFrom gdalUtils gdal_translate
 #' @importFrom gdalUtils gdalwarp

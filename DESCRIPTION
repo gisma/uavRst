@@ -28,7 +28,6 @@ Imports:
     rgeos,
     gdalUtils,
     tools,
-    maptools,
     caret,
     zoo,
     data.table,
