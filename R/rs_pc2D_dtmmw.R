@@ -1,5 +1,5 @@
 
-#' Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling
+#' Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling (moving window)
 #'
 #'@description
 #' Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval. Due to the poor estimation of ground points
@@ -72,7 +72,7 @@
 #'  raster::plot(dtm)
 #'}
 #'##+
-pc2D_dtmmw <- function(laspcFile = NULL,
+pc2D_dtm <- function(laspcFile = NULL,
                        gisdbasePath = projRootDir,
                        grassVersion=1,
                        searchPath =NULL,

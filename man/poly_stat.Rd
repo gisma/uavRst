@@ -2,7 +2,7 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{poly_stat}
 \alias{poly_stat}
-\title{Calculate decriptive raster statistics of mask polygons}
+\title{Calculate descriptive statistics of raster as segemented by polygons}
 \usage{
 poly_stat(x = NULL, spdf = NULL, count = 1, min = 1, max = 1,
   sum = 1, range = 1, mean = 1, var = 1, stddev = 1,

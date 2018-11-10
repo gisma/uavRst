@@ -1,5 +1,5 @@
 
-#' Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling
+#' Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling (fix window)
 #'
 #'@description
 #' Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval. Due to the poor estimation of ground points
@@ -32,7 +32,7 @@
 #' @importFrom gdalUtils gdal_translate
 #' @importFrom gdalUtils gdalwarp
 #' @importFrom gdalUtils gdalinfo
-#'@export pc2D_dtm
+#'@export pc2D_dtm_fw
 
 #'@examples
 
@@ -61,7 +61,7 @@
 #' destfile=paste0(path_run,"lasdata.las"))
 #'
 #' # create 2D point cloud DTM
-#' dtm <- pc2D_dtm(laspcFile = paste0(path_run,"lasdata.las"),
+#' dtm <- pc2D_dtm_fw_fw(laspcFile = paste0(path_run,"lasdata.las"),
 #'                 gisdbasePath = projRootDir,
 #'                 tension = 20 ,
 #'                 sampleGridSize = 25,
@@ -71,7 +71,7 @@
 #' mapview::mapview(dtm)
 #' ##+
 
-pc2D_dtm <- function(laspcFile = NULL,
+pc2D_dtm_fw <- function(laspcFile = NULL,
                      grassVersion=1,
                      searchPath =NULL,
                     gisdbasePath = NULL,
@@ -153,7 +153,7 @@ pc2D_dtm <- function(laspcFile = NULL,
   sp_param[5] <- proj4
 
   link2GI::linkGRASS7(gisdbase = gisdbasePath,
-                      location = "pc2D_dtm",
+                      location = "pc2D_dtm_fw",
                       spatial_params = sp_param,
                       resolution = sampleGridSize,
                       returnPaths = FALSE,

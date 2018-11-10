@@ -248,7 +248,7 @@ poly_maxpos <- function(fileName,layerName, polySplit=TRUE){
                          where = paste0("NAME='",rn,"'")
                          , nln = rn)
     },
-    mc.cores = parallel::detectCores())
+    mc.cores = parallel::detectCores()-1)
   }
 
     # parallel retrival of maxpos
@@ -284,7 +284,7 @@ poly_maxpos <- function(fileName,layerName, polySplit=TRUE){
     system(paste0("rm -rf ",paste0(path_tmp,rn)))
 
 
-    return(df)},    mc.cores = parallel::detectCores()
+    return(df)},    mc.cores = parallel::detectCores()-1
   )
 
   # create a spatial point data frame
@@ -382,7 +382,7 @@ funWhichmax <- function(mask,value) {
 
 
 
-#' Calculate decriptive raster statistics of mask polygons
+#' Calculate descriptive statistics of raster as segemented by polygons 
 #'
 #'@description
 #' calculate statitiscs of polygon based raster extraction. Returns a spatialpolygon dataframe containing decriptive statistics
