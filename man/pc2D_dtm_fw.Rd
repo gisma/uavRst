@@ -46,44 +46,6 @@ Create a Digital Terrain Model from a high density point cloud as typically deri
 a minimum samopling approach is applied. It retrieves on a coarse sampling gridsize the minimum value and interpolates on these samples a surface grid with a higher target
 resolution. this is a kind of an try and error process and provides fairly good results if the point cloud shows at least some real surface points on a not to coarse grid.
 }
-\examples{
-## ## ##
-require(uavRst)
-require(link2GI)
-
-# create and check the links to the GI software
-giLinks<-list()
-giLinks$grass<-link2GI::linkGRASS7(returnPaths = TRUE)
-if (giLinks$grass$exist) {
-
-# proj subfolders
-projRootDir<-tempdir()
-unlink(paste0(projRootDir,"*"), force = TRUE)
-paths<-link2GI::initProj(projRootDir = projRootDir,
-                         projFolders = c("data/","data/ref/","output/","run/","las/"),
-                         global = TRUE,
-                         path_prefix = "path_")
- 
-# get some colors
-pal = mapview::mapviewPalette("mapviewTopoColors")
-
-# get the data
-utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
-destfile=paste0(path_run,"lasdata.las"))
-
-# create 2D point cloud DTM
-dtm <- pc2D_dtm_fw(laspcFile = paste0(path_run,"lasdata.las"),
-                gisdbasePath = projRootDir,
-                tension = 20 ,
-                sampleGridSize = 25,
-                targetGridSize = 0.5,
-                giLinks = giLinks)
-                
-mapview::mapview(dtm)                 
-                }
-
-##+
-}
 \author{
 Chris Reudenbach
 }

@@ -36,6 +36,7 @@ calculates most important DEM parameters
 please provide a GeoTiff file
 }
 \examples{
+\dontrun{
 ##- required packages
 require(uavRst)
 require(link2GI)
@@ -44,17 +45,19 @@ giLinks<-list()
 ## check if OTB exists
 giLinks$otb <- link2GI::linkOTB()
 giLinks$saga <- link2GI::linkSAGA()
-
-if (giLinks$otb$exist & giLinks$saga$exist) {
+giLinks$grass <- link2GI::linkGRASS7(returnPaths = TRUE)
+if (giLinks$otb$exist & giLinks$saga$exist & giLinks$grass$exist) {
 data("mrbiko")
 proj = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
 mrbiko <- raster::projectRaster(mrbiko, crs = proj,method = "ngb",res = 20)
 raster::writeRaster(mrbiko,"dem.tif",overwrite=TRUE)
 r<-morpho_dem(dem="dem.tif",c("hillshade", "slope", "aspect", "TRI", "TPI",
                               "Roughness", "SLOPE", "ASPECT",  "C_GENE", "C_PROF",
-                              "C_PLAN", " C_TANG"," C_LONG", "C_CROS"))
+                              "C_PLAN", " C_TANG"," C_LONG", "C_CROS"),
+                              giLinks= giLinks)
 r_st=raster::stack(r)
 names(r_st)=names(r)
 raster::plot(r_st)
+}
 }
 }

@@ -67,10 +67,10 @@ if (!isGeneric('pc3D_dsm')) {
 #'
 #'# get the data
 #'utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
-#'                     destfile=paste0(path_run,"lasdata.las"))
+#'                     destfile="lasdata.las")
 #'
 #'# create a DSM  based on a uav point cloud
-#'pc3DSM<-pc3D_dsm(lasDir =  paste0(path_run,"lasdata.las"),
+#'pc3DSM<-pc3D_dsm(lasDir =  "lasdata.las",
 #'         gisdbasePath = projRootDir,
 #'         projsubFolders = projsubFolders,
 #'         gridSize = "0.5",

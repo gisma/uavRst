@@ -36,7 +36,7 @@
 
 #'@examples
 
-#'## ## ##
+#'\dontrun
 #' require(uavRst)
 #' require(link2GI)
 #'
@@ -58,10 +58,10 @@
 #'
 #' # get the data
 #' utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
-#' destfile=paste0(path_run,"lasdata.las"))
+#' destfile=paste0("lasdata.las"))
 #'
 #' # create 2D point cloud DTM
-#' dtm <- pc2D_dtm_fw(laspcFile = paste0(path_run,"lasdata.las"),
+#' dtm <- pc2D_dtm_fw(laspcFile = "lasdata.las",
 #'                 gisdbasePath = projRootDir,
 #'                 tension = 20 ,
 #'                 sampleGridSize = 25,
@@ -71,7 +71,7 @@
 #' mapview::mapview(dtm)                 
 #'                 }
 #' 
-#' ##+
+#' }
 
 pc2D_dtm_fw <- function(laspcFile = NULL,
                         grassVersion=1,

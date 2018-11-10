@@ -73,11 +73,11 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 pal = mapview::mapviewPalette("mapviewTopoColors")
 
 # get the data
-url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las"
-utils::download.file(url, "run/lasdata.las")
+utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
+destfile="lasdata.las")
 
 # create 2D point cloud DTM
-dtm <- pc2D_dtm(laspcFile = paste0(path_run,"lasdata.las"),
+dtm <- pc2D_dtm(laspcFile = "lasdata.las",
                 gisdbasePath = projRootDir,
                 tension = 20 ,
                 sampleGridSize = 25,

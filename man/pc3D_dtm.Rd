@@ -76,10 +76,10 @@ pal = mapview::mapviewPalette("mapviewTopoColors")
 
 # get the data
 utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
-                    destfile=paste0(path_run,"lasdata.las"))
+                    destfile="lasdata.las")
 
 # create a DSM  based on a uav point cloud
-pc3DTM <- pc3D_dtm(lasDir =  paste0(path_run,"lasdata.las"),
+pc3DTM <- pc3D_dtm(lasDir =  "lasdata.las",
                       gisdbasePath = projRootDir,
                       projsubFolders = projsubFolders,
                       thinGrid = 1.,

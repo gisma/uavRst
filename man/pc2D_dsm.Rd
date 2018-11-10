@@ -41,7 +41,7 @@ optical UAV retrieval. It simply samples the maximum or whatever values of a giv
 grid size and fills the no data holes if so.
 }
 \examples{
-## ## ##
+\dontrun{                                                                                                                                                                        
 require(uavRst)
 require(link2GI)
 
@@ -62,17 +62,17 @@ pal = mapview::mapviewPalette("mapviewTopoColors")
 
 # get the data
 utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
-destfile=paste0(path_run,"lasdata.las"))
+destfile="lasdata.las")
 
 # create 2D pointcloud DSM
-dsm <- pc2D_dsm(laspcFile = paste0(path_run,"lasdata.las"),
+dsm <- pc2D_dsm(laspcFile = "lasdata.las",
                 gisdbasePath = projRootDir,
                 sampleMethod = "max",
                 targetGridSize = 0.5,
                 giLinks = giLinks)
                 }
  raster::plot(dsm)
-##+
+}
 }
 \author{
 Chris Reudenbach
