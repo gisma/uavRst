@@ -22,6 +22,7 @@
 #'@param segmentationBands    character. a list of raster data that is used for the segmentation. The canopy height model \code{c("chm")} is mandantory. see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
 #'@param giLinks        list. of GI tools cli paths
 #'@param majorityRadius numeric. kernel size for the majority filter out spurious pixel
+#'@param parallel running parallel or not default = 1
 #'@export
 #'@examples
 #' \dontrun{
@@ -87,6 +88,7 @@ chmseg_GWS <- function(treepos = NULL,
                        thSimilarity   = 0.002,
                        segmentationBands    = c("chm"),
                        majorityRadius    = 3.000,
+                       parallel = 1,
                        giLinks = NULL) {
   if (!exists("path_run")) path_run = paste0(getwd(),"/")
   proj<- raster::crs(treepos)
@@ -162,10 +164,11 @@ chmseg_GWS <- function(treepos = NULL,
   crowns <- rgdal::readOGR(path_run,"crowns", verbose = FALSE)
   #crowns<-tree_crowns[tree_crowns$VALUE > 0,]
   sp::proj4string(crowns)<-proj
-
+  
+  
   # extract chm stats by potential crown segments
   statRawCrowns <- uavRst::poly_stat(c("chm"),
-                                     spdf = crowns)
+                                     spdf = crowns,parallel = parallel)
 
   rgdal::writeOGR(obj = statRawCrowns,
                   dsn = path_run,

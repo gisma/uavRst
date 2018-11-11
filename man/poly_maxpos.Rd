@@ -4,7 +4,7 @@
 \alias{poly_maxpos}
 \title{extract for all polygons the position of the maximum value of the applied raster(s).}
 \usage{
-poly_maxpos(fileName, layerName, polySplit = TRUE)
+poly_maxpos(fileName, layerName, polySplit = TRUE, cores = 1)
 }
 \arguments{
 \item{fileName}{path and name of a GDAL raster file}
@@ -13,6 +13,8 @@ poly_maxpos(fileName, layerName, polySplit = TRUE)
 
 \item{polySplit}{split polygon in single file, default is TRUE
 extract for all polygons the position of the maximum value}
+
+\item{cores}{number of cores used}
 }
 \description{
 extract for all polygons the position of the maximum value

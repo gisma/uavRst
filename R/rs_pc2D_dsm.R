@@ -30,7 +30,7 @@
 
 #'@examples
 
-#'\dontrun{                                                                                                                                                                        
+#'\dontrun{
 #' require(uavRst)
 #' require(link2GI)
 #'

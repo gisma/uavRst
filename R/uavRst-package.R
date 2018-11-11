@@ -32,7 +32,7 @@
 #' @importFrom htmlwidgets createWidget
 #' @importFrom htmlwidgets shinyWidgetOutput
 #' @importFrom htmlwidgets shinyRenderWidget
-#' @importFrom foreach foreach
+#' @import foreach 
 #' @importFrom gdalUtils ogr2ogr
 #' @importFrom gdalUtils gdal_translate
 #' @importFrom gdalUtils gdalwarp

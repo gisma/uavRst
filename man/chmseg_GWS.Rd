@@ -8,7 +8,8 @@ chmseg_GWS(treepos = NULL, chm = NULL, minTreeAlt = 2,
   minTreeAltParam = "chmQ20", maxCrownArea = 100, leafsize = 256,
   normalize = 0, neighbour = 1, method = 0, thVarFeature = 1,
   thVarSpatial = 1, thSimilarity = 0.002,
-  segmentationBands = c("chm"), majorityRadius = 3, giLinks = NULL)
+  segmentationBands = c("chm"), majorityRadius = 3, parallel = 1,
+  giLinks = NULL)
 }
 \arguments{
 \item{treepos}{raster* object}
@@ -40,6 +41,8 @@ height of \code{treepos}.}
 \item{segmentationBands}{character. a list of raster data that is used for the segmentation. The canopy height model \code{c("chm")} is mandantory. see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}}
 
 \item{majorityRadius}{numeric. kernel size for the majority filter out spurious pixel}
+
+\item{parallel}{running parallel or not default = 1}
 
 \item{giLinks}{list. of GI tools cli paths}
 }

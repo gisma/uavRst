@@ -6,7 +6,7 @@
 \usage{
 treepos_GWS(chm = NULL, minTreeAlt = 10, minTreeAltParam = "chmQ20",
   minCrownArea = 3, maxCrownArea = 150, join = 1, thresh = 0.1,
-  giLinks = NULL)
+  split = TRUE, cores = parallel::detectCores(), giLinks = NULL)
 }
 \arguments{
 \item{chm}{raster* canopy height model}
@@ -23,13 +23,17 @@ treepos_GWS(chm = NULL, minTreeAlt = 10, minTreeAltParam = "chmQ20",
 
 \item{thresh}{numeric. Specify a threshold value as minimum difference between neighboured segments in meter. see also \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_0.html}{SAGA GIS Help}}
 
+\item{split}{split polygons default is TRUE}
+
+\item{cores}{number of cores to be used}
+
 \item{giLinks}{list. of GI tools cli paths}
 }
 \description{
 Find potential tree positions using a canopy height model by using an iterative watershed algorithm. Basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices.
 }
 \examples{
-## ## ##
+\dontrun{
 
 # required packages
 require(uavRst)
@@ -61,9 +65,11 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          maxCrownArea = 150,
                          join = 1,
                          thresh = 0.35,
+                         split=TRUE,
+                         cores=1,
                          giLinks = giLinks )
 }
-##+
+##+}
 
 }
 \author{

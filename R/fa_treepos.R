@@ -18,13 +18,15 @@ if (!isGeneric('treepos')) {
 #'@param maxCrownArea    numeric. maximum area in square meter (if you use projected data) of the projected tree crowns
 #'@param join        numeric. Join Segments based on Threshold Value, 0=no join, 1=treepos_GWS2saddle diff, 2=treepos_GWS2treepos diff. see also \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_0.html}{SAGA GIS Help}
 #'@param thresh      numeric. Specify a threshold value as minimum difference between neighboured segments in meter. see also \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_0.html}{SAGA GIS Help}
+#'@param split split polygons default is TRUE
+#'@param cores number of cores to be used
 #'@param giLinks        list. of GI tools cli paths
 
 #'
 #'
 #'@export treepos_GWS
 #'@examples
-#'## ## ##
+#'\dontrun{
 #'
 #' # required packages
 #' require(uavRst)
@@ -56,9 +58,11 @@ if (!isGeneric('treepos')) {
 #'                          maxCrownArea = 150,
 #'                          join = 1,
 #'                          thresh = 0.35,
+#'                          split=TRUE,
+#'                          cores=1,
 #'                          giLinks = giLinks )
 #'}
-#'##+
+#'##+}
 #'
 treepos_GWS <- function(chm = NULL,
                                   minTreeAlt       = 10,
@@ -67,6 +71,8 @@ treepos_GWS <- function(chm = NULL,
                                   maxCrownArea     = 150,
                                   join        = 1,     # 0=no join, 1=treepos2saddle diff, 2=treepos2treepos diff
                                   thresh      = 0.10,  # threshold for join difference in m
+                                  split = TRUE,
+                                  cores = parallel::detectCores(),
                                   giLinks = NULL
 
 )  {
@@ -110,7 +116,9 @@ treepos_GWS <- function(chm = NULL,
 
     #
     cat(":: find max height position...\n")
-    dummycrownsStat <- uavRst::poly_stat(c("chm"), spdf =paste0(path_run,"dummyCrownSegment.shp"))
+    if (cores<2) para<-0
+    else para = 1
+    dummycrownsStat <- uavRst::poly_stat(c("chm"), spdf =paste0(path_run,"dummyCrownSegment.shp"),parallel = para)
 
     trees_crowns <- crown_filter(crownFn = dummycrownsStat,
                                             minTreeAlt = minTreeAlt,
@@ -125,7 +133,7 @@ treepos_GWS <- function(chm = NULL,
                     overwrite_layer = TRUE)
 
     cat(":: find max height position...\n")
-    ts <-  poly_maxpos(paste0(path_run,"chm.tif"),paste0(path_run,"dummyCrownSegment"),polySplit = TRUE)
+    ts <-  poly_maxpos(paste0(path_run,"chm.tif"),paste0(path_run,"dummyCrownSegment"),polySplit = split,cores = cores)
     # create raw zero mask ts[[1]] = seeds ts[[2]] = maxpos
     treepos <- ts[[1]] * chm
     raster::writeRaster(treepos,paste0(path_run,"treepos0.sdat"),overwrite = TRUE,NAflag = 0)

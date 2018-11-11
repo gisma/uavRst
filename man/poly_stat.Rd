@@ -6,7 +6,7 @@
 \usage{
 poly_stat(x = NULL, spdf = NULL, count = 1, min = 1, max = 1,
   sum = 1, range = 1, mean = 1, var = 1, stddev = 1,
-  quantile = 10, giLinks = NULL)
+  quantile = 10, parallel = 1, giLinks = NULL)
 }
 \arguments{
 \item{x}{list of spatial Raster* object(s)}
@@ -30,6 +30,8 @@ poly_stat(x = NULL, spdf = NULL, count = 1, min = 1, max = 1,
 \item{stddev}{0 1 switch}
 
 \item{quantile}{number of quantile}
+
+\item{parallel}{run it parallel default is 1}
 
 \item{giLinks}{list of GI tools cli pathes, default is NULL}
 }

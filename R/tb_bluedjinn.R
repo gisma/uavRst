@@ -137,55 +137,6 @@ h_comp_ll_proj4 <- function(x) {
 
 
 
-#  Create spatiallineobject from 2 points.
-
-#' Create an spatiallineobject from 2 points
-#' @description
-#' create an spatiallineobject from 2 points, optional export as shapefile
-#' @param startPoint coordinate of first point (c(50.1,8.1))
-#' @param endPoint vector. coordinate of second point c(50.2,8.0)
-#' @param proj4 proj4 string
-#' @param ID id of line
-#' @param export write shafefile default = F
-#' @author Chris Reudenbach
-#' @export
-#' @keywords internal
-sp_line <- function(startPoint,endPoint,ID,
-                    proj4="+proj=longlat +datum=WGS84 +no_defs",
-                    export=FALSE) {
-  line <- SpatialLines(list(Lines(Line(cbind(startPoint,endPoint)), ID = ID)))
-  sp::proj4string(line) <- CRS(proj4)
-  if (export) {
-    writeLinesShape(line,paste0(ID,"home.shp"))
-  }
-  return(line)
-}
-#
-#' create an spatialpointobject from 1 points.
-#' @description
-#' create an spatialpointobject from 1 points, optional export as shapefile
-#' #@author Chris Reudenbach
-#' @param lat numeric. ie latitude of point
-#' @param lon numeric. .i longitude of point
-#' @param ID name of point
-#' @param proj4 proj4 string
-#' @param export write shafefile default = F
-#' @export
-#' @keywords internal
-sp_point <- function(lon,
-                     lat,
-                     ID="point",
-                     proj4="+proj=longlat +datum=WGS84 +no_defs",
-                     export=FALSE) {
-  point = cbind(lon,lat)
-  point = sp::SpatialPoints(point)
-  point = SpatialPointsDataFrame(point, as.data.frame(ID))
-  sp::proj4string(point) <- CRS(proj4)
-  if (export) {
-    writeLinesShape(ID,paste0(ID,".shp"))
-  }
-  return(point)
-}
 
 #' applies a line to a raster and returns the position of the maximum value.
 #' @description applies a line to a raster and returns the position of the maximum value
@@ -214,10 +165,11 @@ line_maxpos <- function(dem,line){
 #' @param layerName layer name of shape file
 #' @param polySplit split polygon in single file, default is TRUE
 #' extract for all polygons the position of the maximum value
+#' @param cores number of cores used
 #' @keywords internal
 #' @export poly_maxpos
 #'
-poly_maxpos <- function(fileName,layerName, polySplit=TRUE){
+poly_maxpos <- function(fileName,layerName, polySplit=TRUE, cores=1){
   # read raster input data
   if (polySplit) {system(paste0("rm -rf ",paste0(path_tmp,"split")))}
   dem <- raster::raster(fileName)
@@ -247,7 +199,7 @@ poly_maxpos <- function(fileName,layerName, polySplit=TRUE){
                          where = paste0("NAME='",rn,"'")
                          , nln = rn)
     },
-    mc.cores = parallel::detectCores()-1)
+    mc.cores = cores)
   }
 
     # parallel retrival of maxpos
@@ -400,7 +352,7 @@ funWhichmax <- function(mask,value) {
 #'@param stddev 0 1 switch
 #'@param quantile number of quantile
 #'@param giLinks list of GI tools cli pathes, default is NULL
-#'
+#'@param parallel run it parallel default is 1
 
 #'
 #'
@@ -457,6 +409,7 @@ poly_stat <- function(x = NULL,
                       var = 1,
                       stddev = 1,
                       quantile = 10,
+                      parallel = 1,
                       giLinks =NULL )   {
 
   #cat(":: run statistics...\n")
@@ -496,7 +449,7 @@ poly_stat <- function(x = NULL,
                           " -VAR ",var,
                           " -STDDEV ",stddev,
                           " -QUANTILE ",quantile,
-                          " -PARALLELIZED 1",
+                          " -PARALLELIZED ",parallel,
                           " -RESULT ",path_run,basename(x[i]),"Stat.shp"),
                    intern = TRUE)
 

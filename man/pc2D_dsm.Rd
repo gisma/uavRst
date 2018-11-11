@@ -41,7 +41,7 @@ optical UAV retrieval. It simply samples the maximum or whatever values of a giv
 grid size and fills the no data holes if so.
 }
 \examples{
-\dontrun{                                                                                                                                                                        
+\dontrun{
 require(uavRst)
 require(link2GI)
 
