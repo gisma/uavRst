@@ -6,10 +6,7 @@ bundler_args: --retry 7
 
 r_packages:
   - ncdf4
-  - V8
-  - APfun
-  - ForestTools
-  
+
 bioc_packages:
   - BiocGenerics
   - Biobase
