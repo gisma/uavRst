@@ -253,7 +253,8 @@ treepos_RL <- function(chm =NULL,
 #'                     movingWin = 7,
 #'                     minTreeAlt = 2)
 #'## visualisation
-#' mapview::mapview(tPoslidR)
+#' # mapview::mapview(tPoslidR)
+#' raster::plot(tPoslidR)
 
 
 
