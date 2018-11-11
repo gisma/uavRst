@@ -52,22 +52,6 @@ for a review of a lot of feature extraction algorithms look at: \href{https://do
 glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogeneity" <-> "simple 4", "contrast"<-> "simple 5", "dissimilarity" <-> "advanced 2", "entropy" <-> "simple 2", "second_moment"<-> "simple 4", "correlation" <-> "simple 3"
 Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data.
 }
-\examples{
-
-## ## ##
-require(glcm)
-## example on how to calculate texture with glcm
-setwd(tempdir())
-data("pacman")
-# call glcm wrapper
-result <- glcm_texture(pacman,
-                       nrasters=1:3,
-                       stats=c("mean", "variance", "homogeneity"),
-                       parallel = FALSE)
-
-#plot the result:
-raster::plot(result[[1]])
-}
 \seealso{
 \href{https://CRAN.R-project.org/package=glcm }{glcm package}
 }

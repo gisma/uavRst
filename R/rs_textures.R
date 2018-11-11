@@ -32,7 +32,7 @@
 #' @export glcm_texture
 #' @examples
 #'
-#' ## ## ##
+#' \dontrun{
 
 #' require(glcm)
 #' ## example on how to calculate texture with glcm
@@ -199,7 +199,7 @@ glcm_texture <- function(x,
 
 #' @export otbtex_hara
 #' @examples
-#' ## ## ##
+#' \dontrun{
 
 #' require(uavRst)
 #' require(link2GI)
@@ -221,7 +221,7 @@ glcm_texture <- function(x,
 #' raster::plot(r)
 #' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.-8")
 #' }
-#' ##+
+#' }
 
 
 otbtex_hara<- function(x,
