@@ -274,6 +274,7 @@ chmseg_FT <- function(treepos = NULL,
 
 #' @export
 #' @examples
+#' \dontrun{
 #' ## required packages
 #'  require(uavRst)
 #'  require(mapview)
@@ -300,6 +301,7 @@ chmseg_FT <- function(treepos = NULL,
 #'                        exclusion = 0.2)
 #' ## visualisation
 #'  mapview::mapview(crownsRL) 
+#'  }
 
 
 
@@ -359,7 +361,7 @@ chmseg_RL <- function(treepos = NULL,
 
 #' @export chmseg_ITC
 #' @examples
-#' 
+#' \dontrun{
 #'  require(uavRst)
 #'  require(mapview)
 #'  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
@@ -382,6 +384,7 @@ chmseg_RL <- function(treepos = NULL,
 #'
 #' ##- visualisation
 #' mapview::mapview(crownsITC,zcol="Height_m")
+#' }
 
 
 

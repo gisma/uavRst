@@ -33,7 +33,7 @@ Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}
  European Journal of Remote Sensing, Vol. 48, pp. 365-382, 2015.
 }
 \examples{
-
+\dontrun{
  require(uavRst)
  require(mapview)
  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
@@ -55,4 +55,5 @@ crownsITC<- chmseg_ITC(chm = chmR,
 
 ##- visualisation
 mapview::mapview(crownsITC,zcol="Height_m")
+}
 }
