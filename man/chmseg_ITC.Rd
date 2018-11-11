@@ -54,6 +54,6 @@ crownsITC<- chmseg_ITC(chm = chmR,
                        maxCrownArea = 50)
 
 ##- visualisation
-raster::plot(crownsITC,zcol="Height_m")
+raster::plot(crownsITC)
 }
 }

@@ -36,14 +36,15 @@ unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
 ## read chm data
 chmR<- raster::raster(paste0(tempdir(),"/chm_2.tif"))
 tPos<- raster::raster(paste0(tempdir(),"/treepos_2.tif"))
-
+chmR2<-raster::aggregate(chmR)
+tPos2<-raster::aggregate(tPos)
 ## segmentation
-crownsFT <- chmseg_FT(chm = chmR,
-                       treepos = tPos,
+crownsFT <- chmseg_FT(chm = chmR2,
+                       treepos = tPos2,
                        format = "polygons",
-                       minTreeAlt = 25,
+                       minTreeAlt = 5,
                        verbose = FALSE)
 
 ## Visualisation
-raster::plot(crownsFT,zcol="treepos_2")
+raster::plot(crownsFT)
 }
