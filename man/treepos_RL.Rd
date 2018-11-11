@@ -19,3 +19,26 @@ Detects and computes the location and height of individual trees within
 the LiDAR-derived Canopy Height Model (CHM). The algorithm implemented in this function
 is local maximum with a fixed window size. Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
 }
+\examples{
+\dontrun{
+## required packages
+require(uavRst)
+
+## runtime folder
+path_run<-tempdir()
+
+## get the rgb image, chm and training data
+utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
+                    paste0("chm_3-3.tif"))
+
+## read tif
+chm<-raster::raster("chm_3-3.tif")
+
+## find trees
+tPosRL <- treepos_RL(chm = chm,
+                    movingWin = 7,
+                    minTreeAlt = 2)
+## visualisation
+mapview::mapview(tPosRL)
+##+}
+}

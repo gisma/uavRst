@@ -183,7 +183,7 @@ treepos_GWS <- function(chm = NULL,
 #' @export treepos_RL
 #' @examples
 #' \dontrun{
-#'\dontrun{
+
 #'## required packages
 #'require(uavRst)
 #'
