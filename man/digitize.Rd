@@ -59,22 +59,19 @@ You can either save the digitized object to a \code{JSON} or \code{KML} file to 
 \dontrun{
 ##- libs
 require(sp)
-
-##- all features
-digitize()
+require(uavRst)
 
 ##- preset for digitizing uav flight areas in Meuse
 require(sp)
 data(meuse) 
-coordinates(meuse) <- ~x+y 
-proj4string(meuse) <-CRS("+init=epsg:28992") 
+sp::coordinates(meuse) <- ~x+y 
+sp::proj4string(meuse) <-sp::CRS("+init=epsg:28992") 
 me<-sp::spTransform(meuse,CRSobj = sp::CRS("+init=epsg:4326"))
 uavRst::digitize(overlay = me)
   
 ##- preset for digitizing extents
-uavRst::digitize(preset="ext",overlay = me)
+uavRst::digitize(preset="ext",overlay = me)}
 
-}
 }
 \author{
 Chris Reudenbach
