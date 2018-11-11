@@ -34,7 +34,7 @@ Calculates local statistics for a given kernel size
 the otb is used for the calculation of the statistics. Please provide a GeoTiff file
 }
 \examples{
-## ## ##
+\dontrun{
 require(uavRst)
 # check if OTB is installed correctly
 giLinks <- uavRst::linkAll()
@@ -47,6 +47,7 @@ raster::writeRaster(pacman,"pacman.tif",overwrite=TRUE)
 result<- otb_stat(input="pacman.tif",radius=5,retRaster = TRUE)
 #plot the results :
 raster::plot(result[[1]])
+}
 }
 }
 \author{

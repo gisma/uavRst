@@ -7,10 +7,7 @@ bundler_args: --retry 7
 bioc_packages:
   - BiocGenerics
   - Biobase
-  
-r_github_packages:
-  - r-spatial/link2GI
-  
+
 r_build_args: "--no-build-vignettes"
 r_check_args: "--no-build-vignettes --as-cran"
 

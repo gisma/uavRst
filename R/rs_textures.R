@@ -369,7 +369,7 @@ otbtex_hara<- function(x,
 
 #' @export otb_stat
 #' @examples
-#' ## ## ##
+#' \dontrun{
 #' require(uavRst)
 #' # check if OTB is installed correctly
 #' giLinks <- uavRst::linkAll()
@@ -382,6 +382,7 @@ otbtex_hara<- function(x,
 #' result<- otb_stat(input="pacman.tif",radius=5,retRaster = TRUE)
 #' #plot the results :
 #' raster::plot(result[[1]])
+#' }
 #' }
 
 
@@ -542,7 +543,7 @@ otbtex_edge<- function(input=NULL,
 #' @export otbtex_gray
 
 #' @examples
-
+#' \dontrun{
 #' require(uavRst)
 #' require(link2GI)
 #' setwd(tempdir())
@@ -557,6 +558,7 @@ otbtex_edge<- function(input=NULL,
 #'
 #' ##- visualize all layers
 #' raster::plot(r[[1]])
+#' }
 #' }
 
 
