@@ -1,8 +1,8 @@
 Package: uavRst
 Type: Package
 Title: Unmanned Aerial Vehicle Remote Sensing Tools
-Version: 0.4-5
-Date: 2018-11-10
+Version: 0.5-0
+Date: 2018-11-11
 Authors@R: c(person("Florian", "Detsch", role = c("ctb")),
              person("Hanna", "Meyer", email = "hanna.meyer@uni-marburg.de", role = c("aut")),
              person("Thomas", "Nauss", email = "nauss@uni-marburg.de", role = c("ctb")),
@@ -17,10 +17,12 @@ License: GPL (>= 3) | file LICENSE
 Depends:
     R (>= 3.1.0)
 Imports:
+    raster,
+    foreach
+Suggests: knitr,
     stringr,
-    foreach,
-        sp,
-        sf,
+    sp,
+    sf,
     htmlwidgets,
     htmltools,
     Rcpp,
@@ -38,7 +40,6 @@ Imports:
     doParallel,
     CAST,
     glcm,
-    raster,
     crayon,
     ForestTools,
     itcSegment,
@@ -50,8 +51,7 @@ Imports:
     randomForest,
     rLiDAR,
     rlas,
-    lidR
-Suggests: knitr,
+    lidR,
     rmarkdown,
     mapview
 LinkingTo: Rcpp

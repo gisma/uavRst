@@ -25,7 +25,7 @@ fun_fhd <- function(a) {
 
 fun_fhd_fu <- function(b) {
   a <- subset(b, 1:6)
-  l<-nlayers(a)
+  l<-raster::nlayers(a)
   r<- -1 * ((a[[l]]) * log(a[[l]]))
   sum(r[[1:(l-1)]])
 }

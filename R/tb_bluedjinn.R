@@ -18,13 +18,13 @@ read_gpx <- function(file,
 
   # check if features exist per layer
   suppressWarnings(hasF <- sapply(layers, function(file,l) {
-    ogrInfo(dsn = file, layer=l)$have_features
+    rgdal::ogrInfo(dsn = file, layer=l)$have_features
   }))
 
   if (!any(hasF)) stop("None of the layer(s) has any features.", call. = FALSE)
 
   res <- lapply(layers[hasF], function(l) {
-    readOGR(dsn = file, layer=l, verbose=FALSE)
+    rgdal::readOGR(dsn = file, layer=l, verbose=FALSE)
   })
   names(res) <- layers[hasF]
 
@@ -212,7 +212,7 @@ poly_maxpos <- function(fileName,layerName, polySplit=TRUE, cores=1){
 
     # read single polygon sf is even in this construct times faster
     sf_shp <- sf::st_read(paste0(path_tmp,"split/",basename(layerName),"_",rn,".shp"),quiet = TRUE)
-    shp <- as(sf_shp, "Spatial")
+    shp <- methods::as(sf_shp, "Spatial")
 
     # reclass VALUE to 1
     shp@data$VALUE <-1
@@ -623,7 +623,7 @@ getPopupStyle <- function() {
 #' @param refFn character. reference image for resampling
 #' @param returnRaster logical. return as raster
 #' @name split2SAGA
-#' @importFrom gdalUtils gdal_translate
+
 #' @keywords internal
 #'@export
 split2SAGA<-function(fn=NULL,
@@ -789,10 +789,10 @@ cutTif<- function(rasterFiles = NULL,
                   outPath="cut",
                   prefix="cut") {
   #rasterFiles <- list.files(pattern="[.]tif$", path="/home/creu/proj/geopat/data/modis_carpathian_mountains/study_area/modis_ndvi/2002", full.names=TRUE)
-  te=paste(extent(ext)[1],' ',
-           extent(ext)[3],' ',
-           extent(ext)[2],' ',
-           extent(ext)[4])
+  te=paste(raster::extent(ext)[1],' ',
+           raster::extent(ext)[3],' ',
+           raster::extent(ext)[2],' ',
+           raster::extent(ext)[4])
   if (!file.exists(paste0(path_run, outPath))) dir.create(file.path(paste0(path_run, outPath)), recursive = TRUE,showWarnings = FALSE)
   for (rasterFile in rasterFiles) {
     system(paste0("gdal_translate -projwin ", te, " -of GTiff ",rasterFile, " ", path_run,outPath,"/",prefix,basename(rasterFile)))

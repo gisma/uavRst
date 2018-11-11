@@ -202,8 +202,6 @@ chmseg_GWS <- function(treepos = NULL,
 #' @param format character. Format of the function's output. Can be set to either 'raster' or 'polygons'.
 #' @param verbose to be quiet FALSE
 #'
-#' @import ForestTools
-#'
 #' @export
 #' 
 #' @examples
@@ -273,7 +271,7 @@ chmseg_FT <- function(treepos = NULL,
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
 #' height of \code{treepos}.
 #' @param exclusion numeric. A single value from 0 to 1 that represents the percent of pixel exclusion.
-#' @importFrom rLiDAR FindTreesCHM
+
 #' @export
 #' @examples
 #' ## required packages
@@ -358,7 +356,7 @@ chmseg_RL <- function(treepos = NULL,
 #' @param minTreeAlt numeric. Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.\href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}
 #' @param TRESHSeed numeric. seeding threshold. \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}
 #' @param TRESHCrown numeric. crowns threshold. \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}
-#' @import itcSegment
+
 #' @export chmseg_ITC
 #' @examples
 #' 

@@ -38,10 +38,7 @@ if (!isGeneric('pc3D_dsm')) {
 #'@param grassVersion numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar
 #'@param searchPath path to look for grass
 
-#' @importFrom gdalUtils ogr2ogr
-#' @importFrom gdalUtils gdal_translate
-#' @importFrom gdalUtils gdalwarp
-#' @importFrom gdalUtils gdalinfo
+
 #'@export pc3D_dsm
 #'@examples
 #' \dontrun{
@@ -130,8 +127,8 @@ pc3D_dsm <- function(lasDir = NULL,
   if (!verbose){
   GV <- Sys.getenv("GRASS_VERBOSE")
   Sys.setenv("GRASS_VERBOSE"=0)
-  ois <- get.ignore.stderrOption()
-  set.ignore.stderrOption(TRUE)}
+  ois <- rgrass7::get.ignore.stderrOption()
+  rgrass7::set.ignore.stderrOption(TRUE)}
 
   # get/map the las binary folder and create the base command line
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
@@ -317,7 +314,7 @@ pc3D_dsm <- function(lasDir = NULL,
   dsm[dsm > dsm_maxalt] <- NA
   raster::writeRaster(dsm, paste0(path_run,"dsm_",fn,".tif"), overwrite = TRUE)
   e <- extent(dsm)
-  dsmA <- as(e, 'SpatialPolygons')
+  dsmA <- methods::as(e, 'SpatialPolygons')
   if (dsm_area) {
     dsm2 <- dsm > -Inf
     tmp <- raster::aggregate(dsm2,fact = 1 / gridSize)
@@ -328,7 +325,7 @@ pc3D_dsm <- function(lasDir = NULL,
   else dsmdA <- NULL
   if (!verbose)  {
     Sys.setenv("GRASS_VERBOSE"=GV)
-    set.ignore.stderrOption(ois)
+    rgrass7::set.ignore.stderrOption(ois)
     }
 
   return(list(dsm,dsmA,dsmdA,paste0(fn,".las")))

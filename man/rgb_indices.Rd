@@ -77,8 +77,8 @@ rgbI<-rgb_indices(red   = img[[1]],
 ##- visualize the indices
 raster::plot(rgbI)
 
-##- map and interactively explore the indices
-mapview::mapview(rgbI)
+##- map the indices
+raster::plot(rgbI)
 ##+
 }
 \references{

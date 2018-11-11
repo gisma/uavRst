@@ -25,16 +25,6 @@
 #'@param grassVersion numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar
 #'@param searchPath path to look for grass
 #'
-#'@importFrom lidR tree_detection
-#'@importFrom lidR writeLAS
-#'@importFrom lidR readLAS
-#'@importFrom lidR lasclipRectangle
-#'@importFrom rlas read.lasheader
-#'@export pc2D_dtm
-#' @importFrom gdalUtils ogr2ogr
-#' @importFrom gdalUtils gdal_translate
-#' @importFrom gdalUtils gdalwarp
-#' @importFrom gdalUtils gdalinfo
 #'@examples
 #'\dontrun{
 #'
@@ -112,8 +102,8 @@ pc2D_dtm <- function(laspcFile = NULL,
   if (!verbose){
     GV <- Sys.getenv("GRASS_VERBOSE")
     Sys.setenv("GRASS_VERBOSE"=0)
-    ois <- get.ignore.stderrOption()
-    set.ignore.stderrOption(TRUE)}
+    ois <- rgrass7::get.ignore.stderrOption()
+    rgrass7::set.ignore.stderrOption(TRUE)}
 
   if (is.null(projFolder)) projFolder <-  c("data/","output/","run/","las/")
 
@@ -242,7 +232,7 @@ pc2D_dtm <- function(laspcFile = NULL,
     for (o in c(1:length(vdtm_run))) {
       ## jeder Punkt des jweiligen vdtm_run soll nun einmal durch gespielt werden
 
-      buffer <- gBuffer(vdtm_run[o,], capStyle= "SQUARE", width = winRes[k]/2)
+      buffer <- rgeos::gBuffer(vdtm_run[o,], capStyle= "SQUARE", width = winRes[k]/2)
       ## erstellt rechteckigen Buffer pro Punkt jeweils
       ## halb so groß wie die Suchfenstergröße im entsprechenden durchlauf
       ## Da werde ich auch noch mal bei Zeit prüfen ob man das variable gestaltet
@@ -251,7 +241,7 @@ pc2D_dtm <- function(laspcFile = NULL,
       vdtm_run_match <- vdtms[paste0("vdtm",winRes[k+1] )]
       ## vtdm_run_match wählt die vectormap des nächst kleineren Suchfensters aus.
 
-      hits <- which(gContains(buffer,vdtm_run_match[[1]] , byid=TRUE))
+      hits <- which(rgeos::gContains(buffer,vdtm_run_match[[1]] , byid=TRUE))
       ## Und nun werden alle Punkte der nächst kleineren Punktewolke die im Buffer liegen
       ## ausgewählt und als "hits" abgespeichert.
 
@@ -384,7 +374,7 @@ pc2D_dtm <- function(laspcFile = NULL,
 
   if (!verbose)  {
     Sys.setenv("GRASS_VERBOSE"=GV)
-    set.ignore.stderrOption(ois)
+    rgrass7::set.ignore.stderrOption(ois)
   }
   #return(list(dtm,dtmA,paste0(fn,".",extFN)))
   return(dtm)

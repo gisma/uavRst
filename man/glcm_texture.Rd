@@ -4,7 +4,7 @@
 \alias{glcm_texture}
 \title{Calls the glcm package with useful settings}
 \usage{
-glcm_texture(x, nrasters = 1:nlayers(x), kernelSize = c(3),
+glcm_texture(x, nrasters = 1:raster::nlayers(x), kernelSize = c(3),
   stats = c("mean", "variance", "homogeneity", "contrast",
   "dissimilarity", "entropy", "second_moment", "correlation"),
   shift = list(c(0, 1), c(1, 1), c(1, 0), c(1, -1)), parallel = TRUE,
@@ -17,18 +17,18 @@ glcm_texture(x, nrasters = 1:nlayers(x), kernelSize = c(3),
 
 \item{kernelSize}{vector of numbers indicating the environment sizes for which the textures are calculated}
 
-\item{stats}{string vector of parameters to be calculated.see \code{\link{glcm}}}
+\item{stats}{string vector of parameters to be calculated.}
 
 \item{shift}{=list(c(0,1), c(1,1), c(1,0),c(1,-1))}
 
 \item{parallel}{logical value indicating whether parameters are calculated parallel or not}
 
-\item{n_grey}{number of grey values. see \code{\link{glcm}}}
+\item{n_grey}{number of grey values.}
 
 \item{min_x}{for each channel the minimum value which can occur. If NULL then the minimum value from the rasterLayer is used.}
 
 \item{max_x}{for each channel the maximum value which can occur. If NULL then the maximum value from the rasterLayer is used.
-This functions calls the glcm function from \link{glcm} with standard settings
+This functions calls the glcm function from with standard settings
 and returns list of RasterStacks containing the texture parameters for each combination of channel and kernelSize}
 }
 \description{
@@ -69,7 +69,7 @@ result <- glcm_texture(pacman,
 raster::plot(result[[1]])
 }
 \seealso{
-\code{\link{glcm}}
+\href{https://CRAN.R-project.org/package=glcm }{glcm package}
 }
 \author{
 Hanna Meyer

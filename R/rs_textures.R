@@ -5,12 +5,12 @@
 #' @param x rasterLayer or a rasterStack containing different channels
 #' @param nrasters vector of channels to use from x. Default =nlayers(x)
 #' @param kernelSize vector of numbers indicating the environment sizes for which the textures are calculated
-#' @param stats string vector of parameters to be calculated.see \code{\link{glcm}}
-#' @param n_grey number of grey values. see \code{\link{glcm}}
+#' @param stats string vector of parameters to be calculated.
+#' @param n_grey number of grey values.
 #' @param parallel logical value indicating whether parameters are calculated parallel or not
 #' @param min_x for each channel the minimum value which can occur. If NULL then the minimum value from the rasterLayer is used.
 #' @param max_x for each channel the maximum value which can occur. If NULL then the maximum value from the rasterLayer is used.
-#' This functions calls the glcm function from \link{glcm} with standard settings
+#' This functions calls the glcm function from with standard settings
 #' and returns list of RasterStacks containing the texture parameters for each combination of channel and kernelSize
 #' @param  shift =list(c(0,1), c(1,1), c(1,0),c(1,-1))
 #' @author Hanna Meyer
@@ -28,7 +28,7 @@
 #' for a review of a lot of feature extraction algorithms look at: \href{https://doi.org/10.1117/1.JEI.21.2.023016}{Williams et al, 2012, J. of Electronic Imaging, 21(2), 023016 (2012)}\cr
 #' glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogeneity" <-> "simple 4", "contrast"<-> "simple 5", "dissimilarity" <-> "advanced 2", "entropy" <-> "simple 2", "second_moment"<-> "simple 4", "correlation" <-> "simple 3"
 #' Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data.
-#' @seealso \code{\link{glcm}}
+#' @seealso \href{https://CRAN.R-project.org/package=glcm }{glcm package}
 #' @export glcm_texture
 #' @examples
 #'
@@ -51,7 +51,7 @@
 
 
 glcm_texture <- function(x,
-                             nrasters=1:nlayers(x),
+                             nrasters=1:raster::nlayers(x),
                              kernelSize=c(3),
                              stats=c("mean", "variance", "homogeneity", "contrast", "dissimilarity", "entropy",
                                      "second_moment", "correlation"),
@@ -72,12 +72,12 @@ glcm_texture <- function(x,
   if(!is.null(min_x)){
     if (length(nrasters)>1){
       for (i in nrasters){
-        x[[i]]=reclassify(x[[i]], c(max_x[i],Inf,max_x[i]))
-        x[[i]]=reclassify(x[[i]], c(-Inf,min_x[i],min_x[i]))
+        x[[i]]=raster::reclassify(x[[i]], c(max_x[i],Inf,max_x[i]))
+        x[[i]]=raster::reclassify(x[[i]], c(-Inf,min_x[i],min_x[i]))
       }
     } else { # only one raster
-      x=reclassify(x, c(max_x,Inf,max_x))
-      x=reclassify(x, c(-Inf,min_x,min_x))
+      x=raster::reclassify(x, c(max_x,Inf,max_x))
+      x=raster::reclassify(x, c(-Inf,min_x,min_x))
     }
   }
 
@@ -196,10 +196,7 @@ glcm_texture <- function(x,
 #' for a review of a lot of feature extraction algorithms look at: \href{https://doi.org/10.1117/1.JEI.21.2.023016}{Williams et al, 2012, J. of Electronic Imaging, 21(2), 023016 (2012)}\cr
 #' glcm <-> haralick "mean" <-> "advanced 1", "variance" <-> "advanced 2", "homogeneity" <-> "simple 4", "contrast"<-> "simple 5", "dissimilarity" <-> "advanced 2", "entropy" <-> "simple 2", "second_moment"<-> "simple 4", "correlation" <-> "simple 3"
 #' Furthermore using stats will cover mean and variance while dissimilarity is highly correlated to homogeneity data.
-#' @importFrom gdalUtils ogr2ogr
-#' @importFrom gdalUtils gdal_translate
-#' @importFrom gdalUtils gdalwarp
-#' @importFrom gdalUtils gdalinfo
+
 #' @export otbtex_hara
 #' @examples
 #' ## ## ##
@@ -369,10 +366,7 @@ otbtex_hara<- function(x,
 #' @param outDir output Directory
 #' @param giLinks        list. of GI tools cli pathes
 #' @author Chris Reudenbach
-#' @importFrom gdalUtils ogr2ogr
-#' @importFrom gdalUtils gdal_translate
-#' @importFrom gdalUtils gdalwarp
-#' @importFrom gdalUtils gdalinfo
+
 #' @export otb_stat
 #' @examples
 #' ## ## ##
@@ -546,10 +540,7 @@ otbtex_edge<- function(input=NULL,
 #' @param giLinks        list. of GI tools cli pathes
 #' @author Chris Reudenbach
 #' @export otbtex_gray
-#' @importFrom gdalUtils ogr2ogr
-#' @importFrom gdalUtils gdal_translate
-#' @importFrom gdalUtils gdalwarp
-#' @importFrom gdalUtils gdalinfo
+
 #' @examples
 
 #' require(uavRst)
@@ -632,11 +623,7 @@ otbtex_gray<- function(input=NULL,
 #' @param numScale  numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param giLinks    list. of GI tools cli pathes
-#' @importFrom gdalUtils ogr2ogr
-#' @importFrom gdalUtils gdal_translate
-#' @importFrom gdalUtils gdalwarp
-#' @importFrom gdalUtils gdalinfo
-#' @importFrom gdalUtils gdaldem
+
 #' @export morpho_dem
 #' @examples
 #'\dontrun{
@@ -690,8 +677,8 @@ morpho_dem<- function(dem,
   invisible(env<-RSAGA::rsaga.env(path = saga$sagaPath))
 
   s<-raster::raster(dem)
-  y<-yres(s)
-  x<-xres(s)
+  y<-raster::yres(s)
+  x<-raster::xres(s)
   res<-gdalUtils::gdalwarp(dem,paste0(path_run,'dem2.tif'),
                            te=paste(extent(s)[1],' ',
                                     extent(s)[3],' ',
@@ -715,7 +702,7 @@ morpho_dem<- function(dem,
     # claculate the basics SAGA morphometric params
     cat(getCrayon()[[1]](":::: processing ",saga_items,"\n"))
     if (length(saga_items>0) )  { #&& !("MTPI" %in% saga_items)
-    rsaga.geoprocessor(lib = "ta_morphometry", module = 0,
+    RSAGA::rsaga.geoprocessor(lib = "ta_morphometry", module = 0,
                        param = list(ELEVATION = paste(path_run,"SAGA_dem.sgrd", sep = ""),
                                     UNIT_SLOPE = 1,
                                     UNIT_ASPECT = 1,
@@ -743,7 +730,7 @@ morpho_dem<- function(dem,
         # one single grid. The hierarchical integration is achieved by starting with the
         # standardized TPI values of the largest scale, then adding standardized values from smaller
         # scales where the (absolute) values from the smaller scale exceed those from the larger scale.
-        rsaga.geoprocessor(lib = "ta_morphometry", module = 28,
+        RSAGA::rsaga.geoprocessor(lib = "ta_morphometry", module = 28,
                            param = list(DEM = paste(path_run,"SAGA_dem.sgrd", sep = ""),
                                         SCALE_MIN = minScale,
                                         SCALE_MAX = maxScale,
@@ -876,8 +863,8 @@ getOutputDir<- function (outDir){
 #'##- visualize the indices
 #'raster::plot(rgbI)
 #'
-#'##- map and interactively explore the indices
-#'mapview::mapview(rgbI)
+#'##- map the indices
+#'raster::plot(rgbI)
 
 #'##+
 

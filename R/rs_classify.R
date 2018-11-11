@@ -9,7 +9,7 @@
 #'
 #'@param rasterStack  an object of rasterstack*. containing image data to make prediction on
 #'@param trainPlots   an object of SpatialPolygonDataFrame*. providing the training areas
-#'@import crayon
+
 #'@export get_traindata
 #'@examples
 #'\dontrun{
@@ -156,7 +156,7 @@ get_counts<- function(ids=c(1,2),
 
     if (file.exists(fn)){
       pos <-sp::spTransform(position[i,],raster::raster(fn)@crs)
-      ex <- as.data.frame(unlist(raster::extract(raster(fn) , pos    , buffer=buffersize, df=TRUE)))
+      ex <- as.data.frame(unlist(raster::extract(raster::raster(fn) , pos    , buffer=buffersize, df=TRUE)))
 
       idVal<-as.numeric(vector(length = length(ids)))
       for (j in 1:length(ids)){
@@ -544,7 +544,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' }
 #' ##+}
 
-#' @import crayon
+
 #' @export calc_ext
 
 
@@ -693,9 +693,9 @@ calc_ext<- function ( calculateBands    = FALSE,
         rt<- lapply(rgbTranslist, FUN=raster::stack)
         for (jj in 1:length(rt)) {
           raster::extent(rt[[jj]])<-raster::extent(r)
-          raster::projection(rt[[jj]]) <- raster::crs(projection(r))
+          raster::projection(rt[[jj]]) <- raster::crs(raster::projection(r))
           cat(catOk(":::: save... ",paste0(colorSpaces[jj],"_",basename(imageFiles[i])),"\n"))
-          raster::writeRaster(raster::stack(rt[[jj]][[1:(nlayers(rt[[jj]])-1)]]),
+          raster::writeRaster(raster::stack(rt[[jj]][[1:(raster::nlayers(rt[[jj]])-1)]]),
                               paste0(path_run,colorSpaces[jj],"_ref",basename(imageFiles[i])),
                               overwrite=TRUE,
                               options="INTERLEAVE=BAND",
@@ -836,7 +836,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     geomTrainFiles <- gsub(".envi",".shp",tmp)
     geomTrainFiles <- paste0(currentDataFolder,geomTrainFiles)
     #imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
-    if (file.exists(extension(geomTrainFiles[[1]], ".shp")))
+    if (file.exists(raster::extension(geomTrainFiles[[1]], ".shp")))
       geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
     else
       return(cat(catErr("\nTraining files are not existing please check suffix or prefix strings")))

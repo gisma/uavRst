@@ -21,11 +21,7 @@
 #'@param grassVersion numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar
 #'@param searchPath path to look for grass
 #'
-#'@importFrom lidR tree_detection
-#'@importFrom lidR writeLAS
-#'@importFrom lidR readLAS
-#'@importFrom lidR lasclipRectangle
-#'@importFrom rlas read.lasheader
+
 #'@export pc2D_dsm
 
 #'@examples
@@ -85,8 +81,8 @@ pc2D_dsm <- function(laspcFile = NULL,
   if (!verbose){
     GV <- Sys.getenv("GRASS_VERBOSE")
     Sys.setenv("GRASS_VERBOSE"=0)
-    ois <- get.ignore.stderrOption()
-    set.ignore.stderrOption(TRUE)}
+    ois <- rgrass7::get.ignore.stderrOption()
+    rgrass7::set.ignore.stderrOption(TRUE)}
 
   if (is.null(projFolder)) projFolder <-  c("data/","output/","run/","las/")
 
@@ -183,7 +179,7 @@ rgrass7::execGRASS("r.in.lidar",
   dsm <- raster::raster(paste0(path_run,"dsm1.tif"))
   if (!verbose)  {
     Sys.setenv("GRASS_VERBOSE"=GV)
-    set.ignore.stderrOption(ois)
+    rgrass7::set.ignore.stderrOption(ois)
   }
 
   return(dsm)

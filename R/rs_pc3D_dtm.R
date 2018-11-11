@@ -24,10 +24,7 @@
 #'@param verbose logical. to be quiet (1)
 #'@param cutExtent object of typ extent deteerming the clip area
 #'@param MP character mounting point / drive letter default is "~"
-#'@importFrom lidR tree_detection
-#'@importFrom lidR writeLAS
-#'@importFrom lidR readLAS
-#'@importFrom lidR lasclipRectangle
+
 #'@export pc3D_dtm
 #'
 #'@examples
@@ -102,8 +99,8 @@ pc3D_dtm <- function(lasDir = NULL,
   if (!verbose){
     GV <- Sys.getenv("GRASS_VERBOSE")
     Sys.setenv("GRASS_VERBOSE"=0)
-    ois <- get.ignore.stderrOption()
-    set.ignore.stderrOption(TRUE)}
+    ois <- rgrass7::get.ignore.stderrOption()
+    rgrass7::set.ignore.stderrOption(TRUE)}
 
   # get/map the las binary folder and create the base command line
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
@@ -323,7 +320,7 @@ pc3D_dtm <- function(lasDir = NULL,
   cat(":: calculate metadata ... \n")
   raster::writeRaster(dtm, paste0(path_run,fn, "_dtm.tif"),overwrite = TRUE)
   e <- extent(dtm)
-  dtmA <- as(e, 'SpatialPolygons')
+  dtmA <- methods::as(e, 'SpatialPolygons')
   dtmA <- methods::as(raster::extent(dtm), "SpatialPolygons")
   if (dtmarea) {
     dtm2 <- dtm > -Inf
@@ -334,7 +331,7 @@ pc3D_dtm <- function(lasDir = NULL,
   } else { dtmdA <- NULL}
   if (!verbose)  {
     Sys.setenv("GRASS_VERBOSE"=GV)
-    set.ignore.stderrOption(ois)
+    rgrass7::set.ignore.stderrOption(ois)
   }
   return(list(dtm,dtmA,dtmdA,paste0(fn,".",extFN)))
 }

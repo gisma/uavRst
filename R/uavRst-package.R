@@ -24,37 +24,8 @@
 #' @author Hanna Meyer, Thomas Nauss,Florian Detsch, Lars Opgenoorth, Chris Reudenbach, Environmental Informatics Marburg \cr
 #' \cr
 #' \emph{Maintainer:} Chris Reudenbach \email{reudenbach@@uni-marburg.de}
-#'
-#' @import sp raster Rcpp rgeos rgdal tools doParallel CAST 
-#' @import velox
-#' @importFrom htmltools htmlDependency
-#' @importFrom htmlwidgets sizingPolicy
-#' @importFrom htmlwidgets createWidget
-#' @importFrom htmlwidgets shinyWidgetOutput
-#' @importFrom htmlwidgets shinyRenderWidget
-#' @import foreach 
-#' @importFrom gdalUtils ogr2ogr
-#' @importFrom gdalUtils gdal_translate
-#' @importFrom gdalUtils gdalwarp
-#' @importFrom gdalUtils gdalinfo
-#' @importFrom gdalUtils gdaldem
-#' @importFrom data.table fread
-#' @importFrom spatial.tools create_blank_raster 
-#' @import caret
-#' @importFrom utils write.table
-#' @importFrom grDevices colorRampPalette
-#' @import crayon sf
-#' @import pROC
-#' @importFrom utils modifyList
-#' @importFrom ForestTools mcws
-#' @importFrom ForestTools  vwf
-#' @importFrom itcSegment itcIMG
-#' @import methods
-#' @import RSAGA
-#' @import reshape2
-#' @import rgrass7
-#' @importFrom rlas read.lasheader
-#'
+#' @import raster
+#' @import foreach
 #' @useDynLib uavRst
 #' @keywords package
 NULL

@@ -85,7 +85,7 @@ digitize <- function(mapCenter=NULL,
     if (class(overlay) %in% c("SpatialPointsDataFrame","SpatialLinesDataFrame","SpatialLines","SpatialPoints")) {
       #e <- as(raster::extent(overlay), "SpatialPolygons")
       #e <- sp::SpatialPolygonsDataFrame(e, data.frame(ID="overlay"))
-      proj4string(overlay) <- sp::proj4string(overlay)
+      sp::proj4string(overlay) <- sp::proj4string(overlay)
       overlay<-sp::spTransform(overlay,CRSobj = sp::CRS("+init=epsg:4326"))
     } else if  (class(overlay)  %in% c("SpatialPolygonsDataFrame")) {
       overlay<-sp::spTransform(overlay,CRSobj = sp::CRS("+proj=longlat +datum=WGS84 +no_defs"))
@@ -105,7 +105,7 @@ digitize <- function(mapCenter=NULL,
     lns[1,] <-paste0('var jsondata = {')
     lns[3,]<-paste0('"crs": { "type": "name", "properties": { "name": "EPSG:4326" } },')
     lns[length(lns[,1]),]<- '};'
-    write.table(lns, paste(tmpPath, "jsondata", sep=.Platform$file.sep), sep="\n", row.names=FALSE, col.names=FALSE, quote = FALSE)
+    utils::write.table(lns, paste(tmpPath, "jsondata", sep=.Platform$file.sep), sep="\n", row.names=FALSE, col.names=FALSE, quote = FALSE)
     features<-names(overlay)
     # correct if only Lines or Polygons (obsolete here?)
     if ((class(overlay)  %in% c("SpatialPolygonsDataFrame")) | (class(overlay)  %in% c("SpatialPolygons"))){
