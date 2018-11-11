@@ -32,8 +32,6 @@
 #' @export glcm_texture
 #' @examples
 #'
-#' \dontrun{
-
 #' require(glcm)
 #' ## example on how to calculate texture with glcm
 #' setwd(tempdir())
@@ -834,9 +832,6 @@ getOutputDir<- function (outDir){
 #'require(uavRst)
 #'projRootDir<-tempdir()
 #'unlink(paste0(projRootDir,"*"), force = TRUE)
-
-#'##- overide trailing backslash issue
-#'path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 #'setwd(projRootDir)
 #'
 #'##- get the tutorial data

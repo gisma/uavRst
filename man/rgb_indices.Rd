@@ -46,8 +46,6 @@ This function calculates various spectral indices from a RGB. It returns at leas
 require(uavRst)
 projRootDir<-tempdir()
 unlink(paste0(projRootDir,"*"), force = TRUE)
-##- overide trailing backslash issue
-path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 setwd(projRootDir)
 
 ##- get the tutorial data
