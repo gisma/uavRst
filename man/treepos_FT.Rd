@@ -31,13 +31,12 @@ R package \href{https://CRAN.R-project.org/package=ForestTools}{ForestTools}\cr
 }
 \examples{
 \dontrun{
-
 ##- required packages
  require(uavRst)
 
 ##- runtime folder
  path_run<-tempdir()
-
+owd <- getwd()
 ##- get the rgb image, chm and training data
 # get the rgb image, chm and training data
  utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
@@ -48,10 +47,11 @@ R package \href{https://CRAN.R-project.org/package=ForestTools}{ForestTools}\cr
 
 ##- call ForestTools treepos function
  tposFT <- treepos_FT(chm = chmR,
-            minTreeAlt = 2,
+            minTreeAlt = 10,
             maxCrownArea = 150)
             
 ##- visualize it
 mapview::mapview(tposFT)
+setwd(owd)
 ##+}
 }

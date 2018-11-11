@@ -18,7 +18,7 @@ Read xyz data and generate a Raster* object.
 \dontrun{
 ##- libraries
 require(uavRst)
-
+owd <- getwd()
 setwd(tempdir())
 ##- get typical xyz DEM data in this case from the Bavarian authority 
 utils::download.file("http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip",
@@ -33,7 +33,7 @@ xyz2tif(file,epsgCode = "31468")
 
 ##- visualize it
 raster::plot(raster::raster(file))
-
-##+}
+setwd(owd)
+}
 
 }

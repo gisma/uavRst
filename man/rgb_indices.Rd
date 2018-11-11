@@ -44,6 +44,7 @@ This function calculates various spectral indices from a RGB. It returns at leas
 ## ## ##
 ##- setup environment
 require(uavRst)
+owd <- getwd()
 projRootDir<-tempdir()
 unlink(paste0(projRootDir,"*"), force = TRUE)
 setwd(projRootDir)
@@ -62,13 +63,15 @@ raster::plotRGB(img)
 ##- calculate the indices
 rgbI<-rgb_indices(red   = img[[1]],
                  green = img[[2]],
-                 blue  = img[[3]])
+                 blue  = img[[3]],
+                 rgbi = c("NDTI","RI"))
 
 ##- visualize the indices
 raster::plot(rgbI)
 
 ##- map the indices
 raster::plot(rgbI)
+setwd(owd)
 ##+
 }
 \references{

@@ -27,9 +27,7 @@ height of \code{treepos}.}
 Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools}{'ForestTools'}
 }
 \examples{
-\dontrun{
  require(uavRst)
- require(mapview)
 ## get the data
 utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
                      paste0(tempdir(),"tutorial.zip"))
@@ -43,10 +41,9 @@ tPos<- raster::raster(paste0(tempdir(),"/treepos_2.tif"))
 crownsFT <- chmseg_FT(chm = chmR,
                        treepos = tPos,
                        format = "polygons",
-                       minTreeAlt = 2,
+                       minTreeAlt = 25,
                        verbose = FALSE)
 
 ## Visualisation
-mapview::mapview(crownsFT,zcol="treepos_2")
-}
+raster::plot(crownsFT,zcol="treepos_2")
 }

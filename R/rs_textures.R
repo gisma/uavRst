@@ -34,6 +34,7 @@
 #'
 #' require(glcm)
 #' ## example on how to calculate texture with glcm
+#' owd <- getwd()
 #' setwd(tempdir())
 #' data("pacman")
 #' # call glcm wrapper
@@ -44,6 +45,7 @@
 #'
 #' #plot the result:
 #' raster::plot(result[[1]])
+#' setwd(owd)
 
 
 
@@ -830,6 +832,7 @@ getOutputDir<- function (outDir){
 
 #'##- setup environment
 #'require(uavRst)
+#'owd <- getwd()
 #'projRootDir<-tempdir()
 #'unlink(paste0(projRootDir,"*"), force = TRUE)
 #'setwd(projRootDir)
@@ -848,13 +851,15 @@ getOutputDir<- function (outDir){
 #'##- calculate the indices
 #'rgbI<-rgb_indices(red   = img[[1]],
 #'                  green = img[[2]],
-#'                  blue  = img[[3]])
+#'                  blue  = img[[3]],
+#'                  rgbi = c("NDTI","RI"))
 #'
 #'##- visualize the indices
 #'raster::plot(rgbI)
 #'
 #'##- map the indices
 #'raster::plot(rgbI)
+#'setwd(owd)
 
 #'##+
 

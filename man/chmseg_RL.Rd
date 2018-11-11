@@ -47,9 +47,9 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 ## segmentation
  crownsRL <- chmseg_RL(chm= chmR,
                        treepos= tPos,
-                       maxCrownArea = 150,
-                       exclusion = 0.2)
+                       maxCrownArea = 50,
+                       exclusion = 0.6)
 ## visualisation
- mapview::mapview(crownsRL) 
+ raster::plot(crownsRL) 
  }
 }

@@ -50,10 +50,10 @@ crownsITC<- chmseg_ITC(chm = chmR,
                        movingWin = 3,
                        TRESHSeed = 0.45,
                        TRESHCrown = 0.55,
-                       minTreeAlt = 2,
-                       maxCrownArea = 150)
+                       minTreeAlt = 25,
+                       maxCrownArea = 50)
 
 ##- visualisation
-mapview::mapview(crownsITC,zcol="Height_m")
+raster::plot(crownsITC,zcol="Height_m")
 }
 }

@@ -36,6 +36,7 @@
 #' if (giLinks$grass$exist) {
 #'
 #' # proj subfolders
+#' owd <- getwd()
 #' projRootDir<-tempdir()
 #'unlink(paste0(projRootDir,"*"), force = TRUE)
 #' paths<-link2GI::initProj(projRootDir = projRootDir,
@@ -58,6 +59,7 @@
 #'                 giLinks = giLinks)
 #'                 }
 #'  raster::plot(dsm)
+#'  setwd(owd)
 #'}
 
 pc2D_dsm <- function(laspcFile = NULL,

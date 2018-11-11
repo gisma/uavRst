@@ -205,9 +205,7 @@ chmseg_GWS <- function(treepos = NULL,
 #' @export
 #' 
 #' @examples
-#' \dontrun{
 #'  require(uavRst)
-#'  require(mapview)
 #' ## get the data
 #' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
 #'                      paste0(tempdir(),"tutorial.zip"))
@@ -221,12 +219,12 @@ chmseg_GWS <- function(treepos = NULL,
 #' crownsFT <- chmseg_FT(chm = chmR,
 #'                        treepos = tPos,
 #'                        format = "polygons",
-#'                        minTreeAlt = 2,
+#'                        minTreeAlt = 25,
 #'                        verbose = FALSE)
 #'
 #' ## Visualisation
-#' mapview::mapview(crownsFT,zcol="treepos_2")
-#' }
+#' raster::plot(crownsFT,zcol="treepos_2")
+
 
 
 
@@ -244,7 +242,7 @@ chmseg_FT <- function(treepos = NULL,
   }
 
   # Crown segmentation
-  crownsFT <- ForestTools:: mcws(treetops = treepos,
+  crownsFT <- ForestTools::mcws(treetops = treepos,
                                  CHM = chm,
                                  format = format,
                                  minHeight = minTreeAlt,
@@ -275,6 +273,7 @@ chmseg_FT <- function(treepos = NULL,
 #' @export
 #' @examples
 #' \dontrun{
+
 #' ## required packages
 #'  require(uavRst)
 #'  require(mapview)
@@ -297,11 +296,12 @@ chmseg_FT <- function(treepos = NULL,
 #' ## segmentation
 #'  crownsRL <- chmseg_RL(chm= chmR,
 #'                        treepos= tPos,
-#'                        maxCrownArea = 150,
-#'                        exclusion = 0.2)
+#'                        maxCrownArea = 50,
+#'                        exclusion = 0.6)
 #' ## visualisation
-#'  mapview::mapview(crownsRL) 
+#'  raster::plot(crownsRL) 
 #'  }
+
 
 
 
@@ -362,6 +362,7 @@ chmseg_RL <- function(treepos = NULL,
 #' @export chmseg_ITC
 #' @examples
 #' \dontrun{
+
 #'  require(uavRst)
 #'  require(mapview)
 #'  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
@@ -379,12 +380,13 @@ chmseg_RL <- function(treepos = NULL,
 #'                        movingWin = 3,
 #'                        TRESHSeed = 0.45,
 #'                        TRESHCrown = 0.55,
-#'                        minTreeAlt = 2,
-#'                        maxCrownArea = 150)
+#'                        minTreeAlt = 25,
+#'                        maxCrownArea = 50)
 #'
 #' ##- visualisation
-#' mapview::mapview(crownsITC,zcol="Height_m")
+#' raster::plot(crownsITC,zcol="Height_m")
 #' }
+
 
 
 
