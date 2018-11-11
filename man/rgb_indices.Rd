@@ -44,27 +44,19 @@ This function calculates various spectral indices from a RGB. It returns at leas
 ## ## ##
 ##- setup environment
 require(uavRst)
-require(mapview)
-require(link2GI)
 projRootDir<-tempdir()
 unlink(paste0(projRootDir,"*"), force = TRUE)
-##- create subfolders please mind that the pathes are exported as global variables
-
-paths<-link2GI::initProj(projRootDir = projRootDir,
-                        projFolders = c("data/","data/ref/","output/","run/","las/"),
-                        global = TRUE,
-                        path_prefix = "path_")
 ##- overide trailing backslash issue
 path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-setwd(path_run)
+setwd(projRootDir)
 
 ##- get the tutorial data
 utils::download.file(url = "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
-                    destfile = paste0(path_run,"tutorial.zip"))
-unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
+                    destfile = "tutorial.zip")
+unzip(zipfile = "tutorial.zip", exdir = ".")
 
 ##- take the RGB image of a conopy plot
-img <- raster::brick(paste0(path_run,"rgb_3.tif"))
+img <- raster::brick("rgb_3.tif")
 
 ##- visualize the image
 raster::plotRGB(img)
