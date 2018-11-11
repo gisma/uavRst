@@ -2,7 +2,11 @@
 language: r
 cache: packages
 warnings_are_errors: false
+bundler_args: --retry 7
 
+bioc_packages:
+  - BiocGenerics
+  - Biobase
 
 addons:
   apt:
