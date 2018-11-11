@@ -37,9 +37,9 @@
 #' if (giLinks$grass$exist) {
 #'
 #' # proj subfolders
-#' projRootDir<-getwd()
+#' projRootDir<-temdir()
 
-#' #setwd(paste0(projRootDir,"run"))
+#' setwd(projRootDir)
 #'
 #' paths<-link2GI::initProj(projRootDir = projRootDir,
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),

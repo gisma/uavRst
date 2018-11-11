@@ -79,6 +79,7 @@ giLinks<-uavRst::linkAll()
 {
 # proj subfolders
 projRootDir<-tempdir()
+setwd(projRootDir)
 unlink(paste0(projRootDir,"*"), force = TRUE)
 
 projsubFolders<-c("data/","data/ref/","output/","run/","las/")
@@ -86,7 +87,6 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                         projFolders = projsubFolders,
                         global = TRUE,
                         path_prefix = "path_")
-setwd(paste0(projRootDir,"run"))
 # get some colors
 pal = mapview::mapviewPalette("mapviewTopoColors")
 
