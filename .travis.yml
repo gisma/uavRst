@@ -16,3 +16,4 @@ addons:
       - saga 
       - grass
       - otb-bin
+      - netcdf-bin 

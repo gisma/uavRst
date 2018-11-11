@@ -22,7 +22,7 @@ point clouds, works at the point cloud level without any rasterization. Jean-Rom
 R package \href{https://CRAN.R-project.org/package=lidR}{lidR}\cr
 }
 \examples{
-
+\dontrun{
 require(uavRst)
 ## required packages
 require(uavRst)
@@ -44,4 +44,5 @@ tPoslidR <- treepos_lidR(chm = chm,
 ## visualisation
 # mapview::mapview(tPoslidR)
 raster::plot(tPoslidR)
+}
 }
