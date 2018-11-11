@@ -234,6 +234,7 @@ treepos_RL <- function(chm =NULL,
 
 #' @export treepos_lidR
 #' @examples
+#' \dontrun{
 
 
 #'require(uavRst)
@@ -258,7 +259,7 @@ treepos_RL <- function(chm =NULL,
 #' # mapview::mapview(tPoslidR)
 #' raster::plot(tPoslidR)
 #' setwd(owd)
-#' 
+#' }
 
 
 
