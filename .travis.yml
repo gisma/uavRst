@@ -2,14 +2,7 @@
 language: r
 cache: packages
 warnings_are_errors: false
-bundler_args: --retry 7
 
-bioc_packages:
-  - BiocGenerics
-  - Biobase
-
-r_build_args: "--no-build-vignettes"
-r_check_args: "--no-build-vignettes --as-cran"
 
 addons:
   apt:
@@ -19,5 +12,3 @@ addons:
       - saga 
       - grass
       - otb-bin
-      - netcdf-bin 
-      - libv8-3.14-dev
