@@ -48,13 +48,13 @@
 #'  unlink(paste0(path_run,"*"), force = TRUE)
 #'
 #' ##- get the data
-#' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
+#' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/segpos.zip",
 #'                       paste0(path_run,"tutorial.zip"))
 #' unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
 #'
 #' ##- read chm data
-#' chmR<- raster::raster(paste0(path_run,"chm_2.tif"))
-#' tPos<- raster::raster(paste0(path_run,"treepos_2.tif"))
+#' chmR<- raster::raster(paste0(path_run,"chm_seg.tif"))
+#' tPos<- raster::raster(paste0(path_run,"treepos_seg.tif"))
 #'
 #' ##- tree segmentation
 #' crowns_GWS <- chmseg_GWS( treepos = tPos,
@@ -205,26 +205,26 @@ chmseg_GWS <- function(treepos = NULL,
 #' @export
 #' 
 #' @examples
+
 #'  require(uavRst)
 #' ## get the data
-#' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
+#' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/segpos.zip",
 #'                      paste0(tempdir(),"tutorial.zip"))
 #' unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
 #'
 #' ## read chm data
-#' chmR<- raster::raster(paste0(tempdir(),"/chm_2.tif"))
-#' tPos<- raster::raster(paste0(tempdir(),"/treepos_2.tif"))
-#' chmR2<-raster::aggregate(chmR)
-#' tPos2<-raster::aggregate(tPos)
+#' chmR<- raster::raster(paste0(tempdir(),"/chm_seg.tif"))
+#' tPos<- raster::raster(paste0(tempdir(),"/treepos_seg.tif"))
 #' ## segmentation
-#' crownsFT <- chmseg_FT(chm = chmR2,
-#'                        treepos = tPos2,
+#' crownsFT <- chmseg_FT(chm = chmR,
+#'                        treepos = tPos,
 #'                        format = "polygons",
-#'                        minTreeAlt = 5,
+#'                        minTreeAlt = 10,
 #'                        verbose = FALSE)
 #'
 #' ## Visualisation
 #' raster::plot(crownsFT)
+
 
 
 
@@ -273,7 +273,7 @@ chmseg_FT <- function(treepos = NULL,
 
 #' @export
 #' @examples
-#' \dontrun{
+
 
 #' ## required packages
 #'  require(uavRst)
@@ -286,13 +286,13 @@ chmseg_FT <- function(treepos = NULL,
 #'                          projFolders = c("run/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
-#'  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
+#'  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/segpos.zip',
 #'                        destfile=paste0(tempdir(),'tutorial.zip'))
 #'  unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
 #'
 #' ## read chm and tree position data
-#'  chmR<- raster::raster(paste0(tempdir(),"/chm_2.tif"))
-#'  tPos<- raster::raster(paste0(tempdir(),"/treepos_2.tif"))
+#'  chmR<- raster::raster(paste0(tempdir(),"/chm_seg.tif"))
+#'  tPos<- raster::raster(paste0(tempdir(),"/treepos_seg.tif"))
 #'
 #' ## segmentation
 #'  crownsRL <- chmseg_RL(chm= chmR,
@@ -301,7 +301,7 @@ chmseg_FT <- function(treepos = NULL,
 #'                        exclusion = 0.6)
 #' ## visualisation
 #'  raster::plot(crownsRL) 
-#'  }
+
 
 
 
@@ -362,17 +362,17 @@ chmseg_RL <- function(treepos = NULL,
 
 #' @export chmseg_ITC
 #' @examples
-#' \dontrun{
+
 
 #'  require(uavRst)
 #'  require(mapview)
-#'  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
+#'  utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/segpos.zip',
 #'                        destfile=paste0(tempdir(),'tutorial.zip'))
 #'  unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
 #'
 #' ## read chm and tree position data
-#'  chmR<- raster::raster(paste0(tempdir(),"/chm_2.tif"))
-#'  tPos<- raster::raster(paste0(tempdir(),"/treepos_2.tif"))
+#'  chmR<- raster::raster(paste0(tempdir(),"/chm_seg.tif"))
+#'  tPos<- raster::raster(paste0(tempdir(),"/treepos_seg.tif"))
 
 #'
 #' ##- segmentation
@@ -386,7 +386,7 @@ chmseg_RL <- function(treepos = NULL,
 #'
 #' ##- visualisation
 #' raster::plot(crownsITC)
-#' }
+
 
 
 

@@ -24,7 +24,6 @@ height of \code{treepos}.}
 Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
 }
 \examples{
-\dontrun{
 ## required packages
  require(uavRst)
  require(mapview)
@@ -36,13 +35,13 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("run/"),
                          global = TRUE,
                          path_prefix = "path_")
- utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
+ utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/segpos.zip',
                        destfile=paste0(tempdir(),'tutorial.zip'))
  unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
 
 ## read chm and tree position data
- chmR<- raster::raster(paste0(tempdir(),"/chm_2.tif"))
- tPos<- raster::raster(paste0(tempdir(),"/treepos_2.tif"))
+ chmR<- raster::raster(paste0(tempdir(),"/chm_seg.tif"))
+ tPos<- raster::raster(paste0(tempdir(),"/treepos_seg.tif"))
 
 ## segmentation
  crownsRL <- chmseg_RL(chm= chmR,
@@ -51,5 +50,4 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                        exclusion = 0.6)
 ## visualisation
  raster::plot(crownsRL) 
- }
 }

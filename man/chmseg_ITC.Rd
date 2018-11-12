@@ -33,16 +33,15 @@ Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}
  European Journal of Remote Sensing, Vol. 48, pp. 365-382, 2015.
 }
 \examples{
-\dontrun{
  require(uavRst)
  require(mapview)
- utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip',
+ utils::download.file(url='https://github.com/gisma/gismaData/raw/master/uavRst/data/segpos.zip',
                        destfile=paste0(tempdir(),'tutorial.zip'))
  unzip(zipfile = paste0(tempdir(),"tutorial.zip"), exdir = tempdir())
 
 ## read chm and tree position data
- chmR<- raster::raster(paste0(tempdir(),"/chm_2.tif"))
- tPos<- raster::raster(paste0(tempdir(),"/treepos_2.tif"))
+ chmR<- raster::raster(paste0(tempdir(),"/chm_seg.tif"))
+ tPos<- raster::raster(paste0(tempdir(),"/treepos_seg.tif"))
 
 ##- segmentation
 crownsITC<- chmseg_ITC(chm = chmR,
@@ -55,5 +54,4 @@ crownsITC<- chmseg_ITC(chm = chmR,
 
 ##- visualisation
 raster::plot(crownsITC)
-}
 }
