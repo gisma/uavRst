@@ -41,3 +41,21 @@ NULL
 #' @description dump of the well know pac man game
 #' @format \code{"raster::raster"}
 NULL
+#' @docType data
+#' @name trp_seg
+#' @title Optional tree position raster map
+#' @description Example data set containing optional treepoint positions sampled in the Maburg University Forest (MOF). The resolution is 10 cm. ETRS89 UTM32
+#' @format \code{"raster::raster"}
+NULL
+#' @docType data
+#' @name chm_seg
+#' @title Canopy height model raster map
+#' @description Example data set containing the canopy height map of a small plot sampled in the Maburg University Forest (MOF). The resolution is 10 cm. ETRS89 UTM32
+#' @format \code{"raster::raster"}
+NULL
+#' @docType data
+#' @name rgb
+#' @title RGB Orthoimagefrom an arbitray MOF plot
+#' @description Example data set containing a RGB Orthoimage of a small plot sampled in the Maburg University Forest (MOF). The resolution is 10 cm. ETRS89 UTM32
+#' @format \code{"raster::raster"}
+NULL

@@ -27,23 +27,14 @@ require(uavRst)
 ## required packages
 require(uavRst)
 
-## runtime folde
-path_run<-tempdir()
-owd <- getwd()
-## get the rgb image, chm and training data
-utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
-                    "chm_3-3.tif")
-
-## read tif
-chm<-raster::raster("chm_3-3.tif")
+ data(chm_seg)
 
 ## find trees
-tPoslidR <- treepos_lidR(chm = chm,
+tPoslidR <- treepos_lidR(chm = chm_seg[[1]],
                     movingWin = 3,
                     minTreeAlt = 15)
 ## visualisation
 # mapview::mapview(tPoslidR)
 raster::plot(tPoslidR)
-setwd(owd)
 }
 }

@@ -20,26 +20,17 @@ the LiDAR-derived Canopy Height Model (CHM). The algorithm implemented in this f
 is local maximum with a fixed window size. Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr
 }
 \examples{
-\dontrun{
+
 ## required packages
 require(uavRst)
 
-## runtime folder
-path_run<-tempdir()
-owd <- getwd()
-## get the rgb image, chm and training data
-utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
-                    "chm_3-3.tif")
-
-## read tif
-chm<-raster::raster("chm_3-3.tif")
+## load data
+data(chm_seg)
 
 ## find trees
-tPosRL <- treepos_RL(chm = chm,
+tPosRL <- treepos_RL(chm = chm_seg[[1]],
                     movingWin = 3,
                     minTreeAlt = 10)
 ## visualisation
 raster::plot(tPosRL)
-setwd(owd)
-##+}
 }

@@ -61,24 +61,18 @@ giLinks$grass<-link2GI::linkGRASS7(returnPaths = TRUE)
 if (giLinks$grass$exist) {
 
 # proj subfolders
-projRootDir<-temdir()
-setwd(projRootDir)
-
-paths<-link2GI::initProj(projRootDir = projRootDir,
+projRootDir<-tempdir()
+paths<-link2GI::initProj(projRootDir = tempdir(),
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
                          path_prefix = "path_")
- unlink(paste0(path_run,"*"), force = TRUE)
-# get some colors
-pal = mapview::mapviewPalette("mapviewTopoColors")
-
 # get the data
 utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
 destfile="lasdata.las")
 
 # create 2D point cloud DTM
 dtm <- pc2D_dtm(laspcFile = "lasdata.las",
-                gisdbasePath = projRootDir,
+                gisdbasePath = tempdir(),
                 tension = 20 ,
                 sampleGridSize = 25,
                 targetGridSize = 0.5,

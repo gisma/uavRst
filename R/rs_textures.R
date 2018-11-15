@@ -832,35 +832,20 @@ getOutputDir<- function (outDir){
 
 #'##- setup environment
 #'require(uavRst)
-#'owd <- getwd()
-#'projRootDir<-tempdir()
-#'unlink(paste0(projRootDir,"*"), force = TRUE)
-#'setwd(projRootDir)
-#'
-#'##- get the tutorial data
-#'utils::download.file(url = "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
-#'                     destfile = "tutorial.zip")
-#'unzip(zipfile = "tutorial.zip", exdir = ".")
-#'
-#'##- take the RGB image of a conopy plot
-#'img <- raster::brick("rgb_3.tif")
+
+#'data(rgb)
 #'
 #'##- visualize the image
-#'raster::plotRGB(img)
+#'raster::plotRGB(rgb)
 #'
 #'##- calculate the indices
-#'rgbI<-rgb_indices(red   = img[[1]],
-#'                  green = img[[2]],
-#'                  blue  = img[[3]],
-#'                  rgbi = c("NDTI","RI"))
+#'rgbI<-rgb_indices(red   = rgb[[1]],
+#'                  green = rgb[[2]],
+#'                  blue  = rgb[[3]],
+#'                  rgbi = c("NDTI","VARI","TGI"))
 #'
 #'##- visualize the indices
 #'raster::plot(rgbI)
-#'
-#'##- map the indices
-#'raster::plot(rgbI)
-#'setwd(owd)
-
 #'##+
 
 rgb_indices <- function(red,green,blue,rgbi=c("VVI","VARI","NDTI","RI","SCI","BI",

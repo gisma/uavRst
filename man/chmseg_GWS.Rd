@@ -73,18 +73,13 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
  unlink(paste0(path_run,"*"), force = TRUE)
 
 ##- get the data
-utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/segpos.zip",
-                      paste0(path_run,"tutorial.zip"))
-unzip(zipfile = paste0(path_run,"tutorial.zip"), exdir = path_run)
-
-##- read chm data
-chmR<- raster::raster(paste0(path_run,"chm_seg.tif"))
-tPos<- raster::raster(paste0(path_run,"treepos_seg.tif"))
+ data(chm_seg)
+ data(trp_seg)
 
 ##- tree segmentation
-crowns_GWS <- chmseg_GWS( treepos = tPos,
-                      chm = chmR,
-                      minTreeAlt = 3,
+crowns_GWS <- chmseg_GWS( treepos = trp_seg[[1]],
+                      chm = chm_seg[[1]],
+                      minTreeAlt = 2,
                       neighbour = 0,
                       thVarFeature = 1.,
                       thVarSpatial = 1.,

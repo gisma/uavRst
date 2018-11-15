@@ -24,7 +24,7 @@
 #'@param cutExtent clip area
 #'@param grassVersion numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar
 #'@param searchPath path to look for grass
-#'
+#'@export
 #'@examples
 #'\dontrun{
 #'
@@ -37,25 +37,20 @@
 #' if (giLinks$grass$exist) {
 #'
 #' # proj subfolders
-#' projRootDir<-temdir()
+#' projRootDir<-tempdir()
 
-#' setwd(projRootDir)
-#'
-#' paths<-link2GI::initProj(projRootDir = projRootDir,
+#' paths<-link2GI::initProj(projRootDir = tempdir(),
 #'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
 #'                          global = TRUE,
 #'                          path_prefix = "path_")
-#'  unlink(paste0(path_run,"*"), force = TRUE)
-#' # get some colors
-#' pal = mapview::mapviewPalette("mapviewTopoColors")
-#'
+
 #' # get the data
 #' utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
 #' destfile="lasdata.las")
 #'
 #' # create 2D point cloud DTM
 #' dtm <- pc2D_dtm(laspcFile = "lasdata.las",
-#'                 gisdbasePath = projRootDir,
+#'                 gisdbasePath = tempdir(),
 #'                 tension = 20 ,
 #'                 sampleGridSize = 25,
 #'                 targetGridSize = 0.5,

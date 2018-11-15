@@ -52,15 +52,10 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          global = TRUE,
                          path_prefix = "path_")
 
-# get the rgb image, chm and training data
- utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_3-3.tif",
-                       paste0(path_run,"chm_3-3.tif"))
-
-# read data
- chmR <- raster::raster(paste0(path_run,"chm_3-3.tif"))
+ data(chm_seg)
 
 # calculate treepos using uavRst generic approach
- tPos <- uavRst::treepos_GWS(chm = chmR,
+ tPos <- uavRst::treepos_GWS(chm = chm_seg[[1]],
                          minTreeAlt = 2,
                          maxCrownArea = 150,
                          join = 1,

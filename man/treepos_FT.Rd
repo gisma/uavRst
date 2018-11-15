@@ -33,23 +33,14 @@ R package \href{https://CRAN.R-project.org/package=ForestTools}{ForestTools}\cr
 ##- required packages
  require(uavRst)
 
-##- runtime folder
- path_run<-tempdir()
-owd <- getwd()
-##- get the rgb image, chm and training data
-# get the rgb image, chm and training data
- utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/chm_seg.tif",
-                       paste0(path_run,"chm_seg.tif"))
-
-# read data
- chmR <- raster::raster(paste0(path_run,"chm_seg.tif"))
-
+ data(chm_seg)
+ 
 ##- call ForestTools treepos function
- tposFT <- treepos_FT(chm = chmR,
+ tposFT <- treepos_FT(chm = chm_seg[[1]],
             minTreeAlt = 10,
             maxCrownArea = 150)
             
 ##- visualize it
-mapview::mapview(tposFT)
-setwd(owd)
+# mapview::mapview(tposFT)
+raster::plot(tposFT)
 }
