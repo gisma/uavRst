@@ -6,8 +6,8 @@
 # Unmanned Aerial Vehicle Remote Sensing Tools
 The `uavR` tools consist of two packages:
 
-  * mission planning ```uavRmp``` (already on [CRAN](https://CRAN.R-project.org/package=uavRmp))
-  * remote sensing toolbox ```uavRst```
+  * mission planning ```uavRmp``` ([CRAN](https://CRAN.R-project.org/package=uavRmp))
+  * remote sensing toolbox ```uavRst```   ([CRAN](https://CRAN.R-project.org/package=uavRst))
 
 ## Mission Planning - uavRmp
 
@@ -32,9 +32,8 @@ A full list of necessary libaries and binaries beyond ```R``` will hopefully (so
 ## Wiki
 You will find some tutorials and examples at the uavRst Wiki. Please feel free to participate.
 
-## CRAN
 
-The CRAN checks are passing - so it is only a question of documentation and time until it will be submitted... however it runs fine for now ...
+
 
 To install from ```github```  you need to have installed the ```devtools``` package.
 
