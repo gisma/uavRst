@@ -4,7 +4,7 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/google/skia.svg)](/master/)
 [![License](https://img.shields.io/badge/license-GPL%20%28%3E=%203%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
 
-# Unmanned Aerial Vehicle Remote Sensing Tools
+# Unmanned Aerial Vehicle R  Tools
 The `uavR` tools consist of two packages:
 
   * mission planning ```uavRmp``` ([CRAN](https://CRAN.R-project.org/package=uavRmp))
