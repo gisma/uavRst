@@ -30,10 +30,12 @@ A full list of necessary libaries and binaries beyond ```R``` will hopefully (so
 You will find some tutorials and examples at the uavRst Wiki. Please feel free to participate.
 
 
+## Installation
 
+The master branch is a github mirror for the `CRAN` version. 
 
-To install from ```github```  you need to have installed the ```devtools``` package.
+To install the actual development version from ```github```  you need to have installed the ```devtools``` package.
 
 ```R
-devtools::install_github("gisma/uavRst", ref = "master")
+devtools::install_github("gisma/uavRst", ref = "develop")
 ```
