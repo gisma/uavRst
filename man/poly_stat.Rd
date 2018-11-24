@@ -64,14 +64,14 @@ utils::download.file(url, paste0(path_run,"tutorial_data.zip"))
 unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
 
 # convert tif to SAGA
-gdalUtils::gdal_translate(paste0(path_run,"rgb_3-3_train1.tif"),
-                          paste0(path_run,"rgb_3-3_train1.sdat"),
+gdalUtils::gdal_translate(file.path(path_run,"chm_3-3_train1.tif"),
+                          file.path(path_run,"chm_3-3_train1.sdat"),
                           overwrite = TRUE,
                           b = 1,
                           of = 'SAGA',
                           verbose = FALSE)
 
-polyStat <- poly_stat("rgb_3-3_train1",
+polyStat <- poly_stat("chm_3-3_train1",
                       spdf = "rgb_3-3_train1.shp",
                       giLinks=giLinks)
                       

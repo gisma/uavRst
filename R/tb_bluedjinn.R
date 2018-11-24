@@ -384,14 +384,14 @@ funWhichmax <- function(mask,value) {
 #' unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
 #' 
 #' # convert tif to SAGA
-#' gdalUtils::gdal_translate(paste0(path_run,"rgb_3-3_train1.tif"),
-#'                           paste0(path_run,"rgb_3-3_train1.sdat"),
+#' gdalUtils::gdal_translate(file.path(path_run,"chm_3-3_train1.tif"),
+#'                           file.path(path_run,"chm_3-3_train1.sdat"),
 #'                           overwrite = TRUE,
 #'                           b = 1,
 #'                           of = 'SAGA',
 #'                           verbose = FALSE)
 #'
-#' polyStat <- poly_stat("rgb_3-3_train1",
+#' polyStat <- poly_stat("chm_3-3_train1",
 #'                       spdf = "rgb_3-3_train1.shp",
 #'                       giLinks=giLinks)
 #'                       
@@ -412,7 +412,7 @@ poly_stat <- function(x = NULL,
                       quantile = 10,
                       parallel = 1,
                       giLinks =NULL )   {
-  if (!exists("path_run")) path_run = paste0(getwd(),"/")
+  if (!exists("path_run")) path_run = tempdir()
   #cat(":: run statistics...\n")
   # calculate chm statistics for each crown
   if (is.null(giLinks)){
@@ -471,8 +471,8 @@ poly_stat <- function(x = NULL,
                     overwrite_layer = TRUE,verbose = FALSE)
     
     ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
-                          " -GRIDS ",path_run,x[i],".sgrd",
-                          " -POLYGONS ",path_run,spdf,
+                          " -GRIDS ",file.path(path_run,paste0(x[i],".sgrd")),
+                          " -POLYGONS ",file.path(path_run,spdf),
                           " -NAMING 1",
                           " -METHOD 2",
                           " -COUNT ", count,
@@ -485,7 +485,7 @@ poly_stat <- function(x = NULL,
                           " -STDDEV ",stddev,
                           " -QUANTILE ",quantile,
                           " -PARALLELIZED ",parallel,
-                          " -RESULT ",path_run,basename(x[i]),"Stat.shp"),
+                          " -RESULT ",file.path(path_run,paste0(basename(x[i]),"Stat.shp"))),
                    intern = TRUE)
 
     stat1 <- rgdal::readOGR(dsn = path_run,
