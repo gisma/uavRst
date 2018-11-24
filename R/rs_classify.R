@@ -510,7 +510,11 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                      paste0(path_run,"tutorial_data.zip"))
 #' unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
 #'
-
+#' data("mrbiko")
+#' proj = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
+#' mrbiko <- raster::projectRaster(mrbiko, crs = proj,method = "ngb",res = 20)
+#' 
+#' 
 #'
 #' ##- calculate some synthetic channels from the RGB image and the canopy height model
 #' ##- then extract the from the corresponding training geometries the data values aka trainingdata
@@ -614,7 +618,7 @@ calc_ext<- function ( calculateBands    = FALSE,
   currentDataFolder<- currentDataFolder #paste0(path_data_training)
   currentIdxFolder<- currentIdxFolder # paste0(path_data_training_idx)
 
-  if (((stat == TRUE) || (hara == TRUE) || (edge == TRUE) || (morpho == TRUE)) & path_OTB == "") stop("OTB missing - please check")
+  if (((stat == TRUE) || (hara == TRUE) || (edge == TRUE) || (morpho == TRUE)) & !otb$exist == "") stop("OTB missing - please check")
 
   ### ----- start preprocessing ---------------------------------------------------
   if (calculateBands) {

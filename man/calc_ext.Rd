@@ -144,6 +144,11 @@ utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/
                      paste0(path_run,"tutorial_data.zip"))
 unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
 
+data("mrbiko")
+proj = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
+mrbiko <- raster::projectRaster(mrbiko, crs = proj,method = "ngb",res = 20)
+
+
 
 ##- calculate some synthetic channels from the RGB image and the canopy height model
 ##- then extract the from the corresponding training geometries the data values aka trainingdata

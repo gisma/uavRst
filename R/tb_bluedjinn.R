@@ -412,7 +412,7 @@ poly_stat <- function(x = NULL,
                       quantile = 10,
                       parallel = 1,
                       giLinks =NULL )   {
-
+  if (!exists("path_run")) path_run = paste0(getwd(),"/")
   #cat(":: run statistics...\n")
   # calculate chm statistics for each crown
   if (is.null(giLinks)){
@@ -426,8 +426,8 @@ poly_stat <- function(x = NULL,
   sagaCmd<-giLinks$saga$sagaCmd
   
   if (class(spdf)!="character")     {
-    rgdal::writeOGR(obj    = spdf,
-                    layer  = "spdf",
+    rgdal::writeOGR(obj    = stat1,
+                    layer  = spdf,
                     driver = "ESRI Shapefile",
                     dsn    = path_run,
                     overwrite_layer = TRUE)
@@ -436,9 +436,42 @@ poly_stat <- function(x = NULL,
 
   for (i in seq(1:length(x))) {
     cat(":: calculate ",x[i], " statistics\n")
+    #saga_cmd shapes_grid 2 -GRIDS=/tmp/RtmpK0j1RP/run/rgb_3-3_train1.sgrd -POLYGONS=/tmp/RtmpK0j1RP/run/rgb_3-3_train1.shp -NAMING=1 -METHOD=2 -PARALLELIZED=1 -RESULT=/tmp/RtmpK0j1RP/run/rgb_3-3_train1.shp -COUNT=1 -MIN=1 -MAX=1 -RANGE=1 -SUM=1 -MEAN=1 -VAR=1 -STDDEV=1 -QUANTILE=0
+
+    # saga <- giLinks$saga
+    # sagaCmd<-saga$sagaCmd
+    # invisible(env<-RSAGA::rsaga.env(path = saga$sagaPath))
+    # RSAGA::rsaga.geoprocessor(lib = "shapes_grid", module = 2, 
+    #                           param = list(GRIDS = paste(path_run,x[i],".sgrd"),
+    #                                        POLYGONS = paste0(path_run,spdf),
+    #                                        NAMING = 1,
+    #                                        METHOD = 2,
+    #                                        COUNT =  count,
+    #                                        MIN  =  min,
+    #                                        MAX =  max,
+    #                                        SUM  = sum,
+    #                                        RANGE = range,
+    #                                        MEAN  =  mean,
+    #                                        VAR = var,
+    #                                        STDDEV = stddev,
+    #                                        QUANTILE = quantile,
+    #                                        PARALLELIZED = parallel,
+    #                                        RESULT = paste0(path_run,basename(x[i]),"Stat.shp")
+    #                                        ),
+    #                           show.output.on.console = FALSE,invisible = TRUE,
+    #                           env = env)
+    tmp <- rgdal::readOGR(dsn = path_run,
+                            layer = tools::file_path_sans_ext(basename(spdf)), 
+                            verbose = FALSE)
+    rgdal::writeOGR(obj    = tmp,
+                    layer  = tools::file_path_sans_ext(basename(spdf)),
+                    driver = "ESRI Shapefile",
+                    dsn    = path_run,
+                    overwrite_layer = TRUE,verbose = FALSE)
+    
     ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
                           " -GRIDS ",path_run,x[i],".sgrd",
-                          " -POLYGONS ",spdf,
+                          " -POLYGONS ",path_run,spdf,
                           " -NAMING 1",
                           " -METHOD 2",
                           " -COUNT ", count,
@@ -454,7 +487,10 @@ poly_stat <- function(x = NULL,
                           " -RESULT ",path_run,basename(x[i]),"Stat.shp"),
                    intern = TRUE)
 
-    stat1 <- rgdal::readOGR(path_run,paste0(basename(x[i]),"Stat"), verbose = TRUE)
+    stat1 <- rgdal::readOGR(dsn = path_run,
+                            layer = paste0(basename(x[i]),"Stat"), 
+                            verbose = TRUE)
+    
     names(stat1) <- gsub(names(stat1),pattern = "\\.",replacement = "")
 
     if (i == 1) {
