@@ -425,6 +425,7 @@ poly_stat <- function(x = NULL,
   saga <- giLinks$saga
   sagaCmd<-giLinks$saga$sagaCmd
   
+  
   if (class(spdf)!="character")     {
     rgdal::writeOGR(obj    = stat1,
                     layer  = spdf,
