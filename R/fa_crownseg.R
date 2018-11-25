@@ -132,7 +132,7 @@ chmseg_GWS <- function(treepos = NULL,
 
   # fill the holes inside the crowns (simple approach)
   # TODO better segmentation
-  if (majorityRadius > 0){
+  if (majorityRadius > 0 & Sys.info()["sysname"]!="Windows"){
     outname<- "sieve_pre_tree_crowns.sdat"
     ret <- system(paste0("gdal_sieve.py -8 ",
                          file.path(R.utils::getAbsolutePath(path_run)),"/","crowns.sdat ",

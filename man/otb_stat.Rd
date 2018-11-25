@@ -36,15 +36,21 @@ the otb is used for the calculation of the statistics. Please provide a GeoTiff 
 \examples{
 \dontrun{
 require(uavRst)
+require(link2GI)
 # check if OTB is installed correctly
-giLinks <- uavRst::linkAll()
+giLinks<-list()
+giLinks$otb <- link2GI::linkOTB()
 if (giLinks$otb$exist) {
 setwd(tempdir())
 data("pacman")
 raster::writeRaster(pacman,"pacman.tif",overwrite=TRUE)
 
 # calculate statistics
-result<- otb_stat(input="pacman.tif",radius=5,retRaster = TRUE)
+result<- otb_stat(input="pacman.tif",
+                  radius=5,
+                  retRaster = TRUE,
+                  channel = 1, 
+                  giLinks = giLinks)
 #plot the results :
 raster::plot(result[[1]])
 }

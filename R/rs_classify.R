@@ -504,7 +504,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' ##- get the tutorial data
 #' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip",
 #'                      paste0(path_run,"tutorial_data.zip"))
-#' unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
+#' unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = R.utils::getAbsolutePath(path_run))
 #'
 #' ##- calculate some synthetic channels from the RGB image and the canopy height model
 #' ##- then extract the from the corresponding training geometries the data values aka trainingdata
