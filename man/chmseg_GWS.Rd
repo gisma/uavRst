@@ -79,11 +79,11 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 ##- tree segmentation
 crowns_GWS <- chmseg_GWS( treepos = trp_seg[[1]],
                       chm = chm_seg[[1]],
-                      minTreeAlt = 2,
+                      minTreeAlt = 10,
                       neighbour = 0,
                       thVarFeature = 1.,
                       thVarSpatial = 1.,
-                      thSimilarity = 0.00001,
+                      thSimilarity = 0.003,
                       giLinks = giLinks )
 
 ##- visualize it

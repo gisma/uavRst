@@ -54,11 +54,11 @@
 #' ##- tree segmentation
 #' crowns_GWS <- chmseg_GWS( treepos = trp_seg[[1]],
 #'                       chm = chm_seg[[1]],
-#'                       minTreeAlt = 2,
+#'                       minTreeAlt = 10,
 #'                       neighbour = 0,
 #'                       thVarFeature = 1.,
 #'                       thVarSpatial = 1.,
-#'                       thSimilarity = 0.00001,
+#'                       thSimilarity = 0.003,
 #'                       giLinks = giLinks )
 #'
 #'##- visualize it
@@ -133,25 +133,37 @@ chmseg_GWS <- function(treepos = NULL,
   if (majorityRadius > 0){
     outname<- "sieve_pre_tree_crowns.sdat"
     ret <- system(paste0("gdal_sieve.py -8 ",
-                         file.path(path_run),"crowns.sdat ",
-                         file.path(path_run),outname,
+                         file.path(R.utils::getAbsolutePath(path_run)),"/","crowns.sdat ",
+                         file.path(R.utils::getAbsolutePath(path_run)),"/",outname,
                          " -of SAGA"),
                   intern = TRUE)
     # apply majority filter for smoothing the extremly irregular crown boundaries
+
+    if (RSAGA::rsaga.get.version(env = env) > "3.0.0") {
     ret <- system(paste0(sagaCmd, " grid_filter 6 ",
-                         " -INPUT "   ,file.path(path_run),"sieve_pre_tree_crowns.sgrd",
-                         " -RESULT "  ,file.path(path_run),"crowns.sgrd",
-                         " -MODE 0",
-                         " -RADIUS "  ,majorityRadius,
+                         " -INPUT "   ,file.path(R.utils::getAbsolutePath(path_run)),"/sieve_pre_tree_crowns.sgrd",
+                         " -RESULT "  ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns.sgrd",
+                         " -TYPE 0",
+                         " -KERNEL_RADIUS "  ,majorityRadius,
                          " -THRESHOLD 0.0 "),
-                  intern = TRUE)
+                  intern = TRUE)  
+    } 
+    else {
+      ret <- system(paste0(sagaCmd, " grid_filter 6 ",
+                           " -INPUT "   ,file.path(R.utils::getAbsolutePath(path_run)),"/sieve_pre_tree_crowns.sgrd",
+                           " -RESULT "  ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns.sgrd",
+                           " -MODE 0",
+                           " -RADIUS "  ,majorityRadius,
+                           " -THRESHOLD 0.0 "),
+                    intern = TRUE)
+    }
   }
 
 
   # convert filtered crown clumps to shape format
   ret <- system(paste0(sagaCmd, " shapes_grid 6 ",
-                       " -GRID "     ,file.path(path_run),"crowns.sgrd",
-                       " -POLYGONS " ,file.path(path_run),"crowns.shp",
+                       " -GRID "     ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns.sgrd",
+                       " -POLYGONS " ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns.shp",
                        " -CLASS_ALL 1" ,
                        " -CLASS_ID 1.0",
                        " -SPLIT 1"),
@@ -165,7 +177,8 @@ chmseg_GWS <- function(treepos = NULL,
   
   # extract chm stats by potential crown segments
   statRawCrowns <- uavRst::poly_stat(c("chm"),
-                                     spdf = crowns,parallel = parallel)
+                                     spdf = crowns,parallel = parallel,
+                                     giLinks = giLinks)
 
   rgdal::writeOGR(obj = statRawCrowns,
                   dsn = file.path(R.utils::getAbsolutePath(path_run)),

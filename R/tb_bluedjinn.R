@@ -426,9 +426,9 @@ poly_stat <- function(x = NULL,
   sagaCmd<-giLinks$saga$sagaCmd
   
   
-  if (class(spdf)!="character")     {
-    rgdal::writeOGR(obj    = stat1,
-                    layer  = spdf,
+  if (class(spdf)=="SpatialPolygonsDataFrame")     {
+    rgdal::writeOGR(obj    = spdf,
+                    layer  = "spdf",
                     driver = "ESRI Shapefile",
                     dsn    = file.path(R.utils::getAbsolutePath(path_run)),
                     overwrite_layer = TRUE)
@@ -472,7 +472,7 @@ poly_stat <- function(x = NULL,
     
     ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
                           " -GRIDS ",file.path(R.utils::getAbsolutePath(path_run),paste0(x[i],".sgrd")),
-                          " -POLYGONS ",file.path(R.utils::getAbsolutePath(path_run),spdf),
+                          " -POLYGONS ",spdf,
                           " -NAMING 1",
                           " -METHOD 2",
                           " -COUNT ", count,
