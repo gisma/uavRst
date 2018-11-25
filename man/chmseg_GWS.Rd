@@ -89,7 +89,7 @@ crowns_GWS <- chmseg_GWS( treepos = trp_seg[[1]],
                       giLinks = giLinks )
 
 ##- visualize it
-mapview::mapview(crowns_GWS,zcol="chmMEAN")
+raster::plot(crowns_GWS[[2]])
 }
 }
 }

@@ -63,7 +63,7 @@
 #'                       giLinks = giLinks )
 #'
 #'##- visualize it
-#' mapview::mapview(crowns_GWS,zcol="chmMEAN")
+#'raster::plot(crowns_GWS[[2]])
 #' }
 #'}
 
