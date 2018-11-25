@@ -18,37 +18,25 @@ Extracts training data from a raster stack and returns a dataframe containing fo
 \dontrun{
 ##- required packages
 require(uavRst)
-require(link2GI)
-
-##- project folder
-projRootDir<-tempdir()
-
-##- create subfolders please mind that the pathes are exported as global variables
-paths<-link2GI::initProj(projRootDir = projRootDir,
-                        projFolders = c("data/","data/ref/","output/","run/","las/"),
-                        global = TRUE,
-                        path_prefix = "path_")
-##- overide trailing backslash issue
-path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-setwd(path_run)
-unlink(paste0(path_run,"*"), force = TRUE)
+setwd(tempdir())
 
 ##- get the tutorial data
 utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip",
-                     paste0(path_run,"tutorial_data.zip"))
-unzip(paste0(path_run,"tutorial_data.zip"),exdir =  path_run)
+                     "tutorial_data.zip")
+unzip("tutorial_data.zip",exdir =  ".")
 
 ##- get the files
 imageTrainStack <- list()
 geomTrainStack <- list()
-imageTrainFiles <- Sys.glob(paste0(path_run,"rgb*.tif"))
-geomTrainFiles <- Sys.glob(paste0(path_run,"rgb*.shp"))
+imageTrainFiles <- Sys.glob("rgb??.tif")
+geomTrainFiles <- Sys.glob("rgb??.shp")
 
 ##- create stacks from image and geometry files
 imageTrainStack<-lapply(imageTrainFiles, FUN=raster::stack)
 geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
 names(imageTrainStack[[1]])<-c("red","green","blue")
 names(imageTrainStack[[2]])<-c("red","green","blue")
+names(imageTrainStack[[3]])<-c("red","green","blue")
 
 ##' finally extraxt the training data to a data frame
 trainDF <- get_traindata(rasterStack  = imageTrainStack,
