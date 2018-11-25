@@ -50,7 +50,7 @@ counts pixel values according to their classes
 ##- get the rgb image, chm and training data
  utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
                       paste0(path_run,"tutorial_data.zip"))
- unzip(zipfile = paste0(path_run,"tutorial_data.zip"),exdir = path_run)
+ unzip(zipfile = paste0(path_run,"tutorial_data.zip"),exdir = ".")
 
 # read data
  position <- raster::shapefile(paste0(path_run,"position.shp"))

@@ -71,15 +71,13 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
                          path_prefix = "path_")
-##- overide trailing backslash issue
-path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 setwd(path_run)
 unlink(paste0(path_run,"*"), force = TRUE)
 
 ##- get the rgb image, chm and training data
 utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip",
                       paste0(path_run,"ffs.zip"))
-unzip(zipfile = paste0(path_run,"ffs.zip"),exdir = path_run)
+unzip(zipfile = paste0(path_run,"ffs.zip"),exdir = ".")
 
 ##- get geometrical training data assuming that you have used before the calc_ext function
 trainDF<-readRDS(paste0(path_run,"tutorial_trainDF.rds"))
