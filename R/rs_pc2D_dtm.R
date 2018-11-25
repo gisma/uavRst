@@ -1,9 +1,9 @@
 
-#' Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling (fix window)
+#' Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling (fix resolution of sampling gridsize)
 #'
 #'@description
 #' Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval. Due to the poor estimation of ground points
-#' a minimum samopling approach is applied. It retrieves on a coarse sampling gridsize the minimum value and interpolates on these samples a surface grid with a higher target
+#' a minimum samopling approach is applied. It retrieves on a coarse fixed sampling gridsize the minimum value and interpolates on these samples a surface grid with a higher target
 #' resolution. this is a kind of an try and error process and provides fairly good results if the point cloud shows at least some real surface points on a not to coarse grid.
 #'
 #'@author Chris Reudenbach
@@ -24,7 +24,7 @@
 #'@param grassVersion numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar
 #'@param searchPath path to look for grass
 
-#'@export pc2D_dtm_fw
+#'@export pc_2D_fdtm
 
 #'@examples
 
@@ -53,7 +53,7 @@
 #' destfile=paste0("lasdata.las"))
 #'
 #' # create 2D point cloud DTM
-#' dtm <- pc2D_dtm_fw(laspcFile = "lasdata.las",
+#' dtm <- pc_2D_fdtm(laspcFile = "lasdata.las",
 #'                 gisdbasePath = projRootDir,
 #'                 tension = 20 ,
 #'                 sampleGridSize = 25,
@@ -65,7 +65,7 @@
 #' 
 #' }
 
-pc2D_dtm_fw <- function(laspcFile = NULL,
+pc_2D_fdtm <- function(laspcFile = NULL,
                         grassVersion=1,
                         searchPath =NULL,
                         gisdbasePath = NULL,
@@ -73,12 +73,13 @@ pc2D_dtm_fw <- function(laspcFile = NULL,
                         sampleMethod ="min",
                         cutExtent = NULL,
                         sampleGridSize=25,
-                        targetGridSize = 0.25,
+                        targetGridSize = 0.1,
                         splineThresGridSize = 0.5,
                         projFolder = NULL,
                         proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                         giLinks =NULL,
                         verbose = FALSE) {
+  if (!exists("path_run")) path_run = tempdir()
   if (is.null(searchPath)){
     if(Sys.info()["sysname"]=="Windows") searchPath="C:"
     else searchPath <- "/usr"}
@@ -113,41 +114,41 @@ pc2D_dtm_fw <- function(laspcFile = NULL,
   }
   
   
-  if (!file.exists(paste0(path_run,name))){
+  if (!file.exists(file.path(R.utils::getAbsolutePath(path_run),name))){
     cat(":: create copy of the las file at the working directory... \n")
-    if (laspcFile != paste0(path_run,name))
+    if (laspcFile != file.path(R.utils::getAbsolutePath(path_run),name))
       file.copy(from = laspcFile,
-                to = paste0(path_run,name),
+                to = file.path(R.utils::getAbsolutePath(path_run),name),
                 overwrite = TRUE)}
   cat(":: get extent of the point cloud \n")
   if (!is.null(cutExtent)){
-    las<-lidR::readLAS(paste0(path_run,name))
+    las<-lidR::readLAS(file.path(R.utils::getAbsolutePath(path_run),name))
     las<-lidR::lasclipRectangle(las, as.numeric(cutExtent[1]), as.numeric(cutExtent[3]), as.numeric(cutExtent[2]), as.numeric(cutExtent[4]))
-    lidR::writeLAS(las ,paste0(path_run,"cut_point_cloud.las"))
+    lidR::writeLAS(las ,file.path(R.utils::getAbsolutePath(path_run),"cut_point_cloud.las"))
     lasxt<-lidR::extent(las)
     sp_param <- c(lasxt@xmin,lasxt@ymin,lasxt@xmax,lasxt@ymax)
     # rename output file according to the extent
     fn<- paste(sp_param ,collapse=" ")
     tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
     name<-paste0(gsub(tmp,pattern = "[.]",replacement = "_"),".las")
-    file.rename(from =paste0(path_run,"cut_point_cloud.las"),
-                to = paste0(path_run,name))
+    file.rename(from =file.path(R.utils::getAbsolutePath(path_run),"cut_point_cloud.las"),
+                to = file.path(R.utils::getAbsolutePath(path_run),name))
     
   } else {
-    las<-rlas::read.lasheader(paste0(path_run,name))
+    las<-rlas::read.lasheader(file.path(R.utils::getAbsolutePath(path_run),name))
     sp_param <- c(as.character(las$`Min X`),as.character(las$`Min Y`),as.character(las$`Max X`),as.character(las$`Max Y`))
     # rename output file according to the extent
     fn<- paste(sp_param ,collapse=" ")
     tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
     name<-paste0(gsub(tmp,pattern = "[.]",replacement = "_"),".las")
-    file.rename(from =paste0(path_run,basename(laspcFile)),
-                to = paste0(path_run,name))
+    file.rename(from =file.path(R.utils::getAbsolutePath(path_run),basename(laspcFile)),
+                to = file.path(R.utils::getAbsolutePath(path_run),name))
   }
   # copy it to the output folder
   sp_param[5] <- proj4
   
   link2GI::linkGRASS7(gisdbase = gisdbasePath,
-                      location = "pc2D_dtm_fw",
+                      location = "pc_2D_fdtm",
                       spatial_params = sp_param,
                       resolution = sampleGridSize,
                       returnPaths = FALSE,
@@ -159,7 +160,7 @@ pc2D_dtm_fw <- function(laspcFile = NULL,
   #if (!grepl(system("g.extension -l",ignore.stdout = TRUE),pattern = "r.in.lidar"))
   # ret <- rgrass7::execGRASS("r.in.pdal",
   #                           flags  = c("overwrite","quiet"),
-  #                           input  = paste0(path_run,name),
+  #                           input  = file.path(R.utils::getAbsolutePath(path_run),name),
   #                           output = paste0("dem",sampleGridSize),
   #                           method = sampleMethod,
   #                           proj_in = sp_param[5],
@@ -170,7 +171,7 @@ pc2D_dtm_fw <- function(laspcFile = NULL,
   # else
   ret <- rgrass7::execGRASS("r.in.lidar",
                             flags  = c("overwrite","quiet","o","e","n"),
-                            input  = paste0(path_run,name),
+                            input  = file.path(R.utils::getAbsolutePath(path_run),name),
                             output = paste0("dem",sampleGridSize),
                             method  = sampleMethod ,
                             resolution = sampleGridSize,
@@ -226,18 +227,18 @@ pc2D_dtm_fw <- function(laspcFile = NULL,
                             ignore.stderr = TRUE
   )
   
-  dtm0<- raster::writeRaster(raster::raster(rgrass7::readRAST("dtm")),paste0(path_run,"dtm0"), overwrite=TRUE,format="GTiff")
+  dtm0<- raster::writeRaster(raster::raster(rgrass7::readRAST("dtm")),file.path(R.utils::getAbsolutePath(path_run),"dtm0"), overwrite=TRUE,format="GTiff")
   if (oldtgs < splineThresGridSize) {
     cat(":: Resample to a grid size of: ", targetGridSize ,"\n")
-    res<-gdalUtils::gdalwarp(srcfile = paste0(path_run,"dtm0.tif"),
-                             dstfile = paste0(path_run,"dtm.tif"),
+    res<-gdalUtils::gdalwarp(srcfile = file.path(R.utils::getAbsolutePath(path_run),"dtm0.tif"),
+                             dstfile = file.path(R.utils::getAbsolutePath(path_run),"dtm.tif"),
                              tr=c(oldtgs,oldtgs),
                              r="bilinear",
                              overwrite = TRUE,
                              multi = TRUE)
-    dtm <- raster::raster(paste0(path_run,"dtm.tif"))
+    dtm <- raster::raster(file.path(R.utils::getAbsolutePath(path_run),"dtm.tif"))
   } else {
-    dtm <- raster::raster(paste0(path_run,"dtm0.tif"))
+    dtm <- raster::raster(file.path(R.utils::getAbsolutePath(path_run),"dtm0.tif"))
   }
   
   # cat(":: calculate metadata ... \n")

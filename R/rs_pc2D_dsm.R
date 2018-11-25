@@ -22,7 +22,7 @@
 #'@param searchPath path to look for grass
 #'
 
-#'@export pc2D_dsm
+#'@export pc_2D_dsm
 
 #'@examples
 
@@ -52,7 +52,7 @@
 #' destfile="lasdata.las")
 #'
 #' # create 2D pointcloud DSM
-#' dsm <- pc2D_dsm(laspcFile = "lasdata.las",
+#' dsm <- pc_2D_dsm(laspcFile = "lasdata.las",
 #'                 gisdbasePath = projRootDir,
 #'                 sampleMethod = "max",
 #'                 targetGridSize = 0.5,
@@ -62,7 +62,7 @@
 #'  setwd(owd)
 #'}
 
-pc2D_dsm <- function(laspcFile = NULL,
+pc_2D_dsm <- function(laspcFile = NULL,
                     gisdbasePath = NULL,
                     grassVersion=1,
                     searchPath =NULL,
@@ -134,7 +134,7 @@ pc2D_dsm <- function(laspcFile = NULL,
   sp_param[5] <- proj4
   cat(":: link to GRASS\n")
   link2GI::linkGRASS7(gisdbase = gisdbasePath,
-                      location = "pc2D_dsm",
+                      location = "pc_2D_dsm",
                       spatial_params = sp_param,
                       resolution = targetGridSize,
                       returnPaths = FALSE,
