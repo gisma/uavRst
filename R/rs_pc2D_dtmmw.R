@@ -36,20 +36,12 @@
 #' giLinks$grass<-link2GI::linkGRASS7(returnPaths = TRUE)
 #' if (giLinks$grass$exist) {
 #'
-#' # proj subfolders
-#' projRootDir<-tempdir()
-
-#' paths<-link2GI::initProj(projRootDir = tempdir(),
-#'                          projFolders = c("data/","data/ref/","output/","run/","las/"),
-#'                          global = TRUE,
-#'                          path_prefix = "path_")
-
 #' # get the data
 #' utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
-#' destfile="lasdata.las")
+#' destfile=paste0(tempdir(),"/lasdata.las"))
 #'
 #' # create 2D point cloud DTM
-#' dtm <- pc2D_dtm(laspcFile = "lasdata.las",
+#' dtm <- pc2D_dtm(laspcFile = paste0(tempdir(),"/lasdata.las"),
 #'                 gisdbasePath = tempdir(),
 #'                 tension = 20 ,
 #'                 sampleGridSize = 25,
@@ -59,7 +51,7 @@
 #'}
 #'}
 pc2D_dtm <- function(laspcFile = NULL,
-                       gisdbasePath = projRootDir,
+                       gisdbasePath = NULL,
                        grassVersion=1,
                        searchPath =NULL,
                        tension = 30 ,
@@ -78,7 +70,7 @@ pc2D_dtm <- function(laspcFile = NULL,
                        giLinks =giLinks,
                        verbose = FALSE) {
 
-
+  if (!exists("path_run")) path_run = tempdir()
   ## Bis Zeile 69 ist das eins zu eins von dir
 
   gdal <- link2GI::linkGDAL()
@@ -115,11 +107,11 @@ pc2D_dtm <- function(laspcFile = NULL,
 
 
 
-  if (!file.exists(paste0(path_run,name)))
-    cat(":: create copy of the las file at the working directory... \n")
+  if (!file.exists(file.path(R.utils::getAbsolutePath(path_run),name)))
+  {  cat(":: create copy of the las file at the working directory... \n")
   file.copy(from = laspcFile,
-            to = paste0(path_run,name),
-            overwrite = TRUE)
+            to = file.path(R.utils::getAbsolutePath(path_run),name),
+            overwrite = TRUE)}
 
 
 
@@ -129,8 +121,8 @@ pc2D_dtm <- function(laspcFile = NULL,
   fn<- paste(sp_param ,collapse=" ")
   tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
   name<-paste0(gsub(tmp,pattern = "[.]",replacement = "_"),".las")
-  file.rename(from =paste0(path_run,basename(laspcFile)),
-              to = paste0(path_run,name))
+  file.rename(from =file.path(R.utils::getAbsolutePath(path_run),basename(laspcFile)),
+              to = file.path(R.utils::getAbsolutePath(path_run),name))
 
   # copy it to the output folder
   sp_param[5] <- proj4
@@ -170,7 +162,7 @@ pc2D_dtm <- function(laspcFile = NULL,
     # else
     ret <- rgrass7::execGRASS("r.in.lidar",
                               flags  = c("overwrite","quiet","o","e","n"),
-                              input  = paste0(path_run,name),
+                              input  = file.path(R.utils::getAbsolutePath(path_run),name),
                               output = paste0("dem",i),
                               method = "min",
                               resolution = i,
@@ -200,6 +192,7 @@ pc2D_dtm <- function(laspcFile = NULL,
   #die vectormap # des größten Suchfensters, und ab Runde zwei die Vectormap der
   #"keeps" Punkte. erstellt leeren keeps vector der von runde zu runde neu
   #gefüllt wird vdtms_edit <- vdtms
+  keeps <- c()
   for (k in c(1:(length(winRes)-1))) {
     # hier wird festgelegt das er alle Suchfenstergrößen bis auf die letzte
     # durch geht.
@@ -292,10 +285,16 @@ pc2D_dtm <- function(laspcFile = NULL,
 
   # wenn das für jede Fenstergröße fertig wird die letzte Vectormap
   # abgespeichert und via "v.in.ascii" wieder in die GRASS umgebung geladen.
-  utils::write.csv(data.frame(as.numeric(keeps@coords[,1]),as.numeric(keeps@coords[,2]),as.numeric(keeps@coords[,3])), paste0(path_run, "vec"), sep = " ", col.names = FALSE, row.names = FALSE)
+  utils::write.csv(data.frame(as.numeric(keeps@coords[,1]),
+                              as.numeric(keeps@coords[,2]),
+                              as.numeric(keeps@coords[,3])), 
+                   file.path(R.utils::getAbsolutePath(path_run), "vec"), 
+                   sep = " ", 
+                   col.names = FALSE, 
+                   row.names = FALSE)
   ret <- rgrass7::execGRASS("v.in.ascii",
                             flags  = c("quiet", "overwrite"),
-                            input= paste0(path_run, "vec"),
+                            input= file.path(R.utils::getAbsolutePath(path_run), "vec"),
                             output= "ascii",
                             separator = "comma",
                             skip = 1,
@@ -353,18 +352,18 @@ pc2D_dtm <- function(laspcFile = NULL,
 
 
 
-  dtm0<- raster::writeRaster(raster::raster(rgrass7::readRAST("dtm")),paste0(path_run,"dtm0"), overwrite=TRUE,format="GTiff")
+  dtm0<- raster::writeRaster(raster::raster(rgrass7::readRAST("dtm")),file.path(R.utils::getAbsolutePath(path_run),"dtm0"), overwrite=TRUE,format="GTiff")
   if (oldtgs < splineThresGridSize) {
     cat(":: Resample to a grid size of: ", targetGridSize ,"\n")
-    res<-gdalUtils::gdalwarp(srcfile = paste0(path_run,"dtm0.tif"),
-                             dstfile = paste0(path_run,"dtm.tif"),
+    res<-gdalUtils::gdalwarp(srcfile = file.path(R.utils::getAbsolutePath(path_run),"dtm0.tif"),
+                             dstfile = file.path(R.utils::getAbsolutePath(path_run),"dtm.tif"),
                              tr=c(oldtgs,oldtgs),
                              r="bilinear",
                              overwrite = TRUE,
                              multi = TRUE)
-    dtm <- raster::raster(paste0(path_run,"dtm.tif"))
+    dtm <- raster::raster(file.path(R.utils::getAbsolutePath(path_run),"dtm.tif"))
   } else {
-    dtm <- raster::raster(paste0(path_run,"dtm0.tif"))
+    dtm <- raster::raster(file.path(R.utils::getAbsolutePath(path_run),"dtm0.tif"))
   }
 
   if (!verbose)  {

@@ -4,11 +4,11 @@
 \alias{pc2D_dtm}
 \title{Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling (moving window)}
 \usage{
-pc2D_dtm(laspcFile = NULL, gisdbasePath = projRootDir,
-  grassVersion = 1, searchPath = NULL, tension = 30,
-  sampleMethod = "min", cutExtent = NULL, sampleGridSize = 50,
-  winRes = c(100, 50, 25), targetGridSize = 0.05,
-  splineThresGridSize = 0.5, projFolder = NULL,
+pc2D_dtm(laspcFile = NULL, gisdbasePath = NULL, grassVersion = 1,
+  searchPath = NULL, tension = 30, sampleMethod = "min",
+  cutExtent = NULL, sampleGridSize = 50, winRes = c(100, 50, 25),
+  targetGridSize = 0.05, splineThresGridSize = 0.5,
+  projFolder = NULL,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84",
   giLinks = giLinks, verbose = FALSE)
 }
@@ -60,18 +60,12 @@ giLinks<-list()
 giLinks$grass<-link2GI::linkGRASS7(returnPaths = TRUE)
 if (giLinks$grass$exist) {
 
-# proj subfolders
-projRootDir<-tempdir()
-paths<-link2GI::initProj(projRootDir = tempdir(),
-                         projFolders = c("data/","data/ref/","output/","run/","las/"),
-                         global = TRUE,
-                         path_prefix = "path_")
 # get the data
 utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
-destfile="lasdata.las")
+destfile=paste0(tempdir(),"/lasdata.las"))
 
 # create 2D point cloud DTM
-dtm <- pc2D_dtm(laspcFile = "lasdata.las",
+dtm <- pc2D_dtm(laspcFile = paste0(tempdir(),"/lasdata.las"),
                 gisdbasePath = tempdir(),
                 tension = 20 ,
                 sampleGridSize = 25,
