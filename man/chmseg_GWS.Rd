@@ -5,9 +5,9 @@
 \title{seeded region growing tree crown segmentation based on 'SAGA GIS'}
 \usage{
 chmseg_GWS(treepos = NULL, chm = NULL, minTreeAlt = 2,
-  minTreeAltParam = "chmQ20", maxCrownArea = 100, leafsize = 256,
-  normalize = 0, neighbour = 1, method = 0, thVarFeature = 1,
-  thVarSpatial = 1, thSimilarity = 0.002,
+  minTreeAltParam = "chm_Q20", minCrownArea = 3, maxCrownArea = 100,
+  leafsize = 256, normalize = 0, neighbour = 1, method = 0,
+  thVarFeature = 1, thVarSpatial = 1, thSimilarity = 0.002,
   segmentationBands = c("chm"), majorityRadius = 3, parallel = 1,
   giLinks = NULL)
 }
@@ -22,7 +22,9 @@ height of \code{treepos}.}
 
 \item{minTreeAltParam}{character. code for the percentile that is used as tree height treshold. It is build using the key letters \code{chmQ} and adding the percentile i.e. "10". Default is \code{chmQ20}}
 
-\item{maxCrownArea}{numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.}
+\item{minCrownArea}{numeric. A single value of the minimum projected tree crown area allowed. Default 3 sqm}
+
+\item{maxCrownArea}{numeric. A single value of the maximum projected tree crown area allowed. Default 100 sqm.}
 
 \item{leafsize}{integer. bin size of grey value sampling range from 1 to 256 see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}}
 
@@ -79,15 +81,15 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
 ##- tree segmentation
 crowns_GWS <- chmseg_GWS( treepos = trp_seg[[1]],
                       chm = chm_seg[[1]],
-                      minTreeAlt = 2,
+                      minTreeAlt = 10,
                       neighbour = 0,
                       thVarFeature = 1.,
                       thVarSpatial = 1.,
-                      thSimilarity = 0.00001,
-                      giLinks = giLinks )
+                      thSimilarity = 0.003,
+                      giLinks = giLinks )[[2]]
 
 ##- visualize it
-mapview::mapview(crowns_GWS,zcol="chmMEAN")
+raster::plot(crowns_GWS)
 }
 }
 }

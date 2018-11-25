@@ -250,7 +250,7 @@ poly_maxpos <- function(fileName,layerName, polySplit=TRUE, cores=1){
   mask <- raster::raster(fn)
   seeds <- raster::rasterize(max_pos,mask,field="id")
   seeds[seeds >= 0] <- 1
-  #raster::writeRaster(seeds,paste0(path_run,"seeds.tif"),overwrite=TRUE)
+  #raster::writeRaster(seeds,file.path(R.utils::getAbsolutePath(path_run),"seeds.tif"),overwrite=TRUE)
   return(list(seeds,max_pos))
 }
 
@@ -426,13 +426,13 @@ poly_stat <- function(x = NULL,
   sagaCmd<-giLinks$saga$sagaCmd
   
   
-  if (class(spdf)!="character")     {
-    rgdal::writeOGR(obj    = stat1,
-                    layer  = spdf,
+  if (class(spdf)=="SpatialPolygonsDataFrame")     {
+    rgdal::writeOGR(obj    = spdf,
+                    layer  = "spdf",
                     driver = "ESRI Shapefile",
-                    dsn    = path_run,
+                    dsn    = file.path(R.utils::getAbsolutePath(path_run)),
                     overwrite_layer = TRUE)
-    spdf<-paste0(path_run,"spdf.shp")
+    spdf<-file.path(R.utils::getAbsolutePath(path_run),"spdf.shp")
   }
 
   for (i in seq(1:length(x))) {
@@ -443,8 +443,8 @@ poly_stat <- function(x = NULL,
     # sagaCmd<-saga$sagaCmd
     # invisible(env<-RSAGA::rsaga.env(path = saga$sagaPath))
     # RSAGA::rsaga.geoprocessor(lib = "shapes_grid", module = 2, 
-    #                           param = list(GRIDS = paste(path_run,x[i],".sgrd"),
-    #                                        POLYGONS = paste0(path_run,spdf),
+    #                           param = list(GRIDS = file.path(R.utils::getAbsolutePath(path_run),paste0(x[i],".sgrd")),
+    #                                        POLYGONS = file.path(R.utils::getAbsolutePath(path_run),spdf),
     #                                        NAMING = 1,
     #                                        METHOD = 2,
     #                                        COUNT =  count,
@@ -457,23 +457,23 @@ poly_stat <- function(x = NULL,
     #                                        STDDEV = stddev,
     #                                        QUANTILE = quantile,
     #                                        PARALLELIZED = parallel,
-    #                                        RESULT = paste0(path_run,basename(x[i]),"Stat.shp")
+    #                                        RESULT = file.path(R.utils::getAbsolutePath(path_run),basename(x[i]),"Stat.shp")
     #                                        ),
     #                           show.output.on.console = FALSE,invisible = TRUE,
     #                           env = env)
-    tmp <- rgdal::readOGR(dsn = path_run,
+    tmp <- rgdal::readOGR(dsn = file.path(R.utils::getAbsolutePath(path_run)),
                             layer = tools::file_path_sans_ext(basename(spdf)), 
                             verbose = FALSE)
     rgdal::writeOGR(obj    = tmp,
                     layer  = tools::file_path_sans_ext(basename(spdf)),
                     driver = "ESRI Shapefile",
-                    dsn    = path_run,
+                    dsn    = file.path(R.utils::getAbsolutePath(path_run)),
                     overwrite_layer = TRUE,verbose = FALSE)
     
     ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
-                          " -GRIDS ",file.path(path_run,paste0(x[i],".sgrd")),
-                          " -POLYGONS ",file.path(path_run,spdf),
-                          " -NAMING 1",
+                          " -GRIDS ",file.path(R.utils::getAbsolutePath(path_run),paste0(x[i],".sgrd")),
+                          " -POLYGONS ",spdf,
+                          " -NAMING 0",
                           " -METHOD 2",
                           " -COUNT ", count,
                           " -MIN  ", min,
@@ -485,15 +485,22 @@ poly_stat <- function(x = NULL,
                           " -STDDEV ",stddev,
                           " -QUANTILE ",quantile,
                           " -PARALLELIZED ",parallel,
-                          " -RESULT ",file.path(path_run,paste0(basename(x[i]),"Stat.shp"))),
+                          " -RESULT ",file.path(R.utils::getAbsolutePath(path_run),paste0(basename(x[i]),"Stat.shp"))),
                    intern = TRUE)
 
-    stat1 <- rgdal::readOGR(dsn = path_run,
+    stat1 <- rgdal::readOGR(dsn = file.path(R.utils::getAbsolutePath(path_run)),
                             layer = paste0(basename(x[i]),"Stat"), 
                             verbose = TRUE)
     
     names(stat1) <- gsub(names(stat1),pattern = "\\.",replacement = "")
+    #TODO
+    if (nchar(x[i]) > 6 ) x[i] <-substr(x[i],1,6)
+    if (i<10)  tmp_names <- gsub(names(stat1),pattern = paste0("G0",i),replacement = x[i])
+    else if (i<10)  tmp_names <- gsub(names(stat1),pattern = paste0("G",i),replacement = x[i])
+    names(stat1)<-substr(tmp_names , 1,10)
+    #raster::shapefile(stat1,file.path(R.utils::getAbsolutePath(path_run),"polystat"),overwrite = TRUE)
 
+    
     if (i == 1) {
       stat <- stat1
 
@@ -506,7 +513,7 @@ poly_stat <- function(x = NULL,
   rgdal::writeOGR(obj = stat,
                   layer = "polyStat",
                   driver = "ESRI Shapefile",
-                  dsn = path_run,
+                  dsn = file.path(R.utils::getAbsolutePath(path_run)),
                   overwrite_layer = TRUE)
   return(stat)
 }
@@ -672,7 +679,7 @@ split2SAGA<-function(fn=NULL,
                     returnRaster=FALSE){
   flist<-list()
   for (i in seq(startBand:endBand)){
-    outFn<-paste0(path_run,bandName[i],".sdat")
+    outFn<-file.path(R.utils::getAbsolutePath(path_run),paste0(bandName[i],".sdat"))
     #raster::writeRaster(raster::raster(fn),outFn,overwrite = TRUE,NAflag = 0,process="text")
     if (!is.null(refFn))
       r<-raster::raster(refFn)
@@ -831,9 +838,9 @@ cutTif<- function(rasterFiles = NULL,
            raster::extent(ext)[3],' ',
            raster::extent(ext)[2],' ',
            raster::extent(ext)[4])
-  if (!file.exists(paste0(path_run, outPath))) dir.create(file.path(paste0(path_run, outPath)), recursive = TRUE,showWarnings = FALSE)
+  if (!file.exists(file.path(R.utils::getAbsolutePath(path_run), outPath))) dir.create(file.path(file.path(R.utils::getAbsolutePath(path_run), outPath)), recursive = TRUE,showWarnings = FALSE)
   for (rasterFile in rasterFiles) {
-    system(paste0("gdal_translate -projwin ", te, " -of GTiff ",rasterFile, " ", path_run,outPath,"/",prefix,basename(rasterFile)))
+    system(paste0("gdal_translate -projwin ", te, " -of GTiff ",rasterFile, " ", file.path(R.utils::getAbsolutePath(path_run)),outPath,"/",prefix,basename(rasterFile)))
   }
 }
 

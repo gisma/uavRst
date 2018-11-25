@@ -371,19 +371,27 @@ otbtex_hara<- function(x,
 #' @examples
 #' \dontrun{
 #' require(uavRst)
+#' require(link2GI)
 #' # check if OTB is installed correctly
-#' giLinks <- uavRst::linkAll()
+#' giLinks<-list()
+#' giLinks$otb <- link2GI::linkOTB()
 #' if (giLinks$otb$exist) {
 #' setwd(tempdir())
 #' data("pacman")
 #' raster::writeRaster(pacman,"pacman.tif",overwrite=TRUE)
 #' 
 #' # calculate statistics
-#' result<- otb_stat(input="pacman.tif",radius=5,retRaster = TRUE)
+#' result<- otb_stat(input="pacman.tif",
+#'                   radius=5,
+#'                   retRaster = TRUE,
+#'                   channel = 1, 
+#'                   giLinks = giLinks)
 #' #plot the results :
 #' raster::plot(result[[1]])
 #' }
 #' }
+
+
 
 
 otb_stat<- function(input=NULL,
@@ -411,7 +419,7 @@ otb_stat<- function(input=NULL,
                     "_r",
                     radius,
                     ".tif")
-
+                              
     command<-paste0(path_OTB,"otbcli_LocalStatisticExtraction")
     command<-paste(command, " -in ", input)
     command<-paste(command, " -channel ", channel)
@@ -663,7 +671,7 @@ morpho_dem<- function(dem,
                     numScale = 2,
                     retRaster = TRUE,
                     giLinks = NULL) {
-  if (!exists("path_run")) path_run = paste0(getwd(),"/")
+  if (!exists("path_run")) path_run = tempdir()
   retStack<-list()
   if (is.null(giLinks)){
     giLinks <- linkAll()
@@ -681,7 +689,7 @@ morpho_dem<- function(dem,
   s<-raster::raster(dem)
   y<-raster::yres(s)
   x<-raster::xres(s)
-  res<-gdalUtils::gdalwarp(dem,paste0(path_run,'dem2.tif'),
+  res<-gdalUtils::gdalwarp(dem,file.path(path_run,'dem2.tif'),
                            te=paste(extent(s)[1],' ',
                                     extent(s)[3],' ',
                                     extent(s)[2],' ',
@@ -693,33 +701,33 @@ morpho_dem<- function(dem,
   for (item in gdal_items){
     cat(getCrayon()[[1]](":::: processing ",item,"\n"))
     res<-   gdalUtils::gdaldem(mode = item,
-            input_dem=paste0(path_run,"dem2.tif"),
-            output = paste0(path_run,item,".tif"))
-    if (retRaster) retStack[[item]]<-assign(item,raster::stack(paste0(path_run,item,".tif")))
+            input_dem=file.path(R.utils::getAbsolutePath(path_run),paste0("dem2.tif")),
+            output = file.path(R.utils::getAbsolutePath(path_run),paste0(item,".tif")))
+    if (retRaster) retStack[[item]]<-assign(item,raster::stack(file.path(R.utils::getAbsolutePath(path_run),paste0(item,".tif"))))
   }
 
   if (length(saga_items>0))  {
-    rdem<-raster::raster(paste0(path_run,'dem2.tif'))
-    raster::writeRaster(rdem,paste0(path_run,"SAGA_dem.sdat"),overwrite = TRUE,NAflag = 0)
+    rdem<-raster::raster(file.path(R.utils::getAbsolutePath(path_run),'dem2.tif'))
+    raster::writeRaster(rdem,file.path(R.utils::getAbsolutePath(path_run),"SAGA_dem.sdat"),overwrite = TRUE,NAflag = 0)
     # claculate the basics SAGA morphometric params
     cat(getCrayon()[[1]](":::: processing ",saga_items,"\n"))
     if (length(saga_items>0) )  { #&& !("MTPI" %in% saga_items)
     RSAGA::rsaga.geoprocessor(lib = "ta_morphometry", module = 0,
-                       param = list(ELEVATION = paste(path_run,"SAGA_dem.sgrd", sep = ""),
+                       param = list(ELEVATION = file.path(R.utils::getAbsolutePath(path_run),"SAGA_dem.sgrd"),
                                     UNIT_SLOPE = 1,
                                     UNIT_ASPECT = 1,
-                                    SLOPE = paste(path_run,"SLOPE.sgrd", sep = ""),
-                                    ASPECT = paste(path_run,"ASPECT.sgrd", sep = ""),
-                                    C_GENE = paste(path_run,"C_GENE.sgrd", sep = ""),
-                                    C_PROF = paste(path_run,"C_PROF.sgrd", sep = ""),
-                                    C_PLAN = paste(path_run,"C_PLAN.sgrd", sep = ""),
-                                    C_TANG = paste(path_run,"C_TANG.sgrd", sep = ""),
-                                    C_LONG = paste(path_run,"C_LONG.sgrd", sep = ""),
-                                    C_CROS = paste(path_run,"C_CROS.sgrd", sep = ""),
-                                    C_MINI = paste(path_run,"C_MINI.sgrd", sep = ""),
-                                    C_MAXI = paste(path_run,"C_MAXI.sgrd", sep = ""),
-                                    C_TOTA = paste(path_run,"C_TOTA.sgrd", sep = ""),
-                                    C_ROTO = paste(path_run,"C_ROTO.sgrd", sep = ""),
+                                    SLOPE =  file.path(R.utils::getAbsolutePath(path_run),"SLOPE.sgrd"),
+                                    ASPECT = file.path(R.utils::getAbsolutePath(path_run),"ASPECT.sgrd"),
+                                    C_GENE = file.path(R.utils::getAbsolutePath(path_run),"C_GENE.sgrd"),
+                                    C_PROF = file.path(R.utils::getAbsolutePath(path_run),"C_PROF.sgrd"),
+                                    C_PLAN = file.path(R.utils::getAbsolutePath(path_run),"C_PLAN.sgrd"),
+                                    C_TANG = file.path(R.utils::getAbsolutePath(path_run),"C_TANG.sgrd"),
+                                    C_LONG = file.path(R.utils::getAbsolutePath(path_run),"C_LONG.sgrd"),
+                                    C_CROS = file.path(R.utils::getAbsolutePath(path_run),"C_CROS.sgrd"),
+                                    C_MINI = file.path(R.utils::getAbsolutePath(path_run),"C_MINI.sgrd"),
+                                    C_MAXI = file.path(R.utils::getAbsolutePath(path_run),"C_MAXI.sgrd"),
+                                    C_TOTA = file.path(R.utils::getAbsolutePath(path_run),"C_TOTA.sgrd"),
+                                    C_ROTO = file.path(R.utils::getAbsolutePath(path_run),"C_ROTO.sgrd"),
                                     METHOD = morphoMethod),
                        show.output.on.console = FALSE, invisible = TRUE,
                        env = env)}
@@ -733,11 +741,11 @@ morpho_dem<- function(dem,
         # standardized TPI values of the largest scale, then adding standardized values from smaller
         # scales where the (absolute) values from the smaller scale exceed those from the larger scale.
         RSAGA::rsaga.geoprocessor(lib = "ta_morphometry", module = 28,
-                           param = list(DEM = paste(path_run,"SAGA_dem.sgrd", sep = ""),
+                           param = list(DEM = file.path(R.utils::getAbsolutePath(path_run),"SAGA_dem.sgrd"),
                                         SCALE_MIN = minScale,
                                         SCALE_MAX = maxScale,
                                         SCALE_NUM = numScale,
-                                        TPI = paste(path_run,"MTPI.sgrd", sep = "")),
+                                        TPI = file.path(R.utils::getAbsolutePath(path_run),"MTPI.sgrd")),
                            show.output.on.console = FALSE,invisible = TRUE,
                            env = env)
         
@@ -748,9 +756,9 @@ morpho_dem<- function(dem,
     }
     for (item in saga_items){
       cat(getCrayon()[[1]](":::: converting ",item,"\n"))
-      ritem<-raster::raster(paste(path_run,item,".sdat", sep = ""))
-      raster::writeRaster(ritem,paste(path_run,item,".tif", sep = ""), overwrite = TRUE, NAflag = 0)
-      if (retRaster) retStack[[item]]<-assign(item,raster::stack(paste(path_run,item,".tif", sep = "")))
+      ritem<-raster::raster(file.path(R.utils::getAbsolutePath(path_run),paste0(item,".sdat")))
+      raster::writeRaster(ritem,file.path(R.utils::getAbsolutePath(path_run),paste0(item,".tif")), overwrite = TRUE, NAflag = 0)
+      if (retRaster) retStack[[item]]<-assign(item,raster::stack(file.path(R.utils::getAbsolutePath(path_run),paste0(item,".tif"))))
     }
     
     
@@ -871,7 +879,8 @@ rgb_indices <- function(red,green,blue,rgbi=c("VVI","VARI","NDTI","RI","SCI","BI
   indices <- lapply(rgbi, function(item){
     ## calculate Visible Vegetation Index vvi
     if (item == "VVI"){
-      cat("\n      calculate Visible Vegetation Index (VVI)")
+      cat(getCrayon()[[3]](":::: Visible Vegetation Index  ",item,"\n"))
+      #cat("\n      calculate Visible Vegetation Index (VVI)")
       VVI <- (1 - abs((red - 30) / (red + 30))) *
         (1 - abs((green - 50) / (green + 50))) *
         (1 - abs((blue - 1) / (blue + 1)))
@@ -880,62 +889,71 @@ rgb_indices <- function(red,green,blue,rgbi=c("VVI","VARI","NDTI","RI","SCI","BI
 
     } else if (item == "VARI") {
       # calculate Visible Atmospherically Resistant Index (VARI)
-      cat("\n      calculate Visible Atmospherically Resistant Index (VARI)")
+      cat(getCrayon()[[3]](":::: Visible Atmospherically Resistant Index ",item,"\n"))
+      #cat("\n      calculate Visible Atmospherically Resistant Index (VARI)")
       VARI <- (green - red) / (green + red - blue)
       names(VARI) <- "VARI"
       return(VARI)
 
     } else if (item == "NDTI") {
       ## Normalized difference turbidity index
-      cat("\n      calculate Normalized difference turbidity index (NDTI)")
+      cat(getCrayon()[[3]](":::: Normalized Difference Turbidity Index ",item,"\n"))
+      #cat("\n      calculate Normalized difference turbidity index (NDTI)")
       NDTI <- (red - green) / (red + green)
       names(NDTI) <- "NDTI"
       return(NDTI)
       GLAI
     } else if (item == "RI") {
       # redness index
-      cat("\n      calculate redness index (RI)")
+      cat(getCrayon()[[3]](":::: Redness Index ",item,"\n"))
+      #cat("\n      calculate redness index (RI)")
       RI <- red**2 / (blue*green**3)
       names(RI) <- "RI"
       return(RI)
 
     } else if (item == "SCI") {
       # SCI Soil Colour Index
-      cat("\n      calculate Soil Colour Index (SCI)")
+      cat(getCrayon()[[3]](":::: Soil Colour Index ",item,"\n"))
+      #cat("\n      calculate Soil Colour Index (SCI)")
       SCI <- (red - green) / (red + green)
       names(SCI) <- "SCI"
       return(SCI)
 
     } else if (item == "BI") {
       #  Brightness Index
-      cat("\n      calculate Brightness Index (BI)")
+      cat(getCrayon()[[3]](":::: Brightness Index ",item,"\n"))
+      #cat("\n      calculate Brightness Index (BI)")
       BI <- sqrt((red**2 + green**2 + blue*2) / 3)
       names(BI) <- "BI"
       return(BI)
 
     } else if (item == "SI") {
       # SI Spectra Slope Saturation Index
-      cat("\n      calculate Spectra Slope Saturation Index (SI)")
+      cat(getCrayon()[[3]](":::: Spectra Slope Saturation Index ",item,"\n"))
+      #cat("\n      calculate Spectra Slope Saturation Index (SI)")
       SI <- (red - blue) / (red + blue)
       names(SI) <- "SI"
       return(SI)
 
     } else if (item=="HI"){
       # HI Primary colours Hue Index
-      cat("\n      calculate Primary colours Hue Index (HI)")
+      cat(getCrayon()[[3]](":::: Primary Colours Hue Index ",item,"\n"))
+      #cat("\n      calculate Primary colours Hue Index (HI)")
       HI<-(2*red-green-blue)/(green-blue)
       names(HI) <- "HI"
       return(HI)
 
     } else if (item=="TGI"){
       # Triangular greenness index
-      cat("\n      calculate Triangular greenness index (TGI)")
+      cat(getCrayon()[[3]](":::: Triangular Greenness Index ",item,"\n"))
+      #cat("\n      calculate Triangular greenness index (TGI)")
       TGI <- -0.5*(190*(red - green)- 120*(red - blue))
       names(TGI) <- "TGI"
       return(TGI)
 
     } else if (item=="GLI"){
-      cat("\n      calculate Green leaf index (GLI)")
+      #cat("\n      calculate Green leaf index (GLI)")
+      cat(getCrayon()[[3]](":::: Green Leaf Index ",item,"\n"))
       # Green leaf index
       GLI<-(2*green-red-blue)/(2*green+red+blue)
       names(GLI) <- "GLI"
@@ -943,14 +961,16 @@ rgb_indices <- function(red,green,blue,rgbi=c("VVI","VARI","NDTI","RI","SCI","BI
 
     } else if (item=="NGRDI"){
       # NGRDI Normalized green red difference index
-      cat("\n      calculate Normalized green red difference index  (NGRDI)")
+      cat(getCrayon()[[3]](":::: Normalized Green-Red Difference Index ",item,"\n"))
+      #cat("\n      calculate Normalized green red difference index  (NGRDI)")
       NGRDI<-(green-red)/(green+red)
       names(NGRDI) <- "NGRDI"
       return(NGRDI)
 
     }  else if (item=="GLAI"){
       # NGRDI Normalized green red difference index
-      cat("\n      calculate greenish Leaf Area Index  (GLAI) (highly experimental)")
+      cat(getCrayon()[[3]](":::: Greenish Leaf Area Index ",item,"\n"))
+      #cat("\n      calculate greenish Leaf Area Index  (GLAI) (highly experimental)")
       # vevi<-(green - red) / (green +  red -  blue )
       GLAI = (25 * ((green - red) / (green +  red -  blue )) + 1.25 )
       names(GLAI) <- "GLAI"
@@ -958,35 +978,40 @@ rgb_indices <- function(red,green,blue,rgbi=c("VVI","VARI","NDTI","RI","SCI","BI
 
     }  else if (item=="GRVI"){
       # GRVI  Green-Red Vegetation Index  Remote Sensing 2010, 2, 2369-2387; doi:10.3390/rs2102369
-      cat("\n      calculate  Green-Red Vegetation Index   (GRVI)")
+      cat(getCrayon()[[3]](":::: Green-Red Vegetation Index ",item,"\n"))
+      #cat("\n      calculate  Green-Red Vegetation Index   (GRVI)")
       GRVI<-(green-red)/(green+red)
       names(GRVI) <- "GRVI"
       return(GRVI)
 
     } else if (item == "CI") {
       # CI  https://www.indexdatabase.de/search/?s=color
-      cat("\n      calculate Coloration Index (CI)")
+      cat(getCrayon()[[3]](":::: Coloration Index ",item,"\n"))
+      # cat("\n      calculate Coloration Index (CI)")
       CI <- (red - blue) / red
       names(CI) <- "CI"
       return(CI)
 
     } else if (item == "HUE") {
       # HUE Index https://www.indexdatabase.de/search/?s=HUE
-      cat("\n      calculate Hue Index (HUE)")
+      cat(getCrayon()[[3]](":::: Hue Index ",item,"\n"))
+      #cat("\n      calculate Hue Index (HUE)")
       HUE <- 	 atan(2 * (red - green - blue) / 30.5 * (green - blue))
       names(HUE) <- "HUE"
       return(HUE)
 
     }  else if (item == "SAT") {
       # Saturation Index https://www.indexdatabase.de/db/i-single.php?id=77
-      cat("\n      calculate Saturation Index (SAT)")
+      cat(getCrayon()[[3]](":::: Saturation Index ",item,"\n"))
+      #cat("\n      calculate Saturation Index (SAT)")
       SAT <- 	 (max(red,green,blue) - min(red,green,blue)) / max(red,green,blue)
       names(SAT) <- "SAT"
       return(SAT)
 
     } else if (item == "SHP") {
       # Shape Index https://www.indexdatabase.de/search/?s=shape
-      cat("\n      calculate Shape Index (SHP)")
+      cat(getCrayon()[[3]](":::: Shape Index ",item,"\n"))
+      #cat("\n      calculate Shape Index (SHP)")
       SHP <- 	 2 * (red - green - blue) / (green - blue)
       names(SHP) <- "SHP"
       return(SHP)

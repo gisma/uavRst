@@ -46,4 +46,5 @@ crownsFT <- chmseg_FT(chm = chm_seg[[1]],
 
 ## Visualisation
 raster::plot(crownsFT)
+
 }

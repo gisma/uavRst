@@ -85,6 +85,7 @@ pc3D_dtm <- function(lasDir = NULL,
                    giLinks =NULL,
                    MP ="~",
                    verbose = FALSE) {
+  if (!exists("path_run")) path_run = tempdir()
   LASbin<-searchLastools(MP=MP)
   if (length(LASbin)<1) stop("\n At ",MP," no LAStool binaries found")
   else lasbin<- as.character(LASbin[[1]][,])
@@ -145,7 +146,7 @@ pc3D_dtm <- function(lasDir = NULL,
   pathLastools <- path.expand(pathLastools)
 
 
-  setwd(path_run)
+  #setwd(path_run)
 
 
   if(raster::extension(basename(lasDir)) !=".las" & raster::extension(basename(lasDir)) !=".laz") {
@@ -167,7 +168,7 @@ pc3D_dtm <- function(lasDir = NULL,
     ret <- system(paste0(lasmerge,
                          " -i ",lasDir,"/*.",extFN,
                          " -olas",
-                         " -o ",path_run,"full_point_cloud.las"),
+                         " -o ",file.path(R.utils::getAbsolutePath(path_run)),"full_point_cloud.las"),
                   intern = TRUE,
                   ignore.stderr = TRUE
     )

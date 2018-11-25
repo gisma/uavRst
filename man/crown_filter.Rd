@@ -5,7 +5,7 @@
 \title{basic filtering of crown polygons using altitude, area and other optional thresholds}
 \usage{
 crown_filter(crownFn, minTreeAlt = 10, minCrownArea = 5,
-  maxCrownArea = 100, minTreeAltParam = "chmQ50", crownSTDW = NULL,
+  maxCrownArea = 100, minTreeAltParam = "chm_Q50", crownSTDW = NULL,
   opt = NULL, TAopt = NULL,
   proj4string = "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs")
 }
@@ -61,7 +61,7 @@ tree_crowns <- crown_filter(crownFn =  paste0(path_run,"polyStat.shp"),
                              maxCrownArea = 150,
                              minTreeAltParam = "chmQ20" )
 # visualize it
-mapview::mapview(tree_crowns[[2]])
+raster::plot(tree_crowns[[2]])
 ##+}
 
 }

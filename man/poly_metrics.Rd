@@ -23,26 +23,13 @@ calculate morphometric features of polygons. Calculate some crown related metric
 \dontrun{
 # required packages
 require(uavRst)
-require(link2GI)
 require(mapview)
-
-# project folder
-projRootDir<-tempdir()
-
-# create subfolders please mind that the pathes are exported as global variables
-paths<-link2GI::initProj(projRootDir = projRootDir,
-                         projFolders = c("data/","data/ref/","output/","run/","las/"),
-                         global = TRUE,
-                         path_prefix = "path_")
-# overide trailing backslash issue
- path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)
 
 # get the rgb image, chm and training data
 utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip",
-                      paste0(path_run,"tutorial_data.zip"))
-unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
-crown<-raster::shapefile(paste0(path_run,"rgb_3-3_train2.shp"))
+                      paste0(tempdir(),"tutorial_data.zip"))
+unzip(zipfile = paste0(tempdir(),"tutorial_data.zip"), exdir = tempdir())
+crown<-raster::shapefile(paste0(tempdir(),"rgb_3-3_train2.shp"))
 ## calculate polygon morpho metrics
 polymetric <- poly_metrics(crown)
 

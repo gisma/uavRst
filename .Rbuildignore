@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 .travis.yml
+CONDUCT.rm
 ^README\.Rmd$
 ^README-.*\.png$
 ^\.travis\.yml$

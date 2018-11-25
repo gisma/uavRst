@@ -35,11 +35,16 @@
 #'
 #' require(uavRst)
 #' require(link2GI)
-#' # get a laz file from Mr. Isenburg
-#' utils::download.file(url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz",
-#'                            destfile="test.laz",  quiet = TRUE, mode = "wb")
+#' # get a las file from the Spain authorithy (https://b5m.gipuzkoa.eus/url5000/es/G_22485/PUBLI&consulta=HAZLIDAR)
+#' utils::download.file(url="ftp://ftp.geo.euskadi.net/lidar/LIDAR_2012_ETRS89/LAS/038/522-4812.zip",
+#'                            destfile="522-4812.zip",  quiet = TRUE, mode = "wb")
+#' unzip("522-4812.zip",junkpaths = TRUE,overwrite = TRUE)
+#' 
 #' # convert from laz to las
-#' lastool(tool="las2las","test.laz")
+#' lastool(tool="las2txt","522-4812.las")
+#' 
+#' # view it
+#' head(read.table("522-4812.txt",sep = ","))
 #' 
 #'}
 

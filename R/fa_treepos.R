@@ -71,6 +71,7 @@ treepos_GWS <- function(chm = NULL,
                                   giLinks = NULL
 
 )  {
+  if (!exists("path_run")) path_run = tempdir()
   cat("\n:: start crown identification...\n")
   options(warn=-1)
 
@@ -81,17 +82,17 @@ treepos_GWS <- function(chm = NULL,
   gdal <- giLinks$gdal
   saga <- giLinks$saga
   sagaCmd<-saga$sagaCmd
-  raster::writeRaster(chm,paste0(path_run,"chm.sdat"),bylayer=TRUE,overwrite = TRUE,NAflag = 0)
-  raster::writeRaster(chm,paste0(path_run,"chm.tif"),overwrite = TRUE,NAflag = 0)
+  raster::writeRaster(chm,file.path(R.utils::getAbsolutePath(path_run),"chm.sdat"),bylayer=TRUE,overwrite = TRUE,NAflag = 0)
+  raster::writeRaster(chm,file.path(R.utils::getAbsolutePath(path_run),"chm.tif"),overwrite = TRUE,NAflag = 0)
   #r2saga(chm,"chm")
 
     cat(":: run pre-segmentation...\n")
     # first segment run is a simple watershed segmentation just for deriving more reliable treepos´
     # TODO improve different advanceds treepos finding algorithms
     ret <- system(paste0(sagaCmd, " imagery_segmentation 0 ",
-                         " -GRID "     ,path_run,"chm.sgrd",
-                         " -SEGMENTS " ,path_run,"dummyCrownSegments.sgrd",
-                         " -SEEDS "    ,path_run,"treepos.shp",
+                         " -GRID "     ,file.path(R.utils::getAbsolutePath(path_run),"chm.sgrd"),
+                         " -SEGMENTS " ,file.path(R.utils::getAbsolutePath(path_run),"dummyCrownSegments.sgrd"),
+                         " -SEEDS "    ,file.path(R.utils::getAbsolutePath(path_run),"treepos.shp"),
                          " -OUTPUT 0",
                          " -DOWN 1"    ,
                          " -JOIN "     ,join,
@@ -101,8 +102,8 @@ treepos_GWS <- function(chm = NULL,
 
     # convert filtered crown clumps to shape format for descriptive running statitics
     ret <- system(paste0(sagaCmd, " shapes_grid 6 ",
-                         " -GRID "    ,path_run,"dummyCrownSegments.sgrd",
-                         " -POLYGONS ",path_run,"dummyCrownSegment.shp",
+                         " -GRID "    ,file.path(R.utils::getAbsolutePath(path_run),"dummyCrownSegments.sgrd"),
+                         " -POLYGONS ",file.path(R.utils::getAbsolutePath(path_run),"dummyCrownSegment.shp"),
                          " -CLASS_ALL 1",
                          " -CLASS_ID 1.000000",
                          " -SPLIT 1"),
@@ -113,7 +114,9 @@ treepos_GWS <- function(chm = NULL,
     cat(":: find max height position...\n")
     if (cores<2) para<-0
     else para = 1
-    dummycrownsStat <- uavRst::poly_stat(c("chm"), spdf =paste0(path_run,"dummyCrownSegment.shp"),parallel = para)
+    dummycrownsStat <- uavRst::poly_stat(c("chm"), 
+                                         spdf =file.path(R.utils::getAbsolutePath(path_run),"dummyCrownSegment.shp"),
+                                         parallel = para)
 
     trees_crowns <- crown_filter(crownFn = dummycrownsStat,
                                             minTreeAlt = minTreeAlt,
@@ -124,19 +127,25 @@ treepos_GWS <- function(chm = NULL,
     rgdal::writeOGR(obj    = trees_crowns[[2]],
                     layer  = "dummyCrownSegment",
                     driver = "ESRI Shapefile",
-                    dsn    = path_run,
+                    dsn    = file.path(R.utils::getAbsolutePath(path_run)),
                     overwrite_layer = TRUE)
 
     cat(":: find max height position...\n")
-    ts <-  poly_maxpos(paste0(path_run,"chm.tif"),paste0(path_run,"dummyCrownSegment"),polySplit = split,cores = cores)
+    ts <-  poly_maxpos(file.path(R.utils::getAbsolutePath(path_run),"chm.tif"),
+                       file.path(R.utils::getAbsolutePath(path_run),"dummyCrownSegment"),
+                       polySplit = split,
+                       cores = cores)
     # create raw zero mask ts[[1]] = seeds ts[[2]] = maxpos
     treepos <- ts[[1]] * chm
-    raster::writeRaster(treepos,paste0(path_run,"treepos0.sdat"),overwrite = TRUE,NAflag = 0)
+    raster::writeRaster(treepos,
+                        file.path(R.utils::getAbsolutePath(path_run),"treepos0.sdat"),
+                        overwrite = TRUE,
+                        NAflag = 0)
 
     # reclass extracted treeposs to minTreeAlt
     ret <- system(paste0(sagaCmd, "  grid_tools 15 ",
-                         " -INPUT "  ,path_run,"treepos0.sgrd",
-                         " -RESULT " ,path_run,"treepos.sgrd",
+                         " -INPUT "  ,file.path(R.utils::getAbsolutePath(path_run),"treepos0.sgrd"),
+                         " -RESULT " ,file.path(R.utils::getAbsolutePath(path_run),"treepos.sgrd"),
                          " -METHOD 0 ",
                          " -OLD "    ,minTreeAlt ,
                          " -NEW 0.00000",
@@ -149,7 +158,7 @@ treepos_GWS <- function(chm = NULL,
 
     # TODO SF
     # trees <- sf::st_read(paste0(path_run,"treepos.shp"))
-    localmaxima<-raster::raster(paste0(path_run,"treepos.sdat"))
+    localmaxima<-raster::raster(file.path(R.utils::getAbsolutePath(path_run),"treepos.sdat"))
     localmaxima@crs <- chm@crs
     # workaround for strange effects with SAGA
     # even if all params are identical it is dealing with different grid systems
@@ -157,11 +166,11 @@ treepos_GWS <- function(chm = NULL,
     localmaxima[localmaxima<=0]<-0
     # remove temporary files
     flist<-list()
-    flist<-append(flist, Sys.glob(paste0(path_run,"treepos0.*")))
-    flist<-append(flist, Sys.glob(paste0(path_run,"dummyCrownSegment*")))
-    flist<-append(flist, Sys.glob(paste0(path_run,"treepos.*")))
-    flist<-append(flist, Sys.glob(paste0(path_run,"chmStat.*")))
-    flist<-append(flist, Sys.glob(paste0(path_run,"polyStat.*")))
+    flist<-append(flist, Sys.glob(file.path(R.utils::getAbsolutePath(path_run),"treepos0.*")))
+    flist<-append(flist, Sys.glob(file.path(R.utils::getAbsolutePath(path_run),"dummyCrownSegment*")))
+    flist<-append(flist, Sys.glob(file.path(R.utils::getAbsolutePath(path_run),"treepos.*")))
+    flist<-append(flist, Sys.glob(file.path(R.utils::getAbsolutePath(path_run),"chmStat.*")))
+    flist<-append(flist, Sys.glob(file.path(R.utils::getAbsolutePath(path_run),"polyStat.*")))
     res<-file.remove(unlist(flist))
   return(localmaxima)
 }

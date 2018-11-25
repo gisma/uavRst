@@ -22,7 +22,7 @@
 #'@param searchPath path to look for grass
 #'
 
-#'@export pc2D_dsm
+#'@export pc_2D_dsm
 
 #'@examples
 
@@ -52,7 +52,7 @@
 #' destfile="lasdata.las")
 #'
 #' # create 2D pointcloud DSM
-#' dsm <- pc2D_dsm(laspcFile = "lasdata.las",
+#' dsm <- pc_2D_dsm(laspcFile = "lasdata.las",
 #'                 gisdbasePath = projRootDir,
 #'                 sampleMethod = "max",
 #'                 targetGridSize = 0.5,
@@ -62,7 +62,7 @@
 #'  setwd(owd)
 #'}
 
-pc2D_dsm <- function(laspcFile = NULL,
+pc_2D_dsm <- function(laspcFile = NULL,
                     gisdbasePath = NULL,
                     grassVersion=1,
                     searchPath =NULL,
@@ -74,7 +74,7 @@ pc2D_dsm <- function(laspcFile = NULL,
                     proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
                     giLinks =NULL,
                     verbose = FALSE) {
-
+  if (!exists("path_run")) path_run = tempdir()
   gdal <- link2GI::linkGDAL()
   if (is.null(searchPath)){
   if(Sys.info()["sysname"]=="Windows") searchPath="C:"
@@ -101,40 +101,40 @@ pc2D_dsm <- function(laspcFile = NULL,
 
 
 
-  if (!file.exists(paste0(path_run,name))){
+  if (!file.exists(file.path(R.utils::getAbsolutePath(path_run),name))){
     cat(":: create copy of the las file at the working directory... \n")
     file.copy(from = laspcFile,
-              to = paste0(path_run,name),
+              to = file.path(R.utils::getAbsolutePath(path_run),name),
               overwrite = TRUE)}
   cat(":: get extent of the point cloud \n")
   if (!is.null(cutExtent)){
-    las<-lidR::readLAS(paste0(path_run,name))
+    las<-lidR::readLAS(file.path(R.utils::getAbsolutePath(path_run),name))
     las<-lidR::lasclipRectangle(las, as.numeric(cutExtent[1]), as.numeric(cutExtent[3]), as.numeric(cutExtent[2]), as.numeric(cutExtent[4]))
-    lidR::writeLAS(las ,paste0(path_run,"cut_point_cloud.las"))
+    lidR::writeLAS(las ,file.path(R.utils::getAbsolutePath(path_run),"cut_point_cloud.las"))
     lasxt<-lidR::extent(las)
     sp_param <- c(lasxt@xmin,lasxt@ymin,lasxt@xmax,lasxt@ymax)
     # rename output file according to the extent
     fn<- paste(sp_param ,collapse=" ")
     tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
     name<-paste0(gsub(tmp,pattern = "[.]",replacement = "_"),".las")
-    file.rename(from =paste0(path_run,"cut_point_cloud.las"),
-                to = paste0(path_run,name))
+    file.rename(from =file.path(R.utils::getAbsolutePath(path_run),"cut_point_cloud.las"),
+                to = file.path(R.utils::getAbsolutePath(path_run),name))
 
   } else {
-    las<-rlas::read.lasheader(paste0(path_run,name))
+    las<-rlas::read.lasheader(file.path(R.utils::getAbsolutePath(path_run),name))
     sp_param <- c(as.character(las$`Min X`),as.character(las$`Min Y`),as.character(las$`Max X`),as.character(las$`Max Y`))
     # rename output file according to the extent
     fn<- paste(sp_param ,collapse=" ")
     tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
     name<-paste0(gsub(tmp,pattern = "[.]",replacement = "_"),".las")
-    file.rename(from =paste0(path_run,basename(laspcFile)),
-                to = paste0(path_run,name))
+    file.rename(from =file.path(R.utils::getAbsolutePath(path_run),basename(laspcFile)),
+                to = file.path(R.utils::getAbsolutePath(path_run),name))
   }
   # copy it to the output folder
   sp_param[5] <- proj4
   cat(":: link to GRASS\n")
   link2GI::linkGRASS7(gisdbase = gisdbasePath,
-                      location = "pc2D_dsm",
+                      location = "pc_2D_dsm",
                       spatial_params = sp_param,
                       resolution = targetGridSize,
                       returnPaths = FALSE,
@@ -146,7 +146,7 @@ pc2D_dsm <- function(laspcFile = NULL,
 
     # ret <- rgrass7::execGRASS("r.in.pdal",
     #                           flags  = c("overwrite","quiet"),
-    #                           input  = paste0(path_run,name),
+    #                           input  = file.path(R.utils::getAbsolutePath(path_run),name),
     #                           output = paste0("dsm",targetGridSize),
     #                           method = sampleMethod,
     #                           pth = threshold,
@@ -159,7 +159,7 @@ pc2D_dsm <- function(laspcFile = NULL,
   #else if (grepl(rgrass7::execGRASS(cmd = "g.extension",flags =  c("l"),Sys_show.output.on.console = TRUE),pattern = "r.in.lidar"))
 rgrass7::execGRASS("r.in.lidar",
                             flags  = c("overwrite","quiet","o"),
-                            input  = paste0(path_run,name),
+                            input  = file.path(R.utils::getAbsolutePath(path_run),name),
                             output = paste0("dsm",targetGridSize),
                             method = sampleMethod,
                             pth    = threshold,
@@ -167,7 +167,7 @@ rgrass7::execGRASS("r.in.lidar",
                             intern = TRUE,
                             ignore.stderr = FALSE
   )
-    dsm<- raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("dsm",targetGridSize))),paste0(path_run,"dsm1.tif"),
+    dsm<- raster::writeRaster(raster::raster(rgrass7::readRAST(paste0("dsm",targetGridSize))),file.path(R.utils::getAbsolutePath(path_run),"dsm1.tif"),
                               overwrite=TRUE,format="GTiff")
 
     if (Sys.info()["sysname"] == "Linux"){
@@ -175,10 +175,10 @@ rgrass7::execGRASS("r.in.lidar",
   ret <- system(paste0("gdal_fillnodata.py ",
                        path_run,"dsm1.tif ",
                        path_run,"dsm.tif"),intern = TRUE)
-  dsm <- raster::raster(paste0(path_run,"dsm.tif"))
+  dsm <- raster::raster(file.path(R.utils::getAbsolutePath(path_run),"dsm.tif"))
     }
     else
-  dsm <- raster::raster(paste0(path_run,"dsm1.tif"))
+  dsm <- raster::raster(file.path(R.utils::getAbsolutePath(path_run),"dsm1.tif"))
   if (!verbose)  {
     Sys.setenv("GRASS_VERBOSE"=GV)
     rgrass7::set.ignore.stderrOption(ois)
