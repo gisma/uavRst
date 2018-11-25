@@ -60,10 +60,10 @@
 #'                       thVarFeature = 1.,
 #'                       thVarSpatial = 1.,
 #'                       thSimilarity = 0.003,
-#'                       giLinks = giLinks )
+#'                       giLinks = giLinks )[[2]]
 #'
 #'##- visualize it
-#'raster::plot(crowns_GWS[[2]])
+#'raster::plot(crowns_GWS)
 #' }
 #'}
 
@@ -236,6 +236,7 @@ chmseg_GWS <- function(treepos = NULL,
 #'
 #' ## Visualisation
 #' raster::plot(crownsFT)
+#' 
 
 
 

@@ -61,7 +61,7 @@ tree_crowns <- crown_filter(crownFn =  paste0(path_run,"polyStat.shp"),
                              maxCrownArea = 150,
                              minTreeAltParam = "chmQ20" )
 # visualize it
-mapview::mapview(tree_crowns[[2]])
+raster::plot(tree_crowns[[2]])
 ##+}
 
 }

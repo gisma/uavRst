@@ -57,7 +57,7 @@ if (!isGeneric('crown_filter')) {
 #'                              maxCrownArea = 150,
 #'                              minTreeAltParam = "chmQ20" )
 #' # visualize it
-#' mapview::mapview(tree_crowns[[2]])
+#' raster::plot(tree_crowns[[2]])
 #'##+}
 #'
 
