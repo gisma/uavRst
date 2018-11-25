@@ -56,32 +56,26 @@ require(uavRst)
 ##- Straightforward example to generate a DTM 
     based on the class 2 minimum returns of a LiDAR file
     
-##- set up environment
-path<-tempdir()
-setwd(path)
-
-##- get a laz file from Mr. Isenburg
-url="http://www.cs.unc.edu/~isenburg/lastools/download/test/s1885565.laz"
-utils::download.file(url=url,
-                     destfile="test.laz",  
-                     quiet = TRUE, 
-                     mode = "wb")
-##- convert it from laz to las (obligatory format for using r.in.lidar)
-lastool(tool="laz2las",paste0(path,"/test.laz"))
+# get a las file from the Spain authorithy (29.2 MB)
+# Source: (https://b5m.gipuzkoa.eus/url5000/es/G_22485/PUBLI&consulta=HAZLIDAR)
+utils::download.file(url="https://b5m.gipuzkoa.eus/lidar/MT13_08_au_las.zip",
+                           destfile="MT13_08_au_las.zip", mode = "wb")
+unzip("MT13_08_au_las.zip",junkpaths = TRUE,overwrite = TRUE)
 
 ##- extract extent for setting up GRASS region
-ext<-lastool(lasFile =  paste0(path,"/test.las"))
+ext<-lastool(lasFile =  "MT13_08_au.las")
+## according to the meta data https://b5m.gipuzkoa.eus/web5000/en/csw/MT13_08_au_en the projection is EPSG25830:
+proj4 = "+proj=utm +zone=30 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 
 ##- set up GRASS
-proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs"
 result<-link2GI::linkGRASS7(spatial_params = c(ext[2],ext[1],ext[4],ext[3],proj4),
-                             resolution = 0.5)
+                             resolution = 5.0)
                              
 ##- use the r.in.lidar tool to generate a pseudo surface model
-r_in_lidar(input = paste0(getwd(),"/test.las"),
+r_in_lidar(input = "MT13_08_au.las",
            output = "dem",
            method = "min",
-           resolution = 30,
+           resolution = 5,
            class_filter = 2)
            
 ##- visualize it
