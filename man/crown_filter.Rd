@@ -53,7 +53,7 @@ utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/
                        paste0(path_run,"crowns.zip"))
 unzip(zipfile = paste0(path_run,"crowns.zip"), exdir =".")
 
- raster::plot(tree_crowns[[2]])
+ raster::plot(raster::shapefile(paste0(path_run,"polyStat.shp")))
 
 # start postclassification of segements
 tree_crowns <- crown_filter(crownFn =  paste0(path_run,"polyStat.shp"),
