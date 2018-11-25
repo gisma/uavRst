@@ -40,7 +40,9 @@
 #' 
 #' ##- extract extent for setting up GRASS region
 #' ext<-lastool(lasFile =  "MT13_08_au.las")
-#' ## according to the meta data https://b5m.gipuzkoa.eus/web5000/en/csw/MT13_08_au_en the projection is EPSG25830:
+#' ## according to the meta data 
+#' #  source: https://b5m.gipuzkoa.eus/web5000/en/csw/MT13_08_au_en 
+#' #  the projection is EPSG25830. NOTE it is obligate to at the zero transformation params
 #' proj4 = "+proj=utm +zone=30 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 #' 
 #' ##- set up GRASS

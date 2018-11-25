@@ -35,7 +35,8 @@
 #'
 #' require(uavRst)
 #' require(link2GI)
-#' # get a las file from the Spain authorithy (https://b5m.gipuzkoa.eus/url5000/es/G_22485/PUBLI&consulta=HAZLIDAR)
+#' # get a las file from the Spain authorithy (29.2 MB)
+#' # source: (https://b5m.gipuzkoa.eus/url5000/es/G_22485/PUBLI&consulta=HAZLIDAR)
 #' utils::download.file(url="ftp://ftp.geo.euskadi.net/lidar/LIDAR_2012_ETRS89/LAS/038/522-4812.zip",
 #'                            destfile="522-4812.zip",  quiet = TRUE, mode = "wb")
 #' unzip("522-4812.zip",junkpaths = TRUE,overwrite = TRUE)
