@@ -55,13 +55,11 @@ projRootDir<-tempdir()
 paths<-link2GI::initProj(projRootDir = projRootDir, projFolders = c("run/"),
                          global = TRUE,
                          path_prefix = "path_")
-# overide trailing backslash issue
- path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
 
 # get the rgb image, chm and training data
 url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 utils::download.file(url, paste0(path_run,"tutorial_data.zip"))
-unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
+unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = ".")
 
 # convert tif to SAGA
 gdalUtils::gdal_translate(file.path(path_run,"chm_3-3_train1.tif"),

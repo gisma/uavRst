@@ -46,7 +46,7 @@ colorspace<- function(input=NULL,
                       depth = 8,
                       verbose=FALSE,
                       retRaster=TRUE){
-  if (!exists("path_run")) path_run = tempdir()
+
   
 
   #convert 2017_05_20_RGB_DEFS17_16_OrthoMosaic.tif -colorspace cmyk -compress LZW to.tif
@@ -54,7 +54,7 @@ colorspace<- function(input=NULL,
   #if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
   for (colMod in colorspace) {
     retStack<- list()
-    outName<-file.path(R.utils::getAbsolutePath(path_run),paste0(colMod,"_",basename(input)))
+    outName<-file.path(R.utils::getAbsolutePath(dirname(input)),paste0(colMod,"_",basename(input)))
 
     command<-paste0("convert")
     command<-paste(command, input)
