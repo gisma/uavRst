@@ -579,7 +579,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                       currentIdxFolder  = NULL,
                       cleanRunDir        = TRUE,
                       giLinks = NULL){
-
+  if (!exists("path_run")) path_run = tempdir()
   if (!rgbi) rgbTrans <- hara <- stat <- edge <- morpho <- FALSE
   if (is.null(giLinks)){
     giLinks <- linkAll()
@@ -635,7 +635,7 @@ calc_ext<- function ( calculateBands    = FALSE,
 
         #cat(catNote(":::: processing dem... ",demType,"\n"))
         flist<-append(flist, Sys.glob(demFiles[i]))
-        dellist <- append(dellist, paste0(path_run,"dem2.tif"))
+        dellist <- append(dellist, file.path(R.utils::getAbsolutePath(path_run),"dem2.tif"))
         bandNames <-append(bandNames,"dem")
         morpho_dem(dem = demFiles[i],
                    item = demType,
@@ -644,8 +644,8 @@ calc_ext<- function ( calculateBands    = FALSE,
                    maxScale = maxScale,
                    numScale = numScale,
                    giLinks = giLinks)
-        flist<-append(flist, Sys.glob(paste0(path_run,demType,".tif")))
-        dellist <- append(dellist, Sys.glob(paste0(path_run,demType,".*")))
+        flist<-append(flist, Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(demType,".tif"))))
+        dellist <- append(dellist, Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(demType,".*"))))
         for (item in demType)
           bandNames <-append(bandNames,make_bandnames(dem = item))
 
@@ -665,12 +665,12 @@ calc_ext<- function ( calculateBands    = FALSE,
         names(rgb_rgbi)<-append(c("red","green","blue"),indices)
         cat(catOk("\n     save ...",paste0(path_run,"rgbi_",basename(imageFiles[i])),"\n"))
         raster::writeRaster(rgb_rgbi,
-                            paste0(path_run,"rgbi_",basename(imageFiles[i])),
+                            file.path(R.utils::getAbsolutePath(path_run),paste0("rgbi_",basename(imageFiles[i]))),
                             progress = "text",
                             overwrite=TRUE)
 
-        flist<-append(flist, paste0(path_run,"rgbi_",basename(imageFiles[i])))
-        dellist <- append(dellist, paste0(path_run,"rgbi_",basename(imageFiles[i])))
+        flist<-append(flist, file.path(R.utils::getAbsolutePath(path_run),paste0("rgbi_",basename(imageFiles[i]))))
+        dellist <- append(dellist, file.path(R.utils::getAbsolutePath(path_run),paste0("rgbi_",basename(imageFiles[i]))))
       }
       # if RGB transform
       if (rgbTrans){
@@ -681,7 +681,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         rgbTranslist<-list()
         jj=1
         for (colMod in colorSpaces) {
-          rgbTranslist[[jj]]<-paste0(path_run,colMod,"_",basename(imageFiles[i]))
+          rgbTranslist[[jj]]<-file.path(R.utils::getAbsolutePath(path_run),paste0(colMod,"_",basename(imageFiles[i])))
           jj<-jj+1
         }
         rt<- lapply(rgbTranslist, FUN=raster::stack)
@@ -690,14 +690,14 @@ calc_ext<- function ( calculateBands    = FALSE,
           raster::projection(rt[[jj]]) <- raster::crs(raster::projection(r))
           cat(catOk(":::: save... ",paste0(colorSpaces[jj],"_",basename(imageFiles[i])),"\n"))
           raster::writeRaster(raster::stack(rt[[jj]][[1:(raster::nlayers(rt[[jj]])-1)]]),
-                              paste0(path_run,colorSpaces[jj],"_ref",basename(imageFiles[i])),
+                              file.path(R.utils::getAbsolutePath(path_run),paste0(colorSpaces[jj],"_ref",basename(imageFiles[i]))),
                               overwrite=TRUE,
                               options="INTERLEAVE=BAND",
                               progress="text")
           bandNames <-append(bandNames,make_bandnames(rgbTrans = colorSpaces[jj]))
-          flist<-append(flist, paste0(path_run,colorSpaces[jj],"_ref",basename(imageFiles[i])))
-          dellist <- append(dellist, paste0(path_run,colorSpaces[jj],"_ref",basename(imageFiles[i])))
-          dellist <- append(dellist, paste0(path_run,colorSpaces[jj],basename(imageFiles[i])))
+          flist<-append(flist, file.path(R.utils::getAbsolutePath(path_run),paste0(colorSpaces[jj],"_ref",basename(imageFiles[i]))))
+          dellist <- append(dellist, file.path(R.utils::getAbsolutePath(path_run),paste0(colorSpaces[jj],"_ref",basename(imageFiles[i]))))
+          dellist <- append(dellist, file.path(R.utils::getAbsolutePath(path_run),paste0(colorSpaces[jj],basename(imageFiles[i]))))
         }
         #file.remove(paste0(path_run,unlist(rgbTranslist)))
         #r<-raster::stack(imageFiles[i])
@@ -716,20 +716,20 @@ calc_ext<- function ( calculateBands    = FALSE,
           # if (filterBand!="") {
           cat(catNote(":::: write temporary channel...",paste0(filterBand,"_",basename(imageFiles[i])),"\n"))
           raster::writeRaster(rgb_rgbi[[bandNr]],
-                              paste0(path_run,filterBand,"_",basename(imageFiles[i])),
+                              file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i]))),
                               progress = "text",
                               overwrite=TRUE)
-          fbFN<-paste0(path_run,filterBand,"_",basename(imageFiles[i]))
+          fbFN<-file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i])))
          # filterband
         if (stat){
           cat(catNote(":::: processing stats...",fbFN,"\n"))
           otb_stat(input = fbFN,
-                   out = paste0(path_run,filterBand,"stat_",basename(imageFiles[i])),
+                   out = file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"stat_",basename(imageFiles[i]))),
                    ram = "4096",
                    radius =  kernel,
                    giLinks=giLinks)
-          flist<-append(flist,Sys.glob(paste0(path_run,filterBand,"stat_*")))
-          dellist <-append(dellist,Sys.glob(paste0(path_run,filterBand,"stat_*")))
+          flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"stat_*"))))
+          dellist <-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"stat_*"))))
           bandNames <-append(bandNames,paste0(make_bandnames(stat = TRUE),"_",filterBand))
         }
         # if calc edge
@@ -737,12 +737,12 @@ calc_ext<- function ( calculateBands    = FALSE,
           for (edges in edgeType){
             cat(catNote(":::: processing edge... ",edges,"\n"))
             uavRst::otbtex_edge(input = fbFN,
-                                out = paste0(path_run,filterBand,edges,basename(imageFiles[i])),
+                                out = file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,edges,basename(imageFiles[i]))),
                                 filter = edges,
                                 giLinks=giLinks)
 
-            flist<-append(flist,Sys.glob(paste0(path_run,filterBand,edges,"*")))
-            dellist<-append(dellist,Sys.glob(paste0(path_run,filterBand,edges,"*")))
+            flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,edges,"*"))))
+            dellist<-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,edges,"*"))))
             bandNames <-append(bandNames,make_bandnames(edge = paste0(edges,"_",filterBand)))
           }
         }
@@ -752,11 +752,11 @@ calc_ext<- function ( calculateBands    = FALSE,
           for (morphos in morphoType){
             cat(catNote(":::: processing morpho... ",morphos,"\n"))
             uavRst::otbtex_gray(input = fbFN,
-                                out = paste0(path_run,filterBand,morphos,basename(imageFiles[i])),
+                                out = file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,morphos,basename(imageFiles[i]))),
                                 filter = morphos,
                                 giLinks=giLinks)
-            flist<-append(flist,Sys.glob(paste0(path_run,filterBand,morphos,"*")))
-            dellist<-append(dellist,Sys.glob(paste0(path_run,filterBand,morphos,"*")))
+            flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,morphos,"*"))))
+            dellist<-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,morphos,"*"))))
             bandNames <-append(bandNames,make_bandnames(edge = paste0(morphos,"_",filterBand)))
           }
         }
@@ -765,16 +765,16 @@ calc_ext<- function ( calculateBands    = FALSE,
           for (type in haraType){
             cat(catNote(":::: processing haralick... ",type,"\n"))
             otbtex_hara(x = fbFN,
-                        output_name=paste0(path_run,filterBand,"hara_",basename(imageFiles[i])),
+                        output_name=file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_",basename(imageFiles[i]))),
                         texture = type,
                         giLinks=giLinks)
-            flist<-append(flist,Sys.glob(paste0(path_run,filterBand,"hara_*")))
-            dellist<-append(dellist,Sys.glob(paste0(path_run,filterBand,"hara_*")))
+            flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*"))))
+            dellist<-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*"))))
             bandNames <-append(bandNames,paste0(make_bandnames(bandNames = type),"_",filterBand))
           }
         }
           # delete single channel for synthetic channel calculation
-          file.remove(paste0(path_run,filterBand,"_",basename(imageFiles[i])))
+          file.remove(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i]))))
         }
       }# end of single channnel calculation
 
