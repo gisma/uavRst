@@ -35,6 +35,7 @@ NULL
 #' @description DEM data set resampled to 20 m resolution
 #' @format \code{"raster::raster"}
 NULL
+
 #' @docType data
 #' @name pacman
 #' @title example raster data set for demonstration usage

@@ -53,7 +53,8 @@ Suggests: knitr,
     rlas,
     lidR,
     rmarkdown,
-    mapview
+    mapview,
+    R.utils
 LinkingTo: Rcpp
 RoxygenNote: 6.1.1
 SystemRequirements: GNU make

@@ -91,7 +91,10 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE,
 }
 \description{
 Convenient function to preprocess synthetic raster bands from a given RGB image and/or DTM/DSM data.
-Optionally the raster values  can be extracted to data frames on base of vector data. This is useful
+Currently for all chanels of the input images the following textures and indices can be calculated:\cr
+rgb indices (17), color transformation (9), haralick (3 = 25 layers), statitics (4),edge (3),morpho (4), DEM Parameter (20).
+All layers will be stacked (as an ENVI file). 
+If wanted the raster values can be extracted to a data frames by overlaying corresponding vector data. NOTE: The vector data has to be named identically to the rasterfiles.  This is useful
 for for classification training purposes and covers usually step 1 of the random forest based
 classification of UAV derived visible imagery and point clouds.
 }
@@ -121,34 +124,21 @@ require(link2GI)
 # create and check the links to the GI software
 giLinks<-uavRst::linkAll()
 if (giLinks$saga$exist & giLinks$otb$exist){
-
-##- set root folder
-projRootDir<-tempdir()
-
-##- create and set subfolders
+#'
+##- create and set folders
 ##- please mind that the pathes are exported as global variables
-paths<-link2GI::initProj(projRootDir = projRootDir,
+paths<-link2GI::initProj(projRootDir = tempdir(),
                          projFolders = c("data/","data/ref/","output/","run/","las/"),
                          global = TRUE,
                          path_prefix = "path_")
 
-##- overide trailing backslash issue
-path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-setwd(path_run)
-
 ##- clean runtime folder
 unlink(paste0(path_run,"*"), force = TRUE)
 
-# get the tutorial data
+##- get the tutorial data
 utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip",
                      paste0(path_run,"tutorial_data.zip"))
 unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = path_run)
-
-data("mrbiko")
-proj = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
-mrbiko <- raster::projectRaster(mrbiko, crs = proj,method = "ngb",res = 20)
-
-
 
 ##- calculate some synthetic channels from the RGB image and the canopy height model
 ##- then extract the from the corresponding training geometries the data values aka trainingdata
