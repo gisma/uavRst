@@ -473,7 +473,7 @@ poly_stat <- function(x = NULL,
     ret <-  system(paste0(sagaCmd, " shapes_grid 2 ",
                           " -GRIDS ",file.path(R.utils::getAbsolutePath(path_run),paste0(x[i],".sgrd")),
                           " -POLYGONS ",spdf,
-                          " -NAMING 1",
+                          " -NAMING 0",
                           " -METHOD 2",
                           " -COUNT ", count,
                           " -MIN  ", min,
@@ -493,7 +493,14 @@ poly_stat <- function(x = NULL,
                             verbose = TRUE)
     
     names(stat1) <- gsub(names(stat1),pattern = "\\.",replacement = "")
+    #TODO
+    if (nchar(x[i]) > 6 ) x[i] <-substr(x[i],1,6)
+    if (i<10)  tmp_names <- gsub(names(stat1),pattern = paste0("G0",i),replacement = x[i])
+    else if (i<10)  tmp_names <- gsub(names(stat1),pattern = paste0("G",i),replacement = x[i])
+    names(stat1)<-substr(tmp_names , 1,10)
+    #raster::shapefile(stat1,file.path(R.utils::getAbsolutePath(path_run),"polystat"),overwrite = TRUE)
 
+    
     if (i == 1) {
       stat <- stat1
 

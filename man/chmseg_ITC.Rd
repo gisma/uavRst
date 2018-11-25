@@ -22,7 +22,7 @@ the input for \code{treepos}.}
 
 \item{minTreeAlt}{numeric. Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.\href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}}
 
-\item{maxCrownArea}{numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
+\item{maxCrownArea}{numeric. A single value of the maximum projected tree crown area allowed. Default 100 sqm.
 height of \code{treepos}.}
 }
 \description{

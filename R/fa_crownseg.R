@@ -11,7 +11,8 @@
 #' height of \code{treepos}.
 #'@param minTreeAltParam character. code for the percentile that is used as tree height treshold. It is build using the key letters \code{chmQ} and adding the percentile i.e. "10". Default is \code{chmQ20}
 #'@param chm raster*. Canopy height model in \code{raster} format. Should be the same that was used to create the input for \code{treepos}.
-#' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
+#' @param maxCrownArea numeric. A single value of the maximum projected tree crown area allowed. Default 100 sqm.
+#' @param minCrownArea numeric. A single value of the minimum projected tree crown area allowed. Default 3 sqm
 #'@param leafsize       integer. bin size of grey value sampling range from 1 to 256 see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
 #'@param normalize      integer. logical switch if data will be normalized (1) see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
 #'@param neighbour      integer. von Neumanns' neighborhood (0) or Moore's (1) see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/imagery_segmentation_3.html}{SAGA GIS Help}
@@ -72,7 +73,8 @@
 chmseg_GWS <- function(treepos = NULL,
                        chm = NULL,
                        minTreeAlt         =2,
-                       minTreeAltParam = "chmQ20",
+                       minTreeAltParam = "chm_Q20",
+                       minCrownArea =  3,
                        maxCrownArea = 100,
                        leafsize       = 256,
                        normalize      = 0,
@@ -187,10 +189,10 @@ chmseg_GWS <- function(treepos = NULL,
                   overwrite=TRUE)
   # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
   tree_crowns <- crown_filter(crownFn = file.path(R.utils::getAbsolutePath(path_run),"crowns.shp"),
-                              minTreeAlt = 0.0,
-                              minCrownArea = 0,
+                              minTreeAlt = minTreeAlt,
+                              minCrownArea = minCrownArea,
                               maxCrownArea = maxCrownArea,
-                              minTreeAltParam = "chmQ20" )[[2]]
+                              minTreeAltParam = minTreeAltParam )
 
   options(warn=0)
   cat("segmentation finsihed...\n")
@@ -283,7 +285,7 @@ chmseg_FT <- function(treepos = NULL,
 #' number of crown segments equal to the number of treetops.
 #' @param chm raster*. Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 #' the input for \code{treepos}.
-#' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
+#' @param maxCrownArea numeric. A single value of the minimum projected tree crown area allowed. Default is 100 sqm
 #' height of \code{treepos}.
 #' @param exclusion numeric. A single value from 0 to 1 that represents the percent of pixel exclusion.
 
@@ -313,7 +315,7 @@ chmseg_FT <- function(treepos = NULL,
 
 chmseg_RL <- function(treepos = NULL,
                       chm = NULL,
-                      maxCrownArea = 150,
+                      maxCrownArea = 100,
                       exclusion = 0.2) {
   if (!exists("path_run")) path_run = tempdir()
   if (class(treepos) %in% c("RasterLayer", "RasterStack", "RasterBrick")) {
@@ -357,7 +359,7 @@ chmseg_RL <- function(treepos = NULL,
 #'
 #' @param chm raster*, Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 #' the input for \code{treepos}.
-#' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
+#' @param maxCrownArea numeric. A single value of the maximum projected tree crown area allowed. Default 100 sqm.
 #' height of \code{treepos}.
 #' @param EPSG character. The EPSG code of the reference system of the CHM raster image.
 #' @param movingWin numeric. Size (in pixels) of the moving window to detect local maxima. \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}

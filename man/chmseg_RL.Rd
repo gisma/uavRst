@@ -4,7 +4,7 @@
 \alias{chmseg_RL}
 \title{Watershed segmentation based on 'rLiDAR'}
 \usage{
-chmseg_RL(treepos = NULL, chm = NULL, maxCrownArea = 150,
+chmseg_RL(treepos = NULL, chm = NULL, maxCrownArea = 100,
   exclusion = 0.2)
 }
 \arguments{
@@ -14,7 +14,7 @@ number of crown segments equal to the number of treetops.}
 \item{chm}{raster*. Canopy height model in \code{raster} or \code{SpatialGridDataFrame} file format. Should be the same that was used to create
 the input for \code{treepos}.}
 
-\item{maxCrownArea}{numeric. A single value of the maximum individual tree crown radius expected. Default 10.0 m.
+\item{maxCrownArea}{numeric. A single value of the minimum projected tree crown area allowed. Default is 100 sqm
 height of \code{treepos}.}
 
 \item{exclusion}{numeric. A single value from 0 to 1 that represents the percent of pixel exclusion.}
