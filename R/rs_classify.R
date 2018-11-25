@@ -104,30 +104,22 @@ get_traindata<-function(rasterStack  = NULL,
 #'\dontrun{
 #' ##- required packages
 #'  require(uavRst)
-#'  require(link2GI)
+
 #'
 #' ##- project root folder
-#'  projRootDir<-tempdir()
+#'  setwd(tempdir())
 #'
-#' ##- create subfolders please mind that the pathes are exported as global variables
-#'  paths<-link2GI::initProj(projRootDir = projRootDir,
-#'                           projFolders = c("data/","data/ref/","output/","run/","las/"),
-#'                           global = TRUE,
-#'                           path_prefix = "path_")
-#' ##- overide trailing backslash issue
-#'  path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
-#'  setwd(path_run)
-#'  unlink(paste0(path_run,"*"), force = TRUE)
 #'
 #' ##- get the rgb image, chm and training data
 #'  utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
-#'                       paste0(path_run,"tutorial_data.zip"))
-#'  unzip(zipfile = paste0(path_run,"tutorial_data.zip"),exdir = ".")
+#'                       "tutorial_data.zip")
+#'  unzip(zipfile = "tutorial_data.zip" ,
+#'          exdir = ".")
 
 #'
 #' # read data
-#'  position <- raster::shapefile(paste0(path_run,"position.shp"))
-#'  imageFiles <-Sys.glob(paths = paste0(path_run,"rgb*","tif"))
+#'  position <- raster::shapefile("position.shp")
+#'  imageFiles <-Sys.glob(paths = paste0("rgb*","tif"))
 #'  imageTrainStack<-lapply(imageFiles, FUN=raster::stack)
 #'
 #' ## get counts
@@ -136,7 +128,8 @@ get_traindata<-function(rasterStack  = NULL,
 #'                imageFiles = imageFiles,
 #'                 outPrefix = "",
 #'                       ext = ".tif",
-#'                      path = path_run)
+#'                      path = tempdir())
+#' head(df1)
 #'##+}
 
 
@@ -146,13 +139,13 @@ get_counts<- function(ids=c(1,2),
                       buffersize=1.5,
                       outPrefix="classified_index_",
                       ext=".tif",
-                      path = path_output,
+                      path = tempdir(),
                       dropChars=0) {
 
   buffers<-rgeos::gBuffer(position,width=buffersize)
   ex<-data.frame()
   df<- lapply(seq(1:length(position)), function(i) {
-    fn<-paste0(path,outPrefix,substr(position[i,]$tree,1,nchar(position[i,]$tree)-dropChars),ext)
+    fn<- file.path(R.utils::getAbsolutePath(path),paste0(outPrefix,substr(position[i,]$tree,1,nchar(position[i,]$tree)-dropChars),ext))
 
     if (file.exists(fn)){
       pos <-sp::spTransform(position[i,],raster::raster(fn)@crs)

@@ -6,7 +6,7 @@
 \usage{
 get_counts(ids = c(1, 2), position = NULL, imageFiles = NULL,
   buffersize = 1.5, outPrefix = "classified_index_", ext = ".tif",
-  path = path_output, dropChars = 0)
+  path = tempdir(), dropChars = 0)
 }
 \arguments{
 \item{ids}{numeric. the ids used for the training}
@@ -32,29 +32,20 @@ counts pixel values according to their classes
 \dontrun{
 ##- required packages
  require(uavRst)
- require(link2GI)
 
 ##- project root folder
- projRootDir<-tempdir()
+ setwd(tempdir())
 
-##- create subfolders please mind that the pathes are exported as global variables
- paths<-link2GI::initProj(projRootDir = projRootDir,
-                          projFolders = c("data/","data/ref/","output/","run/","las/"),
-                          global = TRUE,
-                          path_prefix = "path_")
-##- overide trailing backslash issue
- path_run<-ifelse(Sys.info()["sysname"]=="Windows", sub("/$", "",path_run),path_run)
- setwd(path_run)
- unlink(paste0(path_run,"*"), force = TRUE)
 
 ##- get the rgb image, chm and training data
  utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial.zip",
-                      paste0(path_run,"tutorial_data.zip"))
- unzip(zipfile = paste0(path_run,"tutorial_data.zip"),exdir = ".")
+                      "tutorial_data.zip")
+ unzip(zipfile = "tutorial_data.zip" ,
+         exdir = ".")
 
 # read data
- position <- raster::shapefile(paste0(path_run,"position.shp"))
- imageFiles <-Sys.glob(paths = paste0(path_run,"rgb*","tif"))
+ position <- raster::shapefile("position.shp")
+ imageFiles <-Sys.glob(paths = paste0("rgb*","tif"))
  imageTrainStack<-lapply(imageFiles, FUN=raster::stack)
 
 ## get counts
@@ -63,6 +54,7 @@ counts pixel values according to their classes
                imageFiles = imageFiles,
                 outPrefix = "",
                       ext = ".tif",
-                     path = path_run)
+                     path = tempdir())
+head(df1)
 ##+}
 }
