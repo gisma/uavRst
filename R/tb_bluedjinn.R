@@ -561,7 +561,10 @@ linkAll <- function(links=NULL,
   if (is.null(links) && (simple)){
     link<-list()
     for (links in linkItems) {
+      if (links=="gdal")  link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)[[1]]",sep = ""))))
+      else
       link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)",sep = ""))))
+      
     }
 
   } else if (is.null(links)) {
