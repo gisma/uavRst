@@ -135,9 +135,10 @@ chmseg_GWS <- function(treepos = NULL,
   
   # fill the holes inside the crowns (simple approach)
   # TODO better segmentation
-  if (majorityRadius > 0 & Sys.info()["sysname"]!="Windows"){
+  if (majorityRadius > 0 ){
     outname<- "crowns1.sdat"
-    ret <- system(paste0("gdal_sieve.py -8 ",
+    gdal$python_utilities[17,]
+    ret <- system(paste0(paste0(names(gdal$python_utilities[17,]),gdal$python_utilities[17,]) , " -8 ",
                          file.path(R.utils::getAbsolutePath(path_run)),"/","crowns.sdat ",
                          file.path(R.utils::getAbsolutePath(path_run)),"/",outname,
                          " -of SAGA"),
@@ -146,7 +147,7 @@ chmseg_GWS <- function(treepos = NULL,
   } else {
     file.copy(file.path(R.utils::getAbsolutePath(path_run)),"/crowns.sgrd",file.path(R.utils::getAbsolutePath(path_run)),"/crowns1.sgrd",overwrite = TRUE)
     file.copy(file.path(R.utils::getAbsolutePath(path_run)),"/crowns.sdat",file.path(R.utils::getAbsolutePath(path_run)),"/crowns1.sdat",overwrite = TRUE)
-    cat(getCrayon("\n DUE to windows system the sieve filter is not applied -> so the results may look  a bit strange..."))
+    cat(getCrayon("\n Sieve filtering is NOT applied -> so the results may look  a bit strange..."))
 }
     if (RSAGA::rsaga.get.version(env = env) > "3.0.0") {
     ret <- system(paste0(sagaCmd, " grid_filter 6 ",
