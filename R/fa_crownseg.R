@@ -144,7 +144,11 @@ chmseg_GWS <- function(treepos = NULL,
                          file.path(R.utils::getAbsolutePath(path_run)),"/",outname,
                          " -of SAGA"),
                   intern = TRUE)
-    else cat(getCrayon()[[2]]("\n GDAL Python module 'sieve' is NOT found. Expected to be at: "),getCrayon()[[4]](names(gdal$python_utilities) ))
+    else {
+      file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sgrd"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sgrd"),overwrite = TRUE)
+      file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sdat"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sdat"),overwrite = TRUE)
+      cat(getCrayon()[[2]]("\n GDAL Python module 'sieve' is NOT found. Expected to be at: "),getCrayon()[[4]](names(gdal$python_utilities) ))
+      }
     # apply majority filter for smoothing the extremly irregular crown boundaries
   } else {
     file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sgrd"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sgrd"),overwrite = TRUE)
