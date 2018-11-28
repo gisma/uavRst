@@ -137,12 +137,13 @@ chmseg_GWS <- function(treepos = NULL,
   # TODO better segmentation
   if (majorityRadius > 0 ){
     outname<- "crowns1.sdat"
-    gdal$python_utilities[17,]
+    if (length(gdal$python_utilities)>1)
     ret <- system(paste0(paste0(names(gdal$python_utilities[17,]),gdal$python_utilities[17,]) , " -8 ",
                          file.path(R.utils::getAbsolutePath(path_run)),"/","crowns.sdat ",
                          file.path(R.utils::getAbsolutePath(path_run)),"/",outname,
                          " -of SAGA"),
                   intern = TRUE)
+    else cat(getCrayon()[[2]]("\n GDAL Python modules are NOT found. They should reside at: "),getCrayon()[[4]](names(gdal$python_utilities) ))
     # apply majority filter for smoothing the extremly irregular crown boundaries
   } else {
     file.copy(file.path(R.utils::getAbsolutePath(path_run)),"/crowns.sgrd",file.path(R.utils::getAbsolutePath(path_run)),"/crowns1.sgrd",overwrite = TRUE)
