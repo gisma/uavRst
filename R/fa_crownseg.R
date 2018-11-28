@@ -135,6 +135,7 @@ chmseg_GWS <- function(treepos = NULL,
   
   # fill the holes inside the crowns (simple approach)
   # TODO better segmentation
+   
   if (majorityRadius > 0 ){
     outname<- "crowns1.sdat"
     gdal$python_utilities[17,]
