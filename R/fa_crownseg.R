@@ -147,11 +147,11 @@ chmseg_GWS <- function(treepos = NULL,
     else cat(getCrayon()[[2]]("\n GDAL Python module 'sieve' is NOT found. Expected to be at: "),getCrayon()[[4]](names(gdal$python_utilities) ))
     # apply majority filter for smoothing the extremly irregular crown boundaries
   } else {
-    file.copy(file.path(R.utils::getAbsolutePath(path_run)),"/crowns.sgrd",file.path(R.utils::getAbsolutePath(path_run)),"/crowns1.sgrd",overwrite = TRUE)
-    file.copy(file.path(R.utils::getAbsolutePath(path_run)),"/crowns.sdat",file.path(R.utils::getAbsolutePath(path_run)),"/crowns1.sdat",overwrite = TRUE)
+    file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sgrd"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sgrd"),overwrite = TRUE)
+    file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sdat"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sdat"),overwrite = TRUE)
 }
     if (RSAGA::rsaga.get.version(env = env) > "3.0.0") {
-    ret <- system(paste0(sagaCmd, " grid_filter 6 ",
+    ret <- system(paste0(shQuote(sagaCmd), " grid_filter 6 ",
                          " -INPUT "   ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns1.sgrd",
                          " -RESULT "  ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns2.sgrd",
                          " -TYPE 0",
@@ -160,7 +160,7 @@ chmseg_GWS <- function(treepos = NULL,
                   intern = TRUE)  
     } 
     else {
-      ret <- system(paste0(sagaCmd, " grid_filter 6 ",
+      ret <- system(paste0(shQuote(sagaCmd), " grid_filter 6 ",
                            " -INPUT "   ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns1.sgrd",
                            " -RESULT "  ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns2.sgrd",
                            " -MODE 0",
@@ -177,7 +177,7 @@ chmseg_GWS <- function(treepos = NULL,
    
    seg_GWS<-append(seg_GWS,fileProcStatus("sievefilter","crowns1.sgrd",listname = "seg"))
   # convert filtered crown clumps to shape format
-  ret <- system(paste0(sagaCmd, " shapes_grid 6 ",
+  ret <- system(paste0(shQuote(sagaCmd), " shapes_grid 6 ",
                        " -GRID "     ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns1.sgrd",
                        " -POLYGONS " ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns.shp",
                        " -CLASS_ALL 1" ,
