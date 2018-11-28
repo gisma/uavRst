@@ -903,5 +903,24 @@ setHomePath<- function(homeDir="F:/MPG", prefixPC="PCRZP") {
       return(path.expand("~/edu"))  
     }
   } 
-  
-  
+
+#'@export
+#'@keywords internal
+fileProcStatus <- function(module=NULL,file= NULL,listname=NULL){
+  if (!exists("path_run")) path_run = tempdir()
+     assign(listname,list())
+    if (file.exists(file.path(R.utils::getAbsolutePath(path_run),file))) {
+      eval(parse(text=paste0(listname,"$",module," <- TRUE")))
+      return(eval(parse(text=listname)))
+     }
+    
+    else {
+      eval(parse(text=paste0(listname,"$",module," <- FALSE")))
+      return(eval(parse(text=listname)))
+      cat(eval(parse(text=listname)))
+
+    }
+    
+    
+   
+  }

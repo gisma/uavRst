@@ -59,7 +59,7 @@ require(link2GI)
 ##- linkages
 ##- create and check the links to the GI software
 giLinks<-uavRst::linkAll()
-if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
+if (giLinks$saga$exist  & giLinks$grass$exist) {
 
 ##- project folder
 projRootDir<-tempdir()
@@ -89,7 +89,7 @@ crowns_GWS <- chmseg_GWS( treepos = trp_seg[[1]],
                       giLinks = giLinks )[[2]]
 
 ##- visualize it
-raster::plot(crowns_GWS)
+raster::plot(crowns_GWS[[1]])
 }
 }
 }
