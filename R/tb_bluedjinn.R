@@ -422,7 +422,7 @@ poly_stat <- function(x = NULL,
   
   gdal <- giLinks$gdal
   saga <- giLinks$saga
-  sagaCmd<-giLinks$saga$sagaCmd
+  sagaCmd<-shQuote(giLinks$saga$sagaCmd)
   
   
   if (class(spdf)=="SpatialPolygonsDataFrame")     {
