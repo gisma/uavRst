@@ -107,8 +107,8 @@ chmseg_GWS <- function(treepos = NULL,
 
   gdal <- giLinks$gdal
   saga <- giLinks$saga
-  sagaCmd<-saga$sagaCmd
-  invisible(env<-RSAGA::rsaga.env(path =saga$sagaPath,modules = saga$sagaModPath))
+  if (Sys.info()["sysname"]=="Windows") sp <- utils::shortPathName(saga$sagaPath)
+  invisible(env<-RSAGA::rsaga.env(path =sp))
 
   param_list <- paste0(file.path(R.utils::getAbsolutePath(path_run),paste0(segmentationBands,".sgrd;")),collapse = "")
 
