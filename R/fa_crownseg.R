@@ -144,12 +144,11 @@ chmseg_GWS <- function(treepos = NULL,
                          file.path(R.utils::getAbsolutePath(path_run)),"/",outname,
                          " -of SAGA"),
                   intern = TRUE)
-    else cat(getCrayon()[[2]]("\n GDAL Python modules are NOT found. They should reside at: "),getCrayon()[[4]](names(gdal$python_utilities) ))
+    else cat(getCrayon()[[2]]("\n GDAL Python module 'sieve' is NOT found. Expected to be at: "),getCrayon()[[4]](names(gdal$python_utilities) ))
     # apply majority filter for smoothing the extremly irregular crown boundaries
   } else {
     file.copy(file.path(R.utils::getAbsolutePath(path_run)),"/crowns.sgrd",file.path(R.utils::getAbsolutePath(path_run)),"/crowns1.sgrd",overwrite = TRUE)
     file.copy(file.path(R.utils::getAbsolutePath(path_run)),"/crowns.sdat",file.path(R.utils::getAbsolutePath(path_run)),"/crowns1.sdat",overwrite = TRUE)
-    cat(getCrayon("\n DUE to windows system the sieve filter is not applied -> so the results may look  a bit strange..."))
 }
     if (RSAGA::rsaga.get.version(env = env) > "3.0.0") {
     ret <- system(paste0(sagaCmd, " grid_filter 6 ",
