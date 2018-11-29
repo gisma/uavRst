@@ -12,22 +12,22 @@
 #'
 
 read_gpx <- function(file,
-                       layers=c("waypoints", "tracks", "routes", "track_points", "route_points")
+                     layers=c("waypoints", "tracks", "routes", "track_points", "route_points")
 ) {
   if (!all(layers %in% c("waypoints", "tracks", "routes", "track_points", "route_points"))) stop("Incorrect layer(s)", call. = FALSE)
-
+  
   # check if features exist per layer
   suppressWarnings(hasF <- sapply(layers, function(file,l) {
     rgdal::ogrInfo(dsn = file, layer=l)$have_features
   }))
-
+  
   if (!any(hasF)) stop("None of the layer(s) has any features.", call. = FALSE)
-
+  
   res <- lapply(layers[hasF], function(l) {
     rgdal::readOGR(dsn = file, layer=l, verbose=FALSE)
   })
   names(res) <- layers[hasF]
-
+  
   if (sum(hasF)==1) {
     res[[1]]
   } else {
@@ -83,16 +83,16 @@ xyz2tif <- function(xyzFN=NULL,  epsgCode ="25832"){
 
 
 
-# adjust projection of objects according to their keywords -------
+# adjust projection of objects according to their keywords 
 h_raster_adjust_projection <- function(x) {
   llcrs <- "+proj=longlat +datum=WGS84 +no_defs"
-
+  
   is.fact <- raster::is.factor(x)[1]
-
+  
   non_proj_waning <-
     paste("supplied", class(x)[1], "has no projection information!", "\n",
           "provide a correctly georeferenced data raster object or 'GDAL File")
-
+  
   if (is.fact) {
     x <- raster::projectRaster(
       x, raster::projectExtent(x, crs = sp::CRS(llcrs)),
@@ -103,18 +103,18 @@ h_raster_adjust_projection <- function(x) {
       x, raster::projectExtent(x, crs = sp::CRS(llcrs)),
       method = "bilinear")
   }
-
+  
   return(x)
-
+  
 }
 
-# Check projection of objects according to their keywords -------
+# Check projection of objects according to their keywords
 h_comp_ll_proj4 <- function(x) {
   proj <- datum <- nodefs <- "FALSE"
   allWGS84 <- as.vector(c("+init=epsg:4326", "+proj=longlat", "+datum=WGS84", "+no_defs", "+ellps=WGS84", "+towgs84=0,0,0"))
   s <- as.vector(strsplit(x," "))
   for (i in seq(1:length(s[[1]]))) {
-
+    
     if (s[[1]][i] == "+init=epsg:4326") {
       proj <- datum <- nodefs <- "TRUE"
     }
@@ -178,20 +178,20 @@ poly_maxpos <- function(fileName,layerName, polySplit=TRUE, cores=1){
   mask <- raster::raster(fn)
   maskx <- velox::velox(mask)
   # chmx <- velox::velox(dem)
-
+  
   # read vector input data the sf way
   sf_dcs <- sf::st_read(paste0(layerName,".shp"),quiet = TRUE)
   dcs <-  methods::as(sf_dcs, "Spatial")
-
+  
   # retrieve unique NAME
   ids <- unique(dcs@data$NAME)
-
+  
   if (polySplit) {
     cat("     split polygons...\n")
     cat("     analyze",length(ids) ,"polygons\n")
     cat("     calculaton time is approx.:  ",floor(length(ids)/180)," min\n")
     dir.create(paste0(path_tmp,"split"),recursive=TRUE)
-
+    
     # split polygon with respect to the NAME attribute
     parallel::mclapply(ids,function(x){
       rn <- as.character(x)
@@ -202,43 +202,43 @@ poly_maxpos <- function(fileName,layerName, polySplit=TRUE, cores=1){
     },
     mc.cores = cores)
   }
-
-    # parallel retrival of maxpos
+  
+  # parallel retrival of maxpos
   cat("     max height coords search...\n")
   ret_max_pos <-  parallel::mclapply(ids,function(x) {
     rn <- as.character(x)
     # create temp folder and assign it to raster
     dir.create(paste0(path_tmp,rn),recursive=TRUE)
     raster::rasterOptions(tmpdir=paste0(path_tmp,rn))
-
+    
     # read single polygon sf is even in this construct times faster
     sf_shp <- sf::st_read(paste0(path_tmp,"split/",basename(layerName),"_",rn,".shp"),quiet = TRUE)
     shp <- methods::as(sf_shp, "Spatial")
-
+    
     # reclass VALUE to 1
     shp@data$VALUE <-1
-
+    
     # rasterize mask
     maskx$rasterize(shp,field = "VALUE",band = 1)
-
+    
     # re-convert to raster format
     m1 <- maskx$as.RasterLayer(band=1)
-
+    
     # get maxpos of crown area
     m1 <-raster::crop(m1,c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
     d1 <-raster::crop(m1,c(sp::bbox(shp)[1],sp::bbox(shp)[3],sp::bbox(shp)[2],sp::bbox(shp)[4]))
     max_pos <- raster::xyFromCell(d1,which.max(m1 * dem))
-
+    
     # write it to a df
     df <- data.frame(x = max_pos[1], y = max_pos[2], id = rn)
-
+    
     # get rid of temp raster files
     system(paste0("rm -rf ",paste0(path_tmp,rn)))
-
-
+    
+    
     return(df)},    mc.cores = parallel::detectCores()-1
   )
-
+  
   # create a spatial point data frame
   max_pos <- as.data.frame(do.call("rbind", ret_max_pos))
   sp::coordinates(max_pos) <- ~x+y
@@ -313,7 +313,7 @@ grass2shape <- function(runDir = NULL, layerName = NULL){
 
 
 
-# multiplies two raster ----
+# multiply two raster ----
 funMultiply <- function(x)
 {
   # Note that x is received by the function as a 3-d array:
@@ -323,7 +323,7 @@ funMultiply <- function(x)
   # The output of the function should also be a 3-d array,
   # even if it is a single band:
   result <- array(result,dim=c(dim(x)[1],dim(x)[2],1))
-
+  
   return(result)
 }
 
@@ -433,11 +433,11 @@ poly_stat <- function(x = NULL,
                     overwrite_layer = TRUE)
     spdf<-file.path(R.utils::getAbsolutePath(path_run),"spdf.shp")
   }
-
+  
   for (i in seq(1:length(x))) {
     cat(":: calculate ",x[i], " statistics\n")
     #saga_cmd shapes_grid 2 -GRIDS=/tmp/RtmpK0j1RP/run/rgb_3-3_train1.sgrd -POLYGONS=/tmp/RtmpK0j1RP/run/rgb_3-3_train1.shp -NAMING=1 -METHOD=2 -PARALLELIZED=1 -RESULT=/tmp/RtmpK0j1RP/run/rgb_3-3_train1.shp -COUNT=1 -MIN=1 -MAX=1 -RANGE=1 -SUM=1 -MEAN=1 -VAR=1 -STDDEV=1 -QUANTILE=0
-
+    
     # saga <- giLinks$saga
     # sagaCmd<-saga$sagaCmd
     # invisible(env<-RSAGA::rsaga.env(path = saga$sagaPath))
@@ -461,8 +461,8 @@ poly_stat <- function(x = NULL,
     #                           show.output.on.console = FALSE,invisible = TRUE,
     #                           env = env)
     tmp <- rgdal::readOGR(dsn = file.path(R.utils::getAbsolutePath(path_run)),
-                            layer = tools::file_path_sans_ext(basename(spdf)), 
-                            verbose = FALSE)
+                          layer = tools::file_path_sans_ext(basename(spdf)), 
+                          verbose = FALSE)
     rgdal::writeOGR(obj    = tmp,
                     layer  = tools::file_path_sans_ext(basename(spdf)),
                     driver = "ESRI Shapefile",
@@ -486,7 +486,7 @@ poly_stat <- function(x = NULL,
                           " -PARALLELIZED ",parallel,
                           " -RESULT ",file.path(R.utils::getAbsolutePath(path_run),paste0(basename(x[i]),"Stat.shp"))),
                    intern = TRUE)
-
+    
     stat1 <- rgdal::readOGR(dsn = file.path(R.utils::getAbsolutePath(path_run)),
                             layer = paste0(basename(x[i]),"Stat"), 
                             verbose = TRUE)
@@ -498,17 +498,17 @@ poly_stat <- function(x = NULL,
     else if (i<10)  tmp_names <- gsub(names(stat1),pattern = paste0("G",i),replacement = x[i])
     names(stat1)<-substr(tmp_names , 1,10)
     #raster::shapefile(stat1,file.path(R.utils::getAbsolutePath(path_run),"polystat"),overwrite = TRUE)
-
+    
     
     if (i == 1) {
       stat <- stat1
-
+      
     } else  {
       stat@data <- cbind(stat@data,stat1@data[4:length(names(stat1))])
       #stat <- stat1
     }
   }
-
+  
   rgdal::writeOGR(obj = stat,
                   layer = "polyStat",
                   driver = "ESRI Shapefile",
@@ -544,15 +544,15 @@ poly_stat <- function(x = NULL,
 
 #' @export
 linkAll <- function(links=NULL,
-                        simple = TRUE,
-                        linkItems = c("saga","grass7","otb","gdal"),
-                        sagaArgs = "default",
-                        grassArgs = "default",
-                        otbArgs =   "default",
-                        gdalArgs =  c("quiet = TRUE,
+                    simple = TRUE,
+                    linkItems = c("saga","grass7","otb","gdal"),
+                    sagaArgs = "default",
+                    grassArgs = "default",
+                    otbArgs =   "default",
+                    gdalArgs =  c("quiet = TRUE,
                                      returnPaths = TRUE")
-                   )  {
-
+)  {
+  
   if (sagaArgs == "default") sagaArgs <- "default_SAGA = NULL, searchLocation = 'default', ver_select = FALSE, quiet = TRUE, returnPaths = TRUE"
   if (grassArgs == "default") grassArgs <- "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist = FALSE, gisdbase = NULL,
                                      location = NULL, spatial_params = NULL, resolution = NULL, quiet = TRUE, returnPaths = FALSE"
@@ -563,16 +563,16 @@ linkAll <- function(links=NULL,
     for (links in linkItems) {
       if (links=="gdal")  link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)[[1]]",sep = ""))))
       else
-      link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)",sep = ""))))
+        link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)",sep = ""))))
       
     }
-
+    
   } else if (is.null(links)) {
     link<-list()
     for (links in linkItems) {
       link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(",eval(parse(text=paste0(links,"Args"))),")",sep = ""))))
     }
-
+    
   }
   return(link)
 }
@@ -581,18 +581,18 @@ linkAll <- function(links=NULL,
 # fill holes
 fillGaps<- function (folder,layer){
   cat(":: fill data gaps using gdal_fillnodata... \n")
-
+  
   # fill data holes
   if (Sys.info()["sysname"] == "Windows"){
     ret <- system2(command = "gdal_fillnodata.py ",args =
                      paste0(folder,"/",layer,".tif ",
                             folder,"/",layer,".tif "))
-
+    
   } else {
     ret <- system(paste0("gdal_fillnodata.py ", folder,layer,".tif ",
                          folder,layer,".tif "),intern = TRUE)
   }
-
+  
   # write filled data back to GRASS
   rgrass7::execGRASS('r.in.gdal',  flags=c('o',"overwrite"), input=paste0(folder,"/",layer,".tif"),  output=layer, band=1)
 }
@@ -674,11 +674,11 @@ getPopupStyle <- function() {
 #' @keywords internal
 #'@export
 split2SAGA<-function(fn=NULL,
-                    bandName=NULL,
-                    startBand= 1,
-                    endBand =3,
-                    refFn=NULL,
-                    returnRaster=FALSE){
+                     bandName=NULL,
+                     startBand= 1,
+                     endBand =3,
+                     refFn=NULL,
+                     returnRaster=FALSE){
   flist<-list()
   for (i in seq(startBand:endBand)){
     outFn<-file.path(R.utils::getAbsolutePath(path_run),paste0(bandName[i],".sdat"))
@@ -688,18 +688,18 @@ split2SAGA<-function(fn=NULL,
     else
       r<-raster::raster(fn)
     res<-gdalUtils::gdal_translate(src_dataset = fn[[i]]@file@name,
-                              dst_dataset = outFn,
-                              tr= paste0(raster::xres(r)," ",
-                                    raster::xres(r)),
-                              b = as.character(i),
-                              of = "SAGA",
-                              a_nodata = 0,
-                              a_srs = as.character(r@crs) )
-  r<-raster::writeRaster(raster::resample(raster::raster(outFn),raster::raster(refFn)),
-                       filename	= outFn,
-                       NAflag = 0,
-                       format="SAGA",
-                       overwrite=TRUE,progress="text")
+                                   dst_dataset = outFn,
+                                   tr= paste0(raster::xres(r)," ",
+                                              raster::xres(r)),
+                                   b = as.character(i),
+                                   of = "SAGA",
+                                   a_nodata = 0,
+                                   a_srs = as.character(r@crs) )
+    r<-raster::writeRaster(raster::resample(raster::raster(outFn),raster::raster(refFn)),
+                           filename	= outFn,
+                           NAflag = 0,
+                           format="SAGA",
+                           overwrite=TRUE,progress="text")
     flist<-append(flist, r)
   }
   if (returnRaster) return(flist)
@@ -740,50 +740,50 @@ make_bandnames <- function(rgbi    = NA,
   if (!is.na(bandNames[1])) {
     if(bandNames[1] == "simple"){
       bandNames <- c("Energy", "Entropy", "Correlation",
-                  "Inverse_Difference_Moment", "Inertia",
-                  "Cluster_Shade", "Cluster_Prominence",
-                  "Haralick_Correlation")
+                     "Inverse_Difference_Moment", "Inertia",
+                     "Cluster_Shade", "Cluster_Prominence",
+                     "Haralick_Correlation")
     } else if(bandNames[1] == "advanced"){
       bandNames <- c("Hara_Mean", "Hara_Variance", "Dissimilarity",
-                  "Sum_Average",
-                  "Sum_Variance", "Sum_Entropy",
-                  "Difference_of_Variances",
-                  "Difference_of_Entropies",
-                  "IC1", "IC2")
+                     "Sum_Average",
+                     "Sum_Variance", "Sum_Entropy",
+                     "Difference_of_Variances",
+                     "Difference_of_Entropies",
+                     "IC1", "IC2")
     } else if(bandNames[1] == "higher"){
       bandNames <- c("Short_Run_Emphasis",
-                  "Long_Run_Emphasis",
-                  "Grey-Level_Nonuniformity",
-                  "Run_Length_Nonuniformity",
-                  "Run_Percentage",
-                  "Low_Grey-Level_Run_Emphasis",
-                  "High_Grey-Level_Run_Emphasis",
-                  "Short_Run_Low_Grey-Level_Emphasis",
-                  "Short_Run_High_Grey-Level_Emphasis",
-                  "Long_Run_Low_Grey-Level_Emphasis",
-                  "Long_Run_High_Grey-Level_Emphasis")
+                     "Long_Run_Emphasis",
+                     "Grey-Level_Nonuniformity",
+                     "Run_Length_Nonuniformity",
+                     "Run_Percentage",
+                     "Low_Grey-Level_Run_Emphasis",
+                     "High_Grey-Level_Run_Emphasis",
+                     "Short_Run_Low_Grey-Level_Emphasis",
+                     "Short_Run_High_Grey-Level_Emphasis",
+                     "Long_Run_Low_Grey-Level_Emphasis",
+                     "Long_Run_High_Grey-Level_Emphasis")
     } else if(bandNames[1] == "all"){
       bandNames <- c("Energy", "Entropy", "Correlation",
-                  "Inverse_Difference_Moment", "Inertia",
-                  "Cluster_Shade", "Cluster_Prominence",
-                  "Haralick_Correlation",
-                  "Hara_Mean", "Hara_Variance", "Dissimilarity",
-                  "Sum_Average",
-                  "Sum_Variance", "Sum_Entropy",
-                  "Difference_of_Variances",
-                  "Difference_of_Entropies",
-                  "IC1", "IC2",
-                  "Short_Run_Emphasis",
-                  "Long_Run_Emphasis",
-                  "Grey-Level_Nonuniformity",
-                  "Run_Length_Nonuniformity",
-                  "Run_Percentage",
-                  "Low_Grey-Level_Run_Emphasis",
-                  "High_Grey-Level_Run_Emphasis",
-                  "Short_Run_Low_Grey-Level_Emphasis",
-                  "Short_Run_High_Grey-Level_Emphasis",
-                  "Long_Run_Low_Grey-Level_Emphasis",
-                  "Long_Run_High_Grey-Level_Emphasis")
+                     "Inverse_Difference_Moment", "Inertia",
+                     "Cluster_Shade", "Cluster_Prominence",
+                     "Haralick_Correlation",
+                     "Hara_Mean", "Hara_Variance", "Dissimilarity",
+                     "Sum_Average",
+                     "Sum_Variance", "Sum_Entropy",
+                     "Difference_of_Variances",
+                     "Difference_of_Entropies",
+                     "IC1", "IC2",
+                     "Short_Run_Emphasis",
+                     "Long_Run_Emphasis",
+                     "Grey-Level_Nonuniformity",
+                     "Run_Length_Nonuniformity",
+                     "Run_Percentage",
+                     "Low_Grey-Level_Run_Emphasis",
+                     "High_Grey-Level_Run_Emphasis",
+                     "Short_Run_Low_Grey-Level_Emphasis",
+                     "Short_Run_High_Grey-Level_Emphasis",
+                     "Long_Run_Low_Grey-Level_Emphasis",
+                     "Long_Run_High_Grey-Level_Emphasis")
     }
   }
   if (stat == TRUE)  {
@@ -792,11 +792,11 @@ make_bandnames <- function(rgbi    = NA,
   if (!is.na(dem))  {
     bandNames    =  dem
   }
-
+  
   if (!is.na(morpho))  {
     bandNames    =  morpho
   }
-
+  
   if (!is.na(edge))  {
     bandNames    =  edge
   }
@@ -807,7 +807,7 @@ make_bandnames <- function(rgbi    = NA,
       bandNames    =  bandNames <- c(paste0(rgbTrans,"_b1"),paste0(rgbTrans,"_b2"),paste0(rgbTrans,"_b3"))
   }
   return(bandNames)
-
+  
 }
 
 # returns the saga items from a list --
@@ -847,7 +847,7 @@ cutTif<- function(rasterFiles = NULL,
 }
 
 searchLastools <- function(MP = "~",
-                       quiet=TRUE) {
+                           quiet=TRUE) {
   if (MP=="default") MP <- "~"
   MP<-path.expand(MP)
   if (!exists("GiEnv")) GiEnv <- new.env(parent=globalenv())
@@ -859,10 +859,10 @@ searchLastools <- function(MP = "~",
   if (!grepl(MP,raw_LAS)[[1]]) stop("\n At ",MP," no LAStool binaries found")
   # trys to identify valid otb installations and their version numbers
   LASbinaries <- lapply(seq(length(raw_LAS)), function(i){
-
+    
     # TODO strip version from OTB /usr/bin/otbcli_BandMath -version
     # "This is the BandMath application, version 6.0.0"
-
+    
     # if the the tag "OSGEO4W64" exists set installation_type
     root_dir <- data.frame(binDir = substr(raw_LAS[i],1, gregexpr(pattern = "lasview.exe", raw_LAS[i])[[1]][1] - 1))
     # put the existing GISBASE directory, version number  and installation type in a data frame
@@ -870,8 +870,8 @@ searchLastools <- function(MP = "~",
   }) # end lapply
   # bind the df lines
   otbInstallations <- do.call("rbind", LASbinaries )
-
-
+  
+  
   return(LASbinaries)
 }
 
@@ -900,30 +900,25 @@ searchLastools <- function(MP = "~",
 setHomePath<- function(homeDir="F:/MPG", prefixPC="PCRZP") {
   if (!exists("GiEnv")) GiEnv <- new.env(parent=globalenv()) 
   if (substr(Sys.getenv("COMPUTERNAME"),1,nchar(prefixPC)) == substr(prefixPC,1,nchar(prefixPC))) {
-      projHomeDir <- shQuote(homeDir)
-      return(path.expand(projHomeDir))
-    } else {
-      return(path.expand("~/edu"))  
-    }
-  } 
+    projHomeDir <- shQuote(homeDir)
+    return(path.expand(projHomeDir))
+  } else {
+    return(path.expand("~/edu"))  
+  }
+} 
 
 #'@export
 #'@keywords internal
 fileProcStatus <- function(module=NULL,file= NULL,listname=NULL){
   if (!exists("path_run")) path_run = tempdir()
-     assign(listname,list())
-    if (file.exists(file.path(R.utils::getAbsolutePath(path_run),file))) {
-      eval(parse(text=paste0(listname,"$",module," <- TRUE")))
-      return(eval(parse(text=listname)))
-     }
-    
-    else {
-      eval(parse(text=paste0(listname,"$",module," <- FALSE")))
-      return(eval(parse(text=listname)))
-      cat(eval(parse(text=listname)))
-
-    }
-    
-    
-   
+  assign(listname,list())
+  if (file.exists(file.path(R.utils::getAbsolutePath(path_run),file))) {
+    eval(parse(text=paste0(listname,"$",module," <- TRUE")))
+    return(eval(parse(text=listname)))
   }
+   else {
+    eval(parse(text=paste0(listname,"$",module," <- FALSE")))
+    return(eval(parse(text=listname)))
+    cat(eval(parse(text=listname)))
+  }
+}

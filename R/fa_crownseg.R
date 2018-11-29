@@ -63,7 +63,7 @@
 #'                       giLinks = giLinks )[[2]]
 #'
 #'##- visualize it
-#'raster::plot(crowns_GWS[[1]])
+#'raster::plot(crowns_GWS)
 #' }
 #'}
 
@@ -139,7 +139,8 @@ chmseg_GWS <- function(treepos = NULL,
     outname<- "crowns1.sdat"
 
     if (length(gdal$python_utilities)>1)
-    ret <- system(paste0(paste0(names(gdal$python_utilities[17,]),gdal$python_utilities[17,]) , " -8 ",
+      if (substr(gdal$python_utilities[1],1,4)=="gdal")
+    ret <- system(paste0(paste0(names(gdagdal$python_utilitiesl$python_utilities[17,]),gdal$python_utilities[17,]) , " -8 ",
                          file.path(R.utils::getAbsolutePath(path_run)),"/","crowns.sdat ",
                          file.path(R.utils::getAbsolutePath(path_run)),"/",outname,
                          " -of SAGA"),
@@ -205,7 +206,7 @@ chmseg_GWS <- function(treepos = NULL,
   statRawCrowns <- uavRst::poly_stat(c("chm"),
                                      spdf = crowns,parallel = parallel,
                                      giLinks = giLinks)
-  sp::proj4string(statRawCrowns)<-proj
+ 
   seg_GWS<-append(seg_GWS,fileProcStatus("poly_stat","spdf.shp",listname = "seg"))
   
   if (seg_GWS$poly_stat)
@@ -228,8 +229,9 @@ chmseg_GWS <- function(treepos = NULL,
   #nrow(tree_crowns[[1]])
   options(warn=0)
   cat("segmentation finsihed...\n")
-  
-  return(list(tree_crowns[[1]],tree_crowns[[2]],statRawCrowns))
+  sp::proj4string(statRawCrowns)<-sp::proj4string(tree_crowns[[1]])
+  tree_crowns<- append(tree_crowns,statRawCrowns)
+  return(tree_crowns)
 }
 
 

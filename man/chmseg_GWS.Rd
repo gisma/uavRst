@@ -89,7 +89,7 @@ crowns_GWS <- chmseg_GWS( treepos = trp_seg[[1]],
                       giLinks = giLinks )[[2]]
 
 ##- visualize it
-raster::plot(crowns_GWS[[1]])
+raster::plot(crowns_GWS)
 }
 }
 }
