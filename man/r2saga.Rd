@@ -2,7 +2,7 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{r2saga}
 \alias{r2saga}
-\title{converts SAGA raster to R raster object}
+\title{converts R raster* objects to SAGA raster}
 \usage{
 r2saga(x, fn, path_run = tempdir())
 }
@@ -14,6 +14,6 @@ r2saga(x, fn, path_run = tempdir())
 \item{path_run}{character. path used for runtime operations}
 }
 \description{
-converts SAGA raster to R raster object
+converts R raster* objects to SAGA raster
 }
 \keyword{internal}

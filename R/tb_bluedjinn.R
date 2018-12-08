@@ -908,8 +908,13 @@ setHomePath<- function(homeDir="F:/MPG", prefixPC="PCRZP") {
   }
 } 
 
-#'@export
+#' returns the status of saga modules
+#' @param module character name of module to be checked
+#' @param file character. filename to be checked
+#' @param listname character. name of log list
+
 #'@keywords internal
+#'@export
 fileProcStatus <- function(module=NULL,file= NULL,listname=NULL){
   if (!exists("path_run")) path_run = tempdir()
   assign(listname,list())
@@ -923,6 +928,11 @@ fileProcStatus <- function(module=NULL,file= NULL,listname=NULL){
     cat(eval(parse(text=listname)))
   }
 }
+#' writes shapefiles from  sf or sp* objects
+#' @param spobj spatial object of type sp* or sf
+#' @param name character. name of object to be created
+#' @param path_run character. path used for runtime operations
+
 #'@keywords internal
 #'@export
 so2shp<-function(spobj,
@@ -938,7 +948,10 @@ so2shp<-function(spobj,
     
   }
 }
-
+#' reads shapefiles as sf or sp objects
+#' @param fn filename optionally with path
+#' @param type character. type of object to be created. "sp" is default can be set to "sf"
+#' @param path_run character. path used for runtime operations
 #'@keywords internal
 #'@export
 shp2so<-function(fn,
@@ -959,7 +972,9 @@ shp2so<-function(fn,
   }
   return(spobj)
 }
-
+#' writes raster* objects to the SAGA format
+#' @param rastobj raster* object
+#' @param path_run character. path used for runtime operations
 #'@keywords internal
 raster2sdat<-function(rastobj, 
                       path_run = tempdir()
@@ -997,8 +1012,7 @@ saga2r<- function(fn,ext,path_run=tempdir()) {
   return(x)
 }
 
-#' converts SAGA raster to R raster object
-#' @description converts SAGA raster to R raster object
+#' converts R raster* objects to SAGA raster
 #' @param x raster object
 #' @param fn filname name without extension
 #' @param path_run character. path used for runtime operations
@@ -1009,6 +1023,6 @@ r2saga <- function(x,fn,path_run=tempdir()) {
   dirname<-dirname(fn)
   if (nchar(dirname)>1) path_run<-dirname
   
-  raster::writeRaster(chm,file.path(R.utils::getAbsolutePath(path_run),paste0(fn,".sdat")),bylayer=TRUE,overwrite = TRUE,NAflag = 0)
+  raster::writeRaster(x,file.path(R.utils::getAbsolutePath(path_run),paste0(fn,".sdat")),bylayer=TRUE,overwrite = TRUE,NAflag = 0)
   
 }
