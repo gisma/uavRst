@@ -32,8 +32,8 @@
 #' require(link2GI)
 #' ##- linkages
 #' ##- create and check the links to the GI software
-#' giLinks<-uavRst::linkAll()
-#' if (giLinks$saga$exist  & giLinks$grass$exist) {
+#' giLinks<-uavRst::linkAll(linkItems = c("saga","gdal"))
+#' if (giLinks$saga$exist ) {
 #'
 #' ##- project folder
 #' projRootDir<-tempdir()
@@ -107,8 +107,9 @@ chmseg_GWS <- function(treepos = NULL,
 
   gdal <- giLinks$gdal
   saga <- giLinks$saga
-  if (Sys.info()["sysname"]=="Windows") sp <- utils::shortPathName(saga$sagaPath)
-  invisible(env<-RSAGA::rsaga.env(path =sp))
+  sagaCmd <- R.utils::getAbsolutePath(saga$sagaCmd)
+  if (Sys.info()["sysname"]=="Windows") saga$sagaPath <- utils::shortPathName(saga$sagaPath)
+  invisible(env<-RSAGA::rsaga.env(path =saga$sagaPath))
 
   param_list <- paste0(file.path(R.utils::getAbsolutePath(path_run),paste0(segmentationBands,".sgrd;")),collapse = "")
 
@@ -138,12 +139,12 @@ chmseg_GWS <- function(treepos = NULL,
   if (majorityRadius > 0 ){
     outname<- "crowns1.sdat"
 
-    if (length(gdal$python_utilities)>1)
-      if (substr(gdal$python_utilities[1],1,4)=="gdal")
-    ret <- system(paste0(paste0(names(gdagdal$python_utilitiesl$python_utilities[17,]),gdal$python_utilities[17,]) , " -8 ",
+    if (nrow(gdal$version$py[[1]])>1)
+      if (grepl(gdal$version$py[[1]][2,1],pattern = "gdal"))
+    ret <- system(paste0(gdal$version$py[[1]][17,]," -8 ",
                          file.path(R.utils::getAbsolutePath(path_run)),"/","crowns.sdat ",
                          file.path(R.utils::getAbsolutePath(path_run)),"/",outname,
-                         " -of SAGA"),
+                         " -of SAGA"), 
                   intern = TRUE)
     else {
       file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sgrd"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sgrd"),overwrite = TRUE)
@@ -184,7 +185,7 @@ chmseg_GWS <- function(treepos = NULL,
    seg_GWS<-append(seg_GWS,fileProcStatus("sievefilter","crowns1.sgrd",listname = "seg"))
   # convert filtered crown clumps to shape format
   ret <- system(paste0(sagaCmd, " shapes_grid 6 ",
-                       " -GRID "     ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns1.sgrd",
+                       " -GRID "     ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns2.sgrd",
                        " -POLYGONS " ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns.shp",
                        " -CLASS_ALL 1" ,
                        " -CLASS_ID 1.0",
@@ -193,9 +194,10 @@ chmseg_GWS <- function(treepos = NULL,
   
   seg_GWS<-append(seg_GWS,fileProcStatus("shapes_grid6","crowns.shp",listname = "seg"))
   if (seg_GWS$shapes_grid6)
-  crowns <- rgdal::readOGR(dsn = file.path(R.utils::getAbsolutePath(path_run)),
-                           layer = "crowns", 
-                           verbose = FALSE)
+    crowns   <- shp2so(file.path(R.utils::getAbsolutePath(paste0(path_run,"/crowns.shp"))))
+    # crowns <- rgdal::readOGR(dsn = file.path(R.utils::getAbsolutePath(path_run)),
+    #                        layer = "crowns", 
+    #                        verbose = FALSE)
   else return(cat(paste0("File ",file.path(R.utils::getAbsolutePath(path_run)),"/crowns.shp not found \n")))
   
   #crowns<-tree_crowns[tree_crowns$VALUE > 0,]
@@ -204,7 +206,9 @@ chmseg_GWS <- function(treepos = NULL,
   
   # extract chm stats by potential crown segments
   statRawCrowns <- uavRst::poly_stat(c("chm"),
-                                     spdf = crowns,parallel = parallel,
+                                     spdf = crowns,
+                                     path_run = path_run,
+                                     parallel = parallel,
                                      giLinks = giLinks)
  
   seg_GWS<-append(seg_GWS,fileProcStatus("poly_stat","spdf.shp",listname = "seg"))

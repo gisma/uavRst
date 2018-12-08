@@ -684,9 +684,8 @@ morpho_dem<- function(dem,
   gdal <- giLinks$gdal
   saga <- giLinks$saga
   sagaCmd<-saga$sagaCmd
-  if (Sys.info()["sysname"]=="Windows") sp <- utils::shortPathName(saga$sagaPath)
-  invisible(env<-RSAGA::rsaga.env(path = sp))
-
+  if (Sys.info()["sysname"]=="Windows") saga$sagaPath <- utils::shortPathName(saga$sagaPath)
+  invisible(env<-RSAGA::rsaga.env(path =saga$sagaPath))
   s<-raster::raster(dem)
   y<-raster::yres(s)
   x<-raster::xres(s)

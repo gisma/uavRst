@@ -4,14 +4,16 @@
 \alias{poly_stat}
 \title{Calculate descriptive statistics of raster as segemented by polygons}
 \usage{
-poly_stat(x = NULL, spdf = NULL, count = 1, min = 1, max = 1,
-  sum = 1, range = 1, mean = 1, var = 1, stddev = 1,
-  quantile = 10, parallel = 1, giLinks = NULL)
+poly_stat(rasternames = NULL, spdf = NULL, count = 1, min = 1,
+  max = 1, sum = 1, range = 1, mean = 1, var = 1, stddev = 1,
+  quantile = 10, parallel = 1,
+  proj = "+proj=utm +zone=30 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
+  path_run = tempdir(), giLinks = NULL)
 }
 \arguments{
-\item{x}{list of spatial Raster* object(s)}
+\item{rasternames}{vector of raster* objects default is NULL}
 
-\item{spdf}{spatial point dataframe}
+\item{spdf}{spatial polygon dataframe default is NULL}
 
 \item{count}{0 1 switch}
 
@@ -33,6 +35,10 @@ poly_stat(x = NULL, spdf = NULL, count = 1, min = 1, max = 1,
 
 \item{parallel}{run it parallel default is 1}
 
+\item{proj}{projection string}
+
+\item{path_run}{run time folder for all kind of calculations, by default tempdir()}
+
 \item{giLinks}{list of GI tools cli pathes, default is NULL}
 }
 \description{
@@ -45,35 +51,19 @@ require(uavRst)
 require(link2GI)
 
 # create and check the links to the GI software
-giLinks<-uavRst::linkAll()
-if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
-
-# project folder
-projRootDir<-tempdir()
-
-# create subfolders please mind that the pathes are exported as global variables
-paths<-link2GI::initProj(projRootDir = projRootDir, projFolders = c("run/"),
-                         global = TRUE,
-                         path_prefix = "path_")
+giLinks<-uavRst::linkAll(linkItems = c("saga","gdal"))
+if (giLinks$saga$exist) {
 
 # get the rgb image, chm and training data
 url <- "https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
-utils::download.file(url, paste0(path_run,"tutorial_data.zip"))
-unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = ".")
-
-# convert tif to SAGA
-gdalUtils::gdal_translate(file.path(path_run,"chm_3-3_train1.tif"),
-                          file.path(path_run,"chm_3-3_train1.sdat"),
-                          overwrite = TRUE,
-                          b = 1,
-                          of = 'SAGA',
-                          verbose = FALSE)
+utils::download.file(url, file.path(tempdir(),"tutorial_data.zip"))
+unzip(zipfile = file.path(tempdir(),"tutorial_data.zip"), exdir = tempdir())
 
 polyStat <- poly_stat("chm_3-3_train1",
                       spdf = "rgb_3-3_train1.shp",
                       giLinks=giLinks)
                       
-mapview::mapview(polyStat)
+raster::plot(polyStat)
 }
 ##+}
 
