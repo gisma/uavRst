@@ -1,3 +1,19 @@
+## uavRst 0.5-2
+
+new features:
+  * add data
+  * add convinient functions
+  
+bugfixes:
+  * fix sveral algorithms
+  
+## uavRst 0.5-1
+
+bugfixes:
+  * fix issues 12-16
+  # fix numerous bugs and typos
+  
 ## uavRst 0.5-0
 
 * Initial release
+

@@ -32,8 +32,8 @@
 #' require(link2GI)
 #' ##- linkages
 #' ##- create and check the links to the GI software
-#' giLinks<-uavRst::linkAll()
-#' if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
+#' giLinks<-uavRst::linkAll(linkItems = c("saga","gdal"))
+#' if (giLinks$saga$exist ) {
 #'
 #' ##- project folder
 #' projRootDir<-tempdir()
@@ -107,8 +107,9 @@ chmseg_GWS <- function(treepos = NULL,
 
   gdal <- giLinks$gdal
   saga <- giLinks$saga
-  sagaCmd<-saga$sagaCmd
-  invisible(env<-RSAGA::rsaga.env(path =saga$sagaPath,modules = saga$sagaModPath))
+  sagaCmd <- R.utils::getAbsolutePath(saga$sagaCmd)
+  if (Sys.info()["sysname"]=="Windows") saga$sagaPath <- utils::shortPathName(saga$sagaPath)
+  invisible(env<-RSAGA::rsaga.env(path =saga$sagaPath))
 
   param_list <- paste0(file.path(R.utils::getAbsolutePath(path_run),paste0(segmentationBands,".sgrd;")),collapse = "")
 
@@ -129,22 +130,37 @@ chmseg_GWS <- function(treepos = NULL,
                             env = env,
                             intern = TRUE,
                             invisible = FALSE,show.output.on.console = TRUE)
+    
+   seg_GWS<-fileProcStatus(module = "imagerysegementation3",file = "crowns.sgrd",listname = "seg")
 
+  
   # fill the holes inside the crowns (simple approach)
   # TODO better segmentation
-  if (majorityRadius > 0 & Sys.info()["sysname"]!="Windows"){
-    outname<- "sieve_pre_tree_crowns.sdat"
-    ret <- system(paste0("gdal_sieve.py -8 ",
-                         file.path(R.utils::getAbsolutePath(path_run)),"/","crowns.sdat ",
-                         file.path(R.utils::getAbsolutePath(path_run)),"/",outname,
-                         " -of SAGA"),
-                  intern = TRUE)
+  if (majorityRadius > 0 ){
+    outname<- "crowns1.sdat"
+    
+    if (!is.null(gdal$version$py[[1]])){
+      if (grepl(gdal$version$py[[1]][2,1],pattern = "gdal"))
+        ret <- system(paste0(gdal$version$py[[1]][17,]," -8 ",
+                             file.path(R.utils::getAbsolutePath(path_run)),"/","crowns.sdat ",
+                             file.path(R.utils::getAbsolutePath(path_run)),"/",outname,
+                             " -of SAGA"), 
+                      intern = TRUE)}
+    else {
+      file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sgrd"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sgrd"),overwrite = TRUE)
+      file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sdat"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sdat"),overwrite = TRUE)
+      cat(getCrayon()[[2]]("\n GDAL Python module 'sieve' is NOT found. Expected to be at: "),
+          getCrayon()[[4]](names(gdal$python_utilities),"\n" ))
+      }
     # apply majority filter for smoothing the extremly irregular crown boundaries
-
+  } else {
+    file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sgrd"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sgrd"),overwrite = TRUE)
+    file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sdat"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sdat"),overwrite = TRUE)
+}
     if (RSAGA::rsaga.get.version(env = env) > "3.0.0") {
     ret <- system(paste0(sagaCmd, " grid_filter 6 ",
-                         " -INPUT "   ,file.path(R.utils::getAbsolutePath(path_run)),"/sieve_pre_tree_crowns.sgrd",
-                         " -RESULT "  ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns.sgrd",
+                         " -INPUT "   ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns1.sgrd",
+                         " -RESULT "  ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns2.sgrd",
                          " -TYPE 0",
                          " -KERNEL_RADIUS "  ,majorityRadius,
                          " -THRESHOLD 0.0 "),
@@ -152,50 +168,73 @@ chmseg_GWS <- function(treepos = NULL,
     } 
     else {
       ret <- system(paste0(sagaCmd, " grid_filter 6 ",
-                           " -INPUT "   ,file.path(R.utils::getAbsolutePath(path_run)),"/sieve_pre_tree_crowns.sgrd",
-                           " -RESULT "  ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns.sgrd",
+                           " -INPUT "   ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns1.sgrd",
+                           " -RESULT "  ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns2.sgrd",
                            " -MODE 0",
                            " -RADIUS "  ,majorityRadius,
                            " -THRESHOLD 0.0 "),
                     intern = TRUE)
     }
-  }
+  
 
 
+
+
+
+   
+   seg_GWS<-append(seg_GWS,fileProcStatus("sievefilter","crowns1.sgrd",listname = "seg"))
   # convert filtered crown clumps to shape format
   ret <- system(paste0(sagaCmd, " shapes_grid 6 ",
-                       " -GRID "     ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns.sgrd",
+                       " -GRID "     ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns2.sgrd",
                        " -POLYGONS " ,file.path(R.utils::getAbsolutePath(path_run)),"/crowns.shp",
                        " -CLASS_ALL 1" ,
                        " -CLASS_ID 1.0",
                        " -SPLIT 1"),
                 intern = TRUE)
-  crowns <- rgdal::readOGR(dsn = file.path(R.utils::getAbsolutePath(path_run)),
-                           layer = "crowns", 
-                           verbose = FALSE)
+  
+  seg_GWS<-append(seg_GWS,fileProcStatus("shapes_grid6","crowns.shp",listname = "seg"))
+  if (seg_GWS$shapes_grid6)
+    crowns   <- shp2so(file.path(R.utils::getAbsolutePath(paste0(path_run,"/crowns.shp"))))
+    # crowns <- rgdal::readOGR(dsn = file.path(R.utils::getAbsolutePath(path_run)),
+    #                        layer = "crowns", 
+    #                        verbose = FALSE)
+  else return(cat(paste0("File ",file.path(R.utils::getAbsolutePath(path_run)),"/crowns.shp not found \n")))
+  
   #crowns<-tree_crowns[tree_crowns$VALUE > 0,]
   sp::proj4string(crowns)<-proj
   
   
   # extract chm stats by potential crown segments
   statRawCrowns <- uavRst::poly_stat(c("chm"),
-                                     spdf = crowns,parallel = parallel,
+                                     spdf = crowns,
+                                     path_run = path_run,
+                                     parallel = parallel,
                                      giLinks = giLinks)
+ 
+  seg_GWS<-append(seg_GWS,fileProcStatus("poly_stat","spdf.shp",listname = "seg"))
+  
+  if (seg_GWS$poly_stat)
+{    rgdal::writeOGR(obj = statRawCrowns,
+                    dsn = file.path(R.utils::getAbsolutePath(path_run)),
+                    layer = "crownsstat",
+                    driver= "ESRI Shapefile",
+                    overwrite=TRUE)
+  }
+  else return(cat(paste0("File ",file.path(R.utils::getAbsolutePath(path_run)),"spdf.shp not found \n")))
+  
 
-  rgdal::writeOGR(obj = statRawCrowns,
-                  dsn = file.path(R.utils::getAbsolutePath(path_run)),
-                  layer = "crowns",
-                  driver= "ESRI Shapefile",
-                  overwrite=TRUE)
   # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
-  tree_crowns <- crown_filter(crownFn = file.path(R.utils::getAbsolutePath(path_run),"crowns.shp"),
+  tree_crowns <- crown_filter(crownFn = file.path(R.utils::getAbsolutePath(path_run),"crownsstat.shp"),
                               minTreeAlt = minTreeAlt,
                               minCrownArea = minCrownArea,
                               maxCrownArea = maxCrownArea,
                               minTreeAltParam = minTreeAltParam )
-
+  
+  #nrow(tree_crowns[[1]])
   options(warn=0)
   cat("segmentation finsihed...\n")
+  sp::proj4string(statRawCrowns)<-sp::proj4string(tree_crowns[[1]])
+  tree_crowns<- append(tree_crowns,statRawCrowns)
   return(tree_crowns)
 }
 
