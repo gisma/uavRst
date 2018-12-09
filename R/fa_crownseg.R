@@ -138,14 +138,14 @@ chmseg_GWS <- function(treepos = NULL,
   # TODO better segmentation
   if (majorityRadius > 0 ){
     outname<- "crowns1.sdat"
-
-    if (nrow(gdal$version$py[[1]])>1)
+    
+    if (!is.null(gdal$version$py[[1]])){
       if (grepl(gdal$version$py[[1]][2,1],pattern = "gdal"))
-    ret <- system(paste0(gdal$version$py[[1]][17,]," -8 ",
-                         file.path(R.utils::getAbsolutePath(path_run)),"/","crowns.sdat ",
-                         file.path(R.utils::getAbsolutePath(path_run)),"/",outname,
-                         " -of SAGA"), 
-                  intern = TRUE)
+        ret <- system(paste0(gdal$version$py[[1]][17,]," -8 ",
+                             file.path(R.utils::getAbsolutePath(path_run)),"/","crowns.sdat ",
+                             file.path(R.utils::getAbsolutePath(path_run)),"/",outname,
+                             " -of SAGA"), 
+                      intern = TRUE)}
     else {
       file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sgrd"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sgrd"),overwrite = TRUE)
       file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sdat"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sdat"),overwrite = TRUE)
