@@ -1026,3 +1026,29 @@ r2saga <- function(x,fn,path_run=tempdir()) {
   raster::writeRaster(x,file.path(R.utils::getAbsolutePath(path_run),paste0(fn,".sdat")),bylayer=TRUE,overwrite = TRUE,NAflag = 0)
   
 }
+
+#' checks extension mismatch of a lasfile 
+#' @param lasfile filename of an las file
+#' @param proj4 correct proj4 string
+#' @export
+correctLas<-function(lasfiles,
+                     proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"){
+  changed=FALSE
+  
+  cat("\n: checking extent of las file...",lasfiles,"\n")
+  l1<- lidR::readLAS(lasfiles)
+  sp::proj4string(l1) <-sp::CRS(proj4,doCheckCRSArgs=TRUE)
+  if (l1@bbox[1]< l1@bbox[3]-1000.1) {
+    cat(getCrayon()[[2]]("\n: corrected minx")," ",l1@bbox[1], "=>" ,l1@bbox[3]-1000)
+    l1@bbox[1]<-l1@bbox[3]-1000
+  }
+  if (l1@bbox[2]<l1@bbox[4]-1000.1){
+    cat(getCrayon()[[2]]("\n:corrected miny")," ",l1@bbox[2], "=>" ,l1@bbox[4]-1000)
+    l1@bbox[2]<-l1@bbox[4]-1000
+  }
+  cat(": new extend... ")
+  subset = lidR::lasclipRectangle(l1, l1@bbox[1],l1@bbox[3],l1@bbox[2],l1@bbox[4])
+  cat(subset@bbox,"\n")
+  sp::proj4string(subset) <-sp::CRS(proj4,doCheckCRSArgs=TRUE)
+  return(subset)
+} 
