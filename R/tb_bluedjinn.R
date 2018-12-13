@@ -1043,7 +1043,7 @@ correctLas<-function(lasfiles,
     l1@bbox[1]<-l1@bbox[3]-1000
   }
   if (l1@bbox[2]<l1@bbox[4]-1000.1){
-    cat(getCrayon()[[2]]("\n:corrected miny")," ",l1@bbox[2], "=>" ,l1@bbox[4]-1000)
+    cat(getCrayon()[[2]]("\n: corrected miny")," ",l1@bbox[2], "=>" ,l1@bbox[4]-1000)
     l1@bbox[2]<-l1@bbox[4]-1000
   }
   cat(": new extend... ")
