@@ -32,13 +32,13 @@ correctLas<-function(lasfiles,
 llas2llv0<-function(las_files,
                     level0path,
                     proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
-                    ){
-for(fn in las_files){
-  las<-uavRst::correctLas(fn,proj4 = proj4)
-  sp::proj4string(las) <- sp::CRS(proj4,doCheckCRSArgs=TRUE)
-  las = lidR::writeLAS(las,paste0(level0path,basename(fn)))
-  rlas::writelax(paste0(level0path,basename(fn)))
-}
+){
+  for(fn in las_files){
+    las<-uavRst::correctLas(fn,proj4 = proj4)
+    sp::proj4string(las) <- sp::CRS(proj4,doCheckCRSArgs=TRUE)
+    las = lidR::writeLAS(las,paste0(level0path,basename(fn)))
+    rlas::writelax(paste0(level0path,basename(fn)))
+  }
 }
 
 #' create lidR catalog
@@ -59,18 +59,18 @@ for(fn in las_files){
 #' @export
 
 make_lidr_catalog <- function(path = NULL,
-                   cores = 3,
-                   chunksize = 00,
-                   chunkbuffer= 30,
-                   alignment = c(0,0),
-                   progress = TRUE,
-                   stop_early =TRUE,
-                   w2w =TRUE,
-                   output_files="",
-                   select="",
-                   filter="",
-                   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
-                   ) {
+                              cores = 3,
+                              chunksize = 00,
+                              chunkbuffer= 30,
+                              alignment = c(0,0),
+                              progress = TRUE,
+                              stop_early =TRUE,
+                              w2w =TRUE,
+                              output_files="",
+                              select="",
+                              filter="",
+                              proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
+) {
   ## setting up the lidR catalog
   ctg <- lidR::catalog(path)
   sp::proj4string(ctg) <- sp::CRS(proj4) # ETRS89 / UTM zone 32N
@@ -97,7 +97,7 @@ make_lidr_catalog <- function(path = NULL,
 #' @param outpath path to write to if null nothing is written
 #' @param proj4 correct proj4 string
 #' @export
- cut_aoi<-function(cgs,
+cut_aoi<-function(cgs,
                   shapefile,
                   outpath=NULL,
                   lasfilename="aoi.las",
@@ -111,8 +111,11 @@ make_lidr_catalog <- function(path = NULL,
                                   xright = aio_bb[3],
                                   ytop = aio_bb[4])
   if (!is.null(outpath)){
-  lidR::writeLAS(aoicgs,file.path(outpath,lasfilename))
-  rlas::writelax(file.path(outpath,lasfilename))}
-  # save catalog 
- return(aoicgs)
+    lidR::writeLAS(aoicgs,file.path(outpath,lasfilename))
+    rlas::writelax(file.path(outpath,lasfilename))
+    return(file.path(outpath,lasfilename))
+  }
+  else 
+    
+    return(ctg)
 }
