@@ -47,8 +47,7 @@ pc3D_dtm(lasDir = NULL, gisdbasePath = NULL, thinGrid = "0.5",
 \item{giLinks}{list of GI tools cli pathes, default is NULL}
 
 \item{MP}{character mounting point / drive letter default is "~"
-
- @export 
+ @export pc3D_dtm  
  @examples
 \dontrun{
 require(uavRst)

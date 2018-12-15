@@ -1,9 +1,8 @@
 #' create a Digital Terrain Model from preclassified point cloud data
-#'
+#' 
 #'@description Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.
 #'
 #'@author Chris Reudenbach
-#'
 #'@param lasDir  character. default is \code{NULL} path  to the laz/las file(s)
 #'@param gisdbasePath character. default is \code{NULL} root directory of the project. NOTE the function creates two subfolder named \code{run} and \code{output}
 #'@param gridSize  numerical. resolution of the DTM raster
@@ -21,9 +20,8 @@
 #'@param projsubFolders list of character contaiing subfolders that will be created/linked for R related GRASS processing
 #'@param verbose logical. to be quiet 
 #'@param cutExtent object of typ extent deteerming the clip area
-#' @param MP character mounting point / drive letter default is "~"
-#'
-#'  @export 
+#'@param MP character mounting point / drive letter default is "~"
+#'  @export pc3D_dtm  
 #'  @examples
 #' \dontrun{
 #'require(uavRst)
