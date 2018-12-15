@@ -111,6 +111,7 @@ cut_aoi<-function(cgs,
                                   xright = aio_bb[3],
                                   ytop = aio_bb[4])
   if (!is.null(outpath)){
+    cat("\n: saving: ",file.path(outpath,lasfilename))
     lidR::writeLAS(aoicgs,file.path(outpath,lasfilename))
     rlas::writelax(file.path(outpath,lasfilename))
     return(file.path(outpath,lasfilename))
