@@ -1,8 +1,6 @@
-#'@name pc3D_dtm
-#'@title create a Digital Terrain Model from preclassified point cloud data
+#' create a Digital Terrain Model from preclassified point cloud data
 #'
-#'@description
-#' Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.
+#'@description Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.
 #'
 #'@author Chris Reudenbach
 #'
@@ -21,70 +19,67 @@
 #'@param proj4  default is EPSG 32632, any valid proj4 string that is assumingly the correct one
 #'@param giLinks list of GI tools cli pathes, default is NULL
 #'@param projsubFolders list of character contaiing subfolders that will be created/linked for R related GRASS processing
-#'@param verbose logical. to be quiet (1)
+#'@param verbose logical. to be quiet 
 #'@param cutExtent object of typ extent deteerming the clip area
-#'@param MP character mounting point / drive letter default is "~"
-
-#'@export pc3D_dtm
+#' @param MP character mounting point / drive letter default is "~"
 #'
-#'@examples
-
+#'  @export 
+#'  @examples
 #' \dontrun{
 #'require(uavRst)
 #'require(link2GI)
 #'
 #' # create and check the links to the GI software
 #' giLinks<-list()
-#' giLinks$saga<-link2GI::linkSAGA()
-#' if (giLinks$saga$exist) {
-#'# proj subfolders
-#'projRootDir<-tempdir()
-#'unlink(paste0(projRootDir,"*"), force = TRUE)
+#'giLinks$saga<-link2GI::linkSAGA()
+#'if (giLinks$saga$exist) {
+#'  # proj subfolders
+#'  projRootDir<-tempdir()
+#'  unlink(paste0(projRootDir,"*"), force = TRUE)
 
-#'projsubFolders<-c("data/","data/ref/","output/","run/","las/")
-#'paths<-link2GI::initProj(projRootDir = projRootDir,
-#'                         projFolders = projsubFolders,
-#'                         global = TRUE,
-#'                         path_prefix = "path_")
-#'setwd(paste0(projRootDir,"run"))
-#'# get some colors
-#'pal = mapview::mapviewPalette("mapviewTopoColors")
+#'  projsubFolders<-c("data/","data/ref/","output/","run/","las/")
+#'  paths<-link2GI::initProj(projRootDir = projRootDir,
+#'                          projFolders = projsubFolders,
+#'                          global = TRUE,
+#'                          path_prefix = "path_")
+#'  setwd(paste0(projRootDir,"run"))
 #'
-#'# get the data
-#'utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
-#'                     destfile="lasdata.las")
-#'
-#'# create a DSM  based on a uav point cloud
-#' pc3DTM <- pc3D_dtm(lasDir =  "lasdata.las",
-#'                       gisdbasePath = projRootDir,
-#'                       projsubFolders = projsubFolders,
-#'                       thinGrid = 1.,
-#'                       splineNumber = 5 ,
-#'                       gridSize = 0.5,
-#'                       giLinks = giLinks)
-#'mapview::mapview(pc3DTM[[1]]) 
-#'}
+#'  # get the data
+#'  utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
+#'                      destfile="lasdata.las")
+
+#'  # create a DSM  based on a uav point cloud
+#'  pc3DTM <- pc3D_dtm(lasDir =  "lasdata.las",
+#'                         gisdbasePath = projRootDir,
+#'                         projsubFolders = projsubFolders,
+#'                         thinGrid = .5,
+#'                         splineNumber = 5 ,
+#'                         gridSize = 0.5,
+#'                         giLinks = giLinks)
+#'  raster::raster(pc3DTM)
+#' }
 #'}
 
 
 pc3D_dtm <- function(lasDir = NULL,
-                      gisdbasePath = NULL,
-                      thinGrid = "0.5",
-                      keepClass = "2",
-                      bulge = "1.5",
-                      splineNumber = "4" ,
-                      stepSize = "city",
-                      subSize = "ultra_fine",
-                      gridSize = "0.25",
-                      dtmarea = FALSE,
-                   cutExtent = NULL,
-                      projsubFolders = c("data/","output/","run/","las/"),
-                      proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
-                      cores = "3",
-                   pathLastools = NULL,
-                   giLinks =NULL,
-                   MP ="~",
-                   verbose = FALSE) {
+                     gisdbasePath = NULL,
+                     thinGrid = "0.5",
+                     keepClass = "2",
+                     bulge = "1.5",
+                     splineNumber = "4" ,
+                     stepSize = "city",
+                     subSize = "ultra_fine",
+                     gridSize = "0.25",
+                     dtmarea = FALSE,
+                     cutExtent = NULL,
+                     projsubFolders = c("data/","output/","run/","las/"),
+                     proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
+                     cores = "3",
+                     pathLastools = NULL,
+                     giLinks =NULL,
+                     MP ="~",
+                     verbose = FALSE) {
+  
   if (!exists("path_run")) path_run = tempdir()
   LASbin<-searchLastools(MP=MP)
   if (length(LASbin)<1) stop("\n At ",MP," no LAStool binaries found")
@@ -102,7 +97,7 @@ pc3D_dtm <- function(lasDir = NULL,
     Sys.setenv("GRASS_VERBOSE"=0)
     ois <- rgrass7::get.ignore.stderrOption()
     rgrass7::set.ignore.stderrOption(TRUE)}
-
+  
   # get/map the las binary folder and create the base command line
   if (is.null(lasDir)) stop("no directory containing las/laz files provided...\n")
   lasDir <- path.expand(lasDir)
@@ -115,16 +110,16 @@ pc3D_dtm <- function(lasDir = NULL,
     if (is.null(pathLastools)) {cmd <- pathLastools <- paste0("wine ",path.expand(lasbin))
     if (verbose) cat("\n You did not provide a path to your lastool binary folder.\n
                          Assumed to be somewher in your home directory")}
-
+    
   }
-
+  
   # create cmd strings
   las2las       <- paste(cmd,"las2las.exe",sep = "/")
   lasmerge      <- paste(cmd,"lasmerge.exe",sep = "/")
   lasground_new <- paste(cmd,"lasground_new.exe",sep = "/")
   las2dem       <- paste(cmd,"las2dem.exe",sep = "/")
   las2txt       <- paste(cmd,"las2txt.exe",sep = "/")
-
+  
   # map the code words
   if (stepSize == "city") step <- "25"
   else if (stepSize == "town") step <- "10"
@@ -137,18 +132,18 @@ pc3D_dtm <- function(lasDir = NULL,
   else if (subSize == "extra_fine") sub <- "7"
   else if (subSize == "ultra_fine") sub <- "8"
   else if (subSize == "hyper_fine") sub <- "9"
-
+  
   # create project structure and export global paths
   link2GI::initProj(projRootDir = gisdbasePath,
                     projFolders =  projsubFolders)
-
+  
   # set lastool folder
   pathLastools <- path.expand(pathLastools)
-
-
+  
+  
   #setwd(path_run)
-
-
+  
+  
   if(raster::extension(basename(lasDir)) !=".las" & raster::extension(basename(lasDir)) !=".laz") {
     # check las / laz files; laz will be preferred
     lasFileNames <- list.files(pattern = "[.]las$", path = lasDir, full.names = TRUE)
@@ -174,17 +169,17 @@ pc3D_dtm <- function(lasDir = NULL,
     )
     name<-"full_point_cloud.las"
   } else {
-
+    
     name<-basename(lasDir)
     extFN<- substr(raster::extension(basename(paste0(path_run,name))),2,4)
     if (!file.exists(paste0(path_run,name)))
-    file.copy(from = lasDir,
-              to = paste0(path_run,name),
-              overwrite = TRUE)
-
-
+      file.copy(from = lasDir,
+                to = paste0(path_run,name),
+                overwrite = TRUE)
+    
+    
   }
-
+  
   if (!is.null(cutExtent)){
     #lastool(tool = "lasclip",lasFile = lasfile,cutExtent = cutExtent)
     las = lidR::readLAS(paste0(path_run,name))
@@ -194,18 +189,18 @@ pc3D_dtm <- function(lasDir = NULL,
   }
   # get extent of merged file
   sp_param <-lastool(lasFile= paste0(path_run,name))
-
+  
   # rename output file according to the extent
   fn<- paste(sp_param ,collapse=" ")
   tmp <- gsub(paste(sp_param ,collapse=" "),pattern = " ",replacement = "_")
   fn<-gsub(tmp,pattern = "[.]",replacement = "_")
   # copy it to the output folder
   file.rename(from = paste0(path_run,name),
-            to = paste0(path_run,fn,".las"))
+              to = paste0(path_run,fn,".las"))
   name<-paste0(path_run,fn,".las")
   # add proj4 string manually
   sp_param[5] <- proj4
-
+  
   ### reduce the data amount
   cat("\n:: reducing the point density...\n")
   ret <- system(paste0(las2las,
@@ -217,9 +212,10 @@ pc3D_dtm <- function(lasDir = NULL,
                        " -thin_with_grid ",thinGrid),
                 intern = TRUE,
                 ignore.stderr = TRUE
-  )
-
-
+                )
+  
+  
+  
   #### starting lastools classification
   # run lasground
   cat(":: classify ground points (lastools) ...\n")
@@ -235,8 +231,8 @@ pc3D_dtm <- function(lasDir = NULL,
                 intern = FALSE,
                 ignore.stderr = TRUE
   )
-
-
+  
+  
   # create lastools  DTM
   ret <- system(paste0(las2dem,
                        " -i ",path_run,"*ground.",extFN,
@@ -251,88 +247,71 @@ pc3D_dtm <- function(lasDir = NULL,
                 intern = TRUE,
                 ignore.stderr = TRUE
   )
-
-
-  # export las file to text file
-  ret <- system(paste0(las2txt,
-                       " -i ",path_run,"*ground.",extFN,
-                       " -parse xyzrRGB",
-                       " -sep komma"),
-                intern = TRUE,
-                ignore.stderr = TRUE
-  )
-
-  #### starting SAGA classification
-  # create output mask file for interpolation
-  # cat(":: classify ground points (aDTM) ...\n")
-  # r <- raster::rasterFromXYZ(paste0(path_run,"o_dtm.tif"))
-  # r[r > 0] <- 0
-  # raster::writeRaster(r,filename = paste0(path_run,"rawdtm.tif"),overwrite = TRUE)
-  # gdalUtils::gdalwarp(paste0(path_run,"rawdtm.tif"),
-  #                     paste0(path_run,"rawdtm.sdat"),
-  #                     overwrite = TRUE,
-  #                     of = 'SAGA',
-  #                     verbose = FALSE)
-  #
-
-  # import to saga as point cloud
-
-  #saga <- link2GI::linkSAGA()
-  #sagaCmd<-saga$sagaCmd
-  txtfile <- lasFileNames <- list.files(pattern = "ground[.]txt$", path = path_run, full.names = TRUE)
-  ret <- system(paste0(sagaCmd,' io_shapes 16 ',
-                       ' -POINTS ', path_run,'pointcloud',
-                       ' -FILE  ', txtfile,
-                       ' -XFIELD 1',
-                       ' -YFIELD 2',
-                       ' -FIELDS "4;5;6;7"',
-                       ' -FIELDNAMES "r;R;G;B"',
-                       ' -FIELDTYPES "1;1;1;1"',
-                       ' -SKIP_HEADER 0',
-                       ' -FIELDSEP 2'),
-                intern = TRUE,
-                ignore.stderr = TRUE)
-
-  # saga spline interpolation of the alt values
-
-  ret <- system(paste0(sagaCmd,' grid_spline 4 ',
-                       ' -SHAPES ', path_run,'pointcloud.spc',
-                       ' -FIELD 2',
-                       ' -TARGET_DEFINITION 0',
-                       ' -TARGET_OUT_GRID ',paste0(path_run,"rawdtm.sgrd"),
-                       ' -TARGET_USER_SIZE ',gridSize,
-                       ' -TARGET_USER_XMIN ',sp_param[1],
-                       ' -TARGET_USER_XMAX ',sp_param[3],
-                       ' -TARGET_USER_YMIN ',sp_param[2],
-                       ' -TARGET_USER_YMAX ',sp_param[4],
-                       ' -METHOD 1',
-                       ' -EPSILON 0.000100',
-                       ' -LEVEL_MAX ',splineNumber),
-                intern = TRUE,
-                ignore.stderr = TRUE)
-  dtm<-raster::raster(paste0(path_run,"rawdtm.sdat"))
-  raster::projection(dtm)<-proj4
-  # dtm <- gdalUtils::gdalwarp(paste0(path_run,"rawdtm.sdat"),
-  #                            paste0(path_run,"dtm.tif"),
-  #                            t_srs = proj4,
-  #                            output_Raster = TRUE,
-  #                            overwrite = TRUE,
-  #                            verbose = FALSE)
-  cat(":: calculate metadata ... \n")
-  raster::writeRaster(dtm, paste0(path_run,fn, "_dtm.tif"),overwrite = TRUE)
-  e <- extent(dtm)
-  dtmA <- methods::as(e, 'SpatialPolygons')
-  dtmA <- methods::as(raster::extent(dtm), "SpatialPolygons")
-  if (dtmarea) {
-    dtm2 <- dtm > -Inf
-    tmp <- raster::aggregate(dtm2,fact = 1 / gridSize)
-    dtmdA  <- rasterToPolygons(tmp)
-    dtmdA  <- rgeos::gUnaryUnion(dtmdA)
-    #dtmdA <- rasterToPolygons(dtm2, dissolve=TRUE)
-  } else { dtmdA <- NULL}
-  if (!verbose)  {
-    Sys.setenv("GRASS_VERBOSE"=GV)
-    rgrass7::set.ignore.stderrOption(ois)
+  dtm<-raster::raster(file.path(path_run,paste0(tools::file_path_sans_ext(basename(name)),"_reduced_gro_las2dtm_DTM.tif")))
+  
+  if (splineNumber!=0){
+    # export las file to text file
+    ret <- system(paste0(las2txt,
+                         " -i ",path_run,"*ground.",extFN,
+                         " -parse xyzrRGB",
+                         " -sep komma"),
+                  intern = TRUE,
+                  ignore.stderr = TRUE
+    )
+    
+    
+    txtfile <- lasFileNames <- list.files(pattern = "ground[.]txt$", path = path_run, full.names = TRUE)
+    
+    ret <- system(paste0(sagaCmd,' io_shapes 16 ',
+                         ' -POINTS ', path_run,'pointcloud',
+                         ' -FILE  ', txtfile,
+                         ' -XFIELD 1',
+                         ' -YFIELD 2',
+                         ' -ZFIELD 3',
+                         #' -FIELDS "4;5;6;7"',
+                         #' -FIELDNAMES "r;R;G;B"',
+                         #' -FIELDTYPES "1;1;1;1"',
+                         ' -SKIP_HEADER 0',
+                         ' -SEPARATOR 2'),
+                  intern = TRUE,
+                  ignore.stderr = TRUE)
+    
+    # saga spline interpolation of the alt values
+    
+    ret <- system(paste0(sagaCmd,' grid_spline 4 ',
+                         ' -SHAPES ', path_run,'pointcloud.sg-pts',
+                         ' -FIELD 2',
+                         ' -TARGET_DEFINITION 0',
+                         ' -TARGET_OUT_GRID ',paste0(path_run,"rawdtm.sgrd"),
+                         ' -TARGET_USER_SIZE ',gridSize,
+                         ' -TARGET_USER_XMIN ',sp_param[1],
+                         ' -TARGET_USER_XMAX ',sp_param[3],
+                         ' -TARGET_USER_YMIN ',sp_param[2],
+                         ' -TARGET_USER_YMAX ',sp_param[4],
+                         ' -METHOD 1',
+                         ' -EPSILON 0.000100',
+                         ' -LEVEL_MAX ',splineNumber),
+                  intern = TRUE,
+                  ignore.stderr = TRUE)
+    dtm<-raster::raster(paste0(path_run,"rawdtm.sdat"))
+    raster::projection(dtm)<-proj4
+    cat(":: calculate metadata ... \n")
+    raster::writeRaster(dtm, paste0(path_run,fn, "_dtm.tif"),overwrite = TRUE)
+    e <- extent(dtm)
+    dtmA <- methods::as(e, 'SpatialPolygons')
+    dtmA <- methods::as(raster::extent(dtm), "SpatialPolygons")
+    if (dtmarea) {
+      dtm2 <- dtm > -Inf
+      tmp <- raster::aggregate(dtm2,fact = 1 / gridSize)
+      dtmdA  <- rasterToPolygons(tmp)
+      dtmdA  <- rgeos::gUnaryUnion(dtmdA)
+      #dtmdA <- rasterToPolygons(dtm2, dissolve=TRUE)
+    } else  dtmdA <- NULL
+    if (!verbose)  {
+      Sys.setenv("GRASS_VERBOSE"=GV)
+      rgrass7::set.ignore.stderrOption(ois)
+    }
   }
-  return(list(dtm,dtmA,dtmdA,paste0(fn,".",extFN)))
+  #return(list(dtm,dtmA,dtmdA,paste0(fn,".",extFN)))
+  return(dtm)
 }

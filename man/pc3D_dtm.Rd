@@ -46,14 +46,10 @@ pc3D_dtm(lasDir = NULL, gisdbasePath = NULL, thinGrid = "0.5",
 
 \item{giLinks}{list of GI tools cli pathes, default is NULL}
 
-\item{MP}{character mounting point / drive letter default is "~"}
+\item{MP}{character mounting point / drive letter default is "~"
 
-\item{verbose}{logical. to be quiet (1)}
-}
-\description{
-Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.
-}
-\examples{
+ @export 
+ @examples
 \dontrun{
 require(uavRst)
 require(link2GI)
@@ -62,33 +58,38 @@ require(link2GI)
 giLinks<-list()
 giLinks$saga<-link2GI::linkSAGA()
 if (giLinks$saga$exist) {
-# proj subfolders
-projRootDir<-tempdir()
-unlink(paste0(projRootDir,"*"), force = TRUE)
-projsubFolders<-c("data/","data/ref/","output/","run/","las/")
-paths<-link2GI::initProj(projRootDir = projRootDir,
-                        projFolders = projsubFolders,
-                        global = TRUE,
-                        path_prefix = "path_")
-setwd(paste0(projRootDir,"run"))
-# get some colors
-pal = mapview::mapviewPalette("mapviewTopoColors")
+ # proj subfolders
+ projRootDir<-tempdir()
+ unlink(paste0(projRootDir,"*"), force = TRUE)
+ projsubFolders<-c("data/","data/ref/","output/","run/","las/")
+ paths<-link2GI::initProj(projRootDir = projRootDir,
+                         projFolders = projsubFolders,
+                         global = TRUE,
+                         path_prefix = "path_")
+ setwd(paste0(projRootDir,"run"))
 
-# get the data
-utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
-                    destfile="lasdata.las")
-
-# create a DSM  based on a uav point cloud
-pc3DTM <- pc3D_dtm(lasDir =  "lasdata.las",
-                      gisdbasePath = projRootDir,
-                      projsubFolders = projsubFolders,
-                      thinGrid = 1.,
-                      splineNumber = 5 ,
-                      gridSize = 0.5,
-                      giLinks = giLinks)
-mapview::mapview(pc3DTM[[1]]) 
+ # get the data
+ utils::download.file(url="https://github.com/gisma/gismaData/raw/master/uavRst/data/lidar.las",
+                     destfile="lasdata.las")
+ # create a DSM  based on a uav point cloud
+ pc3DTM <- pc3D_dtm(lasDir =  "lasdata.las",
+                        gisdbasePath = projRootDir,
+                        projsubFolders = projsubFolders,
+                        thinGrid = .5,
+                        splineNumber = 5 ,
+                        gridSize = 0.5,
+                        giLinks = giLinks)
+ raster::raster(pc3DTM)
 }
 }
+-FIELDS "4;5;6;7"',
+-FIELDNAMES "r;R;G;B"',
+-FIELDTYPES "1;1;1;1"',}
+
+\item{verbose}{logical. to be quiet}
+}
+\description{
+Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval.
 }
 \author{
 Chris Reudenbach

@@ -2,7 +2,7 @@
 % Please edit documentation in R/rs_pc3D_dsm.R
 \name{pc3D_dsm}
 \alias{pc3D_dsm}
-\title{Create a Digital Surface Model from a UAV generated point cloud}
+\title{Create a Digital Surface Model from a UAV generated point cloud  (depreceated)}
 \usage{
 pc3D_dsm(lasDir = NULL, gisdbasePath = NULL, GRASSlocation = "tmp/",
   grassVersion = 1, searchPath = NULL, projsubFolders = c("data/",

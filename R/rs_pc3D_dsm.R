@@ -4,7 +4,7 @@ if (!isGeneric('pc3D_dsm')) {
 }
 
 #'@name pc3D_dsm
-#'@title Create a Digital Surface Model from a UAV generated point cloud
+#'@title Create a Digital Surface Model from a UAV generated point cloud  (depreceated)
 #'
 #'@description
 #' Create a Digital Surface Model from a UAV generated point cloud. Basically returns a DSM.
