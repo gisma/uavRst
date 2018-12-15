@@ -118,5 +118,5 @@ cut_aoi<-function(cgs,
   }
   else 
     
-    return(ctg)
+    return(aoicgs)
 }
