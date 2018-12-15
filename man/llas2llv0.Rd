@@ -2,7 +2,7 @@
 % Please edit documentation in R/rs_lidr_makros.R
 \name{llas2llv0}
 \alias{llas2llv0}
-\title{checks extension mismatch of a lasfile}
+\title{corrects the extent of a wrong 0,0 coordinate and adds a lidR lax file}
 \usage{
 llas2llv0(las_files, level0path,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
@@ -15,5 +15,5 @@ llas2llv0(las_files, level0path,
 \item{proj4}{correct proj4 string}
 }
 \description{
-checks extension mismatch of a lasfile
+corrects the extent of a wrong 0,0 coordinate and adds a lidR lax file
 }

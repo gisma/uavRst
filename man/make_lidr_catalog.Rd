@@ -34,8 +34,6 @@ make_lidr_catalog(path = NULL, cores = 3, chunksize = 0,
 \item{filter}{<- value}
 
 \item{proj4}{correct proj4 string}
-
-\item{cores}{<- value,}
 }
 \description{
 create lidR catalog

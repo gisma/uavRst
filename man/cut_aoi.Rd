@@ -2,7 +2,7 @@
 % Please edit documentation in R/rs_lidr_makros.R
 \name{cut_aoi}
 \alias{cut_aoi}
-\title{checks extension mismatch of a lasfile}
+\title{clips a lidR las* or lascatalog object to a given shapefile}
 \usage{
 cut_aoi(cgs, shapefile, outpath = NULL, lasfilename = "aoi.las",
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
@@ -14,8 +14,10 @@ cut_aoi(cgs, shapefile, outpath = NULL, lasfilename = "aoi.las",
 
 \item{outpath}{path to write to if null nothing is written}
 
+\item{lasfilename}{filname of lasfile if written}
+
 \item{proj4}{correct proj4 string}
 }
 \description{
-checks extension mismatch of a lasfile
+clips a lidR las* or lascatalog object to a given shapefile. if an outpath is provided it additionally writes the las and lax files into this folder
 }

@@ -24,7 +24,7 @@ correctLas<-function(lasfiles,
   return(subset)
 } 
 
-#' checks extension mismatch of a lasfile 
+#' corrects the extent of a wrong 0,0 coordinate and adds a lidR lax file 
 #' @param las_files filename of an las file
 #' @param proj4 correct proj4 string
 #' @param level0path path for saving the corrected level0 data
@@ -49,7 +49,6 @@ for(fn in las_files){
 #' @param chunksize chunksiz in map units
 #' @param chunkbuffer buffersize of chunk in mapunits
 #' @param alignment  <- value,
-#' @param cores  <- value,
 #' @param progress  <- value,
 #' @param stop_early  <- value,
 #' @param w2w  <- value,
@@ -90,9 +89,11 @@ make_lidr_catalog <- function(path = NULL,
 }
 
 
-#' checks extension mismatch of a lasfile 
+#' clips a lidR las* or lascatalog object to a given shapefile
+#' @description clips a lidR las* or lascatalog object to a given shapefile. if an outpath is provided it additionally writes the las and lax files into this folder
 #' @param cgs filename of an las file
 #' @param shapefile filename of an shapefile-mask
+#' @param lasfilename filname of lasfile if written
 #' @param outpath path to write to if null nothing is written
 #' @param proj4 correct proj4 string
 #' @export
