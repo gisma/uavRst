@@ -8,9 +8,9 @@ correctLas(lasfiles,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
 }
 \arguments{
-\item{proj4}{correct proj4 string}
+\item{lasfiles}{filename of an las file}
 
-\item{lasfile}{filename of an las file}
+\item{proj4}{correct proj4 string}
 }
 \description{
 checks extension mismatch of a lasfile

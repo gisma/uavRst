@@ -4,7 +4,7 @@
 \alias{make_lidr_catalog}
 \title{create lidR catalog}
 \usage{
-make_lidr_catalog(path = NULL, cores = 1, chunksize = 0,
+make_lidr_catalog(path = NULL, cores = 3, chunksize = 0,
   chunkbuffer = 30, alignment = c(0, 0), progress = TRUE,
   stop_early = TRUE, w2w = TRUE, output_files = "", select = "",
   filter = "",

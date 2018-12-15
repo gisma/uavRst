@@ -1,5 +1,5 @@
 #' checks extension mismatch of a lasfile 
-#' @param lasfile filename of an las file
+#' @param lasfiles filename of an las file
 #' @param proj4 correct proj4 string
 #' @export
 correctLas<-function(lasfiles,
@@ -25,7 +25,7 @@ correctLas<-function(lasfiles,
 } 
 
 #' checks extension mismatch of a lasfile 
-#' @param lasfile filename of an las file
+#' @param las_files filename of an las file
 #' @param proj4 correct proj4 string
 #' @param level0path path for saving the corrected level0 data
 #' @export
@@ -60,7 +60,7 @@ for(fn in las_files){
 #' @export
 
 make_lidr_catalog <- function(path = NULL,
-                   cores = 1,
+                   cores = 3,
                    chunksize = 00,
                    chunkbuffer= 30,
                    alignment = c(0,0),
@@ -68,7 +68,6 @@ make_lidr_catalog <- function(path = NULL,
                    stop_early =TRUE,
                    w2w =TRUE,
                    output_files="",
-
                    select="",
                    filter="",
                    proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
@@ -88,4 +87,31 @@ make_lidr_catalog <- function(path = NULL,
   lidR::opt_select(ctg) <- select
   lidR::opt_filter(ctg) <- filter
   return(ctg)
+}
+
+
+#' checks extension mismatch of a lasfile 
+#' @param cgs filename of an las file
+#' @param shapefile filename of an shapefile-mask
+#' @param outpath path to write to if null nothing is written
+#' @param proj4 correct proj4 string
+#' @export
+ cut_aoi<-function(cgs,
+                  shapefile,
+                  outpath=NULL,
+                  lasfilename="aoi.las",
+                  proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"){
+  # Clip catalog to the area of interest retile and reconfigure the catalog
+  aoi = raster::shapefile(shapefile)
+  aio_bb = sp::bbox(aoi)
+  aoicgs<- lidR::lasclipRectangle(cgs,
+                                  xleft = aio_bb[1],
+                                  ybottom = aio_bb[2],
+                                  xright = aio_bb[3],
+                                  ytop = aio_bb[4])
+  if (!is.null(outpath)){
+  lidR::writeLAS(aoicgs,file.path(outpath,lasfilename))
+  rlas::writelax(file.path(outpath,lasfilename))}
+  # save catalog 
+ return(aoicgs)
 }

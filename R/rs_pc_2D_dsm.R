@@ -111,7 +111,7 @@ pc_2D_dsm <- function(laspcFile = NULL,
     las<-lidR::readLAS(file.path(R.utils::getAbsolutePath(path_run),name))
     las<-lidR::lasclipRectangle(las, as.numeric(cutExtent[1]), as.numeric(cutExtent[3]), as.numeric(cutExtent[2]), as.numeric(cutExtent[4]))
     lidR::writeLAS(las ,file.path(R.utils::getAbsolutePath(path_run),"cut_point_cloud.las"))
-    lasxt<-lidR::extent(las)
+    lasxt<-raster::extent(las)
     sp_param <- c(lasxt@xmin,lasxt@ymin,lasxt@xmax,lasxt@ymax)
     # rename output file according to the extent
     fn<- paste(sp_param ,collapse=" ")
