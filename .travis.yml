@@ -4,29 +4,7 @@ sudo: required
 warnings_are_errors: false
 bundler_args: --retry 7
 
-env:
-  global:
-    MPI_IMPL=openmpi
 
-  matrix:
-    - GFORTRAN_VERSION=6
-      BUILD='debug'
-    - GFORTRAN_VERSION=4.8
-      EXTRAFLAGS=-fopenmp
-      BUILD='release'
-    - GFORTRAN_VERSION=6
-      EXTRAFLAGS=-fopenmp
-      BUILD='release'
-    - GFORTRAN_VERSION=4.7
-      BUILD='release'
-    - GFORTRAN_VERSION=4.8
-      BUILD='release'
-    - GFORTRAN_VERSION=4.9
-      BUILD='release'
-    - GFORTRAN_VERSION=5 
-      BUILD='release'
-    - GFORTRAN_VERSION=6
-      BUILD='release'
 
 bioc_packages:
   - BiocGenerics
@@ -45,6 +23,45 @@ addons:
       - netcdf-bin 
 
 
+
+env:
+  global:
+    - DEPENDS="numpy>=1.9.0 cython>=0.21 setuptools>=18.0 cftime"
+    - NO_NET=1
+    - MPI=0
+
+python:
+  - "2.7"
+  - "3.6"
+  - "3.7"
+  - "3.8-dev"
+
+matrix:
+  allow_failures:
+    - python: "3.8-dev"
+  include:
+    # Absolute minimum dependencies.
+    - python: 2.7
+      env:
+        - DEPENDS="numpy==1.9.0 cython==0.21 ordereddict==1.1 setuptools==18.0 cftime"
+    # test MPI
+    - python: 2.7
+      dist: trusty
+      env: 
+        - MPI=1
+        - CC=mpicc
+        - DEPENDS="numpy>=1.9.0 cython>=0.21 setuptools>=18.0 mpi4py>=1.3.1 cftime"
+        - NETCDF_VERSION=4.6.1
+        - NETCDF_DIR=$HOME
+        - PATH=${NETCDF_DIR}/bin:${PATH} # pick up nc-config here
+      addons:
+        apt:
+          packages:
+            - openmpi-bin
+            - libopenmpi-dev
+            - libhdf5-openmpi-dev
+
+
 r_github_packages:
   - r-spatial/link2GI
   
@@ -57,36 +74,6 @@ addons:
   postgresql: "9.6"
 
 before_install:
-  - export MINICONDA=$HOME/miniconda
-  - export PATH="$MINICONDA/bin:$PATH"
-  - hash -r
-  # Install conda only if necessary
-  - command -v conda >/dev/null || { wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
-     bash miniconda.sh -b -f -p $MINICONDA; }
-  - conda update --yes conda
-  - conda remove --yes -n condaenv --all || echo "Conda not yet installed"
-  - conda create --yes -n condaenv python=2.7
-  - conda install --yes -n condaenv pip
-  - source activate condaenv
-  # The next couple lines fix a crash with multiprocessing on Travis and are not specific to using Miniconda
-  - sudo rm -rf /dev/shm
-  - sudo ln -s /run/shm /dev/shm
-  - conda install --yes -c obspy obspy # python=2.7
-  - travis_retry pip install $PIP_DEPS
-   #Install Gfortran in selected version
-  - sudo -E apt-add-repository -y "ppa:ubuntu-toolchain-r/test"
-  - sudo -E apt-get -yq update &>> ~/apt-get-update.log
-  - sudo -E apt-get -yq --no-install-suggests --no-install-recommends --force-yes install 
-    gfortran-$GFORTRAN_VERSION g++-$GFORTRAN_VERSION tcsh gnuplot
-  - export TRAVIS_ROOT=$HOME/travis
-    #- mkdir -p $TRAVIS_ROOT
-  - wget https://www.geophysik.uni-muenchen.de/~staehler/mpi_builds/mpi_netcdf_gcc$GFORTRAN_VERSION.tar.gz 
-  - tar -xf mpi_netcdf_gcc$GFORTRAN_VERSION.tar.gz -C $HOME
-  # Get and install OpenMPI
-  # - ./TRAVIS/install_mpi.sh $TRAVIS_ROOT $MPI_IMPL $GFORTRAN_VERSION > LOG_OpenMPI.log
-  # Get and install NetCDF4
-  #- ./TRAVIS/install_netcdf.sh $TRAVIS_ROOT $GFORTRAN_VERSION > LOG_NetCDF4.log
-  - export PATH="$TRAVIS_ROOT/bin:$PATH"
   - export PATH=${NETCDF_DIR}/bin:${PATH} 
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
   - sudo apt-get --yes --force-yes update -qq
