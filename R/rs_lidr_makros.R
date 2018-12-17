@@ -113,10 +113,63 @@ cut_aoi<-function(cgs,
   if (!is.null(outpath)){
     cat("\n: saving: ",file.path(outpath,lasfilename))
     lidR::writeLAS(aoicgs,file.path(outpath,lasfilename))
-    rlas::writelax(file.path(outpath,lasfilename))
-    return(file.path(outpath,lasfilename))
+    rlas::writelax(paste0(outpath,lasfilename))
+    return(paste0(outpath,lasfilename))
   }
   else 
     
     return(aoicgs)
+}
+
+#' divide a lidR las* or lascatalog object by given factors
+#' @description divide a lidR las* object by given factors. The resulting tiles are  written to the outpath folder
+#' @param cgs filename of an las file
+#' @param factorx factor to divide in x direction
+#' @param factory factor to divide in y direction
+#' @param lasfn filname of lasfile if written
+#' @param outpath path to write to if null nothing is written
+#' @param proj4 correct proj4 string
+#' @export
+#' @examples 
+#' \dontrun{
+#' cut_eq(cgs = lidR::readLAS(las_file),factorx = 4,factory = 4 )
+#' }
+tile_eq<-function(cgs,
+                 factorx = 4,
+                 factory = 4,
+                 outpath=NULL,
+                 lasfn="cut",
+                 proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"){
+  # Clip catalog to the area of interest retile and reconfigure the catalog
+  aio_bb = sp::bbox(cgs)
+  xext<-round(aio_bb[3]-aio_bb[1],0)/factorx
+  yext<-round(aio_bb[4]-aio_bb[2],0)/factory
+  cutlas<-list()
+  ybottom<-aio_bb[2]+0
+  xleft<-aio_bb[1]+0
+  xright<-aio_bb[1]+xext
+  ytop<-aio_bb[2]+yext
+  oldxleft<-oldybottom<-oldxright<-oldytop<-0
+  i=1
+  for (k in seq(1,factory)){
+    for (j in seq(1,factorx)){
+      cutlas[[i]]<- lidR::lasclipRectangle(cgs,
+                                           xleft = xleft,
+                                           ybottom = ybottom,
+                                           xright =xright,
+                                           ytop = ytop)
+      
+      xleft<-xleft+xext
+      xright<- xright +xext
+      
+      cat("\n: saving: ",paste0(outpath,lasfn,"_",i,".las"))
+      lidR::writeLAS(cutlas[[i]],paste0(outpath,lasfn,"_",i,".las"))
+      rlas::writelax(paste0(outpath,lasfn,"_",i,".las"))
+      i=i+1
+    }
+    ytop<-ytop+yext
+    ybottom<-ybottom+yext
+    xleft<-aio_bb[1]+0
+    xright<-aio_bb[1]+xext
+  }
 }
