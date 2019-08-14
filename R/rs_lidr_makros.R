@@ -24,6 +24,7 @@ correctLas<-function(lasfiles,
   return(subset)
 } 
 
+
 #' corrects the extent of a wrong 0,0 coordinate and adds a lidR lax file 
 #' @param las_files filename of an las file
 #' @param proj4 correct proj4 string

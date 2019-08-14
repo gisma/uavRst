@@ -1,3 +1,8 @@
+## uavRst 0.5-3
+
+bugfixes:
+  * fix staged installation
+
 ## uavRst 0.5-2
 
 new features:

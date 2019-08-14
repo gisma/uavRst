@@ -268,11 +268,11 @@ leafDrawOutput <- function(outputId, width = '100%', height = '800px') {
   htmlwidgets::shinyWidgetOutput(outputId, 'leafDraw', width, height, package = 'uavRst')
 }
 
-### Widget render function for use in Shiny =================================================
-#
-renderleafDraw<- function(expr, env = parent.frame(), quoted = FALSE) {
-  if (!quoted) {
-    expr <- substitute(expr)
-  } # force quoted
-  htmlwidgets::shinyRenderWidget(expr, projViewOutput, env, quoted = TRUE)
-}
+# ### Widget render function for use in Shiny =================================================
+# #
+# renderleafDraw<- function(expr, env = parent.frame(), quoted = FALSE) {
+#   if (!quoted) {
+#     expr <- substitute(expr)
+#   } # force quoted
+#   htmlwidgets::shinyRenderWidget(expr, projViewOutput, env, quoted = TRUE)
+# }

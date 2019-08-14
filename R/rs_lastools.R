@@ -199,12 +199,12 @@ lastool <- function(  tool="lasinfo",
     max_y<- cutExtent[4]
     min_z<- cutSlice[1]
     max_z<- cutSlice[2]
-    cat(paste(min_x,min_y),paste(max_x,min_y),paste(max_x,max_y),paste(min_x,max_y),paste(min_x,min_y),file =paste0(path_run,"tmp.txt") ,sep = "\n")
+    cat(paste(min_x,min_y),paste(max_x,min_y),paste(max_x,max_y),paste(min_x,max_y),paste(min_x,min_y),file =paste0(tempdir(),"tmp.txt") ,sep = "\n")
 
     command <- lasclip
     command <- paste0(command, " -i ",lasFile)
     #command <- paste0(command, "-keep_xyz ",min_x," ",min_y," ", min_z, " ", max_x," ", max_y," ", max_z)
-    command <- paste0(command," -poly ",paste0(path_run,"tmp.txt"))
+    command <- paste0(command," -poly ",paste0(tempdir(),"tmp.txt"))
 
     command <- paste0(command," -olas")
 

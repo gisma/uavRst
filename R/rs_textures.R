@@ -88,7 +88,7 @@ glcm_texture <- function(x,
       if (parallel){
         glcm_filter[[j]]<-foreach::foreach(i=nrasters,
                                            .packages= c("glcm","raster"))%dopar%{
-                                             glcm(x[[i]],
+                                             glcm::glcm(x[[i]],
                                                   window = c(kernelSize[j], kernelSize[j]),
                                                   shift=shift,
                                                   statistics=stats,n_grey=n_grey,
@@ -98,7 +98,7 @@ glcm_texture <- function(x,
       } else {
         glcm_filter[[j]]<-foreach::foreach(i=nrasters,
                                            .packages= c("glcm","raster"))%do%{
-                                             raster::mask(glcm(x[[i]],
+                                             raster::mask(glcm::glcm(x[[i]],
                                                                window = c(kernelSize[j], kernelSize[j]),
                                                                shift=shift,
                                                                statistics=stats,n_grey=n_grey,
@@ -108,7 +108,7 @@ glcm_texture <- function(x,
       }
       names(glcm_filter[[j]])<-names(x)[nrasters]
     } else {
-      glcm_filter[[j]]<-raster::mask(glcm(x, window = c(kernelSize[j], kernelSize[j]),
+      glcm_filter[[j]]<-raster::mask(glcm::glcm(x, window = c(kernelSize[j], kernelSize[j]),
                                           shift=shift,
                                           statistics=stats,n_grey=n_grey,
                                           min_x=min_x,max_x=max_x,

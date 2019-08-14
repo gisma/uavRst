@@ -209,6 +209,7 @@ predict_rgb <- function(imageFiles=NULL,
                         bandNames = NULL) {
 
   if (is.null(bandNames)) return(cat(getCrayon()[[1]]("\n you did not provide predictor names. \nTypically something like bandNames ie c('R','G','B')")))
+  if (!exists("path_run")) path_output = tempdir()
   po = path_output
   i = 1:length(imageFiles)
   cat("\n::: start prediction aka classifikation...\n")

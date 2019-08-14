@@ -186,7 +186,7 @@ treepos_GWS <- function(chm = NULL,
 #' @param minTreeAlt Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
 #' @export treepos_RL
 #' @examples
-#' 
+#' \dontrun{
 #' ## required packages
 #' require(uavRst)
 #'
@@ -199,6 +199,7 @@ treepos_GWS <- function(chm = NULL,
 #'                     minTreeAlt = 10)
 #' ## visualisation
 #' raster::plot(tPosRL)
+#' }
 
 
 

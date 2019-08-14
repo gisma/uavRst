@@ -171,6 +171,7 @@ line_maxpos <- function(dem,line){
 #' @export poly_maxpos
 #'
 poly_maxpos <- function(fileName,layerName, polySplit=TRUE, cores=1){
+  if (!exists("path_run")) path_tmp = tempdir()
   # read raster input data
   if (polySplit) {system(paste0("rm -rf ",paste0(path_tmp,"split")))}
   dem <- raster::raster(fileName)
@@ -657,7 +658,7 @@ getPopupStyle <- function() {
   #   "<table class='popup scrollable'>",
   #   "<table id='popup'>")
   # return(htmlTemplate)
-  fl <- system.file("templates/popup.brew", package = "mapview")
+  fl <- function() system.file("templates/popup.brew", package = "mapview")
   pop <- readLines(fl)
   end <- grep("<%=pop%>", pop)
   return(paste(pop[1:(end-2)], collapse = ""))
@@ -681,6 +682,7 @@ split2SAGA<-function(fn=NULL,
                      refFn=NULL,
                      returnRaster=FALSE){
   flist<-list()
+  if (!exists("path_run")) path_run = tempdir()
   for (i in seq(startBand:endBand)){
     outFn<-file.path(R.utils::getAbsolutePath(path_run),paste0(bandName[i],".sdat"))
     #raster::writeRaster(raster::raster(fn),outFn,overwrite = TRUE,NAflag = 0,process="text")
@@ -823,30 +825,37 @@ isgdaldemitem <- function(x)
   if (x %in%  c("hillshade","slope", "aspect","TRI","TPI","Roughness")) return(TRUE) else return(FALSE)
 }
 
-#' clips a tif files according to a given extent.
-#'
-#' clips a tif files according to a given extent
-#' @param rasterFiles character. vector containing a list of rasterfiles to be clipped
-#' @param ext extent
-#' @param outPath character. subfolder of current runtime folder. clipped files will be stored there
-#' @param prefix character. prefic string that is added to the filenames
-#'@export
-#'@keywords internal
-cutTif<- function(rasterFiles = NULL,
-                  ext=NULL,
-                  outPath="cut",
-                  prefix="cut") {
-  #rasterFiles <- list.files(pattern="[.]tif$", path="/home/creu/proj/geopat/data/modis_carpathian_mountains/study_area/modis_ndvi/2002", full.names=TRUE)
-  te=paste(raster::extent(ext)[1],' ',
-           raster::extent(ext)[3],' ',
-           raster::extent(ext)[2],' ',
-           raster::extent(ext)[4])
-  if (!file.exists(file.path(R.utils::getAbsolutePath(path_run), outPath))) dir.create(file.path(file.path(R.utils::getAbsolutePath(path_run), outPath)), recursive = TRUE,showWarnings = FALSE)
-  for (rasterFile in rasterFiles) {
-    system(paste0("gdal_translate -projwin ", te, " -of GTiff ",rasterFile, " ", file.path(R.utils::getAbsolutePath(path_run)),outPath,"/",prefix,basename(rasterFile)))
-  }
-}
+#' #' clips a tif files according to a given extent.
+#' #'
+#' #' clips a tif files according to a given extent
+#' #' @param rasterFiles character. vector containing a list of rasterfiles to be clipped
+#' #' @param ext extent
 
+#' #' @param outPath character. subfolder of current runtime folder. clipped files will be stored there
+#' #' @param prefix character. prefic string that is added to the filenames
+#' #'@export
+#' #'@keywords internal
+#' cutTif<- function(rasterFiles = NULL,
+#'                   ext=NULL,
+#'                   outPath="cut",
+#'                   prefix="cut") {
+#'   #rasterFiles <- list.files(pattern="[.]tif$", path="/home/creu/proj/geopat/data/modis_carpathian_mountains/study_area/modis_ndvi/2002", full.names=TRUE)
+#'   te=paste(raster::extent(ext)[1],' ',
+#'            raster::extent(ext)[3],' ',
+#'            raster::extent(ext)[2],' ',
+#'            raster::extent(ext)[4])
+#'   if (!file.exists(file.path(R.utils::getAbsolutePath(path_run), outPath))) dir.create(file.path(file.path(R.utils::getAbsolutePath(path_run), outPath)), recursive = TRUE,showWarnings = FALSE)
+#'   for (rasterFile in rasterFiles) {
+#'     system(paste0("gdal_translate -projwin ", te, " -of GTiff ",rasterFile, " ", file.path(R.utils::getAbsolutePath(path_run)),outPath,"/",prefix,basename(rasterFile)))
+#'   }
+#' }4
+
+#' search for lastools
+#'
+#' search for lastools
+#' #'@keywords internal
+#' @param MP mount point point for starting search
+#' @param quiet default = TRUE 
 searchLastools <- function(MP = "~",
                            quiet=TRUE) {
   if (MP=="default") MP <- "~"
