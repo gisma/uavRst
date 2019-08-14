@@ -1,5 +1,4 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) 
-<a href="https://cran.r-project.org/web/checks/check_results_uavRst.html"><img border="0" src="http://www.r-pkg.org/badges/version/uavRst" alt="CRAN version"></a>
 ![](https://cranlogs.r-pkg.org/badges/grand-total/uavRst?color=green)
 [![GitHub last commit](https://img.shields.io/github/last-commit/google/skia.svg)](/master/)
 [![License](https://img.shields.io/badge/license-GPL%20%28%3E=%203%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)

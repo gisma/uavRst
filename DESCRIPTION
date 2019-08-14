@@ -1,8 +1,8 @@
 Package: uavRst
 Type: Package
 Title: Unmanned Aerial Vehicle Remote Sensing Tools
-Version: 0.5-3
-Date: 2018-12-8
+Version: 0.5-4
+Date: 2019-08-14
 Authors@R: c(person("Chris", "Reudenbach", email = "reudenbach@uni-marburg.de", role = c("cre","aut")),
              person("Florian", "Detsch", role = c("ctb")),
              person("Hanna", "Meyer", email = "hanna.meyer@uni-marburg.de", role = c("aut")),
