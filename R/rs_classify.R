@@ -587,7 +587,7 @@ calc_ext<- function ( calculateBands    = FALSE,
   catErr  <- getCrayon()[[2]]
   catNote <- getCrayon()[[1]]
   catOk   <- getCrayon()[[3]]
-
+  rlist <-list()
 
   # if (nchar(prefixRun)>0)   prefixRun<-  paste0(prefixRun,"_")
   # if (nchar(patterndemFiles)>0)   patterndemFiles <-  paste0(patterndemFiles,"_")
@@ -762,9 +762,10 @@ calc_ext<- function ( calculateBands    = FALSE,
                         output_name=file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_",basename(imageFiles[i]))),
                         texture = type,
                         otbLinks=  otb)
-            flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*"))))
-            dellist<-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*"))))
-            bandNames <-append(bandNames,paste0(make_bandnames(bandNames = type),"_",filterBand))
+            flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*",type,"*"))))
+            dellist<-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*",type,"*"))))
+            nband<-raster::nbands(raster::raster(Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*",type,"*")))))
+            bandNames <-append(bandNames,paste0(make_bandnames(bandNames = type,l_raster=nband),"_",filterBand))
           }
         }
           # delete single channel for synthetic channel calculation
@@ -778,6 +779,8 @@ calc_ext<- function ( calculateBands    = FALSE,
       else return(cat(catErr("\nhopefully done\n You are mixing RGB an DEM input files. You may do this but only if they are of the same extent etc. and if each image file has a corresponding dem file\n NOTE the dem filename MUST have a prefix default is 'dem_'.")))
       cat(catOk("     save ...",paste0(patternIdx, tmpFN),"\n"))
       # r<-raster::brick(raster::stack(flist)) qgis cannot read heder
+      for (k in 1:length(demFiles)) flist[-grepl(pattern = demFiles[k],flist)]
+      for (k in 1:length(imageFiles)) flist[-grepl(pattern = imageFiles[k],flist)]
       r<-raster::stack(paste0(flist))
       if (raster::nlayers(r)!=length(bandNames)) stop("\n Number of names and layers differ...\n most common case is a broken cleanup of the runtime directory!")
       names(r)<-bandNames
@@ -789,7 +792,9 @@ calc_ext<- function ( calculateBands    = FALSE,
                           #options="COMPRESS=LZW",
                           overwrite=TRUE)
       #raster::hdr(r, filename = paste0(currentIdxFolder,"/", patternIdx,tmpFN), format = "ENVI") qgis cannot read heder
-
+      cat(catNote(":::: writing data file... ",paste0(currentIdxFolder,"/", patternIdx,tmpFN),"\n"))
+      rlist<-append(rlist, file.path(R.utils::getAbsolutePath(paste0(currentIdxFolder,"/", patternIdx,tmpFN))))
+      
       # cleanup runtime files lists...
       if (cleanRunDir) {
         cat(catNote(":::: removing temp files...\n"))
@@ -801,9 +806,13 @@ calc_ext<- function ( calculateBands    = FALSE,
 
     # save bandname list we need it only once
     save(bandNames,file = paste0(currentIdxFolder,prefixRun,"bandNames.RData"))
+    
 
-
+    cat(catErr(":::: resulting files...",rlist,"\n"))
+    cat(catErr(":::: corresponding band names... ",paste0(currentIdxFolder,prefixRun,"bandNames.RData"),"\n"))
     cat(catHead("\n--- calculation of synthetic channels finished ---\n"))
+    if (!extractTrain) return(append(rlist,paste0(currentIdxFolder,prefixRun,"bandNames.RData")))
+    
   }
   # ----- start extraction ---------------------------------------------------
   if (extractTrain){

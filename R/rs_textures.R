@@ -250,7 +250,12 @@ otbtex_hara<- function(x,
                    ram="8192"){
 
   input=x
-  path_run<-dirname(input)
+  
+  if (nchar(dirname(input))>0){
+    input<basename(input)
+    path_run <- dirname(input)
+    }
+  else path_run <- tempdir()
   
   if (is.null(otbLinks)){
     otb<-link2GI::linkOTB()
@@ -426,7 +431,12 @@ otb_stat<- function(input=NULL,
                     outDir=NULL,
                     verbose=FALSE,
                     otbLinks = NULL){
-  path_run<-dirname(input)
+  
+  if (nchar(dirname(input))>0){
+    input<basename(input)
+    path_run <- dirname(input)
+  }
+  else path_run <- tempdir()
   
   if (is.null(otbLinks)){
     otb<-link2GI::linkOTB()
@@ -437,7 +447,7 @@ otb_stat<- function(input=NULL,
   if (is.null(channel)) channel <-seq(length(grep(system(paste('gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
   for (band in channel) {
     
-    outName<-file.path(path_run,paste0(tools::file_path_sans_ext(out),
+    outName<-file.path(paste0(tools::file_path_sans_ext(out),
                     "_ch",
                     band,
                     "_r",
@@ -527,7 +537,12 @@ otbtex_edge<- function(input=NULL,
                        outDir=NULL,
                        verbose=FALSE,
                        otbLinks = NULL){
-  path_run<-dirname(input)
+  
+  if (nchar(dirname(input))>0){
+    input<basename(input)
+    path_run <- dirname(input)
+  }
+  else path_run <- tempdir()
   
   if (is.null(otbLinks)){
     otb<-link2GI::linkOTB()
@@ -537,7 +552,7 @@ otbtex_edge<- function(input=NULL,
   retStack<-list()
   if (is.null(channel)) channel <-seq(length(grep(system(paste('gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
   for (band in channel) {
-    outName<-file.path(path_run,paste0(tools::file_path_sans_ext(out),
+    outName<-file.path(paste0(tools::file_path_sans_ext(out),
                     "_ch",
                     band,
                     "_f",
@@ -627,7 +642,13 @@ otbtex_gray<- function(input=NULL,
                          outDir=NULL,
                          verbose=FALSE,
                          otbLinks = NULL){
-  path_run<-dirname(input)
+  
+  if (nchar(dirname(input))>0){
+    input<basename(input)
+    path_run <- dirname(input)
+  }
+  else path_run <- tempdir()
+  
   retStack<-list()
   
   
@@ -640,7 +661,7 @@ otbtex_gray<- function(input=NULL,
   
   if (is.null(channel)) channel <-seq(length(grep(system(paste('gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
   for (band in channel) {
-    outName<-file.path(path_run,paste0(
+    outName<-file.path(paste0(
                     tools::file_path_sans_ext(out),
                     "_ch",
                     band,
@@ -718,8 +739,14 @@ morpho_dem<- function(dem,
                     retRaster = TRUE,
                     gdalLinks = NULL,
                     sagaLinks = NULL) {
-  if (!exists("path_run")) path_run = dirname(dem)
-  if (path_run=="") path_run= tempdir()
+
+  
+  if (nchar(dirname(dem))>0){
+    dem<basename(dem)
+    path_run <- dirname(dem)
+  }
+  else path_run <- tempdir()
+  
   retStack<-list()
   dem<-basename(dem)
   if (is.null(sagaLinks))   saga<- link2GI::linkSAGA()

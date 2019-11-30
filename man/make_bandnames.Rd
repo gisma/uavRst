@@ -12,7 +12,8 @@ make_bandnames(
   morpho = NA,
   edge = NA,
   rgbTrans = NA,
-  dem = NA
+  dem = NA,
+  l_raster = NA
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ make_bandnames(
 \item{rgbTrans}{character.  rgbTrans codes}
 
 \item{dem}{charater. dem codes}
+
+\item{l_raster}{number of raster layer that exist}
 }
 \description{
 create name vector corresponding to the training image stack

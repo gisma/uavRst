@@ -697,6 +697,7 @@ getCrayon<-function(){
 #' @param edge character.  edge codes
 #' @param rgbTrans character.  rgbTrans codes
 #' @param dem charater. dem codes
+#' @param l_raster number of raster layer that exist
 #' @keywords internal
 #'
 #' @export make_bandnames
@@ -707,7 +708,8 @@ make_bandnames <- function(rgbi    = NA,
                            morpho  = NA,
                            edge    = NA ,
                            rgbTrans = NA,
-                           dem =    NA){
+                           dem =    NA,
+                           l_raster = NA){
   if (!is.na(rgbi[1])) bandNames <- append(c("red","green","blue"),rgbi)
   if (!is.na(bandNames[1])) {
     if(bandNames[1] == "simple"){
@@ -757,6 +759,7 @@ make_bandnames <- function(rgbi    = NA,
                      "Long_Run_Low_Grey-Level_Emphasis",
                      "Long_Run_High_Grey-Level_Emphasis")
     }
+    if (!is.na(l_raster)) bandNames<-bandNames[1:l_raster]
   }
   if (stat == TRUE)  {
     bandNames    = c("Stat_Mean","Stat_Variance", "Skewness", "Kurtosis")
