@@ -3,6 +3,5 @@
 .RData
 .Ruserdata
 inst/doc
-docs
 vignettes
 .travis.yml_orig
