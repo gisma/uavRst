@@ -76,14 +76,6 @@ pc_2D_mdtm<- function(laspcFile = NULL,
   if (is.null(searchPath)){
     if(Sys.info()["sysname"]=="Windows") searchPath="C:"
     else searchPath <- "/usr"}
-  # if (is.null(giLinks)){
-  #   giLinks <- linkAll()
-  # }
-
-  #saga <- giLinks$saga
-  #otb <- giLinks$otb
-  #sagaCmd<-saga$sagaCmd
-  #path_OTB <- otb$pathOTB
 
   if (!verbose){
     GV <- Sys.getenv("GRASS_VERBOSE")
@@ -335,12 +327,23 @@ pc_2D_mdtm<- function(laspcFile = NULL,
   dtm0<- raster::writeRaster(raster::raster(rgrass7::readRAST("dtm")),file.path(R.utils::getAbsolutePath(path_run),"dtm0"), overwrite=TRUE,format="GTiff")
   if (oldtgs < splineThresGridSize) {
     cat(":: Resample to a grid size of: ", targetGridSize ,"\n")
-    res<-gdalUtils::gdalwarp(srcfile = file.path(R.utils::getAbsolutePath(path_run),"dtm0.tif"),
-                             dstfile = file.path(R.utils::getAbsolutePath(path_run),"dtm.tif"),
-                             tr=c(oldtgs,oldtgs),
-                             r="bilinear",
-                             overwrite = TRUE,
-                             multi = TRUE)
+    
+    system(paste0(gdal$path,'gdalwarp -overwrite -q ',
+                  "-r 'bilinear'",' ',
+                  "-multi ",
+                  "-tr ",oldtgs," ",oldtgs,' ',
+                  file.path(R.utils::getAbsolutePath(path_run),"dtm0.tif"),' ',
+                  dstfile = file.path(R.utils::getAbsolutePath(path_run),"dtm.tif")
+    )
+    )
+    
+    # res<-gdalUtils::gdalwarp(srcfile = file.path(R.utils::getAbsolutePath(path_run),"dtm0.tif"),
+    #                          dstfile = file.path(R.utils::getAbsolutePath(path_run),"dtm.tif"),
+    #                          tr=c(oldtgs,oldtgs),
+    #                          r="bilinear",
+    #                          overwrite = TRUE,
+    #                          multi = TRUE)
+    
     dtm <- raster::raster(file.path(R.utils::getAbsolutePath(path_run),"dtm.tif"))
   } else {
     dtm <- raster::raster(file.path(R.utils::getAbsolutePath(path_run),"dtm0.tif"))

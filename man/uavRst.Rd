@@ -3,7 +3,6 @@
 \docType{package}
 \name{uavRst}
 \alias{uavRst}
-\alias{uavRst-package}
 \title{Unmanned Aerial Vehicle Remote Sensing Tools - some cool tools to manipulate and analyze UAV derived RGB ortho imagery and point clouds.}
 \description{
 In general the  \code{uavRst} remote sensing toolbox tries to support the use of UAV derived imagery and pointclouds 

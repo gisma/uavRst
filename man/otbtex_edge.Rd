@@ -4,10 +4,19 @@
 \alias{otbtex_edge}
 \title{Calculates edges for a given kernel size.}
 \usage{
-otbtex_edge(input = NULL, out = "edge", ram = "8192",
-  filter = "gradient", filter.touzi.xradius = 1,
-  filter.touzi.yradius = 1, channel = NULL, retRaster = FALSE,
-  outDir = NULL, verbose = FALSE, giLinks = NULL)
+otbtex_edge(
+  input = NULL,
+  out = "edge",
+  ram = "8192",
+  filter = "gradient",
+  touzi_xradius = 1,
+  touzi_yradius = 1,
+  channel = NULL,
+  retRaster = FALSE,
+  outDir = NULL,
+  verbose = FALSE,
+  otbLinks = NULL
+)
 }
 \arguments{
 \item{input}{of GeoTiff containing 1 ore more gray value band(s)}
@@ -18,9 +27,9 @@ otbtex_edge(input = NULL, out = "edge", ram = "8192",
 
 \item{filter}{the choice of edge detection method (gradient/sobel/touzi)}
 
-\item{filter.touzi.xradius}{x radius of the Touzi processing neighborhood (if filter==touzi) (default value is 1 pixel)}
+\item{touzi_xradius}{x radius of the Touzi processing neighborhood (if filter==touzi) (default value is 1 pixel)}
 
-\item{filter.touzi.yradius}{y radius of the Touzi processing neighborhood (if filter==touzi) (default value is 1 pixel)}
+\item{touzi_yradius}{y radius of the Touzi processing neighborhood (if filter==touzi) (default value is 1 pixel)}
 
 \item{channel}{sequence of bands to be processed}
 
@@ -30,7 +39,7 @@ otbtex_edge(input = NULL, out = "edge", ram = "8192",
 
 \item{verbose}{switch for system messages default is FALSE}
 
-\item{giLinks}{list. of GI tools cli pathes}
+\item{otbLinks}{list. of GI tools cli pathes}
 }
 \description{
 Calculates edges for a given kernel size. return list of geotiffs containing thelocal statistics for each channel
@@ -40,30 +49,37 @@ the otb is used for filtering. please provide a GeoTiff file
 }
 \examples{
 \dontrun{
-##- required packages
+# required packages
+# load libraries
 require(uavRst)
 require(link2GI)
+require(listviewer)
+
 setwd(tempdir())
 
-## check if OTB exists
-giLinks <- list()
-giLinks$otb <- link2GI::linkOTB()
+# check if OTB exists
+otbLinks <- link2GI::linkOTB()
 
-if (giLinks$otb$exist) {
-data("pacman")
-pacman<-raster::disaggregate(pacman,10)
-raster::writeRaster(pacman,"pacman.tif",overwrite=TRUE)
+if (otbLinks$exist) {
+data("rgb")
+raster::plotRGB(rgb)
+fn<-file.path(tempdir(),"rgb.tif")
+raster::writeRaster(rgb, 
+                    filename=fn,
+                    format="GTiff", 
+                    overwrite=TRUE)
+# get help
+cmd<-link2GI::parseOTBFunction(algo = "EdgeExtraction",gili=otbLinks)
+listviewer::jsonedit(cmd$help)
 
-##- calculate Sobel edge detection
-r<-otbtex_gray(input="pacman.tif",
-               filter = "erode",
-               structype = "ball", 
-               structype.ball.xradius = 3,
-               structype.ball.yradius = 3 ,
-               retRaster = TRUE)
+# calculate Sobel edge detection
+  r<-otbtex_edge(input=fn,
+                 filter="sobel",
+                 retRaster = TRUE,
+                 otbLinks = otbLinks)
 
-##- visualize all layers
-raster::plot(r[[1]])
+# visualize all layers
+  raster::plot(r[[1]])
 }
 }
 }

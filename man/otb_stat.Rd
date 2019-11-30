@@ -4,9 +4,17 @@
 \alias{otb_stat}
 \title{Calculates local statistics for a given kernel size}
 \usage{
-otb_stat(input = NULL, out = "localStat", ram = "8192", radius = 3,
-  channel = NULL, retRaster = FALSE, outDir = NULL,
-  verbose = FALSE, giLinks = NULL)
+otb_stat(
+  input = NULL,
+  out = "localStat",
+  ram = "8192",
+  radius = 3,
+  channel = NULL,
+  retRaster = FALSE,
+  outDir = NULL,
+  verbose = FALSE,
+  otbLinks = NULL
+)
 }
 \arguments{
 \item{input}{of GeoTiff containing 1 ore more gray value bands}
@@ -25,7 +33,7 @@ otb_stat(input = NULL, out = "localStat", ram = "8192", radius = 3,
 
 \item{verbose}{switch for system messages default is FALSE}
 
-\item{giLinks}{list. of GI tools cli pathes}
+\item{otbLinks}{list. of GI tools cli pathes}
 }
 \description{
 Calculates local statistics for a given kernel size
@@ -35,23 +43,35 @@ the otb is used for the calculation of the statistics. Please provide a GeoTiff 
 }
 \examples{
 \dontrun{
+# load libraries
 require(uavRst)
 require(link2GI)
-# check if OTB is installed correctly
-giLinks<-list()
-giLinks$otb <- link2GI::linkOTB()
-if (giLinks$otb$exist) {
+require(listviewer)
+
 setwd(tempdir())
-data("pacman")
-raster::writeRaster(pacman,"pacman.tif",overwrite=TRUE)
+
+# check if OTB exists
+otbLinks <- link2GI::linkOTB()
+
+if (otbLinks$exist) {
+data("rgb")
+raster::plotRGB(rgb)
+fn<-file.path(tempdir(),"rgb.tif")
+raster::writeRaster(rgb, 
+                    filename=fn,
+                    format="GTiff", 
+                    overwrite=TRUE)
+# get help
+cmd<-link2GI::parseOTBFunction(algo = "LocalStatisticExtraction",gili=otbLinks)
+listviewer::jsonedit(cmd$help)
 
 # calculate statistics
-result<- otb_stat(input="pacman.tif",
+result<- otb_stat(input=fn,
                   radius=5,
                   retRaster = TRUE,
                   channel = 1, 
-                  giLinks = giLinks)
-#plot the results :
+                  otbLinks = otbLinks)
+# plot the results :
 raster::plot(result[[1]])
 }
 }

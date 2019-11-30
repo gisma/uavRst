@@ -4,10 +4,20 @@
 \alias{otbtex_gray}
 \title{Calculates Gray scale morphological operations for a given kernel size.}
 \usage{
-otbtex_gray(input = NULL, out = "morpho", ram = "8192",
-  filter = "dilate", structype = "ball", structype.ball.xradius = 5,
-  structype.ball.yradius = 5, channel = NULL, retRaster = FALSE,
-  outDir = NULL, verbose = FALSE, giLinks = NULL)
+otbtex_gray(
+  input = NULL,
+  out = "morpho",
+  ram = "8192",
+  filter = "dilate",
+  structype = "ball",
+  xradius = 5,
+  yradius = 5,
+  channel = NULL,
+  retRaster = FALSE,
+  outDir = NULL,
+  verbose = FALSE,
+  otbLinks = NULL
+)
 }
 \arguments{
 \item{input}{of GeoTiff containing 1 ore more gray value bands}
@@ -20,9 +30,9 @@ otbtex_gray(input = NULL, out = "morpho", ram = "8192",
 
 \item{structype}{the choice of the structuring element type (ball/cross)}
 
-\item{structype.ball.xradius}{x the ball structuring element X Radius (only if structype==ball)}
+\item{xradius}{x the ball structuring element X Radius (only if structype==ball)}
 
-\item{structype.ball.yradius}{y the ball structuring element Y Radius (only if structype==ball)}
+\item{yradius}{y the ball structuring element Y Radius (only if structype==ball)}
 
 \item{channel}{sequence of bands to be processed}
 
@@ -32,7 +42,7 @@ otbtex_gray(input = NULL, out = "morpho", ram = "8192",
 
 \item{verbose}{switch for system messages default is FALSE}
 
-\item{giLinks}{list. of GI tools cli pathes}
+\item{otbLinks}{list. of GI tools cli pathes}
 }
 \description{
 Calculates Gray scale morphological operations for a given kernel size. return list of geotiffs containing thelocal statistics for each channel
@@ -42,17 +52,29 @@ the otb is used for filtering. please provide a GeoTiff file
 }
 \examples{
 \dontrun{
+# load libraries
 require(uavRst)
 require(link2GI)
-setwd(tempdir())
-## check if OTB exists
-giLinks<-list()
-giLinks$otb <- link2GI::linkOTB()
+require(listviewer)
 
-if (giLinks$otb$exist) {
-data("pacman")
-raster::writeRaster(pacman,"pacman.tif",overwrite=TRUE)
-r<-otbtex_gray(input="pacman.tif",retRaster = TRUE)
+setwd(tempdir())
+
+# check if OTB exists
+otbLinks <- link2GI::linkOTB()
+
+if (otbLinks$exist) {
+data("rgb")
+raster::plotRGB(rgb)
+fn<-file.path(tempdir(),"rgb.tif")
+raster::writeRaster(rgb, 
+                    filename=fn,
+                    format="GTiff", 
+                    overwrite=TRUE)
+# get help
+cmd<-link2GI::parseOTBFunction(algo = "GrayScaleMorphologicalOperation",gili=otbLinks)
+listviewer::jsonedit(cmd$help)
+
+r<-otbtex_gray(input="pacman.tif",retRaster = TRUE,otbLinks=otbLinks)
 
 ##- visualize all layers
 raster::plot(r[[1]])

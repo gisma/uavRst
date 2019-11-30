@@ -4,12 +4,24 @@
 \alias{ffs_train}
 \title{Forward feature selection based on rf model}
 \usage{
-ffs_train(trainingDF = NULL, predictors = c("R", "G", "B"),
-  response = "ID", spaceVar = "FN", names = c("ID", "R", "G", "B",
-  "A", "FN"), noLoc = NULL, sumFunction = "twoClassSummary",
-  pVal = 0.5, prefin = "final_", preffs = "ffs_",
-  modelSaveName = "model.RData", runtest = FALSE, seed = 100,
-  withinSE = TRUE, mtry = 2, noClu = 1)
+ffs_train(
+  trainingDF = NULL,
+  predictors = c("R", "G", "B"),
+  response = "ID",
+  spaceVar = "FN",
+  names = c("ID", "R", "G", "B", "A", "FN"),
+  noLoc = NULL,
+  sumFunction = "twoClassSummary",
+  pVal = 0.5,
+  prefin = "final_",
+  preffs = "ffs_",
+  modelSaveName = "model.RData",
+  runtest = FALSE,
+  seed = 100,
+  withinSE = TRUE,
+  mtry = 2,
+  noClu = 1
+)
 }
 \arguments{
 \item{trainingDF}{dataframe. containing training data}

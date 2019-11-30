@@ -4,11 +4,20 @@
 \alias{morpho_dem}
 \title{calculates most important DEM parameters}
 \usage{
-morpho_dem(dem, item = c("hillshade", "slope", "aspect", "TRI", "TPI",
-  "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", " C_TANG",
-  " C_LONG", "C_CROS", "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI"),
-  verbose = FALSE, morphoMethod = 6, minScale = 1, maxScale = 8,
-  numScale = 2, retRaster = TRUE, giLinks = NULL)
+morpho_dem(
+  dem,
+  item = c("hillshade", "slope", "aspect", "TRI", "TPI", "Roughness", "SLOPE", "ASPECT",
+    "C_GENE", "C_PROF", "C_PLAN", " C_TANG", " C_LONG", "C_CROS", "C_MINI", "C_MAXI",
+    "C_TOTA", "C_ROTO", "MTPI"),
+  verbose = FALSE,
+  morphoMethod = 6,
+  minScale = 1,
+  maxScale = 8,
+  numScale = 2,
+  retRaster = TRUE,
+  gdalLinks = NULL,
+  sagaLinks = NULL
+)
 }
 \arguments{
 \item{dem}{character filname to GeoTiff containing one channel DEM}
@@ -27,7 +36,9 @@ morpho_dem(dem, item = c("hillshade", "slope", "aspect", "TRI", "TPI",
 
 \item{retRaster}{boolean if TRUE a raster stack is returned}
 
-\item{giLinks}{list. of GI tools cli pathes}
+\item{gdalLinks}{list. of GDAL tools cli pathes}
+
+\item{sagaLinks}{list. of SAGA tools cli pathes}
 }
 \description{
 calculates most important DEM parameters
@@ -41,12 +52,10 @@ please provide a GeoTiff file
 require(uavRst)
 require(link2GI)
 setwd(tempdir())
-giLinks<-list()
 ## check if OTB exists
-giLinks$otb <- link2GI::linkOTB()
-giLinks$saga <- link2GI::linkSAGA()
-giLinks$grass <- link2GI::linkGRASS7(returnPaths = TRUE)
-if (giLinks$otb$exist & giLinks$saga$exist & giLinks$grass$exist) {
+gdal <- link2GI::linkGDAL()
+saga <- link2GI::linkSAGA()
+if (gdal$exist & saga$exist) {
 data("mrbiko")
 proj = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
 mrbiko <- raster::projectRaster(mrbiko, crs = proj,method = "ngb",res = 20)
@@ -54,7 +63,7 @@ raster::writeRaster(mrbiko,"dem.tif",overwrite=TRUE)
 r<-morpho_dem(dem="dem.tif",c("hillshade", "slope", "aspect", "TRI", "TPI",
                               "Roughness", "SLOPE", "ASPECT",  "C_GENE", "C_PROF",
                               "C_PLAN", " C_TANG"," C_LONG", "C_CROS"),
-                              giLinks= giLinks)
+                              gdalLinks= gdal,sagaLinks=saga)
 r_st=raster::stack(r)
 names(r_st)=names(r)
 raster::plot(r_st)

@@ -4,9 +4,11 @@
 \alias{poly_metrics}
 \title{calculate morphometric features of polygons.}
 \usage{
-poly_metrics(crownarea, funNames = c("length", "elongation",
-  "eccentricityboundingbox", "solidity", "eccentricityeigen", "calliper",
-  "rectangularity", "circularityharalick", "convexity"))
+poly_metrics(
+  crownarea,
+  funNames = c("length", "elongation", "eccentricityboundingbox", "solidity",
+    "eccentricityeigen", "calliper", "rectangularity", "circularityharalick", "convexity")
+)
 }
 \arguments{
 \item{crownarea}{sp*  spatialpolygon object}

@@ -460,7 +460,9 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param currentDataFolder  NULL folder to image (and shape) data
 #' @param currentIdxFolder  NULL folder for saving the results
 #' @param cleanRunDir  logical. TRUE logical switch for deleting the calculated tifs, default is TRUE
-#' @param giLinks     list. GI tools cli paths
+#' @param otbLinks     list. OTB tools cli paths
+#' @param sagaLinks     list. SAGA tools cli paths
+#' @param gdalLinks     list. GDAL tools cli paths 
 #' @examples
 #' \dontrun{
 #'
@@ -469,8 +471,9 @@ ffs_train<-function(   trainingDF   = NULL,
 #' require(link2GI)
 #'
 #' # create and check the links to the GI software
-#' giLinks<-uavRst::linkAll()
-#' if (giLinks$saga$exist & giLinks$otb$exist){
+#' sagaLinks<-link2GI::linkSAGA()
+#' gdalLinks<-Link2GI::linkGDAL()
+#' if (gdalLinks$exist & sagaLinks$exist){
 #'#'
 #' ##- create and set folders
 #' ##- please mind that the pathes are exported as global variables
@@ -511,7 +514,9 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                     kernel            = 3,
 #'                     currentDataFolder = path_run,
 #'                     currentIdxFolder  = path_run,
-#'                     giLinks = giLinks)
+#'                     otbLinks = otbLinks,
+#'                     sagaLinks = sagaLinks,
+#'                     gdalLinks = gdalLinks)
 #'
 #' ##- show the result
 #' head(trainDF)
@@ -559,16 +564,22 @@ calc_ext<- function ( calculateBands    = FALSE,
                       currentDataFolder = NULL,
                       currentIdxFolder  = NULL,
                       cleanRunDir        = TRUE,
-                      giLinks = NULL){
+                      sagaLinks = NULL,
+                      gdalLinks = NULL,
+                      otbLinks = NULL){
+  
   if (!exists("path_run")) path_run = tempdir()
   if (!rgbi) rgbTrans <- hara <- stat <- edge <- morpho <- FALSE
-  if (is.null(giLinks)){
-    giLinks <- linkAll()
-  }
-
-  gdal <- giLinks$gdal
-  saga <- giLinks$saga
-  otb <- giLinks$otb
+  
+  retStack<-list()
+  
+  if (is.null(gdalLinks))   gdal<- link2GI::linkGDAL()
+  else gdal<-gdalLinks<-
+  if (is.null(sagaLinks))  saga<- link2GI::linkSAGA()
+  else  saga<- sagaLinks
+  if (is.null(otbLinks))  otb<- link2GI::linkOTB()
+  else  otb<- otbLinks
+  
   sagaCmd<-saga$sagaCmd
   path_OTB <- otb$pathOTB
 
@@ -589,7 +600,7 @@ calc_ext<- function ( calculateBands    = FALSE,
   currentDataFolder<- currentDataFolder #paste0(path_data_training)
   currentIdxFolder<- currentIdxFolder # paste0(path_data_training_idx)
 
-  if (((stat == TRUE) || (hara == TRUE) || (edge == TRUE) || (morpho == TRUE)) & !otb$exist == "") stop("OTB missing - please check")
+  if (((stat == TRUE) || (hara == TRUE) || (edge == TRUE) || (morpho == TRUE)) & !otb$exist) stop("OTB missing - please check")
 
   ### ----- start preprocessing ---------------------------------------------------
   if (calculateBands) {
@@ -624,7 +635,9 @@ calc_ext<- function ( calculateBands    = FALSE,
                    minScale = minScale,
                    maxScale = maxScale,
                    numScale = numScale,
-                   giLinks = giLinks)
+                   gdalLinks=  gdal,
+                   sagaLinks=  saga)
+        
         flist<-append(flist, Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(demType,".tif"))))
         dellist <- append(dellist, Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(demType,".*"))))
         for (item in demType)
@@ -708,7 +721,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                    out = file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"stat_",basename(imageFiles[i]))),
                    ram = "4096",
                    radius =  kernel,
-                   giLinks=giLinks)
+                   otbLinks=  otb)
           flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"stat_*"))))
           dellist <-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"stat_*"))))
           bandNames <-append(bandNames,paste0(make_bandnames(stat = TRUE),"_",filterBand))
@@ -720,7 +733,7 @@ calc_ext<- function ( calculateBands    = FALSE,
             uavRst::otbtex_edge(input = fbFN,
                                 out = file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,edges,basename(imageFiles[i]))),
                                 filter = edges,
-                                giLinks=giLinks)
+                                otbLinks=  otb)
 
             flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,edges,"*"))))
             dellist<-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,edges,"*"))))
@@ -735,7 +748,7 @@ calc_ext<- function ( calculateBands    = FALSE,
             uavRst::otbtex_gray(input = fbFN,
                                 out = file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,morphos,basename(imageFiles[i]))),
                                 filter = morphos,
-                                giLinks=giLinks)
+                                otbLinks=  otb)
             flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,morphos,"*"))))
             dellist<-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,morphos,"*"))))
             bandNames <-append(bandNames,make_bandnames(edge = paste0(morphos,"_",filterBand)))
@@ -748,7 +761,7 @@ calc_ext<- function ( calculateBands    = FALSE,
             otbtex_hara(x = fbFN,
                         output_name=file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_",basename(imageFiles[i]))),
                         texture = type,
-                        giLinks=giLinks)
+                        otbLinks=  otb)
             flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*"))))
             dellist<-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*"))))
             bandNames <-append(bandNames,paste0(make_bandnames(bandNames = type),"_",filterBand))

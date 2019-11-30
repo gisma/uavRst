@@ -4,8 +4,13 @@
 \alias{predict_rgb}
 \title{classify images using raster predict}
 \usage{
-predict_rgb(imageFiles = NULL, model = NULL, inPrefix = "index_",
-  outPrefix = "classified_", bandNames = NULL)
+predict_rgb(
+  imageFiles = NULL,
+  model = NULL,
+  inPrefix = "index_",
+  outPrefix = "classified_",
+  bandNames = NULL
+)
 }
 \arguments{
 \item{imageFiles}{raster*. imagestack for classification purposes must contain the required bands as needed by the model.}

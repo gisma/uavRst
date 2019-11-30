@@ -137,7 +137,7 @@ glcm_texture <- function(x,
 #' @param return_raster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
 #' @param path_output path outut
-#' @param giLinks        list. of GI tools cli pathes
+#' @param otbLinks        list. of OTB tools cli pathes
 #'
 #' @references Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.
 #' IEEE Transactions on Systems, Man and Cybernetics. SMC-3(6):610-620.\cr
@@ -201,25 +201,36 @@ glcm_texture <- function(x,
 #' @examples
 #' \dontrun{
 
+#' # load libraries
 #' require(uavRst)
 #' require(link2GI)
-#' ## -check if OTB is installed correctly
-#' giLinks <- uavRst::linkAll()
-#' if (giLinks$otb$exist) {
+#' require(listviewer)
+#' 
 #' setwd(tempdir())
-#' ##- get some typical data as provided by the authority
-#' tmp<-Sys.setlocale('LC_ALL','C')
-#' utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP%2040_CIR.zip",
-#'                      destfile="testdata.zip")
-#' unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
+#' 
+#' # check if OTB exists
+#' otbLinks <- link2GI::linkOTB()
+#' 
+#' if (otbLinks$exist) {
+#' data("rgb")
+#' raster::plotRGB(rgb)
+#' fn<-file.path(tempdir(),"rgb.tif")
+#' raster::writeRaster(rgb, 
+#'                     filename=fn,
+#'                     format="GTiff", 
+#'                     overwrite=TRUE)
+#' # get help
+#' cmd<-link2GI::parseOTBFunction(algo = "HaralickTextureExtraction",gili=otbLinks)
+#' listviewer::jsonedit(cmd$help)
+#'                        
+#' # calculate simple Haralick-textures for 3 red, green and blue channel
+#' r <- otbtex_hara(x=file.path(tempdir(),"rgb.tif"), 
+#'                  texture = "simple", 
+#'                  return_raster = TRUE, 
+#'                  otbLinks =  otbLinks)
 #'
-#' # calculate simple Haralick-textures
-#' r<- otbtex_hara(x="4490600_5321400.tif",texture = "simple",return_raster = TRUE)
-#'
-#' #plot the results :
-#' ##- visualize all layers
+#' # visualize all layers
 #' raster::plot(r)
-#' tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.-8")
 #' }
 #' }
 
@@ -235,121 +246,121 @@ otbtex_hara<- function(x,
                    parameters.nbbin=8,
                    channel=NULL,
                    verbose=FALSE,
-                   giLinks = NULL,
+                   otbLinks = NULL,
                    ram="8192"){
 
-
-
-  if (is.null(giLinks)){
-    giLinks <- linkAll()
+  input=x
+  path_run<-dirname(input)
+  
+  if (is.null(otbLinks)){
+    otb<-link2GI::linkOTB()
+  } else otb<- otbLinks$pathOTB
+  path_OTB<- otbLinks$pathOTB
+  
+  
+  if(texture == "all"){
+    texture <- c("simple", "advanced", "higher")
   }
-  path_OTB <- giLinks$otb$pathOTB
-  otb<- giLinks$otb
-            if(texture == "all"){
-              texture <- c("simple", "advanced", "higher")
-            }
+  
+  if (is.null(channel))    channel <-seq(length(grep(system(paste('gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
 
-            if (is.null(channel)){
-              channel <- seq(length(grep(gdalUtils::gdalinfo(x,nomd = TRUE),
-                                         pattern = "Band ")))
-            }
-
-            ret_textures <- lapply(channel, function(band){
-              ret_textures <- lapply(parameters.xyrad, function(xyrad){
-                ret_textures <- lapply(parameters.xyoff, function(xyoff){
-                  ret_textures <- lapply(texture, function(txt){
-                    path_outfile<-paste0(tools::file_path_sans_ext(output_name),
-                                    "__",
-                                    band,
-                                    "_",
-                                    txt,
-                                    "_",
-                                    xyrad[1], xyrad[2], "_",
-                                    xyoff[1], xyoff[2],
-                                    ".tif")
-
-                    command<-paste0(path_OTB,"otbcli_HaralickTextureExtraction",
-                                    " -in ", x,
-                                    " -channel ", band,
-                                    " -out ", path_outfile,
-                                    " -ram ",ram,
-                                    " -parameters.xrad ",xyrad[1]
-                                    , " -parameters.yrad ",xyrad[2]
-                                    , " -parameters.xoff ",xyoff[1]
-                                    , " -parameters.yoff ",xyoff[2]
-                                    , " -parameters.min ",parameters.minmax[1]
-                                    , " -parameters.max ",parameters.minmax[2]
-                                    , " -parameters.nbbin ",parameters.nbbin,
-                                    " -texture ",txt)
-                    if (verbose) {
-                      cat("\nrunning cmd:  ", command,"\n")
-                      system(command)
-                    } else{
-                      system(command,intern = FALSE,ignore.stdout = FALSE)
-                    }
-                    if (return_raster){
-                      if(txt == "simple"){
-                        bnames <- c("Energy", "Entropy", "Correlation",
-                                    "Inverse_Difference_Moment", "Inertia",
-                                    "Cluster_Shade", "Cluster_Prominence",
-                                    "Haralick_Correlation")
-                      } else if(txt == "advanced"){
-                        bnames <- c("Mean", "Variance", "Dissimilarity",
-                                    "Sum_Average",
-                                    "Sum_Variance", "Sum_Entropy",
-                                    "Difference_of_Variances",
-                                    "Difference_of_Entropies",
-                                    "IC1", "IC2")
-                      } else if(txt == "higher"){
-                        bnames <- c("Short_Run_Emphasis",
-                                    "Long_Run_Emphasis",
-                                    "Grey-Level_Nonuniformity",
-                                    "Run_Length_Nonuniformity",
-                                    "Run_Percentage",
-                                    "Low_Grey-Level_Run_Emphasis",
-                                    "High_Grey-Level_Run_Emphasis",
-                                    "Short_Run_Low_Grey-Level_Emphasis",
-                                    "Short_Run_High_Grey-Level_Emphasis",
-                                    "Long_Run_Low_Grey-Level_Emphasis",
-                                    "Long_Run_High_Grey-Level_Emphasis")
-                      }
-                      if (verbose) print("create: ", path_outfile)
-                      ret_textures <- raster::readAll(raster::stack(path_outfile))
-                      names(ret_textures) <- paste0(bnames, "-",
-                                                    "b", band,
-                                                    "r", xyrad[1],
-                                                    "o", xyoff[1],
-                                                    "m", parameters.minmax[1],
-                                                    parameters.minmax[2])
-                    } else {
-                      ret_textures <- NULL
-                    }
-                    return(ret_textures)
-                  })
-                  if(is.null(ret_textures[[1]])){
-                    return(NULL)
-                  } else {
-                    return(raster::stack(ret_textures))
-                  }
-                })
-                if(is.null(ret_textures[[1]])){
-                  return(NULL)
-                } else {
-                  return(raster::stack(ret_textures))
-                }
-              })
-              if(is.null(ret_textures[[1]])){
-                return(NULL)
-              } else {
-                return(raster::stack(ret_textures))
-              }
-            })
-            if(is.null(ret_textures[[1]])){
-              return(NULL)
-            } else {
-              return(raster::stack(ret_textures))
-            }
+  
+  ret_textures <- lapply(channel, function(band){
+    ret_textures <- lapply(parameters.xyrad, function(xyrad){
+      ret_textures <- lapply(parameters.xyoff, function(xyoff){
+        ret_textures <- lapply(texture, function(txt){
+          path_outfile<-paste0(tools::file_path_sans_ext(output_name),
+                               "__",
+                               band,
+                               "_",
+                               txt,
+                               "_",
+                               xyrad[1], xyrad[2], "_",
+                               xyoff[1], xyoff[2],
+                               ".tif")
+          
+          command<-paste0(path_OTB,"otbcli_HaralickTextureExtraction",
+                          " -in ", x,
+                          " -channel ", band,
+                          " -out ", path_outfile,
+                          " -ram ",ram,
+                          " -parameters.xrad ",xyrad[1]
+                          , " -parameters.yrad ",xyrad[2]
+                          , " -parameters.xoff ",xyoff[1]
+                          , " -parameters.yoff ",xyoff[2]
+                          , " -parameters.min ",parameters.minmax[1]
+                          , " -parameters.max ",parameters.minmax[2]
+                          , " -parameters.nbbin ",parameters.nbbin,
+                          " -texture ",txt)
+          if (verbose) {
+            cat("\nrunning cmd:  ", command,"\n")
+            system(command)
+          } else{
+            system(command,intern = FALSE,ignore.stdout = FALSE)
           }
+          if (return_raster){
+            if(txt == "simple"){
+              bnames <- c("Energy", "Entropy", "Correlation",
+                          "Inverse_Difference_Moment", "Inertia",
+                          "Cluster_Shade", "Cluster_Prominence",
+                          "Haralick_Correlation")
+            } else if(txt == "advanced"){
+              bnames <- c("Mean", "Variance", "Dissimilarity",
+                          "Sum_Average",
+                          "Sum_Variance", "Sum_Entropy",
+                          "Difference_of_Variances",
+                          "Difference_of_Entropies",
+                          "IC1", "IC2")
+            } else if(txt == "higher"){
+              bnames <- c("Short_Run_Emphasis",
+                          "Long_Run_Emphasis",
+                          "Grey-Level_Nonuniformity",
+                          "Run_Length_Nonuniformity",
+                          "Run_Percentage",
+                          "Low_Grey-Level_Run_Emphasis",
+                          "High_Grey-Level_Run_Emphasis",
+                          "Short_Run_Low_Grey-Level_Emphasis",
+                          "Short_Run_High_Grey-Level_Emphasis",
+                          "Long_Run_Low_Grey-Level_Emphasis",
+                          "Long_Run_High_Grey-Level_Emphasis")
+            }
+            if (verbose) print("create: ", path_outfile)
+            ret_textures <- raster::readAll(raster::stack(path_outfile))
+            names(ret_textures) <- paste0(bnames, "-",
+                                          "b", band,
+                                          "r", xyrad[1],
+                                          "o", xyoff[1],
+                                          "m", parameters.minmax[1],
+                                          parameters.minmax[2])
+          } else {
+            ret_textures <- NULL
+          }
+          return(ret_textures)
+        })
+        if(is.null(ret_textures[[1]])){
+          return(NULL)
+        } else {
+          return(raster::stack(ret_textures))
+        }
+      })
+      if(is.null(ret_textures[[1]])){
+        return(NULL)
+      } else {
+        return(raster::stack(ret_textures))
+      }
+    })
+    if(is.null(ret_textures[[1]])){
+      return(NULL)
+    } else {
+      return(raster::stack(ret_textures))
+    }
+  })
+  if(is.null(ret_textures[[1]])){
+    return(NULL)
+  } else {
+    return(raster::stack(ret_textures))
+  }
+}
 
 
 
@@ -364,29 +375,41 @@ otbtex_hara<- function(x,
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
 #' @param outDir output Directory
-#' @param giLinks        list. of GI tools cli pathes
+#' @param otbLinks        list. of GI tools cli pathes
 #' @author Chris Reudenbach
 
 #' @export otb_stat
 #' @examples
 #' \dontrun{
+#' # load libraries
 #' require(uavRst)
 #' require(link2GI)
-#' # check if OTB is installed correctly
-#' giLinks<-list()
-#' giLinks$otb <- link2GI::linkOTB()
-#' if (giLinks$otb$exist) {
+#' require(listviewer)
+#' 
 #' setwd(tempdir())
-#' data("pacman")
-#' raster::writeRaster(pacman,"pacman.tif",overwrite=TRUE)
+#' 
+#' # check if OTB exists
+#' otbLinks <- link2GI::linkOTB()
+#' 
+#' if (otbLinks$exist) {
+#' data("rgb")
+#' raster::plotRGB(rgb)
+#' fn<-file.path(tempdir(),"rgb.tif")
+#' raster::writeRaster(rgb, 
+#'                     filename=fn,
+#'                     format="GTiff", 
+#'                     overwrite=TRUE)
+#' # get help
+#' cmd<-link2GI::parseOTBFunction(algo = "LocalStatisticExtraction",gili=otbLinks)
+#' listviewer::jsonedit(cmd$help)
 #' 
 #' # calculate statistics
-#' result<- otb_stat(input="pacman.tif",
+#' result<- otb_stat(input=fn,
 #'                   radius=5,
 #'                   retRaster = TRUE,
 #'                   channel = 1, 
-#'                   giLinks = giLinks)
-#' #plot the results :
+#'                   otbLinks = otbLinks)
+#' # plot the results :
 #' raster::plot(result[[1]])
 #' }
 #' }
@@ -395,31 +418,32 @@ otbtex_hara<- function(x,
 
 
 otb_stat<- function(input=NULL,
-                        out="localStat",
-                        ram="8192",
-                        radius=3,
-                        channel=NULL,
-                        retRaster=FALSE,
-                        outDir=NULL,
-                        verbose=FALSE,
-                        giLinks = NULL){
-
-  if (is.null(giLinks)){
-    giLinks <- linkAll()
-  }
-  path_OTB <- giLinks$otb$pathOTB
-
+                    out="localStat",
+                    ram="8192",
+                    radius=3,
+                    channel=NULL,
+                    retRaster=FALSE,
+                    outDir=NULL,
+                    verbose=FALSE,
+                    otbLinks = NULL){
+  path_run<-dirname(input)
+  
+  if (is.null(otbLinks)){
+    otb<-link2GI::linkOTB()
+  } else otb<- otbLinks
+  path_OTB<- otb$pathOTB
+  
   retStack<-list()
-  if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
+  if (is.null(channel)) channel <-seq(length(grep(system(paste('gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
   for (band in channel) {
-
-    outName<-paste0(tools::file_path_sans_ext(out),
-                    "__",
+    
+    outName<-file.path(path_run,paste0(tools::file_path_sans_ext(out),
+                    "_ch",
                     band,
                     "_r",
                     radius,
-                    ".tif")
-                              
+                    ".tif"))
+    
     command<-paste0(path_OTB,"otbcli_LocalStatisticExtraction")
     command<-paste(command, " -in ", input)
     command<-paste(command, " -channel ", channel)
@@ -431,7 +455,7 @@ otb_stat<- function(input=NULL,
       system(command[band])}
     else{
       system(command[band],intern = TRUE,ignore.stdout = TRUE)}
-
+    
     if (retRaster) retStack[[band]]<-assign(paste0(tools::file_path_sans_ext(basename(outName)),"band_",band),raster::stack(outName))
   }
   return(retStack)
@@ -445,79 +469,88 @@ otb_stat<- function(input=NULL,
 #' @param input of GeoTiff containing 1 ore more gray value band(s)
 #' @param out the output mono band image containing the edge features
 #' @param filter the choice of edge detection method (gradient/sobel/touzi)
-#' @param filter.touzi.xradius x radius of the Touzi processing neighborhood (if filter==touzi) (default value is 1 pixel)
-#' @param filter.touzi.yradius y radius of the Touzi processing neighborhood (if filter==touzi) (default value is 1 pixel)
+#' @param touzi_xradius x radius of the Touzi processing neighborhood (if filter==touzi) (default value is 1 pixel)
+#' @param touzi_yradius y radius of the Touzi processing neighborhood (if filter==touzi) (default value is 1 pixel)
 #' @param channel sequence of bands to be processed
 #' @param ram reserved memory in MB
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
 #' @param outDir output Directory
-#' @param giLinks        list. of GI tools cli pathes
+#' @param otbLinks        list. of GI tools cli pathes
 #' @author Chris Reudenbach
 #' @export otbtex_edge
 #' @examples
 #'\dontrun{
-#' ##- required packages
+#' # required packages
+#' # load libraries
 #' require(uavRst)
 #' require(link2GI)
+#' require(listviewer)
+#' 
 #' setwd(tempdir())
 #' 
-#' ## check if OTB exists
-#' giLinks <- list()
-#' giLinks$otb <- link2GI::linkOTB()
+#' # check if OTB exists
+#' otbLinks <- link2GI::linkOTB()
 #' 
-#' if (giLinks$otb$exist) {
-#' data("pacman")
-#' pacman<-raster::disaggregate(pacman,10)
-#' raster::writeRaster(pacman,"pacman.tif",overwrite=TRUE)
+#' if (otbLinks$exist) {
+#' data("rgb")
+#' raster::plotRGB(rgb)
+#' fn<-file.path(tempdir(),"rgb.tif")
+#' raster::writeRaster(rgb, 
+#'                     filename=fn,
+#'                     format="GTiff", 
+#'                     overwrite=TRUE)
+#' # get help
+#' cmd<-link2GI::parseOTBFunction(algo = "EdgeExtraction",gili=otbLinks)
+#' listviewer::jsonedit(cmd$help)
 #'
-#' ##- calculate Sobel edge detection
-#' r<-otbtex_gray(input="pacman.tif",
-#'                filter = "erode",
-#'                structype = "ball", 
-#'                structype.ball.xradius = 3,
-#'                structype.ball.yradius = 3 ,
-#'                retRaster = TRUE)
+#' # calculate Sobel edge detection
+#'   r<-otbtex_edge(input=fn,
+#'                  filter="sobel",
+#'                  retRaster = TRUE,
+#'                  otbLinks = otbLinks)
 #'
-#' ##- visualize all layers
-#' raster::plot(r[[1]])
+#' # visualize all layers
+#'   raster::plot(r[[1]])
 #' }
-#' }
+#'}
 
 
 otbtex_edge<- function(input=NULL,
-                   out="edge",
-                   ram="8192",
-                   filter="gradient",
-                   filter.touzi.xradius=1,
-                   filter.touzi.yradius=1,
-                   channel=NULL,
-                   retRaster=FALSE,
-                   outDir=NULL,
-                   verbose=FALSE,
-                   giLinks = NULL){
-
-    if (is.null(giLinks)){
-      giLinks <- linkAll()
-    }
-  path_OTB <- giLinks$otb$pathOTB
+                       out="edge",
+                       ram="8192",
+                       filter="gradient",
+                       touzi_xradius=1,
+                       touzi_yradius=1,
+                       channel=NULL,
+                       retRaster=FALSE,
+                       outDir=NULL,
+                       verbose=FALSE,
+                       otbLinks = NULL){
+  path_run<-dirname(input)
+  
+  if (is.null(otbLinks)){
+    otb<-link2GI::linkOTB()
+  } else otb<- otbLinks
+  path_OTB<- otb$pathOTB
+  
   retStack<-list()
-  if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
+  if (is.null(channel)) channel <-seq(length(grep(system(paste('gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
   for (band in channel) {
-    outName<-paste0(tools::file_path_sans_ext(out),
-                    "__",
+    outName<-file.path(path_run,paste0(tools::file_path_sans_ext(out),
+                    "_ch",
                     band,
                     "_f",
                     filter,
-                    ".tif")
-
+                    ".tif"))
+    
     command<-paste0(path_OTB,"otbcli_EdgeExtraction")
     command<-paste(command, " -in ", input)
     command<-paste(command, " -channel ", channel)
     command<-paste(command, " -filter ", filter)
     if (filter == "touzi") {
-      command<-paste(command, " -filter.touzi.xradius ", filter.touzi.xradius)
-      command<-paste(command, " -filter.touzi.yradius ", filter.touzi.yradius)
+      command<-paste(command, " -filter.touzi.xradius ", touzi_xradius)
+      command<-paste(command, " -filter.touzi.yradius ", touzi_yradius)
     }
     command<-paste(command, " -out ", outName)
     command<-paste(command, " -ram ",ram)
@@ -526,7 +559,7 @@ otbtex_edge<- function(input=NULL,
       system(command[band])}
     else{
       system(command[band],intern = TRUE,ignore.stdout = TRUE)}
-
+    
     if (retRaster) retStack[[band]]<-assign(paste0(tools::file_path_sans_ext(basename(outName)),"band_",band),raster::stack(outName))
   }
   return(retStack)
@@ -539,30 +572,42 @@ otbtex_edge<- function(input=NULL,
 #' @param out the output mono band image containing the edge features
 #' @param filter the choice of the morphological operation (dilate/erode/opening/closing) (default value is dilate)
 #' @param structype the choice of the structuring element type (ball/cross)
-#' @param structype.ball.xradius x the ball structuring element X Radius (only if structype==ball)
-#' @param structype.ball.yradius y the ball structuring element Y Radius (only if structype==ball)
+#' @param xradius x the ball structuring element X Radius (only if structype==ball)
+#' @param yradius y the ball structuring element Y Radius (only if structype==ball)
 #' @param channel sequence of bands to be processed
 #' @param ram reserved memory in MB
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
 #' @param outDir output Directory
-#' @param giLinks        list. of GI tools cli pathes
+#' @param otbLinks        list. of GI tools cli pathes
 #' @author Chris Reudenbach
 #' @export otbtex_gray
 
 #' @examples
 #' \dontrun{
+#' # load libraries
 #' require(uavRst)
 #' require(link2GI)
-#' setwd(tempdir())
-#' ## check if OTB exists
-#' giLinks<-list()
-#' giLinks$otb <- link2GI::linkOTB()
+#' require(listviewer)
 #' 
-#' if (giLinks$otb$exist) {
-#' data("pacman")
-#' raster::writeRaster(pacman,"pacman.tif",overwrite=TRUE)
-#' r<-otbtex_gray(input="pacman.tif",retRaster = TRUE)
+#' setwd(tempdir())
+#' 
+#' # check if OTB exists
+#' otbLinks <- link2GI::linkOTB()
+#' 
+#' if (otbLinks$exist) {
+#' data("rgb")
+#' raster::plotRGB(rgb)
+#' fn<-file.path(tempdir(),"rgb.tif")
+#' raster::writeRaster(rgb, 
+#'                     filename=fn,
+#'                     format="GTiff", 
+#'                     overwrite=TRUE)
+#' # get help
+#' cmd<-link2GI::parseOTBFunction(algo = "GrayScaleMorphologicalOperation",gili=otbLinks)
+#' listviewer::jsonedit(cmd$help)
+#' 
+#' r<-otbtex_gray(input="pacman.tif",retRaster = TRUE,otbLinks=otbLinks)
 #'
 #' ##- visualize all layers
 #' raster::plot(r[[1]])
@@ -575,40 +620,42 @@ otbtex_gray<- function(input=NULL,
                          ram="8192",
                          filter="dilate",
                          structype="ball",
-                         structype.ball.xradius=5,
-                         structype.ball.yradius=5,
+                         xradius=5,
+                         yradius=5,
                          channel=NULL,
                          retRaster=FALSE,
                          outDir=NULL,
                          verbose=FALSE,
-                         giLinks = NULL){
-
-  if (is.null(giLinks)){
-    giLinks <- linkAll()
-  }
-  path_OTB <- giLinks$otb$pathOTB
-
+                         otbLinks = NULL){
+  path_run<-dirname(input)
   retStack<-list()
+  
+  
+  if (is.null(otbLinks)){
+    otb<-link2GI::linkOTB()
+  } else otb<- otbLinks
+  path_OTB<- otb$pathOTB
+  
 
-  if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
+  
+  if (is.null(channel)) channel <-seq(length(grep(system(paste('gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
   for (band in channel) {
-    outName<-paste0(tools::file_path_sans_ext(out),
-                    "__",
+    outName<-file.path(path_run,paste0(
+                    tools::file_path_sans_ext(out),
+                    "_ch",
                     band,
                     "_f",
                     filter,
                     "_",
                     structype,
-                    ".tif")
+                    ".tif"))
 
     command<-paste0(path_OTB,"otbcli_GrayScaleMorphologicalOperation")
     command<-paste(command, " -in ", input)
     command<-paste(command, " -channel ", channel)
     command<-paste(command, " -filter ", filter)
-    if (structype == "ball") {
-      command<-paste(command, " -structype.ball.xradius ", structype.ball.xradius)
-      command<-paste(command, " -structype.ball.yradius ", structype.ball.yradius)
-    }
+    command<-paste(command, " -xradius ", xradius)
+    command<-paste(command, " -yradius ", yradius)
     command<-paste(command, " -out ", outName)
     command<-paste(command, " -ram ",ram)
     if (verbose) {
@@ -632,7 +679,8 @@ otbtex_gray<- function(input=NULL,
 #' @param maxScale  numeric. max scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param numScale  numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param retRaster boolean if TRUE a raster stack is returned
-#' @param giLinks    list. of GI tools cli pathes
+#' @param gdalLinks    list. of GDAL tools cli pathes
+#' @param sagaLinks    list. of SAGA tools cli pathes
 
 #' @export morpho_dem
 #' @examples
@@ -641,12 +689,10 @@ otbtex_gray<- function(input=NULL,
 #' require(uavRst)
 #' require(link2GI)
 #' setwd(tempdir())
-#' giLinks<-list()
 #' ## check if OTB exists
-#' giLinks$otb <- link2GI::linkOTB()
-#' giLinks$saga <- link2GI::linkSAGA()
-#' giLinks$grass <- link2GI::linkGRASS7(returnPaths = TRUE)
-#' if (giLinks$otb$exist & giLinks$saga$exist & giLinks$grass$exist) {
+#' gdal <- link2GI::linkGDAL()
+#' saga <- link2GI::linkSAGA()
+#' if (gdal$exist & saga$exist) {
 #' data("mrbiko")
 #' proj = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
 #' mrbiko <- raster::projectRaster(mrbiko, crs = proj,method = "ngb",res = 20)
@@ -654,7 +700,7 @@ otbtex_gray<- function(input=NULL,
 #' r<-morpho_dem(dem="dem.tif",c("hillshade", "slope", "aspect", "TRI", "TPI",
 #'                               "Roughness", "SLOPE", "ASPECT",  "C_GENE", "C_PROF",
 #'                               "C_PLAN", " C_TANG"," C_LONG", "C_CROS"),
-#'                               giLinks= giLinks)
+#'                               gdalLinks= gdal,sagaLinks=saga)
 #' r_st=raster::stack(r)
 #' names(r_st)=names(r)
 #' raster::plot(r_st)
@@ -670,42 +716,57 @@ morpho_dem<- function(dem,
                     maxScale = 8,
                     numScale = 2,
                     retRaster = TRUE,
-                    giLinks = NULL) {
-  if (!exists("path_run")) path_run = tempdir()
+                    gdalLinks = NULL,
+                    sagaLinks = NULL) {
+  if (!exists("path_run")) path_run = dirname(dem)
+  if (path_run=="") path_run= tempdir()
   retStack<-list()
-  if (is.null(giLinks)){
-    giLinks <- linkAll()
-  }
+  dem<-basename(dem)
+  if (is.null(sagaLinks))   saga<- link2GI::linkSAGA()
+  else saga<-sagaLinks
+  if (is.null(gdalLinks))  gdal<- link2GI::linkGDAL()
+  else  gdal<- gdalLinks
+  
+  sagaCmd<-saga$sagaCmd
+  
+  
   issaga <- Vectorize(issagaitem)
   isgdal <- Vectorize(isgdaldemitem)
   saga_items<-item[issaga(item)]
   gdal_items<-item[isgdal(item)]
 
-  gdal <- giLinks$gdal
-  saga <- giLinks$saga
-  sagaCmd<-saga$sagaCmd
+  
   if (Sys.info()["sysname"]=="Windows") saga$sagaPath <- utils::shortPathName(saga$sagaPath)
   invisible(env<-RSAGA::rsaga.env(path =saga$sagaPath))
-  s<-raster::raster(dem)
+  s<-raster::raster(file.path(path_run,dem))
   y<-raster::yres(s)
   x<-raster::xres(s)
-  res<-gdalUtils::gdalwarp(dem,file.path(path_run,'dem2.tif'),
-                           te=paste(extent(s)[1],' ',
-                                    extent(s)[3],' ',
-                                    extent(s)[2],' ',
-                                    extent(s)[4]),
-                           tr=paste(x,' ', y),
-                           overwrite = TRUE,
-                           multi = TRUE)
-
+  
+  g<- link2GI::linkGDAL()
+  system(paste0(g$path,'gdalwarp -overwrite -q ',
+                          "-te ",  extent(s)[1],' ',
+                                   extent(s)[3],' ',
+                                   extent(s)[2],' ',
+                                   extent(s)[4],' ',
+                                "-tr ",x,' ', y,' ',
+                file.path(path_run,dem),' ',
+                file.path(path_run,"dem2.tif"),' '
+                )
+  )
+  
   for (item in gdal_items){
     cat(getCrayon()[[1]](":::: processing ",item,"\n"))
-    res<-   gdalUtils::gdaldem(mode = item,
-            input_dem=file.path(R.utils::getAbsolutePath(path_run),paste0("dem2.tif")),
-            output = file.path(R.utils::getAbsolutePath(path_run),paste0(item,".tif")))
+    
+    system(paste0(g$path,'gdaldem ',item,' ',
+                  "-q -compute_edges",' ',
+                  file.path(R.utils::getAbsolutePath(path_run),paste0("dem2.tif")),' ',
+                  output = file.path(R.utils::getAbsolutePath(path_run),paste0(item,".tif"))
+    )
+    )
+    
     if (retRaster) retStack[[item]]<-assign(item,raster::stack(file.path(R.utils::getAbsolutePath(path_run),paste0(item,".tif"))))
   }
-
+  
   if (length(saga_items>0))  {
     rdem<-raster::raster(file.path(R.utils::getAbsolutePath(path_run),'dem2.tif'))
     raster::writeRaster(rdem,file.path(R.utils::getAbsolutePath(path_run),"SAGA_dem.sdat"),overwrite = TRUE,NAflag = 0)

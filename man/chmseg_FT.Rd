@@ -4,8 +4,14 @@
 \alias{chmseg_FT}
 \title{Watershed segmentation based on 'ForestTools'}
 \usage{
-chmseg_FT(treepos = NULL, chm = NULL, minTreeAlt = 2,
-  format = "polygons", winRadius = 1.5, verbose = FALSE)
+chmseg_FT(
+  treepos = NULL,
+  chm = NULL,
+  minTreeAlt = 2,
+  format = "polygons",
+  winRadius = 1.5,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{treepos}{\code{raster*}. The positions of the estimated top of trees. The function will generally produce a

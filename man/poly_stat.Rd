@@ -4,11 +4,23 @@
 \alias{poly_stat}
 \title{Calculate descriptive statistics of raster as segemented by polygons}
 \usage{
-poly_stat(rasternames = NULL, spdf = NULL, count = 1, min = 1,
-  max = 1, sum = 1, range = 1, mean = 1, var = 1, stddev = 1,
-  quantile = 10, parallel = 1,
+poly_stat(
+  rasternames = NULL,
+  spdf = NULL,
+  count = 1,
+  min = 1,
+  max = 1,
+  sum = 1,
+  range = 1,
+  mean = 1,
+  var = 1,
+  stddev = 1,
+  quantile = 10,
+  parallel = 1,
   proj = "+proj=utm +zone=30 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
-  path_run = tempdir(), giLinks = NULL)
+  path_run = tempdir(),
+  giLinks = NULL
+)
 }
 \arguments{
 \item{rasternames}{vector of raster* objects default is NULL}

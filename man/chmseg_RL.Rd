@@ -4,8 +4,7 @@
 \alias{chmseg_RL}
 \title{Watershed segmentation based on 'rLiDAR'}
 \usage{
-chmseg_RL(treepos = NULL, chm = NULL, maxCrownArea = 100,
-  exclusion = 0.2)
+chmseg_RL(treepos = NULL, chm = NULL, maxCrownArea = 100, exclusion = 0.2)
 }
 \arguments{
 \item{treepos}{numeric. \code{matrix} or \code{data.frame} with three columns (tree xy coordinates and height).

@@ -57,5 +57,23 @@ Suggests: knitr,
     mapview,
     R.utils
 LinkingTo: Rcpp
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.1
 SystemRequirements: GNU make
+Collate: 
+    'RcppExports.R'
+    'rs_textures.R'
+    'tb_bluedjinn.R'
+    'rs_pc_2D_mdtm.R'
+    'rs_lidr_makros.R'
+    'fa_treepos.R'
+    'tb_digitize.R'
+    'rs_classify.R'
+    'rs_pc_2D_dsm.R'
+    'rs_pc_2D_fdtm.R'
+    'fa_crownseg.R'
+    'fa_crownfilter.R'
+    'fa_crownmetrics.R'
+    'fa_diversity.R'
+    'rs_colorspace.R'
+    'uavRst-package.R'
+    

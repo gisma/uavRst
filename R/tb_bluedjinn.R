@@ -420,11 +420,19 @@ poly_stat <- function(rasternames = NULL,
     for (item in rasternames) {raster2sdat(rastobj = item ,path_run = R.utils::getAbsolutePath(path_run))}
   else if (class(rasternames[1]) %in% c("character") & file.exists(file.path(R.utils::getAbsolutePath(path_run),paste0(rasternames[1],".tif"))))
     for (item in rasternames) {
-      gdalUtils::gdalwarp(file.path(R.utils::getAbsolutePath(path_run),paste0(item,".tif")),
-                          file.path(R.utils::getAbsolutePath(path_run),paste0(item,".sdat")),
-                          overwrite = TRUE,
-                          of = 'SAGA',
-                          verbose = FALSE)
+      
+      system(paste0(gdal$path,'gdalwarp -overwrite -q ',
+                    "-of 'SAGA' ",
+                    file.path(R.utils::getAbsolutePath(path_run),"dtm0.tif"),' ',
+                    dstfile = file.path(R.utils::getAbsolutePath(path_run),"dtm.tif")
+      )
+      )
+      
+      # gdalUtils::gdalwarp(file.path(R.utils::getAbsolutePath(path_run),paste0(item,".tif")),
+      #                     file.path(R.utils::getAbsolutePath(path_run),paste0(item,".sdat")),
+      #                     overwrite = TRUE,
+      #                     of = 'SAGA',
+      #                     verbose = FALSE)
     }
   
 if (class(spdf)=="SpatialPolygonsDataFrame")     {
@@ -518,66 +526,7 @@ return(stat)
 }
 
 
-#'  convenient function to establish all link2GI links
-#' @description brute force search, find and linkl of all link2GI link functions
-#'
-#' @note You may also use the full parameterization of the \code{link2GI} package, but you are strungly advaced to use the \code{link2GI} functions in a direct way.
-#' @param links character. links
-#' @param linkItems character. list of c("saga","grass7","otb","gdal")
-#' @param simple logical. true  make all
-#' @param sagaArgs character. full string of sagaArgs
-#' @param grassArgs character. grassArgs full string of grassArgs
-#' @param otbArgs character. full string of otbArgs
-#' @param gdalArgs character. full string of gdalArgs
-#'
-#'@examples
-#'\dontrun{
-#' # required packages
-#' require(uavRst)
-#' require(link2GI)
-#'
-#' # search, find and create the links to all supported  GI software
-#' giLinks<-uavRst::linkAll()
-#'
 
-#'}
-
-#' @export
-linkAll <- function(links=NULL,
-                    simple = TRUE,
-                    linkItems = c("saga","grass7","otb","gdal"),
-                    sagaArgs = "default",
-                    grassArgs = "default",
-                    otbArgs =   "default",
-                    gdalArgs =  c("quiet = TRUE,
-                                     returnPaths = TRUE")
-)  {
-  cat("linking ", links,"\n")
-  if (sagaArgs == "default") sagaArgs <- "default_SAGA = NULL, searchLocation = 'default', ver_select = FALSE, quiet = TRUE, returnPaths = TRUE"
-  if (grassArgs == "default") grassArgs <- "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist = FALSE, gisdbase = NULL,
-                                     location = NULL, spatial_params = NULL, resolution = NULL, quiet = TRUE, returnPaths = FALSE"
-  if (otbArgs == "default") otbArgs <- "bin_OTB = NULL, root_OTB = NULL, type_OTB = NULL, searchLocation = NULL, ver_select = FALSE"
-  if (gdalArgs == "default") gdalArgs <- "quiet = TRUE, returnPaths = TRUE"
-  if (is.null(links) && (simple)){
-    link<-list()
-    for (links in linkItems) {
-      cat("linking ", links,"\n")
-      if (links=="gdal") 
-        link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)",sep = ""))))
-      else
-        link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)",sep = ""))))
-      
-    }
-    
-  } else if (is.null(links)) {
-    link<-list()
-    for (links in linkItems) {
-      link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(",eval(parse(text=paste0(links,"Args"))),")",sep = ""))))
-    }
-    
-  }
-  return(link)
-}
 
 
 # fill holes
@@ -671,6 +620,7 @@ getPopupStyle <- function() {
 #' @param startBand numerial. last band to export
 #' @param refFn character. reference image for resampling
 #' @param returnRaster logical. return as raster
+#' @param gdalLinks list of gdal installations
 #' @name split2SAGA
 
 #' @keywords internal
@@ -680,7 +630,10 @@ split2SAGA<-function(fn=NULL,
                      startBand= 1,
                      endBand =3,
                      refFn=NULL,
+                     gdalLinks=NULL,
                      returnRaster=FALSE){
+  if (is.null(gdalLinks))  gdal<- link2GI::linkGDAL()
+  else  gdal<- gdalLinks
   flist<-list()
   if (!exists("path_run")) path_run = tempdir()
   for (i in seq(startBand:endBand)){
@@ -690,14 +643,30 @@ split2SAGA<-function(fn=NULL,
       r<-raster::raster(refFn)
     else
       r<-raster::raster(fn)
-    res<-gdalUtils::gdal_translate(src_dataset = fn[[i]]@file@name,
-                                   dst_dataset = outFn,
-                                   tr= paste0(raster::xres(r)," ",
-                                              raster::xres(r)),
-                                   b = as.character(i),
-                                   of = "SAGA",
-                                   a_nodata = 0,
-                                   a_srs = as.character(r@crs) )
+    system(paste0(gdal$path,'gdalwarp -overwrite -q ',
+                  "-of 'SAGA' ",
+                  "-r 'bilinear'",' ',
+                  "-b ",as.character(i),' ',
+                  "-a_nodata = 0",' ',
+                  "-tr ",paste0(raster::xres(r)," ",
+                                raster::xres(r)),' ',
+                  "-a_srs ", as.character(r@crs),' ',
+                  fn[[i]]@file@name,' ',
+                  outFn
+    )
+    )      
+    
+    # res<-gdalUtils::gdal_translate(src_dataset = fn[[i]]@file@name,
+    #                                dst_dataset = outFn,
+    #                                tr= paste0(raster::xres(r)," ",
+    #                                           raster::xres(r)),
+    #                                b = as.character(i),
+    #                                of = "SAGA",
+    #                                a_nodata = 0,
+    #                                a_srs = as.character(r@crs) )
+    # 
+    
+    
     r<-raster::writeRaster(raster::resample(raster::raster(outFn),raster::raster(refFn)),
                            filename	= outFn,
                            NAflag = 0,
@@ -825,65 +794,6 @@ isgdaldemitem <- function(x)
   if (x %in%  c("hillshade","slope", "aspect","TRI","TPI","Roughness")) return(TRUE) else return(FALSE)
 }
 
-#' #' clips a tif files according to a given extent.
-#' #'
-#' #' clips a tif files according to a given extent
-#' #' @param rasterFiles character. vector containing a list of rasterfiles to be clipped
-#' #' @param ext extent
-
-#' #' @param outPath character. subfolder of current runtime folder. clipped files will be stored there
-#' #' @param prefix character. prefic string that is added to the filenames
-#' #'@export
-#' #'@keywords internal
-#' cutTif<- function(rasterFiles = NULL,
-#'                   ext=NULL,
-#'                   outPath="cut",
-#'                   prefix="cut") {
-#'   #rasterFiles <- list.files(pattern="[.]tif$", path="/home/creu/proj/geopat/data/modis_carpathian_mountains/study_area/modis_ndvi/2002", full.names=TRUE)
-#'   te=paste(raster::extent(ext)[1],' ',
-#'            raster::extent(ext)[3],' ',
-#'            raster::extent(ext)[2],' ',
-#'            raster::extent(ext)[4])
-#'   if (!file.exists(file.path(R.utils::getAbsolutePath(path_run), outPath))) dir.create(file.path(file.path(R.utils::getAbsolutePath(path_run), outPath)), recursive = TRUE,showWarnings = FALSE)
-#'   for (rasterFile in rasterFiles) {
-#'     system(paste0("gdal_translate -projwin ", te, " -of GTiff ",rasterFile, " ", file.path(R.utils::getAbsolutePath(path_run)),outPath,"/",prefix,basename(rasterFile)))
-#'   }
-#' }4
-
-#' search for lastools
-#'
-#' search for lastools
-#' #'@keywords internal
-#' @param MP mount point point for starting search
-#' @param quiet default = TRUE 
-searchLastools <- function(MP = "~",
-                           quiet=TRUE) {
-  if (MP=="default") MP <- "~"
-  MP<-path.expand(MP)
-  if (!exists("GiEnv")) GiEnv <- new.env(parent=globalenv())
-  # trys to find a osgeo4w installation at the mounting point  disk returns root directory and version name
-  # recursive dir for otb*.bat returns all version of otb bat files
-  if (!quiet) cat("\nsearching for lastools windows binaries - this may take a while\n")
-  if (!quiet) cat("For providing the path manually see ?searchLastools \n")
-  raw_LAS <- system2("find", paste(MP," ! -readable -prune -o -type f -iname 'lasview.exe' -print"),stdout = TRUE)
-  if (!grepl(MP,raw_LAS)[[1]]) stop("\n At ",MP," no LAStool binaries found")
-  # trys to identify valid otb installations and their version numbers
-  LASbinaries <- lapply(seq(length(raw_LAS)), function(i){
-    
-    # TODO strip version from OTB /usr/bin/otbcli_BandMath -version
-    # "This is the BandMath application, version 6.0.0"
-    
-    # if the the tag "OSGEO4W64" exists set installation_type
-    root_dir <- data.frame(binDir = substr(raw_LAS[i],1, gregexpr(pattern = "lasview.exe", raw_LAS[i])[[1]][1] - 1))
-    # put the existing GISBASE directory, version number  and installation type in a data frame
-    #data.frame(binDir = root_dir,lastoolCmd = paste0(root_dir,"lasview.exe"), stringsAsFactors = FALSE)
-  }) # end lapply
-  # bind the df lines
-  otbInstallations <- do.call("rbind", LASbinaries )
-  
-  
-  return(LASbinaries)
-}
 
 # if (substr(Sys.getenv("COMPUTERNAME"),1,5) == "PCRZP") {
 #   gdalUtils::gdal_setInstallation(search_path = shQuote("C:/Program Files/QGIS 2.14/bin/"))
@@ -1008,13 +918,22 @@ raster2sdat<-function(rastobj,
 #' @param fn filname without extension
 #' @param ext extent of the raster in R notation
 #' @param path_run character. path used for runtime operations
+#' @param gdalLinks list of gdal installations
 #' @keywords internal
 #' @export
-saga2r<- function(fn,ext,path_run=tempdir()) {
-  gdalUtils::gdalwarp(paste0(path_run,fn,".sdat"), 
-                      paste0(path_run,fn,".tif"), 
-                      overwrite = TRUE,  
-                      verbose = FALSE)
+saga2r<- function(fn,ext,path_run=tempdir(),gdalLinks=NULL ) {
+  if (is.null(gdalLinks))  gdal<- link2GI::linkGDAL()
+  else  gdal<- gdalLinks
+  system(paste0(gdal$path,'gdalwarp -overwrite -q ',
+                "-of 'SAGA' ",
+                file.path(R.utils::getAbsolutePath(path_run),fn,".sdat"),' ',
+                dstfile = file.path(R.utils::getAbsolutePath(path_run),fn,".tif")
+  )
+  )  
+  # gdalUtils::gdalwarp(paste0(path_run,fn,".sdat"), 
+  #                     paste0(path_run,fn,".tif"), 
+  #                     overwrite = TRUE,  
+  #                     verbose = FALSE)
   x<-raster::raster(paste0(path_run,fn,".tif"))
   x@extent <- ext
   # convert to SAGA
@@ -1036,3 +955,63 @@ r2saga <- function(x,fn,path_run=tempdir()) {
   
 }
 
+#'  convenient function to establish all link2GI links
+#' @description brute force search, find and linkl of all link2GI link functions
+#'
+#' @note You may also use the full parameterization of the \code{link2GI} package, but you are strungly advaced to use the \code{link2GI} functions in a direct way.
+#' @param links character. links
+#' @param linkItems character. list of c("saga","grass7","otb","gdal")
+#' @param simple logical. true  make all
+#' @param sagaArgs character. full string of sagaArgs
+#' @param grassArgs character. grassArgs full string of grassArgs
+#' @param otbArgs character. full string of otbArgs
+#' @param gdalArgs character. full string of gdalArgs
+#'
+#'@examples
+#'\dontrun{
+#' # required packages
+#' require(uavRst)
+#' require(link2GI)
+#'
+#' # search, find and create the links to all supported  GI software
+#' giLinks<-uavRst::linkAll()
+#'
+
+#'}
+
+#' @export
+linkAll <- function(links=NULL,
+                    simple = TRUE,
+                    linkItems = c("saga","grass7","otb","gdal"),
+                    sagaArgs = "default",
+                    grassArgs = "default",
+                    otbArgs =   "default",
+                    gdalArgs =  c("quiet = TRUE,
+                                     returnPaths = TRUE")
+)  {
+  cat("linking ", links,"\n")
+  if (sagaArgs == "default") sagaArgs <- "default_SAGA = NULL, searchLocation = 'default', ver_select = FALSE, quiet = TRUE, returnPaths = TRUE"
+  if (grassArgs == "default") grassArgs <- "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist = FALSE, gisdbase = NULL,
+                                     location = NULL, spatial_params = NULL, resolution = NULL, quiet = TRUE, returnPaths = FALSE"
+  if (otbArgs == "default") otbArgs <- "bin_OTB = NULL, root_OTB = NULL, type_OTB = NULL, searchLocation = NULL, ver_select = FALSE"
+  if (gdalArgs == "default") gdalArgs <- "quiet = TRUE, returnPaths = TRUE"
+  if (is.null(links) && (simple)){
+    link<-list()
+    for (links in linkItems) {
+      cat("linking ", links,"\n")
+      if (links=="gdal") 
+        link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)",sep = ""))))
+      else
+        link[links]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)",sep = ""))))
+      
+    }
+    
+  } else if (is.null(links)) {
+    link<-list()
+    for (links in linkItems) {
+      link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(",eval(parse(text=paste0(links,"Args"))),")",sep = ""))))
+    }
+    
+  }
+  return(link)
+}

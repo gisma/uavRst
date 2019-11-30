@@ -4,7 +4,7 @@
 \alias{saga2r}
 \title{converts SAGA raster to R raster object}
 \usage{
-saga2r(fn, ext, path_run = tempdir())
+saga2r(fn, ext, path_run = tempdir(), gdalLinks = NULL)
 }
 \arguments{
 \item{fn}{filname without extension}
@@ -12,6 +12,8 @@ saga2r(fn, ext, path_run = tempdir())
 \item{ext}{extent of the raster in R notation}
 
 \item{path_run}{character. path used for runtime operations}
+
+\item{gdalLinks}{list of gdal installations}
 }
 \description{
 converts SAGA raster to R raster object

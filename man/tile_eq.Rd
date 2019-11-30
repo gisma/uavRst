@@ -4,20 +4,25 @@
 \alias{tile_eq}
 \title{divide a lidR las* or lascatalog object by given factors}
 \usage{
-tile_eq(cgs, factorx = 4, factory = 4, outpath = NULL,
-  lasfn = "cut",
-  proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
+tile_eq(
+  cgs,
+  factor_x = 4,
+  factor_y = 4,
+  outpath = NULL,
+  las_fn = "cut",
+  proj4 = "+init=epsg:32632"
+)
 }
 \arguments{
 \item{cgs}{filename of an las file}
 
-\item{factorx}{factor to divide in x direction}
+\item{factor_x}{factor to divide in x direction}
 
-\item{factory}{factor to divide in y direction}
+\item{factor_y}{factor to divide in y direction}
 
 \item{outpath}{path to write to if null nothing is written}
 
-\item{lasfn}{filname of lasfile if written}
+\item{las_fn}{filname of lasfile if written}
 
 \item{proj4}{correct proj4 string}
 }
@@ -26,6 +31,6 @@ divide a lidR las* object by given factors. The resulting tiles are  written to 
 }
 \examples{
 \dontrun{
-cut_eq(cgs = lidR::readLAS(las_file),factorx = 4,factory = 4 )
+cut_eq(cgs = lidR::readLAS(las_file),factor_x = 4,factor_y = 4 )
 }
 }

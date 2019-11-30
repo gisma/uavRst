@@ -4,9 +4,16 @@
 \alias{get_counts}
 \title{counts pixel values according to their classes}
 \usage{
-get_counts(ids = c(1, 2), position = NULL, imageFiles = NULL,
-  buffersize = 1.5, outPrefix = "classified_index_", ext = ".tif",
-  path = tempdir(), dropChars = 0)
+get_counts(
+  ids = c(1, 2),
+  position = NULL,
+  imageFiles = NULL,
+  buffersize = 1.5,
+  outPrefix = "classified_index_",
+  ext = ".tif",
+  path = tempdir(),
+  dropChars = 0
+)
 }
 \arguments{
 \item{ids}{numeric. the ids used for the training}

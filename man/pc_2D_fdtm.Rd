@@ -4,12 +4,22 @@
 \alias{pc_2D_fdtm}
 \title{Create a Digital Terrain Model from UAV generated point clouds by minimum altitude sampling (fix resolution of sampling gridsize)}
 \usage{
-pc_2D_fdtm(laspcFile = NULL, grassVersion = 1, searchPath = NULL,
-  gisdbasePath = NULL, tension = 20, sampleMethod = "min",
-  cutExtent = NULL, sampleGridSize = 25, targetGridSize = 0.1,
-  splineThresGridSize = 0.5, projFolder = NULL,
+pc_2D_fdtm(
+  laspcFile = NULL,
+  grassVersion = 1,
+  searchPath = NULL,
+  gisdbasePath = NULL,
+  tension = 20,
+  sampleMethod = "min",
+  cutExtent = NULL,
+  sampleGridSize = 25,
+  targetGridSize = 0.1,
+  splineThresGridSize = 0.5,
+  projFolder = NULL,
   proj4 = "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
-  giLinks = NULL, verbose = FALSE)
+  giLinks = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{laspcFile}{character. default is \code{NULL} path  to the laz/las file(s)}

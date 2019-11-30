@@ -4,13 +4,27 @@
 \alias{digitize}
 \title{Easy digitizing of vector features within your rstudio session (or any browser)}
 \usage{
-digitize(mapCenter = NULL, zoom = 15, line = TRUE,
-  rectangle = TRUE, poly = TRUE, circle = TRUE, point = TRUE,
-  remove = TRUE, position = "topright",
+digitize(
+  mapCenter = NULL,
+  zoom = 15,
+  line = TRUE,
+  rectangle = TRUE,
+  poly = TRUE,
+  circle = TRUE,
+  point = TRUE,
+  remove = TRUE,
+  position = "topright",
   maplayer = c("CartoDB.Positron", "OpenStreetMap", "Esri.WorldImagery",
-  "Thunderforest.Landscape", "OpenTopoMap"), overlay = NULL,
-  features = NULL, preset = "all", locPreset = "muf", cex = 10,
-  lwd = 2, alpha = 0.6, opacity = 0.7)
+    "Thunderforest.Landscape", "OpenTopoMap"),
+  overlay = NULL,
+  features = NULL,
+  preset = "all",
+  locPreset = "muf",
+  cex = 10,
+  lwd = 2,
+  alpha = 0.6,
+  opacity = 0.7
+)
 }
 \arguments{
 \item{mapCenter}{c(lat,lon) central point of the leaflet map}

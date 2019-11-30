@@ -4,21 +4,28 @@
 \alias{split2SAGA}
 \title{Split multiband image to single band SAGA files}
 \usage{
-split2SAGA(fn = NULL, bandName = NULL, startBand = 1, endBand = 3,
-  refFn = NULL, returnRaster = FALSE)
+split2SAGA(
+  fn = NULL,
+  bandName = NULL,
+  startBand = 1,
+  endBand = 3,
+  refFn = NULL,
+  gdalLinks = NULL,
+  returnRaster = FALSE
+)
 }
 \arguments{
 \item{fn}{character. filename}
 
-\item{startBand}{numerical. first band to export}
+\item{startBand}{numerial. last band to export}
 
 \item{refFn}{character. reference image for resampling}
+
+\item{gdalLinks}{list of gdal installations}
 
 \item{returnRaster}{logical. return as raster}
 
 \item{bandname}{character. list of bandnames c("red","green","blue")}
-
-\item{startBand}{numerial. last band to export}
 }
 \description{
 Split multiband image to single band SAGA files. If a reference file is given, it performs a resample if necessary to avoid the numerical noise problem of SAGA extent.

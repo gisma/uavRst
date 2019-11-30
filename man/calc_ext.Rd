@@ -4,23 +4,46 @@
 \alias{calc_ext}
 \title{Convenient function to preprocess synthetic raster bands from a given RGB image and/or DTM/DSM data.}
 \usage{
-calc_ext(calculateBands = FALSE, extractTrain = TRUE,
-  prefixRun = "temp", patterndemFiles = "dem", prefixTrainImg = "",
-  prefixTrainGeom = "", suffixTrainImg = "", suffixTrainGeom = "",
-  patternIdx = "index", patternImgFiles = "", channels = c("red",
-  "green", "blue"), hara = TRUE, haraType = c("simple", "advanced",
-  "higher"), stat = TRUE, edge = TRUE, edgeType = c("gradient",
-  "sobel", "touzi"), morpho = TRUE, morphoType = c("dilate", "erode",
-  "opening", "closing"), rgbi = TRUE, indices = c("VVI", "VARI",
-  "NDTI", "RI", "SCI", "BI", "SI", "HI", "TGI", "GLI", "NGRDI", "GRVI",
-  "GLAI", "HUE", "CI", "SAT", "SHP"), rgbTrans = TRUE,
-  colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log",
-  "XYZ", "YUV"), pardem = TRUE, demType = c("hillshade", "slope",
-  "aspect", "TRI", "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE",
-  "C_PROF", "C_PLAN", "C_TANG", "C_LONG", "C_CROS", "C_MINI", "C_MAXI",
-  "C_TOTA", "C_ROTO", "MTPI"), morphoMethod = 6, minScale = 1,
-  maxScale = 8, numScale = 2, kernel = 3, currentDataFolder = NULL,
-  currentIdxFolder = NULL, cleanRunDir = TRUE, giLinks = NULL)
+calc_ext(
+  calculateBands = FALSE,
+  extractTrain = TRUE,
+  prefixRun = "temp",
+  patterndemFiles = "dem",
+  prefixTrainImg = "",
+  prefixTrainGeom = "",
+  suffixTrainImg = "",
+  suffixTrainGeom = "",
+  patternIdx = "index",
+  patternImgFiles = "",
+  channels = c("red", "green", "blue"),
+  hara = TRUE,
+  haraType = c("simple", "advanced", "higher"),
+  stat = TRUE,
+  edge = TRUE,
+  edgeType = c("gradient", "sobel", "touzi"),
+  morpho = TRUE,
+  morphoType = c("dilate", "erode", "opening", "closing"),
+  rgbi = TRUE,
+  indices = c("VVI", "VARI", "NDTI", "RI", "SCI", "BI", "SI", "HI", "TGI", "GLI",
+    "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"),
+  rgbTrans = TRUE,
+  colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ", "YUV"),
+  pardem = TRUE,
+  demType = c("hillshade", "slope", "aspect", "TRI", "TPI", "Roughness", "SLOPE",
+    "ASPECT", "C_GENE", "C_PROF", "C_PLAN", "C_TANG", "C_LONG", "C_CROS", "C_MINI",
+    "C_MAXI", "C_TOTA", "C_ROTO", "MTPI"),
+  morphoMethod = 6,
+  minScale = 1,
+  maxScale = 8,
+  numScale = 2,
+  kernel = 3,
+  currentDataFolder = NULL,
+  currentIdxFolder = NULL,
+  cleanRunDir = TRUE,
+  sagaLinks = NULL,
+  gdalLinks = NULL,
+  otbLinks = NULL
+)
 }
 \arguments{
 \item{calculateBands}{logical. switch for set on calculation of syntheic bands and indices default = TRUE}
@@ -87,7 +110,11 @@ calc_ext(calculateBands = FALSE, extractTrain = TRUE,
 
 \item{cleanRunDir}{logical. TRUE logical switch for deleting the calculated tifs, default is TRUE}
 
-\item{giLinks}{list. GI tools cli paths}
+\item{sagaLinks}{list. SAGA tools cli paths}
+
+\item{gdalLinks}{list. GDAL tools cli paths}
+
+\item{otbLinks}{list. OTB tools cli paths}
 }
 \description{
 Convenient function to preprocess synthetic raster bands from a given RGB image and/or DTM/DSM data.
@@ -122,8 +149,9 @@ require(uavRst)
 require(link2GI)
 
 # create and check the links to the GI software
-giLinks<-uavRst::linkAll()
-if (giLinks$saga$exist & giLinks$otb$exist){
+sagaLinks<-link2GI::linkSAGA()
+gdalLinks<-Link2GI::linkGDAL()
+if (gdalLinks$exist & sagaLinks$exist){
 #'
 ##- create and set folders
 ##- please mind that the pathes are exported as global variables
@@ -164,7 +192,9 @@ trainDF <- calc_ext(calculateBands    = TRUE,
                     kernel            = 3,
                     currentDataFolder = path_run,
                     currentIdxFolder  = path_run,
-                    giLinks = giLinks)
+                    otbLinks = otbLinks,
+                    sagaLinks = sagaLinks,
+                    gdalLinks = gdalLinks)
 
 ##- show the result
 head(trainDF)

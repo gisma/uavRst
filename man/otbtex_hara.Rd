@@ -4,11 +4,21 @@
 \alias{otbtex_hara}
 \title{OTB wrapper for Haralick's simple, advanced and higher order texture features.}
 \usage{
-otbtex_hara(x, texture = "all", output_name = "hara",
-  path_output = NULL, return_raster = FALSE,
-  parameters.xyrad = list(c(1, 1)), parameters.xyoff = list(c(1, 1)),
-  parameters.minmax = c(0, 255), parameters.nbbin = 8,
-  channel = NULL, verbose = FALSE, giLinks = NULL, ram = "8192")
+otbtex_hara(
+  x,
+  texture = "all",
+  output_name = "hara",
+  path_output = NULL,
+  return_raster = FALSE,
+  parameters.xyrad = list(c(1, 1)),
+  parameters.xyoff = list(c(1, 1)),
+  parameters.minmax = c(0, 255),
+  parameters.nbbin = 8,
+  channel = NULL,
+  verbose = FALSE,
+  otbLinks = NULL,
+  ram = "8192"
+)
 }
 \arguments{
 \item{x}{A \code{Raster*} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands}
@@ -33,7 +43,7 @@ otbtex_hara(x, texture = "all", output_name = "hara",
 
 \item{verbose}{switch for system messages default is FALSE}
 
-\item{giLinks}{list. of GI tools cli pathes}
+\item{otbLinks}{list. of OTB tools cli pathes}
 
 \item{ram}{reserved memory in MB}
 }
@@ -56,25 +66,36 @@ Furthermore using stats will cover mean and variance while dissimilarity is high
 }
 \examples{
 \dontrun{
+# load libraries
 require(uavRst)
 require(link2GI)
-## -check if OTB is installed correctly
-giLinks <- uavRst::linkAll()
-if (giLinks$otb$exist) {
+require(listviewer)
+
 setwd(tempdir())
-##- get some typical data as provided by the authority
-tmp<-Sys.setlocale('LC_ALL','C')
-utils::download.file(url="http://www.ldbv.bayern.de/file/zip/5619/DOP\%2040_CIR.zip",
-                     destfile="testdata.zip")
-unzip("testdata.zip",junkpaths = TRUE,overwrite = TRUE)
 
-# calculate simple Haralick-textures
-r<- otbtex_hara(x="4490600_5321400.tif",texture = "simple",return_raster = TRUE)
+# check if OTB exists
+otbLinks <- link2GI::linkOTB()
 
-#plot the results :
-##- visualize all layers
+if (otbLinks$exist) {
+data("rgb")
+raster::plotRGB(rgb)
+fn<-file.path(tempdir(),"rgb.tif")
+raster::writeRaster(rgb, 
+                    filename=fn,
+                    format="GTiff", 
+                    overwrite=TRUE)
+# get help
+cmd<-link2GI::parseOTBFunction(algo = "HaralickTextureExtraction",gili=otbLinks)
+listviewer::jsonedit(cmd$help)
+                       
+# calculate simple Haralick-textures for 3 red, green and blue channel
+r <- otbtex_hara(x=file.path(tempdir(),"rgb.tif"), 
+                 texture = "simple", 
+                 return_raster = TRUE, 
+                 otbLinks =  otbLinks)
+
+# visualize all layers
 raster::plot(r)
-tmp<-Sys.setlocale(category = "LC_ALL", locale = "de_DE.-8")
 }
 }
 }

@@ -4,9 +4,18 @@
 \alias{treepos_GWS}
 \title{Find potential tree positions using a canopy height model}
 \usage{
-treepos_GWS(chm = NULL, minTreeAlt = 10, minTreeAltParam = "chmQ20",
-  minCrownArea = 3, maxCrownArea = 150, join = 1, thresh = 0.1,
-  split = TRUE, cores = parallel::detectCores(), giLinks = NULL)
+treepos_GWS(
+  chm = NULL,
+  minTreeAlt = 10,
+  minTreeAltParam = "chmQ20",
+  minCrownArea = 3,
+  maxCrownArea = 150,
+  join = 1,
+  thresh = 0.1,
+  split = TRUE,
+  cores = parallel::detectCores(),
+  giLinks = NULL
+)
 }
 \arguments{
 \item{chm}{raster* canopy height model}
