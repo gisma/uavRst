@@ -506,7 +506,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                       channels          = c("red"),
 #'                       rgbTrans          = TRUE,
 #'                       hara              = TRUE,
-#'                       haraType          = c("higher"),
+#'                       haraType          = c("simple"),
 #'                       stat              = TRUE,
 #'                       edge              = TRUE,
 #'                       morpho            = TRUE,
@@ -855,7 +855,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     #DF<-readRDS(paste0(currentIdxFolder,prefixRun,"_trainDF",".rds"))
     cat(catHead("\n--- training data extraction finished ---\n"))
 
-    return(list(trainDF,bandNames))
+    return(trainDF)
   }
 }
 

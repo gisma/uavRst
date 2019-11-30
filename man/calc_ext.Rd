@@ -184,7 +184,7 @@ otbLinks<-link2GI::linkOTB()
                       channels          = c("red"),
                       rgbTrans          = TRUE,
                       hara              = TRUE,
-                      haraType          = c("higher"),
+                      haraType          = c("simple"),
                       stat              = TRUE,
                       edge              = TRUE,
                       morpho            = TRUE,
