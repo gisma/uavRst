@@ -5,4 +5,5 @@ CONDUCT.rm
 ^README\.Rmd$
 ^README-.*\.png$
 ^\.travis\.yml$
-^\/docs$
+^docs$
+^_config.yml$

@@ -154,18 +154,19 @@ gdalLinks<-link2GI::linkGDAL()
 otbLinks<-link2GI::linkOTB()
 
 
-  ##- create and set folders
-  ##- please mind that the pathes are exported as global variables
-  paths<-link2GI::initProj(projRootDir = tempdir(),
-                           projFolders = c("data/","data/ref/","output/","run/","las/"),
-                           global = TRUE,
-                           path_prefix = "path_")
+##- create and set folders
+##- please mind that the pathes are exported as global variables
+paths<-link2GI::initProj(projRootDir = tempdir(),
+                         projFolders = c("data/","data/ref/","output/","run/","las/"),
+                         global = TRUE,
+                         path_prefix = "path_")
   
-  ##- clean runtime folder
-  unlink(paste0(path_run,"*"), force = TRUE)
+##- clean runtime folder
+unlink(paste0(path_run,"*"), force = TRUE)
   
-  ##- get the tutorial data
-  utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip",
+##- get the tutorial data
+url<-"https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
+utils::download.file(url,
                        paste0(path_run,"tutorial_data.zip"))
   unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = R.utils::getAbsolutePath(path_run))
   

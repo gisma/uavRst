@@ -4,8 +4,8 @@ Title: Unmanned Aerial Vehicle Remote Sensing Tools
 Version: 0.5-4
 Date: 2019-08-14
 Authors@R: c(person("Chris", "Reudenbach", email = "reudenbach@uni-marburg.de", role = c("cre","aut")),
-             person("Florian", "Detsch", role = c("ctb")),
              person("Hanna", "Meyer", email = "hanna.meyer@uni-marburg.de", role = c("aut")),
+             person("Florian", "Detsch", role = c("ctb")),
              person("Finn", "Möller", role = c("ctb")),
              person("Thomas", "Nauss", email = "nauss@uni-marburg.de", role = c("ctb")),
              person("Lars", "Opgenoorth", email = "opgenoorth@uni-marburg.de", role = c("ctb")),
