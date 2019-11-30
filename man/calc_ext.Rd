@@ -142,63 +142,66 @@ This approach needs at least a pair of images that differ in time and/or space f
 If you just want to classify a single image by a single training file use the normal procedure as provided by the \code{\link[caret]{trainControl}} function.
 }
 \examples{
+
 \dontrun{
 
-##- required packages
 require(uavRst)
 require(link2GI)
 
 # create and check the links to the GI software
 sagaLinks<-link2GI::linkSAGA()
-gdalLinks<-Link2GI::linkGDAL()
-if (gdalLinks$exist & sagaLinks$exist){
-#'
-##- create and set folders
-##- please mind that the pathes are exported as global variables
-paths<-link2GI::initProj(projRootDir = tempdir(),
-                         projFolders = c("data/","data/ref/","output/","run/","las/"),
-                         global = TRUE,
-                         path_prefix = "path_")
+gdalLinks<-link2GI::linkGDAL()
+otbLinks<-link2GI::linkOTB()
 
-##- clean runtime folder
-unlink(paste0(path_run,"*"), force = TRUE)
 
-##- get the tutorial data
-utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip",
-                     paste0(path_run,"tutorial_data.zip"))
-unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = R.utils::getAbsolutePath(path_run))
-
-##- calculate some synthetic channels from the RGB image and the canopy height model
-##- then extract the from the corresponding training geometries the data values aka trainingdata
-trainDF <- calc_ext(calculateBands    = TRUE,
-                    extractTrain      = TRUE,
-                    suffixTrainGeom   = "",
-                    patternIdx        = "index",
-                    patternImgFiles   = "rgb" ,
-                    patterndemFiles   = "chm",
-                    prefixRun         = "tutorial",
-                    prefixTrainImg    = "",
-                    rgbi              = TRUE,
-                    indices           = c("TGI","CI"),
-                    channels          = c("red"),
-                    rgbTrans          = FALSE,
-                    hara              = FALSE,
-                    haraType          = c("simple"),
-                    stat              = FALSE,
-                    edge              = FALSE,
-                    morpho            = FALSE,
-                    pardem            = TRUE,
-                    demType           = c("slope", "MTPI"),
-                    kernel            = 3,
-                    currentDataFolder = path_run,
-                    currentIdxFolder  = path_run,
-                    otbLinks = otbLinks,
-                    sagaLinks = sagaLinks,
-                    gdalLinks = gdalLinks)
+  ##- create and set folders
+  ##- please mind that the pathes are exported as global variables
+  paths<-link2GI::initProj(projRootDir = tempdir(),
+                           projFolders = c("data/","data/ref/","output/","run/","las/"),
+                           global = TRUE,
+                           path_prefix = "path_")
+  
+  ##- clean runtime folder
+  unlink(paste0(path_run,"*"), force = TRUE)
+  
+  ##- get the tutorial data
+  utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip",
+                       paste0(path_run,"tutorial_data.zip"))
+  unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = R.utils::getAbsolutePath(path_run))
+  
+  ##- calculate some synthetic channels from the RGB image and the canopy height model
+  ##- then extract the from the corresponding training geometries the data values aka trainingdata
+  trainDF <- calc_ext(calculateBands    = TRUE,
+                      extractTrain      = TRUE,
+                      suffixTrainGeom   = "",
+                      patternIdx        = "index",
+                      patternImgFiles   = "rgb" ,
+                      patterndemFiles   = "chm",
+                      prefixRun         = "tutorial",
+                      prefixTrainImg    = "",
+                      rgbi              = TRUE,
+                      indices           = c("TGI","CI"),
+                      channels          = c("red"),
+                      rgbTrans          = TRUE,
+                      hara              = TRUE,
+                      haraType          = c("higher"),
+                      stat              = TRUE,
+                      edge              = TRUE,
+                      morpho            = TRUE,
+                      pardem            = TRUE,
+                      #demType           = c("slope", "MTPI"),
+                      kernel            = 3,
+                      currentDataFolder = path_run,
+                      currentIdxFolder  = path_run,
+                      sagaLinks = sagaLinks,
+                      gdalLinks = gdalLinks,
+                      otbLinks =otbLinks)
+  
 
 ##- show the result
 head(trainDF)
+
 # use ffs_train as next step for rf classification issues
+
 }
-##+}
 }
