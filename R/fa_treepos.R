@@ -33,7 +33,7 @@ if (!isGeneric('treepos')) {
 #' require(link2GI)
 #'
 #' # create and check the links to the GI software
-#' giLinks<-uavRst::linkAll()
+#' giLinks<-uavRst::linkGI()
 #' if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
 #'
 #' # project folder
@@ -76,7 +76,7 @@ treepos_GWS <- function(chm = NULL,
   options(warn=-1)
 
   if (is.null(giLinks)){
-    giLinks <- linkAll()
+    giLinks <- linkGI()
   }
 
   gdal <- giLinks$gdal

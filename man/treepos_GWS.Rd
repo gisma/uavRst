@@ -49,7 +49,7 @@ require(uavRst)
 require(link2GI)
 
 # create and check the links to the GI software
-giLinks<-uavRst::linkAll()
+giLinks<-uavRst::linkGI()
 if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
 
 # project folder

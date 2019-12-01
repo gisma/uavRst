@@ -85,7 +85,7 @@ pc_2D_fdtm <- function(laspcFile = NULL,
     else searchPath <- "/usr"}
   
   # if (is.null(giLinks)){
-  #   giLinks <- linkAll()
+  #   giLinks <- linkGI()
   # }
   gdal <- giLinks$gdal
   # saga <- giLinks$saga

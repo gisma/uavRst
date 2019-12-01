@@ -368,7 +368,7 @@ funWhichmax <- function(mask,value) {
 #' require(link2GI)
 #'
 #' # create and check the links to the GI software
-#' giLinks<-uavRst::linkAll(linkItems = c("saga","gdal"))
+#' giLinks<-uavRst::linkGI(linkItems = c("saga","gdal"))
 #' if (giLinks$saga$exist) {
 #' 
 #' # get the rgb image, chm and training data
@@ -978,10 +978,10 @@ r2saga <- function(x,fn,path_run=tempdir()) {
 #' require(link2GI)
 #'
 #' # search, find and create the links to all supported  GI software
-#' giLinks<-uavRst::linkAll()
+#' giLinks<-uavRst::linkGI()
 #' 
 #' # search, find and create the links to all supported  GI software
-#' giLinks<-uavRst::linkAll(gdalArgs=c(ver_select=TRUE))
+#' giLinks<-uavRst::linkGI(gdalArgs=c(ver_select=TRUE))
 #' )
 #'
 

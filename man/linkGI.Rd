@@ -45,10 +45,10 @@ require(uavRst)
 require(link2GI)
 
 # search, find and create the links to all supported  GI software
-giLinks<-uavRst::linkAll()
+giLinks<-uavRst::linkGI()
 
 # search, find and create the links to all supported  GI software
-giLinks<-uavRst::linkAll(gdalArgs=c(ver_select=TRUE))
+giLinks<-uavRst::linkGI(gdalArgs=c(ver_select=TRUE))
 )
 
 }

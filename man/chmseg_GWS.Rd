@@ -71,7 +71,7 @@ require(uavRst)
 require(link2GI)
 ##- linkages
 ##- create and check the links to the GI software
-giLinks<-uavRst::linkAll(linkItems = c("saga","gdal"))
+giLinks<-uavRst::linkGI(linkItems = c("saga","gdal"))
 if (giLinks$saga$exist ) {
 
 ##- project folder

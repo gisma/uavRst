@@ -32,7 +32,7 @@
 #' require(link2GI)
 #' ##- linkages
 #' ##- create and check the links to the GI software
-#' giLinks<-uavRst::linkAll(linkItems = c("saga","gdal"))
+#' giLinks<-uavRst::linkGI(linkItems = c("saga","gdal"))
 #' if (giLinks$saga$exist ) {
 #'
 #' ##- project folder
@@ -102,7 +102,7 @@ chmseg_GWS <- function(treepos = NULL,
   # create correct param lists
   #segmentationBands<-c("HI","GLI")
   if (is.null(giLinks)){
-    giLinks <- linkAll()
+    giLinks <- linkGI()
   }
 
   gdal <- giLinks$gdal
