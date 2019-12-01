@@ -969,6 +969,7 @@ r2saga <- function(x,fn,path_run=tempdir()) {
 #' @param grassArgs character. grassArgs full string of grassArgs
 #' @param otbArgs character. full string of otbArgs
 #' @param gdalArgs character. full string of gdalArgs
+#' @param quiet supress all messages default is FALSE
 #'
 #'@examples
 #'\dontrun{
@@ -987,7 +988,7 @@ r2saga <- function(x,fn,path_run=tempdir()) {
 #'}
 
 #' @export
-linkAll <- function(links=NULL,
+linkGI <- function(links=NULL,
                     simple = TRUE,
                     linkItems = c("saga","grass7","otb","gdal"),
                     sagaArgs = "default",
@@ -1000,11 +1001,10 @@ linkAll <- function(links=NULL,
   catOk   <- getCrayon()[[3]]
   
   if (!quiet )    cat(catHead("\n--- linking SAGA - GRASS - OTB - GDAL ---\n")) 
-  if (sagaArgs == "default") sagaArgs <- "default_SAGA = NULL, searchLocation = 'default', ver_select = FALSE, quiet = TRUE, returnPaths = TRUE"
-  if (grassArgs == "default") grassArgs <- "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist = FALSE, gisdbase = NULL,
-                                     location = NULL, spatial_params = NULL, resolution = NULL, quiet = TRUE, returnPaths = FALSE"
-  if (otbArgs == "default") otbArgs <- "bin_OTB = NULL, root_OTB = NULL, type_OTB = NULL, searchLocation = NULL, ver_select = FALSE"
-  if (gdalArgs == "default") gdalArgs <- "quiet = TRUE, returnPaths = TRUE, ver_select = FALSE"
+  if (sagaArgs == "default") sagaArgs   <- "default_SAGA = NULL, searchLocation = 'default', ver_select=FALSE, quiet = TRUE, returnPaths = TRUE"
+  if (grassArgs == "default") grassArgs <- "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist =FALSE, gisdbase = NULL, use_home =FALSE, location = NULL, spatial_params=NULL, resolution=NULL, quiet =TRUE, returnPaths = TRUE"
+  if (otbArgs == "default") otbArgs <- "bin_OTB=NULL, root_OTB= NULL, type_OTB=NULL, searchLocation=NULL, ver_select=FALSE, quiet = TRUE, returnPaths = TRUE"
+  if (gdalArgs == "default") gdalArgs <- "bin_GDAL=NULL, searchLocation=NULL, ver_select=FALSE, quiet = TRUE, returnPaths = TRUE"
   if (is.null(links) && (simple)){
     link<-list()
     for (links in linkItems) {
