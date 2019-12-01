@@ -959,9 +959,9 @@ r2saga <- function(x,fn,path_run=tempdir()) {
 }
 
 #'  convenient function to establish all link2GI links
-#' @description brute force search, find and linkl of all link2GI link functions
+#' @description brute force search, find and linkl of all link2GI link functions. This is helpfull if yor system is wellsetup and the standard linkage procedure will provide the correct linkages. 
 #'
-#' @note You may also use the full parameterization of the \code{link2GI} package, but you are strungly advaced to use the \code{link2GI} functions in a direct way.
+#' @note You may also use the full list of arguments that is made available from the \code{link2GI} package, but it is strongly recommended in this case to use directly the single linkage functions from  \code{link2GI}.
 #' @param links character. links
 #' @param linkItems character. list of c("saga","grass7","otb","gdal")
 #' @param simple logical. true  make all
@@ -978,6 +978,10 @@ r2saga <- function(x,fn,path_run=tempdir()) {
 #'
 #' # search, find and create the links to all supported  GI software
 #' giLinks<-uavRst::linkAll()
+#' 
+#' # search, find and create the links to all supported  GI software
+#' giLinks<-uavRst::linkAll(gdalArgs=c(ver_select=TRUE))
+#' )
 #'
 
 #'}
@@ -989,23 +993,26 @@ linkAll <- function(links=NULL,
                     sagaArgs = "default",
                     grassArgs = "default",
                     otbArgs =   "default",
-                    gdalArgs =  c("quiet = TRUE,
-                                     returnPaths = TRUE")
-)  {
-  cat("linking ", links,"\n")
+                    gdalArgs =  "default",
+                    quiet = FALSE)  {
+  
+  catHead <- getCrayon()[[4]]
+  catOk   <- getCrayon()[[3]]
+  
+  if (!quiet )    cat(catHead("\n--- linking SAGA - GRASS - OTB - GDAL ---\n")) 
   if (sagaArgs == "default") sagaArgs <- "default_SAGA = NULL, searchLocation = 'default', ver_select = FALSE, quiet = TRUE, returnPaths = TRUE"
   if (grassArgs == "default") grassArgs <- "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist = FALSE, gisdbase = NULL,
                                      location = NULL, spatial_params = NULL, resolution = NULL, quiet = TRUE, returnPaths = FALSE"
   if (otbArgs == "default") otbArgs <- "bin_OTB = NULL, root_OTB = NULL, type_OTB = NULL, searchLocation = NULL, ver_select = FALSE"
-  if (gdalArgs == "default") gdalArgs <- "quiet = TRUE, returnPaths = TRUE"
+  if (gdalArgs == "default") gdalArgs <- "quiet = TRUE, returnPaths = TRUE, ver_select = FALSE"
   if (is.null(links) && (simple)){
     link<-list()
     for (links in linkItems) {
-      cat("linking ", links,"\n")
+      cat(catOk("linking ", links,"\n"))
       if (links=="gdal") 
         link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)",sep = ""))))
       else
-        link[links]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)",sep = ""))))
+        link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)",sep = ""))))
       
     }
     

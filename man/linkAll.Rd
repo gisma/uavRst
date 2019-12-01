@@ -11,8 +11,8 @@ linkAll(
   sagaArgs = "default",
   grassArgs = "default",
   otbArgs = "default",
- 
-    gdalArgs = c("quiet = TRUE,\\n                                     returnPaths = TRUE")
+  gdalArgs = "default",
+  quiet = FALSE
 )
 }
 \arguments{
@@ -31,10 +31,10 @@ linkAll(
 \item{gdalArgs}{character. full string of gdalArgs}
 }
 \description{
-brute force search, find and linkl of all link2GI link functions
+brute force search, find and linkl of all link2GI link functions. This is helpfull if yor system is wellsetup and the standard linkage procedure will provide the correct linkages.
 }
 \note{
-You may also use the full parameterization of the \code{link2GI} package, but you are strungly advaced to use the \code{link2GI} functions in a direct way.
+You may also use the full list of arguments that is made available from the \code{link2GI} package, but it is strongly recommended in this case to use directly the single linkage functions from  \code{link2GI}.
 }
 \examples{
 \dontrun{
@@ -44,6 +44,10 @@ require(link2GI)
 
 # search, find and create the links to all supported  GI software
 giLinks<-uavRst::linkAll()
+
+# search, find and create the links to all supported  GI software
+giLinks<-uavRst::linkAll(gdalArgs=c(ver_select=TRUE))
+)
 
 }
 }
