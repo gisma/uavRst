@@ -41,7 +41,7 @@ tile_eq<-function(cgs,
       xleft<-xleft+xext
       xright<- xright +xext
       
-      cat("\n: saving: ",paste0(outpath,las_fn,"_",i,".las"))
+      message("\n: saving: ",paste0(outpath,las_fn,"_",i,".las"))
       lidR::writeLAS(cutlas[[i]],paste0(outpath,las_fn,"_",i,".las"))
       rlas::writelax(paste0(outpath,las_fn,"_",i,".las"))
       i=i+1

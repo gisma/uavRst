@@ -2,7 +2,7 @@ Package: uavRst
 Type: Package
 Title: Unmanned Aerial Vehicle Remote Sensing Tools
 Version: 0.5-4
-Date: 2019-08-14
+Date: 2019-12-18
 Authors@R: c(person("Chris", "Reudenbach", email = "reudenbach@uni-marburg.de", role = c("cre","aut")),
              person("Hanna", "Meyer", email = "hanna.meyer@uni-marburg.de", role = c("aut")),
              person("Florian", "Detsch", role = c("ctb")),
@@ -59,7 +59,7 @@ Suggests: knitr,
     mapview,
     R.utils
 LinkingTo: Rcpp
-RoxygenNote: 7.0.1
+RoxygenNote: 7.0.2
 SystemRequirements: GNU make
 Collate: 
     'RcppExports.R'
@@ -78,4 +78,3 @@ Collate:
     'fa_diversity.R'
     'rs_colorspace.R'
     'uavRst-package.R'
-    

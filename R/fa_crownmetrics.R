@@ -34,11 +34,11 @@ poly_metrics<- function(crownarea,
                         funNames = c("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen","calliper","rectangularity","circularityharalick","convexity"))
   {
   if (!exists("path_run")) path_run = tempdir()
-  cat("calculate crown-metrics for ",nrow(crownarea)," polygons... \n")
+  message("calculate crown-metrics for ",nrow(crownarea)," polygons... \n")
   polys <- crownarea@polygons
 
   for(subfun in funNames) {
-    cat("calculate ",subfun,"\n")
+    message("calculate ",subfun,"\n")
     crownarea@data$subfun <- unlist(lapply(seq(1:length(polys)),function(i){
       f <- eval(parse(text=paste("Momocs::coo_",subfun,sep = "")))(as.matrix(polys[[i]]@Polygons[[1]]@coords))
       assign("comp", f)

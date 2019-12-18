@@ -72,7 +72,7 @@ treepos_GWS <- function(chm = NULL,
 
 )  {
   if (!exists("path_run")) path_run = tempdir()
-  cat("\n:: start crown identification...\n")
+  message("\n:: start crown identification...\n")
   options(warn=-1)
 
   if (is.null(giLinks)){
@@ -86,7 +86,7 @@ treepos_GWS <- function(chm = NULL,
   raster::writeRaster(chm,file.path(R.utils::getAbsolutePath(path_run),"chm.tif"),overwrite = TRUE,NAflag = 0)
   #r2saga(chm,"chm")
 
-    cat(":: run pre-segmentation...\n")
+    message(":: run pre-segmentation...\n")
     # first segment run is a simple watershed segmentation just for deriving more reliable treepos´
     # TODO improve different advanceds treepos finding algorithms
     ret <- system(paste0(sagaCmd, " imagery_segmentation 0 ",
@@ -108,10 +108,10 @@ treepos_GWS <- function(chm = NULL,
                          " -CLASS_ID 1.000000",
                          " -SPLIT 1"),
                   intern = TRUE)
-    cat(":: filter results...\n")
+    message(":: filter results...\n")
 
     #
-    cat(":: find max height position...\n")
+    message(":: find max height position...\n")
     if (cores<2) para<-0
     else para = 1
     dummycrownsStat <- uavRst::poly_stat(c("chm"), 
@@ -130,7 +130,7 @@ treepos_GWS <- function(chm = NULL,
                     dsn    = file.path(R.utils::getAbsolutePath(path_run)),
                     overwrite_layer = TRUE)
 
-    cat(":: find max height position...\n")
+    message(":: find max height position...\n")
     ts <-  poly_maxpos(file.path(R.utils::getAbsolutePath(path_run),"chm.tif"),
                        file.path(R.utils::getAbsolutePath(path_run),"dummyCrownSegment"),
                        polySplit = split,

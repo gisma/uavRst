@@ -102,11 +102,11 @@ pc_2D_dsm <- function(laspcFile = NULL,
 
 
   if (!file.exists(file.path(R.utils::getAbsolutePath(path_run),name))){
-    cat(":: create copy of the las file at the working directory... \n")
+    message(":: create copy of the las file at the working directory... \n")
     file.copy(from = laspcFile,
               to = file.path(R.utils::getAbsolutePath(path_run),name),
               overwrite = TRUE)}
-  cat(":: get extent of the point cloud \n")
+  message(":: get extent of the point cloud \n")
   if (!is.null(cutExtent)){
     las<-lidR::readLAS(file.path(R.utils::getAbsolutePath(path_run),name))
     las<-lidR::lasclipRectangle(las, as.numeric(cutExtent[1]), as.numeric(cutExtent[3]), as.numeric(cutExtent[2]), as.numeric(cutExtent[4]))
@@ -132,7 +132,7 @@ pc_2D_dsm <- function(laspcFile = NULL,
   }
   # copy it to the output folder
   sp_param[5] <- proj4
-  cat(":: link to GRASS\n")
+  message(":: link to GRASS\n")
   link2GI::linkGRASS7(gisdbase = gisdbasePath,
                       location = "pc_2D_dsm",
                       spatial_params = sp_param,
@@ -142,7 +142,7 @@ pc_2D_dsm <- function(laspcFile = NULL,
                       search_path = searchPath,
                       quiet = TRUE)
 
-  cat(":: sampling ", sampleMethod, " altitudes using : ", targetGridSize ,"meter grid size\n")
+  message(":: sampling ", sampleMethod, " altitudes using : ", targetGridSize ,"meter grid size\n")
 
     # ret <- rgrass7::execGRASS("r.in.pdal",
     #                           flags  = c("overwrite","quiet"),
@@ -171,7 +171,7 @@ rgrass7::execGRASS("r.in.lidar",
                               overwrite=TRUE,format="GTiff")
 
     if (Sys.info()["sysname"] == "Linux"){
-  cat(":: filling no data values if so \n")
+  message(":: filling no data values if so \n")
   ret <- system(paste0("gdal_fillnodata.py ",
                        path_run,"dsm1.tif ",
                        path_run,"dsm.tif"),intern = TRUE)

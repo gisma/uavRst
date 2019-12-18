@@ -52,12 +52,12 @@ get_traindata<-function(rasterStack  = NULL,
   catNote <- crayon::blue $ bold
 
 
-  cat(catNote("\n:::: extract trainPlots data...\n"))
+  message(catNote("\n:::: extract trainPlots data...\n"))
   trainingDF =  data.frame()
   # extract trainPlots Area pixel values
   # TODO https://gis.stackexchange.com/questions/253618/r-multicore-approach-to-extract-raster-values-using-spatial-points
   for (j in 1:length(rasterStack)) {
-    cat("\n    extracting trainPlots data from image ",j," of ... ",length(rasterStack),"\n")
+    message("\n    extracting trainPlots data from image ",j," of ... ",length(rasterStack),"\n")
 
     categorymap<-rgeos::gUnionCascaded(trainPlots[[j]],id=trainPlots[[j]]@data$id)
     categorymap<-sp::spTransform(categorymap,(rasterStack[[j]]@crs))
@@ -208,11 +208,11 @@ predict_rgb <- function(imageFiles=NULL,
                         outPrefix = "classified_",
                         bandNames = NULL) {
 
-  if (is.null(bandNames)) return(cat(getCrayon()[[1]]("\n you did not provide predictor names. \nTypically something like bandNames ie c('R','G','B')")))
+  if (is.null(bandNames)) return(message(getCrayon()[[1]]("\n you did not provide predictor names. \nTypically something like bandNames ie c('R','G','B')")))
   if (!exists("path_run")) path_output = tempdir()
   po = path_output
   i = 1:length(imageFiles)
-  cat("\n::: start prediction aka classifikation...\n")
+  message("\n::: start prediction aka classifikation...\n")
 
   #cl <- parallel::makeCluster(parallel::detectCores())
   #doParallel::registerDoParallel	(cl)
@@ -606,7 +606,7 @@ calc_ext<- function ( calculateBands    = FALSE,
 
   ### ----- start preprocessing ---------------------------------------------------
   if (calculateBands) {
-    cat(catHead("\n--- calculate synthetic channels ---\n"))
+    message(catHead("\n--- calculate synthetic channels ---\n"))
 
     # create list of image files to be processed
     # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
@@ -627,7 +627,7 @@ calc_ext<- function ( calculateBands    = FALSE,
       # if calc pardem
       if (pardem){
 
-        #cat(catNote(":::: processing dem... ",demType,"\n"))
+        #message(catNote(":::: processing dem... ",demType,"\n"))
         flist<-append(flist, Sys.glob(demFiles[i]))
         dellist <- append(dellist, file.path(R.utils::getAbsolutePath(path_run),"dem2.tif"))
         bandNames <-append(bandNames,"dem")
@@ -653,13 +653,13 @@ calc_ext<- function ( calculateBands    = FALSE,
 
 
       if (rgbi){
-        cat(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
+        message(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
         r<-raster::stack(imageFiles[i])
         # calculate and stack r,g,b and requested indices
         rgb_rgbi<-raster::stack(r[[1:3]],uavRst::rgb_indices(r[[1]],r[[2]],r[[3]],indices))
         bandNames <- append(bandNames,make_bandnames(rgbi = indices))
         names(rgb_rgbi)<-append(c("red","green","blue"),indices)
-        cat(catOk("\n     save ...",paste0(path_run,"rgbi_",basename(imageFiles[i])),"\n"))
+        message(catOk("\n     save ...",paste0(path_run,"rgbi_",basename(imageFiles[i])),"\n"))
         raster::writeRaster(rgb_rgbi,
                             file.path(R.utils::getAbsolutePath(path_run),paste0("rgbi_",basename(imageFiles[i]))),
                             progress = "text",
@@ -671,7 +671,7 @@ calc_ext<- function ( calculateBands    = FALSE,
       # if RGB transform
       if (rgbTrans){
 
-        cat(catNote(":::: processing color transformation...\n"))
+        message(catNote(":::: processing color transformation...\n"))
         uavRst::colorspace(input = imageFiles[i],
                            colorspace = colorSpaces)
         rgbTranslist<-list()
@@ -684,7 +684,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         for (jj in 1:length(rt)) {
           raster::extent(rt[[jj]])<-raster::extent(r)
           raster::projection(rt[[jj]]) <- raster::crs(raster::projection(r))
-          cat(catOk(":::: save... ",paste0(colorSpaces[jj],"_",basename(imageFiles[i])),"\n"))
+          message(catOk(":::: save... ",paste0(colorSpaces[jj],"_",basename(imageFiles[i])),"\n"))
           raster::writeRaster(raster::stack(rt[[jj]][[1:(raster::nlayers(rt[[jj]])-1)]]),
                               file.path(R.utils::getAbsolutePath(path_run),paste0(colorSpaces[jj],"_ref",basename(imageFiles[i]))),
                               overwrite=TRUE,
@@ -703,14 +703,14 @@ calc_ext<- function ( calculateBands    = FALSE,
       }
       if (rgbi){
         # assign bandnumber according to name
-        cat("\n")
+        message("\n")
         for (filterBand in channels){
           if (filterBand=="red") bandNr <- 1
           if (filterBand=="green") bandNr <- 2
           if (filterBand=="blue") bandNr <- 3
           # export single channel for synthetic band calculation
           # if (filterBand!="") {
-          cat(catNote(":::: write temporary channel...",paste0(filterBand,"_",basename(imageFiles[i])),"\n"))
+          message(catNote(":::: write temporary channel...",paste0(filterBand,"_",basename(imageFiles[i])),"\n"))
           raster::writeRaster(rgb_rgbi[[bandNr]],
                               file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i]))),
                               progress = "text",
@@ -718,7 +718,7 @@ calc_ext<- function ( calculateBands    = FALSE,
           fbFN<-file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i])))
          # filterband
         if (stat){
-          cat(catNote(":::: processing stats...",fbFN,"\n"))
+          message(catNote(":::: processing stats...",fbFN,"\n"))
           otb_stat(input = fbFN,
                    out = file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"stat_",basename(imageFiles[i]))),
                    ram = "4096",
@@ -731,7 +731,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         # if calc edge
         if (edge){
           for (edges in edgeType){
-            cat(catNote(":::: processing edge... ",edges,"\n"))
+            message(catNote(":::: processing edge... ",edges,"\n"))
             uavRst::otbtex_edge(input = fbFN,
                                 out = file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,edges,basename(imageFiles[i]))),
                                 filter = edges,
@@ -746,7 +746,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         # if calc morpho
         if (morpho){
           for (morphos in morphoType){
-            cat(catNote(":::: processing morpho... ",morphos,"\n"))
+            message(catNote(":::: processing morpho... ",morphos,"\n"))
             uavRst::otbtex_gray(input = fbFN,
                                 out = file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,morphos,basename(imageFiles[i]))),
                                 filter = morphos,
@@ -759,7 +759,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         # if calc haralick
         if (hara){
           for (type in haraType){
-            cat(catNote(":::: processing haralick... ",type,"\n"))
+            message(catNote(":::: processing haralick... ",type,"\n"))
             otbtex_hara(x = fbFN,
                         output_name=file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_",basename(imageFiles[i]))),
                         texture = type,
@@ -778,8 +778,8 @@ calc_ext<- function ( calculateBands    = FALSE,
       # create an alltogether stack
       if (rgbi)  tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
       else if (length(demFiles)>= i)  tmpFN<-paste0(substr(basename(demFiles[i]),1,nchar(basename(demFiles[i]))-4))
-      else return(cat(catErr("\nhopefully done\n You are mixing RGB an DEM input files. You may do this but only if they are of the same extent etc. and if each image file has a corresponding dem file\n NOTE the dem filename MUST have a prefix default is 'dem_'.")))
-      cat(catOk("     save ...",paste0(patternIdx, tmpFN),"\n"))
+      else return(message(catErr("\nhopefully done\n You are mixing RGB an DEM input files. You may do this but only if they are of the same extent etc. and if each image file has a corresponding dem file\n NOTE the dem filename MUST have a prefix default is 'dem_'.")))
+      message(catOk("     save ...",paste0(patternIdx, tmpFN),"\n"))
       # r<-raster::brick(raster::stack(flist)) qgis cannot read heder
       for (k in 1:length(demFiles)) flist[-grepl(pattern = demFiles[k],flist)]
       for (k in 1:length(imageFiles)) flist[-grepl(pattern = imageFiles[k],flist)]
@@ -794,12 +794,12 @@ calc_ext<- function ( calculateBands    = FALSE,
                           #options="COMPRESS=LZW",
                           overwrite=TRUE)
       #raster::hdr(r, filename = paste0(currentIdxFolder,"/", patternIdx,tmpFN), format = "ENVI") qgis cannot read heder
-      cat(catNote(":::: writing data file... ",paste0(currentIdxFolder,"/", patternIdx,tmpFN),"\n"))
+      message(catNote(":::: writing data file... ",paste0(currentIdxFolder,"/", patternIdx,tmpFN),"\n"))
       rlist<-append(rlist, file.path(R.utils::getAbsolutePath(paste0(currentIdxFolder,"/", patternIdx,tmpFN))))
       
       # cleanup runtime files lists...
       if (cleanRunDir) {
-        cat(catNote(":::: removing temp files...\n"))
+        message(catNote(":::: removing temp files...\n"))
         res<-file.remove(unlist(dellist))
       }
       flist <- dellist <- list()
@@ -810,15 +810,15 @@ calc_ext<- function ( calculateBands    = FALSE,
     save(bandNames,file = paste0(currentIdxFolder,prefixRun,"bandNames.RData"))
     
 
-    cat(catErr(":::: resulting files...",rlist,"\n"))
-    cat(catErr(":::: corresponding band names... ",paste0(currentIdxFolder,prefixRun,"bandNames.RData"),"\n"))
-    cat(catHead("\n--- calculation of synthetic channels finished ---\n"))
+    message(catErr(":::: resulting files...",rlist,"\n"))
+    message(catErr(":::: corresponding band names... ",paste0(currentIdxFolder,prefixRun,"bandNames.RData"),"\n"))
+    message(catHead("\n--- calculation of synthetic channels finished ---\n"))
     if (!extractTrain) return(append(rlist,paste0(currentIdxFolder,prefixRun,"bandNames.RData")))
     
   }
   # ----- start extraction ---------------------------------------------------
   if (extractTrain){
-    cat(catHead("\n--- extract training data ---\n"))
+    message(catHead("\n--- extract training data ---\n"))
     load(paste0(currentIdxFolder,prefixRun,"bandNames.RData"))
     # get image and geometry data for training purposes
     imageTrainStack <- list()
@@ -838,7 +838,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     if (file.exists(raster::extension(geomTrainFiles[[1]], ".shp")))
       geomTrainStack  <- lapply(geomTrainFiles, FUN=raster::shapefile)
     else
-      return(cat(catErr("\nTraining files are not existing please check suffix or prefix strings")))
+      return(message(catErr("\nTraining files are not existing please check suffix or prefix strings")))
     # extract clean and format training data
     for (i in 1: length(imageTrainStack))
     imageTrainStack[[i]]@crs<-geomTrainStack[[i]]@proj4string
@@ -854,7 +854,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     saveRDS(eval(parse(text=paste0(prefixRun,"_trainDF"))), paste0(currentIdxFolder,prefixRun,"_trainDF",".rds"))
     #read it into another name
     #DF<-readRDS(paste0(currentIdxFolder,prefixRun,"_trainDF",".rds"))
-    cat(catHead("\n--- training data extraction finished ---\n"))
+    message(catHead("\n--- training data extraction finished ---\n"))
 
     return(trainDF)
   }

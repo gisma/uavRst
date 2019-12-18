@@ -98,7 +98,7 @@ chmseg_GWS <- function(treepos = NULL,
   }
 
 
-  cat("::: run main segmentation...\n")
+  message("::: run main segmentation...\n")
   # create correct param lists
   #segmentationBands<-c("HI","GLI")
   if (is.null(giLinks)){
@@ -149,7 +149,7 @@ chmseg_GWS <- function(treepos = NULL,
     else {
       file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sgrd"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sgrd"),overwrite = TRUE)
       file.copy(file.path(R.utils::getAbsolutePath(path_run),"/crowns.sdat"),file.path(R.utils::getAbsolutePath(path_run),"/crowns1.sdat"),overwrite = TRUE)
-      cat(getCrayon()[[2]]("\n GDAL Python module 'sieve' is NOT found. Expected to be at: "),
+      message(getCrayon()[[2]]("\n GDAL Python module 'sieve' is NOT found. Expected to be at: "),
           getCrayon()[[4]](names(gdal$python_utilities),"\n" ))
       }
     # apply majority filter for smoothing the extremly irregular crown boundaries
@@ -198,7 +198,7 @@ chmseg_GWS <- function(treepos = NULL,
     # crowns <- rgdal::readOGR(dsn = file.path(R.utils::getAbsolutePath(path_run)),
     #                        layer = "crowns", 
     #                        verbose = FALSE)
-  else return(cat(paste0("File ",file.path(R.utils::getAbsolutePath(path_run)),"/crowns.shp not found \n")))
+  else return(message(paste0("File ",file.path(R.utils::getAbsolutePath(path_run)),"/crowns.shp not found \n")))
   
   #crowns<-tree_crowns[tree_crowns$VALUE > 0,]
   sp::proj4string(crowns)<-proj
@@ -220,7 +220,7 @@ chmseg_GWS <- function(treepos = NULL,
                     driver= "ESRI Shapefile",
                     overwrite=TRUE)
   }
-  else return(cat(paste0("File ",file.path(R.utils::getAbsolutePath(path_run)),"spdf.shp not found \n")))
+  else return(message(paste0("File ",file.path(R.utils::getAbsolutePath(path_run)),"spdf.shp not found \n")))
   
 
   # simple filtering of crownareas based on tree height min max area and artifacts at the analysis/image borderline
@@ -232,7 +232,7 @@ chmseg_GWS <- function(treepos = NULL,
   
   #nrow(tree_crowns[[1]])
   options(warn=0)
-  cat("segmentation finsihed...\n")
+  message("segmentation finsihed...\n")
   sp::proj4string(statRawCrowns)<-sp::proj4string(tree_crowns[[1]])
   tree_crowns<- append(tree_crowns,statRawCrowns)
   return(tree_crowns)

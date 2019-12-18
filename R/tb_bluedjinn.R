@@ -74,11 +74,11 @@ read_gpx <- function(file,
 xyz2tif <- function(xyzFN=NULL,  epsgCode ="25832"){
   # read data
   xyz<-data.table::fread(xyzFN)
-  cat("this will probably take a while...\n")
+  message("this will probably take a while...\n")
   r <- raster::rasterFromXYZ(xyz,crs=sp::CRS(paste0("+init=epsg:",epsgCode)))
   # write it to geotiff
   raster::writeRaster(r, paste0(dirname(xyzFN),"/",tools::file_path_sans_ext(basename(xyzFN)),".tif"),overwrite=TRUE)
-  cat("...finished\n")
+  message("...finished\n")
 }
 
 
@@ -188,9 +188,9 @@ poly_maxpos <- function(fileName,layerName, polySplit=TRUE, cores=1){
   ids <- unique(dcs@data$NAME)
   
   if (polySplit) {
-    cat("     split polygons...\n")
-    cat("     analyze",length(ids) ,"polygons\n")
-    cat("     calculaton time is approx.:  ",floor(length(ids)/180)," min\n")
+    message("     split polygons...\n")
+    message("     analyze",length(ids) ,"polygons\n")
+    message("     calculaton time is approx.:  ",floor(length(ids)/180)," min\n")
     dir.create(paste0(path_tmp,"split"),recursive=TRUE)
     
     # split polygon with respect to the NAME attribute
@@ -205,7 +205,7 @@ poly_maxpos <- function(fileName,layerName, polySplit=TRUE, cores=1){
   }
   
   # parallel retrival of maxpos
-  cat("     max height coords search...\n")
+  message("     max height coords search...\n")
   ret_max_pos <-  parallel::mclapply(ids,function(x) {
     rn <- as.character(x)
     # create temp folder and assign it to raster
@@ -400,7 +400,7 @@ poly_stat <- function(rasternames = NULL,
                       path_run = tempdir(),
                       giLinks =NULL )   {
 
-  #cat(":: run statistics...\n")
+  #message(":: run statistics...\n")
   # calculate chm statistics for each crown
   if (is.null(giLinks)){
     giLinks <- list()
@@ -445,7 +445,7 @@ if (class(spdf)=="SpatialPolygonsDataFrame")     {
 } else spdfshp <-spdf
 
 for (i in seq(1:length(rasternames))) {
-  cat(":: calculate ",rasternames[i], " statistics\n")
+  message(":: calculate ",rasternames[i], " statistics\n")
   #saga_cmd shapes_grid 2 -GRIDS=/tmp/RtmpK0j1RP/run/rgb_3-3_train1.sgrd -POLYGONS=/tmp/RtmpK0j1RP/run/rgb_3-3_train1.shp -NAMING=1 -METHOD=2 -PARALLELIZED=1 -RESULT=/tmp/RtmpK0j1RP/run/rgb_3-3_train1.shp -COUNT=1 -MIN=1 -MAX=1 -RANGE=1 -SUM=1 -MEAN=1 -VAR=1 -STDDEV=1 -QUANTILE=0
   
   # saga <- giLinks$saga
@@ -531,7 +531,7 @@ return(stat)
 
 # fill holes
 fillGaps<- function (folder,layer){
-  cat(":: fill data gaps using gdal_fillnodata... \n")
+  message(":: fill data gaps using gdal_fillnodata... \n")
   
   # fill data holes
   if (Sys.info()["sysname"] == "Windows"){
@@ -571,7 +571,7 @@ extractTrainPixelValues <- function(imgStack=NULL,trainData=NULL,responseCol=NUL
   dfTpv = data.frame(matrix(vector(), nrow = 0, ncol = length(names(imgStack)) + 1))
   for (i in 1:length(unique(trainData[[responseCol]]))){
     category <- unique(trainData[[responseCol]])[i]
-    cat("\n extracting cat: ",levels(category)[i]," no: ",i," of: ",length(unique(trainData[[responseCol]])))
+    message("\n extracting cat: ",levels(category)[i]," no: ",i," of: ",length(unique(trainData[[responseCol]])))
     categorymap <- trainData[trainData[[responseCol]] == category,]
     dataSet <- raster::extract(imgStack, categorymap)
     dataSet <- lapply(dataSet, function(x){cbind(x, class = as.numeric(rep(category, nrow(x))))})
@@ -847,7 +847,7 @@ fileProcStatus <- function(module=NULL,file= NULL,listname=NULL){
   else {
     eval(parse(text=paste0(listname,"$",module," <- FALSE")))
     return(eval(parse(text=listname)))
-    cat(eval(parse(text=listname)))
+    message(eval(parse(text=listname)))
   }
 }
 #' writes shapefiles from  sf or sp* objects
@@ -1000,7 +1000,7 @@ linkGI <- function(links=NULL,
   catHead <- getCrayon()[[4]]
   catOk   <- getCrayon()[[3]]
   
-  if (!quiet )    cat(catHead("\n--- linking SAGA - GRASS - OTB - GDAL ---\n")) 
+  if (!quiet )    message(catHead("\n--- linking SAGA - GRASS - OTB - GDAL ---\n")) 
   if (sagaArgs == "default") sagaArgs   <- "default_SAGA = NULL, searchLocation = 'default', ver_select=FALSE, quiet = TRUE, returnPaths = TRUE"
   if (grassArgs == "default") grassArgs <- "x = NULL, default_GRASS7 = NULL, search_path = NULL, ver_select = FALSE, gisdbase_exist =FALSE, gisdbase = NULL, use_home =FALSE, location = NULL, spatial_params=NULL, resolution=NULL, quiet =TRUE, returnPaths = TRUE"
   if (otbArgs == "default") otbArgs <- "bin_OTB=NULL, root_OTB= NULL, type_OTB=NULL, searchLocation=NULL, ver_select=FALSE, quiet = TRUE, returnPaths = TRUE"
@@ -1008,7 +1008,7 @@ linkGI <- function(links=NULL,
   if (is.null(links) && (simple)){
     link<-list()
     for (links in linkItems) {
-      cat(catOk("linking ", links,"\n"))
+      message(catOk("linking ", links,"\n"))
       if (links=="gdal") 
         link[[links]]<-assign(links,eval(parse(text=paste("link2GI::link",toupper(links),"(returnPaths = T)",sep = ""))))
       else

@@ -99,7 +99,7 @@ pc_2D_mdtm<- function(laspcFile = NULL,
 
 
   if (!file.exists(file.path(R.utils::getAbsolutePath(path_run),name)))
-  {  cat(":: create copy of the las file at the working directory... \n")
+  {  message(":: create copy of the las file at the working directory... \n")
   file.copy(from = laspcFile,
             to = file.path(R.utils::getAbsolutePath(path_run),name),
             overwrite = TRUE)}
@@ -135,7 +135,7 @@ pc_2D_mdtm<- function(laspcFile = NULL,
                         ver_select = grassVersion,
                         search_path = searchPath)
 
-    # cat(":: sampling minimum altitudes using : ", sampleGridSize ,"meter grid size\n")
+    # message(":: sampling minimum altitudes using : ", sampleGridSize ,"meter grid size\n")
 #    if (!grepl(system("g.extension -l",ignore.stdout = TRUE),pattern = "r.in.lidar"))
       # ret <- rgrass7::execGRASS("r.in.pdal",
       #                           flags  = c("overwrite","quiet"),
@@ -288,7 +288,7 @@ pc_2D_mdtm<- function(laspcFile = NULL,
   if (targetGridSize < splineThresGridSize) {
     oldtgs<-targetGridSize
     targetGridSize <- splineThresGridSize
-    cat(":: target grid size is", targetGridSize ," => setting grid size to: ",splineThresGridSize,"\n")
+    message(":: target grid size is", targetGridSize ," => setting grid size to: ",splineThresGridSize,"\n")
   } else {
     splineThresGridSize <- targetGridSize
     oldtgs<-targetGridSize
@@ -301,7 +301,7 @@ pc_2D_mdtm<- function(laspcFile = NULL,
                             ignore.stderr = TRUE
   )
 
-  cat(":: create DTM by interpolation to a raster size of: ", targetGridSize ,"\n")
+  message(":: create DTM by interpolation to a raster size of: ", targetGridSize ,"\n")
   ret <- rgrass7::execGRASS("v.surf.rst",
                             flags  = c("overwrite","quiet"),
                             input  = "ascii",
@@ -326,7 +326,7 @@ pc_2D_mdtm<- function(laspcFile = NULL,
 
   dtm0<- raster::writeRaster(raster::raster(rgrass7::readRAST("dtm")),file.path(R.utils::getAbsolutePath(path_run),"dtm0"), overwrite=TRUE,format="GTiff")
   if (oldtgs < splineThresGridSize) {
-    cat(":: Resample to a grid size of: ", targetGridSize ,"\n")
+    message(":: Resample to a grid size of: ", targetGridSize ,"\n")
     
     system(paste0(gdal$path,'gdalwarp -overwrite -q ',
                   "-r 'bilinear'",' ',

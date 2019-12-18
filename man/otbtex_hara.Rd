@@ -102,7 +102,7 @@ raster::plot(r)
 \references{
 Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.
 IEEE Transactions on Systems, Man and Cybernetics. SMC-3(6):610-620.\cr
-\href{https://www.orfeo-toolbox.org/packages/OTBSoftwareGuide.pdf}{Orfeo Toolbox Sofware Guide, 2016}\cr
+\href{https://www.orfeo-toolbox.org/SoftwareGuide}{Orfeo Toolbox Sofware Guide, 2016}\cr
 \href{https://www.orfeo-toolbox.org//doxygen/classotb_1_1ScalarImageToTexturesFilter.html}{"simple"}:\cr
 computes the following 8 local Haralick textures features: Energy, Entropy, Correlation, Inverse Difference Moment, Inertia, Cluster Shade, Cluster Prominence and Haralick Correlation. They are provided in this exact order in the output image. Thus, this application computes the following Haralick textures over a neighborhood with user defined radius.\cr
 To improve the speed of computation, a variant of Grey Level Co-occurrence Matrix(GLCM) called Grey Level Co-occurrence Indexed List (GLCIL) is used. Given below is the mathematical explanation on the computation of each textures. Here \code{g( i,j)} is the frequency of element in the GLCIL whose index is \code{i,j}. GLCIL stores a pair of frequency of two pixels from the given offset and the cell index \code{(i,j)} of the pixel in the neighborhood window. Where each element in GLCIL is a pair of pixel index and it's frequency, \code{g(i,j)} is the frequency value of the pair having index is \code{i,j}.\cr\cr

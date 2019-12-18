@@ -141,7 +141,7 @@ glcm_texture <- function(x,
 #'
 #' @references Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.
 #' IEEE Transactions on Systems, Man and Cybernetics. SMC-3(6):610-620.\cr
-#' \href{https://www.orfeo-toolbox.org/packages/OTBSoftwareGuide.pdf}{Orfeo Toolbox Sofware Guide, 2016}\cr
+#' \href{https://www.orfeo-toolbox.org/SoftwareGuide}{Orfeo Toolbox Sofware Guide, 2016}\cr
 #' \href{https://www.orfeo-toolbox.org//doxygen/classotb_1_1ScalarImageToTexturesFilter.html}{"simple"}:\cr
 #' computes the following 8 local Haralick textures features: Energy, Entropy, Correlation, Inverse Difference Moment, Inertia, Cluster Shade, Cluster Prominence and Haralick Correlation. They are provided in this exact order in the output image. Thus, this application computes the following Haralick textures over a neighborhood with user defined radius.\cr
 #' To improve the speed of computation, a variant of Grey Level Co-occurrence Matrix(GLCM) called Grey Level Co-occurrence Indexed List (GLCIL) is used. Given below is the mathematical explanation on the computation of each textures. Here \code{g( i,j)} is the frequency of element in the GLCIL whose index is \code{i,j}. GLCIL stores a pair of frequency of two pixels from the given offset and the cell index \code{(i,j)} of the pixel in the neighborhood window. Where each element in GLCIL is a pair of pixel index and it's frequency, \code{g(i,j)} is the frequency value of the pair having index is \code{i,j}.\cr\cr
@@ -298,7 +298,7 @@ otbtex_hara<- function(x,
                           , " -parameters.nbbin ",parameters.nbbin,
                           " -texture ",txt)
           if (verbose) {
-            cat("\nrunning cmd:  ", command,"\n")
+            message("\nrunning cmd:  ", command,"\n")
             system(command)
           } else{
             system(command,intern = FALSE,ignore.stdout = FALSE)
@@ -461,7 +461,7 @@ otb_stat<- function(input=NULL,
     command<-paste(command, " -ram ",ram)
     command<-paste(command, " -radius ",radius)
     if (verbose) {
-      cat("\nrunning cmd:  ", command[band],"\n")
+      message("\nrunning cmd:  ", command[band],"\n")
       system(command[band])}
     else{
       system(command[band],intern = TRUE,ignore.stdout = TRUE)}
@@ -570,7 +570,7 @@ otbtex_edge<- function(input=NULL,
     command<-paste(command, " -out ", outName)
     command<-paste(command, " -ram ",ram)
     if (verbose) {
-      cat("\nrunning cmd:  ", command[band],"\n")
+      message("\nrunning cmd:  ", command[band],"\n")
       system(command[band])}
     else{
       system(command[band],intern = TRUE,ignore.stdout = TRUE)}
@@ -680,7 +680,7 @@ otbtex_gray<- function(input=NULL,
     command<-paste(command, " -out ", outName)
     command<-paste(command, " -ram ",ram)
     if (verbose) {
-      cat("\nrunning cmd:  ", command[band],"\n")
+      message("\nrunning cmd:  ", command[band],"\n")
       system(command[band])}
     else{
       system(command[band],intern = TRUE,ignore.stdout = TRUE)}
@@ -782,7 +782,7 @@ morpho_dem<- function(dem,
   )
   
   for (item in gdal_items){
-    cat(getCrayon()[[1]](":::: processing ",item,"\n"))
+    message(getCrayon()[[1]](":::: processing ",item,"\n"))
     
     system(paste0(g$path,'gdaldem ',item,' ',
                   "-q -compute_edges",' ',
@@ -798,7 +798,7 @@ morpho_dem<- function(dem,
     rdem<-raster::raster(file.path(R.utils::getAbsolutePath(path_run),'dem2.tif'))
     raster::writeRaster(rdem,file.path(R.utils::getAbsolutePath(path_run),"SAGA_dem.sdat"),overwrite = TRUE,NAflag = 0)
     # claculate the basics SAGA morphometric params
-    cat(getCrayon()[[1]](":::: processing ",saga_items,"\n"))
+    message(getCrayon()[[1]](":::: processing ",saga_items,"\n"))
     if (length(saga_items>0) )  { #&& !("MTPI" %in% saga_items)
     RSAGA::rsaga.geoprocessor(lib = "ta_morphometry", module = 0,
                        param = list(ELEVATION = file.path(R.utils::getAbsolutePath(path_run),"SAGA_dem.sgrd"),
@@ -837,13 +837,13 @@ morpho_dem<- function(dem,
                            show.output.on.console = FALSE,invisible = TRUE,
                            env = env)
         
-      } else {cat(getCrayon()[[2]]("\nPlease install SAGA >= 3.0.0\n Run without MTPI...\n"))
+      } else {message(getCrayon()[[2]]("\nPlease install SAGA >= 3.0.0\n Run without MTPI...\n"))
         saga_items<-saga_items[  !(saga_items %in% "MTPI")]
 
       }
     }
     for (item in saga_items){
-      cat(getCrayon()[[1]](":::: converting ",item,"\n"))
+      message(getCrayon()[[1]](":::: converting ",item,"\n"))
       ritem<-raster::raster(file.path(R.utils::getAbsolutePath(path_run),paste0(item,".sdat")))
       raster::writeRaster(ritem,file.path(R.utils::getAbsolutePath(path_run),paste0(item,".tif")), overwrite = TRUE, NAflag = 0)
       if (retRaster) retStack[[item]]<-assign(item,raster::stack(file.path(R.utils::getAbsolutePath(path_run),paste0(item,".tif"))))
@@ -967,8 +967,8 @@ rgb_indices <- function(red,green,blue,rgbi=c("VVI","VARI","NDTI","RI","SCI","BI
   indices <- lapply(rgbi, function(item){
     ## calculate Visible Vegetation Index vvi
     if (item == "VVI"){
-      cat(getCrayon()[[3]](":::: Visible Vegetation Index  ",item,"\n"))
-      #cat("\n      calculate Visible Vegetation Index (VVI)")
+      message(getCrayon()[[3]](":::: Visible Vegetation Index  ",item,"\n"))
+      #message("\n      calculate Visible Vegetation Index (VVI)")
       VVI <- (1 - abs((red - 30) / (red + 30))) *
         (1 - abs((green - 50) / (green + 50))) *
         (1 - abs((blue - 1) / (blue + 1)))
@@ -977,71 +977,71 @@ rgb_indices <- function(red,green,blue,rgbi=c("VVI","VARI","NDTI","RI","SCI","BI
 
     } else if (item == "VARI") {
       # calculate Visible Atmospherically Resistant Index (VARI)
-      cat(getCrayon()[[3]](":::: Visible Atmospherically Resistant Index ",item,"\n"))
-      #cat("\n      calculate Visible Atmospherically Resistant Index (VARI)")
+      message(getCrayon()[[3]](":::: Visible Atmospherically Resistant Index ",item,"\n"))
+      #message("\n      calculate Visible Atmospherically Resistant Index (VARI)")
       VARI <- (green - red) / (green + red - blue)
       names(VARI) <- "VARI"
       return(VARI)
 
     } else if (item == "NDTI") {
       ## Normalized difference turbidity index
-      cat(getCrayon()[[3]](":::: Normalized Difference Turbidity Index ",item,"\n"))
-      #cat("\n      calculate Normalized difference turbidity index (NDTI)")
+      message(getCrayon()[[3]](":::: Normalized Difference Turbidity Index ",item,"\n"))
+      #message("\n      calculate Normalized difference turbidity index (NDTI)")
       NDTI <- (red - green) / (red + green)
       names(NDTI) <- "NDTI"
       return(NDTI)
       GLAI
     } else if (item == "RI") {
       # redness index
-      cat(getCrayon()[[3]](":::: Redness Index ",item,"\n"))
-      #cat("\n      calculate redness index (RI)")
+      message(getCrayon()[[3]](":::: Redness Index ",item,"\n"))
+      #message("\n      calculate redness index (RI)")
       RI <- red**2 / (blue*green**3)
       names(RI) <- "RI"
       return(RI)
 
     } else if (item == "SCI") {
       # SCI Soil Colour Index
-      cat(getCrayon()[[3]](":::: Soil Colour Index ",item,"\n"))
-      #cat("\n      calculate Soil Colour Index (SCI)")
+      message(getCrayon()[[3]](":::: Soil Colour Index ",item,"\n"))
+      #message("\n      calculate Soil Colour Index (SCI)")
       SCI <- (red - green) / (red + green)
       names(SCI) <- "SCI"
       return(SCI)
 
     } else if (item == "BI") {
       #  Brightness Index
-      cat(getCrayon()[[3]](":::: Brightness Index ",item,"\n"))
-      #cat("\n      calculate Brightness Index (BI)")
+      message(getCrayon()[[3]](":::: Brightness Index ",item,"\n"))
+      #message("\n      calculate Brightness Index (BI)")
       BI <- sqrt((red**2 + green**2 + blue*2) / 3)
       names(BI) <- "BI"
       return(BI)
 
     } else if (item == "SI") {
       # SI Spectra Slope Saturation Index
-      cat(getCrayon()[[3]](":::: Spectra Slope Saturation Index ",item,"\n"))
-      #cat("\n      calculate Spectra Slope Saturation Index (SI)")
+      message(getCrayon()[[3]](":::: Spectra Slope Saturation Index ",item,"\n"))
+      #message("\n      calculate Spectra Slope Saturation Index (SI)")
       SI <- (red - blue) / (red + blue)
       names(SI) <- "SI"
       return(SI)
 
     } else if (item=="HI"){
       # HI Primary colours Hue Index
-      cat(getCrayon()[[3]](":::: Primary Colours Hue Index ",item,"\n"))
-      #cat("\n      calculate Primary colours Hue Index (HI)")
+      message(getCrayon()[[3]](":::: Primary Colours Hue Index ",item,"\n"))
+      #message("\n      calculate Primary colours Hue Index (HI)")
       HI<-(2*red-green-blue)/(green-blue)
       names(HI) <- "HI"
       return(HI)
 
     } else if (item=="TGI"){
       # Triangular greenness index
-      cat(getCrayon()[[3]](":::: Triangular Greenness Index ",item,"\n"))
-      #cat("\n      calculate Triangular greenness index (TGI)")
+      message(getCrayon()[[3]](":::: Triangular Greenness Index ",item,"\n"))
+      #message("\n      calculate Triangular greenness index (TGI)")
       TGI <- -0.5*(190*(red - green)- 120*(red - blue))
       names(TGI) <- "TGI"
       return(TGI)
 
     } else if (item=="GLI"){
-      #cat("\n      calculate Green leaf index (GLI)")
-      cat(getCrayon()[[3]](":::: Green Leaf Index ",item,"\n"))
+      #message("\n      calculate Green leaf index (GLI)")
+      message(getCrayon()[[3]](":::: Green Leaf Index ",item,"\n"))
       # Green leaf index
       GLI<-(2*green-red-blue)/(2*green+red+blue)
       names(GLI) <- "GLI"
@@ -1049,16 +1049,16 @@ rgb_indices <- function(red,green,blue,rgbi=c("VVI","VARI","NDTI","RI","SCI","BI
 
     } else if (item=="NGRDI"){
       # NGRDI Normalized green red difference index
-      cat(getCrayon()[[3]](":::: Normalized Green-Red Difference Index ",item,"\n"))
-      #cat("\n      calculate Normalized green red difference index  (NGRDI)")
+      message(getCrayon()[[3]](":::: Normalized Green-Red Difference Index ",item,"\n"))
+      #message("\n      calculate Normalized green red difference index  (NGRDI)")
       NGRDI<-(green-red)/(green+red)
       names(NGRDI) <- "NGRDI"
       return(NGRDI)
 
     }  else if (item=="GLAI"){
       # NGRDI Normalized green red difference index
-      cat(getCrayon()[[3]](":::: Greenish Leaf Area Index ",item,"\n"))
-      #cat("\n      calculate greenish Leaf Area Index  (GLAI) (highly experimental)")
+      message(getCrayon()[[3]](":::: Greenish Leaf Area Index ",item,"\n"))
+      #message("\n      calculate greenish Leaf Area Index  (GLAI) (highly experimental)")
       # vevi<-(green - red) / (green +  red -  blue )
       GLAI = (25 * ((green - red) / (green +  red -  blue )) + 1.25 )
       names(GLAI) <- "GLAI"
@@ -1066,40 +1066,40 @@ rgb_indices <- function(red,green,blue,rgbi=c("VVI","VARI","NDTI","RI","SCI","BI
 
     }  else if (item=="GRVI"){
       # GRVI  Green-Red Vegetation Index  Remote Sensing 2010, 2, 2369-2387; doi:10.3390/rs2102369
-      cat(getCrayon()[[3]](":::: Green-Red Vegetation Index ",item,"\n"))
-      #cat("\n      calculate  Green-Red Vegetation Index   (GRVI)")
+      message(getCrayon()[[3]](":::: Green-Red Vegetation Index ",item,"\n"))
+      #message("\n      calculate  Green-Red Vegetation Index   (GRVI)")
       GRVI<-(green-red)/(green+red)
       names(GRVI) <- "GRVI"
       return(GRVI)
 
     } else if (item == "CI") {
       # CI  https://www.indexdatabase.de/search/?s=color
-      cat(getCrayon()[[3]](":::: Coloration Index ",item,"\n"))
-      # cat("\n      calculate Coloration Index (CI)")
+      message(getCrayon()[[3]](":::: Coloration Index ",item,"\n"))
+      # message("\n      calculate Coloration Index (CI)")
       CI <- (red - blue) / red
       names(CI) <- "CI"
       return(CI)
 
     } else if (item == "HUE") {
       # HUE Index https://www.indexdatabase.de/search/?s=HUE
-      cat(getCrayon()[[3]](":::: Hue Index ",item,"\n"))
-      #cat("\n      calculate Hue Index (HUE)")
+      message(getCrayon()[[3]](":::: Hue Index ",item,"\n"))
+      #message("\n      calculate Hue Index (HUE)")
       HUE <- 	 atan(2 * (red - green - blue) / 30.5 * (green - blue))
       names(HUE) <- "HUE"
       return(HUE)
 
     }  else if (item == "SAT") {
       # Saturation Index https://www.indexdatabase.de/db/i-single.php?id=77
-      cat(getCrayon()[[3]](":::: Saturation Index ",item,"\n"))
-      #cat("\n      calculate Saturation Index (SAT)")
+      message(getCrayon()[[3]](":::: Saturation Index ",item,"\n"))
+      #message("\n      calculate Saturation Index (SAT)")
       SAT <- 	 (max(red,green,blue) - min(red,green,blue)) / max(red,green,blue)
       names(SAT) <- "SAT"
       return(SAT)
 
     } else if (item == "SHP") {
       # Shape Index https://www.indexdatabase.de/search/?s=shape
-      cat(getCrayon()[[3]](":::: Shape Index ",item,"\n"))
-      #cat("\n      calculate Shape Index (SHP)")
+      message(getCrayon()[[3]](":::: Shape Index ",item,"\n"))
+      #message("\n      calculate Shape Index (SHP)")
       SHP <- 	 2 * (red - green - blue) / (green - blue)
       names(SHP) <- "SHP"
       return(SHP)

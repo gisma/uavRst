@@ -63,7 +63,7 @@ colorspace<- function(input=NULL,
     command<-paste(command,  outName)
 
     if (verbose) {
-      cat("\nrunning cmd:  ", command,"\n")
+      message("\nrunning cmd:  ", command,"\n")
       system(command)}
     else{
       ret<-system(command,intern = TRUE,ignore.stdout = TRUE,ignore.stderr = TRUE)}
