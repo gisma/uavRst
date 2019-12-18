@@ -162,13 +162,14 @@ paths<-link2GI::initProj(projRootDir = tempdir(),
                          path_prefix = "path_")
   
 ##- clean runtime folder
-unlink(paste0(path_run,"*"), force = TRUE)
+unlink(file.path(tempdir(),"*"), force = TRUE)
   
 ##- get the tutorial data
 url<-"https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 utils::download.file(url,
-                       paste0(path_run,"tutorial_data.zip"))
-  unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = R.utils::getAbsolutePath(path_run))
+                       file.path(tempdir(),"tutorial_data.zip"))
+unzip(zipfile = file.path(tempdir(),"tutorial_data.zip"), 
+                          exdir = R.utils::getAbsolutePath(path_run))
   
   ##- calculate some synthetic channels from the RGB image and the canopy height model
   ##- then extract the from the corresponding training geometries the data values aka trainingdata

@@ -9,7 +9,8 @@ predict_rgb(
   model = NULL,
   inPrefix = "index_",
   outPrefix = "classified_",
-  bandNames = NULL
+  bandNames = NULL,
+  retRaster = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,11 @@ predict_rgb(
 \item{outPrefix}{character. out prefix string}
 
 \item{bandNames}{character. band names}
+
+\item{retRaster}{boolean if TRUE a raster stack is returned}
+}
+\value{
+writes a result image in tif format if retRaster an rasterstack is returned
 }
 \description{
 classify images using raster predict
@@ -40,26 +46,25 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                         projFolders = c("data/","data/ref/","output/","run/","las/"),
                         global = TRUE,
                         path_prefix = "path_")
-setwd(path_run)
-unlink(paste0(path_run,"*"), force = TRUE)
+unlink(file.path(tempdir(),"*"), force = TRUE)
 
 ##- get the tutorial data
 utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip",
-paste0(path_run,"ffs.zip"))
-unzip(zipfile =  paste0(path_run,"ffs.zip"), exdir = ".")
+file.path(tempdir(),"ffs.zip"))
+unzip(zipfile =  file.path(tempdir(),"ffs.zip"), exdir = tempdir())
 
 ##- assign tutorial data
-imageFile <- paste0(path_run,"predict.tif")
-load(paste0(path_run,"tutorialbandNames.RData"))
-tutorialModel<-readRDS(file = paste0(path_run,"tutorialmodel.rds"))
+imageFile <- file.path(tempdir(),"predict.tif")
+load(file.path(tempdir(),"tutorialbandNames.RData"))
+tutorialModel<-readRDS(file = file.path(tempdir(),"tutorialmodel.rds"))
 
 ##- start the  prediction taking the non optimized model
 ##- please note the output is saved in the subdirectory path_output
-predict_rgb(imageFiles=imageFile,
+prediction<-predict_rgb(imageFiles=imageFile,
             model = tutorialModel[[1]],
             bandNames = bandNames)
 
 ##- visualise the classification
-raster::plot(raster::raster(paste0(path_output,"classified_predict.tif")))
+raster::plot(prediction)
 ##+}
 }

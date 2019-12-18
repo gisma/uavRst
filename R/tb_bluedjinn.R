@@ -50,7 +50,6 @@ read_gpx <- function(file,
 #'\dontrun{
 #' ##- libraries
 #' require(uavRst)
-#' owd <- getwd()
 #' setwd(tempdir())
 #' ##- get typical xyz DEM data in this case from the Bavarian authority 
 #' utils::download.file("http://www.ldbv.bayern.de/file/zip/10430/DGM_1_ascii.zip",
@@ -65,7 +64,6 @@ read_gpx <- function(file,
 #'
 #' ##- visualize it
 #' raster::plot(raster::raster(file))
-#' setwd(owd)
 #' }
 
 

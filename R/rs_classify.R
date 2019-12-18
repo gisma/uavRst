@@ -161,6 +161,9 @@ get_counts<- function(ids=c(1,2),
 #' @param  inPrefix character. in frefix  string
 #' @param outPrefix character. out prefix string
 #' @param bandNames character. band names
+#' @param retRaster boolean if TRUE a raster stack is returned
+#' 
+#' @return writes a result image in tif format if retRaster an rasterstack is returned
 #'
 #' @export predict_rgb
 #' @examples
@@ -178,27 +181,26 @@ get_counts<- function(ids=c(1,2),
 #'                         global = TRUE,
 #'                         path_prefix = "path_")
 
-#' setwd(path_run)
-#' unlink(paste0(path_run,"*"), force = TRUE)
+#' unlink(file.path(tempdir(),"*"), force = TRUE)
 #'
 #' ##- get the tutorial data
 #' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip",
-#' paste0(path_run,"ffs.zip"))
-#' unzip(zipfile =  paste0(path_run,"ffs.zip"), exdir = ".")
+#' file.path(tempdir(),"ffs.zip"))
+#' unzip(zipfile =  file.path(tempdir(),"ffs.zip"), exdir = tempdir())
 #'
 #' ##- assign tutorial data
-#' imageFile <- paste0(path_run,"predict.tif")
-#' load(paste0(path_run,"tutorialbandNames.RData"))
-#' tutorialModel<-readRDS(file = paste0(path_run,"tutorialmodel.rds"))
+#' imageFile <- file.path(tempdir(),"predict.tif")
+#' load(file.path(tempdir(),"tutorialbandNames.RData"))
+#' tutorialModel<-readRDS(file = file.path(tempdir(),"tutorialmodel.rds"))
 #'
 #' ##- start the  prediction taking the non optimized model
 #' ##- please note the output is saved in the subdirectory path_output
-#' predict_rgb(imageFiles=imageFile,
+#' prediction<-predict_rgb(imageFiles=imageFile,
 #'             model = tutorialModel[[1]],
 #'             bandNames = bandNames)
 #'
 #' ##- visualise the classification
-#' raster::plot(raster::raster(paste0(path_output,"classified_predict.tif")))
+#' raster::plot(prediction)
 #'##+}
 
 
@@ -206,7 +208,8 @@ predict_rgb <- function(imageFiles=NULL,
                         model = NULL,
                         inPrefix = "index_",
                         outPrefix = "classified_",
-                        bandNames = NULL) {
+                        bandNames = NULL,
+                        retRaster=TRUE) {
 
   if (is.null(bandNames)) return(message(getCrayon()[[1]]("\n you did not provide predictor names. \nTypically something like bandNames ie c('R','G','B')")))
   if (!exists("path_run")) path_output = tempdir()
@@ -231,6 +234,7 @@ predict_rgb <- function(imageFiles=NULL,
                                  model,
                                  progress= "text")
     raster::writeRaster(predictImg, filename = fnOut, overwrite = TRUE)
+    if (retRaster) return( predictImg)
   }
   #parallel::stopCluster(cl)
 }
@@ -282,16 +286,16 @@ predict_rgb <- function(imageFiles=NULL,
 #'                          path_prefix = "path_")
 
 #' setwd(path_run)
-#' unlink(paste0(path_run,"*"), force = TRUE)
+#' unlink(file.path(tempdir(),"*"), force = TRUE)
 #'
 #' ##- get the rgb image, chm and training data
 #' utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip",
-#'                       paste0(path_run,"ffs.zip"))
-#' unzip(zipfile = paste0(path_run,"ffs.zip"),exdir = ".")
+#'                       file.path(tempdir(),"ffs.zip"))
+#' unzip(zipfile = file.path(tempdir(),"ffs.zip"),exdir = ".")
 #'
 #' ##- get geometrical training data assuming that you have used before the calc_ext function
-#' trainDF<-readRDS(paste0(path_run,"tutorial_trainDF.rds"))
-#' load(paste0(path_run,"tutorialbandNames.RData"))
+#' trainDF<-readRDS(file.path(tempdir(),"tutorial_trainDF.rds"))
+#' load(file.path(tempdir(),"tutorialbandNames.RData"))
 #'
 #' ##- define the classes
 #'  idNumber=c(1,2,3)
@@ -484,13 +488,14 @@ ffs_train<-function(   trainingDF   = NULL,
 #'                          path_prefix = "path_")
 #'   
 #' ##- clean runtime folder
-#' unlink(paste0(path_run,"*"), force = TRUE)
+#' unlink(file.path(tempdir(),"*"), force = TRUE)
 #'   
 #' ##- get the tutorial data
 #' url<-"https://github.com/gisma/gismaData/raw/master/uavRst/data/tutorial_data.zip"
 #' utils::download.file(url,
-#'                        paste0(path_run,"tutorial_data.zip"))
-#'   unzip(zipfile = paste0(path_run,"tutorial_data.zip"), exdir = R.utils::getAbsolutePath(path_run))
+#'                        file.path(tempdir(),"tutorial_data.zip"))
+#' unzip(zipfile = file.path(tempdir(),"tutorial_data.zip"), 
+#'                           exdir = R.utils::getAbsolutePath(path_run))
 #'   
 #'   ##- calculate some synthetic channels from the RGB image and the canopy height model
 #'   ##- then extract the from the corresponding training geometries the data values aka trainingdata

@@ -63,8 +63,6 @@ Furthermore using stats will cover mean and variance while dissimilarity is high
 
 require(glcm)
 ## example on how to calculate texture with glcm
-owd <- getwd()
-setwd(tempdir())
 data("pacman")
 # call glcm wrapper
 result <- glcm_texture(pacman,
@@ -74,7 +72,6 @@ result <- glcm_texture(pacman,
 
 #plot the result:
 raster::plot(result[[1]])
-setwd(owd)
 }
 \seealso{
 \href{https://CRAN.R-project.org/package=glcm }{glcm package}

@@ -84,16 +84,16 @@ paths<-link2GI::initProj(projRootDir = projRootDir,
                          global = TRUE,
                          path_prefix = "path_")
 setwd(path_run)
-unlink(paste0(path_run,"*"), force = TRUE)
+unlink(file.path(tempdir(),"*"), force = TRUE)
 
 ##- get the rgb image, chm and training data
 utils::download.file("https://github.com/gisma/gismaData/raw/master/uavRst/data/ffs.zip",
-                      paste0(path_run,"ffs.zip"))
-unzip(zipfile = paste0(path_run,"ffs.zip"),exdir = ".")
+                      file.path(tempdir(),"ffs.zip"))
+unzip(zipfile = file.path(tempdir(),"ffs.zip"),exdir = ".")
 
 ##- get geometrical training data assuming that you have used before the calc_ext function
-trainDF<-readRDS(paste0(path_run,"tutorial_trainDF.rds"))
-load(paste0(path_run,"tutorialbandNames.RData"))
+trainDF<-readRDS(file.path(tempdir(),"tutorial_trainDF.rds"))
+load(file.path(tempdir(),"tutorialbandNames.RData"))
 
 ##- define the classes
  idNumber=c(1,2,3)
