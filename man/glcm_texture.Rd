@@ -38,6 +38,9 @@ glcm_texture(
 This functions calls the glcm function from with standard settings
 and returns list of RasterStacks containing the texture parameters for each combination of channel and kernelSize}
 }
+\value{
+a raster* object
+}
 \description{
 Calls the glcm package with useful settings
 }

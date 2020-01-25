@@ -11,6 +11,9 @@ setHomePath(homeDir = "F:/MPG", prefixPC = "PCRZP")
 
 \item{prefixPC}{contains  an arbitrary part of the computer name. It always starts with the first letter.}
 }
+\value{
+string containing a directory path
+}
 \description{
 Checks if the computer name belongs to a specified group i.e. aq network domain Marburg Universitys computer pools
 }

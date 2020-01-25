@@ -27,6 +27,9 @@ split2SAGA(
 
 \item{bandname}{character. list of bandnames c("red","green","blue")}
 }
+\value{
+if returnRaster the splitted SAGA raster is returned as an raster* object
+}
 \description{
 Split multiband image to single band SAGA files. If a reference file is given, it performs a resample if necessary to avoid the numerical noise problem of SAGA extent.
 }

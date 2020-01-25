@@ -14,6 +14,9 @@ the input for \code{treepos}.}
 
 \item{minTreeAlt}{Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.}
 }
+\value{
+raster* object
+}
 \description{
 Detects and computes the location and height of individual trees within
 the LiDAR-derived Canopy Height Model (CHM). The algorithm implemented in this function

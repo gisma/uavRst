@@ -13,6 +13,9 @@ grass2tif(runDir = NULL, layerName = NULL, returnRaster = FALSE)
 
 \item{returnRaster}{return GRASS raster as an R raster object, default = FALSE}
 }
+\value{
+if returnRaster the converted GRASS raster is returned as an raster* object
+}
 \description{
 converts GRASS raster to Geotiff
 }

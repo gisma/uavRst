@@ -40,6 +40,9 @@ rgb_indices(
 \item \code{SHP}      2 * (red - green - blue) / (green - blue) Shape index
 }}
 }
+\value{
+raster* object
+}
 \description{
 This function calculates various spectral indices from a RGB. It returns at least red green and blue as splitted channels in a stack. Additionally you can choose RGB indices.
 \code{Raster*} object.

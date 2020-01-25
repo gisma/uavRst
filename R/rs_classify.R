@@ -9,8 +9,8 @@
 #'
 #'@param rasterStack  an object of rasterstack*. containing image data to make prediction on
 #'@param trainPlots   an object of SpatialPolygonDataFrame*. providing the training areas
-
-#'@export get_traindata
+#'@return  data frame with either the raster stack of all trainingn data and/or the data frame containing the training data vlaues of given training areas
+#' @export
 #'@examples
 #'\dontrun{
 #'##- required packages
@@ -87,7 +87,7 @@ get_traindata<-function(rasterStack  = NULL,
 #' @param path   character. output path
 #' @param dropChars numeric. number of characters that should be dropped at the end of the filename
 #' @param buffersize numeric. radius in meters around position
-#'
+#'@return data frame containing the number of pixels per class
 #' @export get_counts
 #' @examples
 #'\dontrun{
@@ -244,7 +244,7 @@ predict_rgb <- function(imageFiles=NULL,
 #' of training random forest classification models. This validation is particulary suitable for
 #' leave-location-out cross validations where variable selection
 #' MUST be based on the performance of the model on the hold out station.
-#' See \href{https://www.sciencedirect.com/science/article/pii/S1364815217310976}{Meyer et al. (2018)}
+#' See \href{https://doi.org/10.1016/j.envsoft.2017.12.001}{Meyer et al. (2018)}
 #' for further details.
 #' This is in fact the case while using time space variable vegetation patterns for classification purposes.
 #' For the UAV based RGB/NIR imagery, it provides an optimized preconfiguration for the classification goals.
@@ -271,6 +271,7 @@ predict_rgb <- function(imageFiles=NULL,
 #' @param withinSE      locical.  compares the performance to models that use less variables (e.g. if a model using 5 variables is better than a model using 4 variables but still in the standard error of the 4-variable model, then the 4-variable model is rated as the better model).
 #' @param mtry          numerical. Number of variable is randomly collected to be sampled at each split time
 #' @param sumFunction   character. function to summarize default is "twoClassSummary"
+#' @return model of a forward feature selection driven random forest classification
 #' @export ffs_train
 #' @examples
 #' \dontrun{
@@ -455,7 +456,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param rgbi              logical. switch for using rgbi index calcualtions default = TRUE
 #' @param indices           character. RGB indices, default is c("VARI","NDTI","RI","CI","BI","SI","HI","TGI","GLI","NGRDI") all options are c("VVI","VARI","NDTI","RI","SCI","BI","SI","HI","TGI","GLI","NGRDI","GRVI","GLAI","HUE","CI","SAT","SHP")
 #' @param rgbTrans          logical. switch for using color space transforming default = TRUE
-#' @param colorSpaces       character.  RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
+#' @param colorSpaces       character.  RGB colorspace transforming to default c("cielab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
 #' @param kernel            numeric. size of kernel for filtering and statistics, default is  3
 #' @param morphoMethod  numeric. saga morphometric method
 #' @param minScale  numeric. in scale for multi scale TPI
@@ -467,6 +468,8 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param otbLinks     list. OTB tools cli paths
 #' @param sagaLinks     list. SAGA tools cli paths
 #' @param gdalLinks     list. GDAL tools cli paths 
+#' 
+#' @return data frame containing for each drawn point the pixel values of the rasterstack data
 #' @examples
 #' 
 #'\dontrun{
@@ -558,7 +561,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                                             "SI","HI","TGI","GLI","NGRDI","GRVI",
                                             "GLAI","HUE","CI","SAT","SHP") ,
                       rgbTrans          = TRUE,
-                      colorSpaces       = c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
+                      colorSpaces       = c("cielab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
                       pardem            = TRUE,
                       demType           = c("hillshade","slope", "aspect","TRI","TPI","Roughness",
                                             "SLOPE","ASPECT", "C_GENE","C_PROF","C_PLAN","C_TANG",
@@ -677,8 +680,8 @@ calc_ext<- function ( calculateBands    = FALSE,
       if (rgbTrans){
 
         message(catNote(":::: processing color transformation...\n"))
-        uavRst::colorspace(input = imageFiles[i],
-                           colorspace = colorSpaces)
+        csStack<-uavRst::colorspace(input = imageFiles[i],
+                           colorspace = colorSpaces,retRaster = FALSE)
         rgbTranslist<-list()
         jj=1
         for (colMod in colorSpaces) {
@@ -687,17 +690,17 @@ calc_ext<- function ( calculateBands    = FALSE,
         }
         rt<- lapply(rgbTranslist, FUN=raster::stack)
         for (jj in 1:length(rt)) {
+          message(catOk(":::: save... ",paste0(colorSpaces[jj],"_",basename(imageFiles[i])),"\n"))
           raster::extent(rt[[jj]])<-raster::extent(r)
           raster::projection(rt[[jj]]) <- raster::crs(raster::projection(r))
-          message(catOk(":::: save... ",paste0(colorSpaces[jj],"_",basename(imageFiles[i])),"\n"))
-          raster::writeRaster(raster::stack(rt[[jj]][[1:(raster::nlayers(rt[[jj]])-1)]]),
-                              file.path(R.utils::getAbsolutePath(path_run),paste0(colorSpaces[jj],"_ref",basename(imageFiles[i]))),
-                              overwrite=TRUE,
-                              options="INTERLEAVE=BAND",
-                              progress="text")
+          raster::writeRaster(raster::stack(rt[[jj]][[1:(raster::nlayers(rt[[jj]]))]]),
+                             file.path(R.utils::getAbsolutePath(path_run),paste0(colorSpaces[jj],"_",basename(imageFiles[i]))),
+                             overwrite=TRUE,
+                             options="INTERLEAVE=BAND",
+                             progress="text")
           bandNames <-append(bandNames,make_bandnames(rgbTrans = colorSpaces[jj]))
-          flist<-append(flist, file.path(R.utils::getAbsolutePath(path_run),paste0(colorSpaces[jj],"_ref",basename(imageFiles[i]))))
-          dellist <- append(dellist, file.path(R.utils::getAbsolutePath(path_run),paste0(colorSpaces[jj],"_ref",basename(imageFiles[i]))))
+          flist<-append(flist, file.path(R.utils::getAbsolutePath(path_run),paste0(colorSpaces[jj],"_",basename(imageFiles[i]))))
+          dellist <- append(dellist, file.path(R.utils::getAbsolutePath(path_run),paste0(colorSpaces[jj],"_",basename(imageFiles[i]))))
           dellist <- append(dellist, file.path(R.utils::getAbsolutePath(path_run),paste0(colorSpaces[jj],basename(imageFiles[i]))))
         }
         #file.remove(paste0(path_run,unlist(rgbTranslist)))
@@ -786,11 +789,12 @@ calc_ext<- function ( calculateBands    = FALSE,
       else return(message(catErr("\nhopefully done\n You are mixing RGB an DEM input files. You may do this but only if they are of the same extent etc. and if each image file has a corresponding dem file\n NOTE the dem filename MUST have a prefix default is 'dem_'.")))
       message(catOk("     save ...",paste0(patternIdx, tmpFN),"\n"))
       # r<-raster::brick(raster::stack(flist)) qgis cannot read heder
-      for (k in 1:length(demFiles)) flist[-grepl(pattern = demFiles[k],flist)]
+      if (length(demFiles) > 0)  for (k in 1:length(demFiles)) flist[-grepl(pattern = demFiles[k],flist)]
       for (k in 1:length(imageFiles)) flist[-grepl(pattern = imageFiles[k],flist)]
       r<-raster::stack(paste0(flist))
       if (raster::nlayers(r)!=length(bandNames)) stop("\n Number of names and layers differ...\n most common case is a broken cleanup of the runtime directory!")
       names(r)<-bandNames
+      message(catNote(":::: writing data file... ",paste0(currentIdxFolder,"/", patternIdx,tmpFN),"\n"))
       # write file to envi
       raster::writeRaster(r,
                           paste0(currentIdxFolder,"/", patternIdx,tmpFN),
@@ -799,7 +803,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                           #options="COMPRESS=LZW",
                           overwrite=TRUE)
       #raster::hdr(r, filename = paste0(currentIdxFolder,"/", patternIdx,tmpFN), format = "ENVI") qgis cannot read heder
-      message(catNote(":::: writing data file... ",paste0(currentIdxFolder,"/", patternIdx,tmpFN),"\n"))
+      
       rlist<-append(rlist, file.path(R.utils::getAbsolutePath(paste0(currentIdxFolder,"/", patternIdx,tmpFN))))
       
       # cleanup runtime files lists...

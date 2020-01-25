@@ -14,7 +14,7 @@
 #' and returns list of RasterStacks containing the texture parameters for each combination of channel and kernelSize
 #' @param  shift =list(c(0,1), c(1,1), c(1,0),c(1,-1))
 #' @author Hanna Meyer
-#'
+#' @return a raster* object 
 #' @note More information at:
 #' \href{https://prism.ucalgary.ca/handle/1880/51900}{texture tutorial}
 #' Keep in mind that:\cr
@@ -136,7 +136,7 @@ glcm_texture <- function(x,
 #' @param verbose switch for system messages default is FALSE
 #' @param path_output path outut
 #' @param otbLinks        list. of OTB tools cli pathes
-#'
+#' @return raster* object
 #' @references Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.
 #' IEEE Transactions on Systems, Man and Cybernetics. SMC-3(6):610-620.\cr
 #' \href{https://www.orfeo-toolbox.org/SoftwareGuide}{Orfeo Toolbox Sofware Guide, 2016}\cr
@@ -380,7 +380,7 @@ otbtex_hara<- function(x,
 #' @param outDir output Directory
 #' @param otbLinks        list. of GI tools cli pathes
 #' @author Chris Reudenbach
-
+#' @return raster* object
 #' @export otb_stat
 #' @examples
 #' \dontrun{
@@ -486,6 +486,7 @@ otb_stat<- function(input=NULL,
 #' @param outDir output Directory
 #' @param otbLinks        list. of GI tools cli pathes
 #' @author Chris Reudenbach
+#' @return raster* object
 #' @export otbtex_edge
 #' @examples
 #'\dontrun{
@@ -595,7 +596,8 @@ otbtex_edge<- function(input=NULL,
 #' @param otbLinks        list. of GI tools cli pathes
 #' @author Chris Reudenbach
 #' @export otbtex_gray
-
+#' @return raster* object
+#' 
 #' @examples
 #' \dontrun{
 #' # load libraries
@@ -700,7 +702,7 @@ otbtex_gray<- function(input=NULL,
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param gdalLinks    list. of GDAL tools cli pathes
 #' @param sagaLinks    list. of SAGA tools cli pathes
-
+#' @return raster* object
 #' @export morpho_dem
 #' @examples
 #'\dontrun{
@@ -895,7 +897,8 @@ getOutputDir<- function (outDir){
 #' }
 #'
 #' @export rgb_indices
-#'
+#' @return raster* object
+#' 
 #' @references
 #'
 #' Planetary Habitability Laboratory (2015): Visible Vegetation Index (VVI). Available online via \href{http://phl.upr.edu/projects/visible-vegetation-index-vvi}{VVI}.\cr

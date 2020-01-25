@@ -47,6 +47,9 @@ otbtex_hara(
 
 \item{ram}{reserved memory in MB}
 }
+\value{
+raster* object
+}
 \description{
 OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image
 }

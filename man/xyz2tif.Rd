@@ -2,17 +2,22 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{xyz2tif}
 \alias{xyz2tif}
-\title{Read and Convert xyz DEM/DSM Data as typically provided by the Authorities.}
+\title{Read, convert and write xyz DEM/DSM Data as typically provided by the Authorities to GeoTiff.}
 \usage{
-xyz2tif(xyzFN = NULL, epsgCode = "25832")
+xyz2tif(xyzFN = NULL, epsgCode = "25832", returnRaster = TRUE)
 }
 \arguments{
 \item{xyzFN}{ASCII tect file with xyz values}
 
 \item{epsgCode}{"25832"}
+
+\item{returnRaster}{logical. return as raster if TRUE}
+}
+\value{
+object of class raster*
 }
 \description{
-Read xyz data and generate a Raster* object.
+Read xyz data, generate a GeoTiff file and optionally returns a raster* object.
 }
 \examples{
 \dontrun{

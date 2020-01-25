@@ -41,6 +41,9 @@ otbtex_edge(
 
 \item{otbLinks}{list. of GI tools cli pathes}
 }
+\value{
+raster* object
+}
 \description{
 Calculates edges for a given kernel size. return list of geotiffs containing thelocal statistics for each channel
 }

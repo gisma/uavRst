@@ -30,6 +30,9 @@ height of \code{treepos}.}
 
 \item{verbose}{to be quiet FALSE}
 }
+\value{
+sp* object
+}
 \description{
 'ForestTools' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Very fast algorithm based on the imagr watershed algorithm.
 Andrew Plowright: R package \href{https://CRAN.R-project.org/package=ForestTools}{'ForestTools'}

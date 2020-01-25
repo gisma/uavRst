@@ -28,6 +28,9 @@ and return the desired radius of the circular search window when centered on tha
 \item{verbose}{quiet (1)
 height of \code{treepos}.}
 }
+\value{
+raster* object
+}
 \description{
 Implements the variable window filter algorithm (Popescu & Wynne, 2004)
 for detecting treetops from a canopy height model. Andrew Plowright:

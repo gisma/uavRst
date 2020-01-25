@@ -18,6 +18,9 @@ height of \code{treepos}.}
 
 \item{exclusion}{numeric. A single value from 0 to 1 that represents the percent of pixel exclusion.}
 }
+\value{
+sp* object
+}
 \description{
 'rLiDAR' segmentation of individual tree crowns based on a canopy height model and initial seeding points (trees). Generic segmentation algorithm
 Carlos A. Silva et all.: R package \href{https://CRAN.R-project.org/package=rLiDAR}{rLiDAR}\cr

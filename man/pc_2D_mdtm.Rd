@@ -54,6 +54,9 @@ first step spline interpolation using the treshold gridsize second step bilinear
 
 \item{verbose}{to be quiet (1)}
 }
+\value{
+Digital Terrain Model from UAV generated point clouds as  raster* object
+}
 \description{
 Create a Digital Terrain Model from a high density point cloud as typically derived by an optical UAV retrieval. Due to the poor estimation of ground points
 a minimum samopling approach is applied. It retrieves on analyzing multiple sampling resolutions gridsizes the ground minimum values and interpolates on these samples a surface grid with a higher target

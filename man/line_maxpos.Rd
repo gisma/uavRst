@@ -11,6 +11,9 @@ line_maxpos(dem, line)
 
 \item{line}{sp object}
 }
+\value{
+returns the coordinate of the maximum value of any underlying raster object along a line of interest
+}
 \description{
 applies a line to a raster and returns the position of the maximum value
 }

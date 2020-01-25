@@ -6,6 +6,7 @@
 #' @param file a GPX filename (including directory)
 #' @param layers vector of GPX layers. Possible options are \code{"waypoints"}, \code{"tracks"}, \code{"routes"}, \code{"track_points"}, \code{"route_points"}. By dedault, all those layers are read.
 #' @keywords internal
+#' @return a sp* object containing the gpx track objects
 
 #' @export read_gpx
 #' @note adapted from \code{\link[tmaptools]{read_GPX}}
@@ -36,13 +37,15 @@ read_gpx <- function(file,
 }
 
 
-#' Read and Convert xyz DEM/DSM Data as typically provided by the Authorities.
+#' Read, convert and write xyz DEM/DSM Data as typically provided by the Authorities to GeoTiff.
 #'
 #' @description
-#' Read xyz data and generate a Raster* object.
+#' Read xyz data, generate a GeoTiff file and optionally returns a raster* object.
 #'
 #' @param xyzFN ASCII tect file with xyz values
 #' @param epsgCode "25832"
+#' @param returnRaster logical. return as raster if TRUE
+#' @return object of class raster* 
 #'
 #' @export xyz2tif
 
@@ -69,7 +72,9 @@ read_gpx <- function(file,
 
 #'
 
-xyz2tif <- function(xyzFN=NULL,  epsgCode ="25832"){
+xyz2tif <- function(xyzFN=NULL,
+                    epsgCode ="25832",
+                    returnRaster = TRUE){
   # read data
   xyz<-data.table::fread(xyzFN)
   message("this will probably take a while...\n")
@@ -141,6 +146,7 @@ h_comp_ll_proj4 <- function(x) {
 #' @description applies a line to a raster and returns the position of the maximum value
 #' @param dem raster object
 #' @param line  sp object
+#' @return returns the coordinate of the maximum value of any underlying raster object along a line of interest
 #' @keywords internal
 #' @export
 #'
@@ -165,6 +171,9 @@ line_maxpos <- function(dem,line){
 #' @param polySplit split polygon in single file, default is TRUE
 #' extract for all polygons the position of the maximum value
 #' @param cores number of cores used
+
+#' @return returns a list of coordinates of the position of the maximum value and geometric centre of any corresponding raster object inside a given polygon
+
 #' @keywords internal
 #' @export poly_maxpos
 #'
@@ -260,6 +269,7 @@ poly_maxpos <- function(fileName,layerName, polySplit=TRUE, cores=1){
 #' @param runDir path of working directory
 #' @param layerName name GRASS raster
 #' @param returnRaster return GRASS raster as an R raster object, default = FALSE
+#' @return if returnRaster the converted GRASS raster is returned as an raster* object
 #' @keywords internal
 
 
@@ -333,7 +343,7 @@ funWhichmax <- function(mask,value) {
 
 
 
-#' Calculate descriptive statistics of raster as segemented by polygons 
+#' Calculate descriptive statistics of raster as segmented by polygons 
 #'
 #'@description
 #' calculate statitiscs of polygon based raster extraction. Returns a spatialpolygon dataframe containing decriptive statistics
@@ -356,7 +366,7 @@ funWhichmax <- function(mask,value) {
 #'@param giLinks list of GI tools cli pathes, default is NULL
 #'@param parallel run it parallel default is 1
 
-#'
+#'@return data frame containing the descriptive statistic of all corresponding raster* objects for each given polygon
 #'
 #'@export poly_stat
 #'@examples
@@ -610,6 +620,8 @@ getPopupStyle <- function() {
   end <- grep("<%=pop%>", pop)
   return(paste(pop[1:(end-2)], collapse = ""))
 }
+
+
 #' Split multiband image to single band SAGA files
 #' @description Split multiband image to single band SAGA files. If a reference file is given, it performs a resample if necessary to avoid the numerical noise problem of SAGA extent.
 #' @param fn character. filename
@@ -620,7 +632,7 @@ getPopupStyle <- function() {
 #' @param returnRaster logical. return as raster
 #' @param gdalLinks list of gdal installations
 #' @name split2SAGA
-
+#' @return if returnRaster the splitted SAGA raster is returned as an raster* object
 #' @keywords internal
 #'@export
 split2SAGA<-function(fn=NULL,
@@ -672,7 +684,7 @@ split2SAGA<-function(fn=NULL,
                            overwrite=TRUE,progress="text")
     flist<-append(flist, r)
   }
-  if (returnRaster) return(flist)
+  if (returnRaster) return(raster::stack(flist))
 }
 
 #' colorize the cat outputs
@@ -776,8 +788,11 @@ make_bandnames <- function(rgbi    = NA,
   if (!is.na(rgbTrans))  {
     if (rgbTrans %in% c("Gray"))
       bandNames    =  bandNames <- c(paste0(rgbTrans,"_b1"))
-    else
-      bandNames    =  bandNames <- c(paste0(rgbTrans,"_b1"),paste0(rgbTrans,"_b2"),paste0(rgbTrans,"_b3"))
+    # c("cielab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
+    else if (rgbTrans %in% c("cielab"))
+      bandNames    =  bandNames <- c(paste0(rgbTrans,"_b1"),paste0(rgbTrans,"_b2"),paste0(rgbTrans,"_b3"),paste0(rgbTrans,"_b4"))
+    else 
+      bandNames    =  bandNames <- c(paste0(rgbTrans,"_b1"),paste0(rgbTrans,"_b2"),paste0(rgbTrans,"_b3"))    
   }
   return(bandNames)
   
@@ -812,6 +827,7 @@ isgdaldemitem <- function(x)
 #'@param prefixPC contains  an arbitrary part of the computer name. It always starts with the first letter.
 #'@author CR
 #'@keywords internal
+#' @return string containing a directory path
 #'@examples
 #' \dontrun{
 #' # add path
@@ -872,6 +888,7 @@ so2shp<-function(spobj,
 #' @param fn filename optionally with path
 #' @param type character. type of object to be created. "sp" is default can be set to "sf"
 #' @param path_run character. path used for runtime operations
+#' @return a sf* or sf* object from a given shape file
 #'@keywords internal
 #'@export
 shp2so<-function(fn,
@@ -920,9 +937,15 @@ raster2sdat<-function(rastobj,
 #' @param ext extent of the raster in R notation
 #' @param path_run character. path used for runtime operations
 #' @param gdalLinks list of gdal installations
+
+#' @return returned saga raster file as an raster* object
 #' @keywords internal
 #' @export
-saga2r<- function(fn,ext,path_run=tempdir(),gdalLinks=NULL ) {
+saga2r<- function(fn,
+                  ext,
+                  path_run=tempdir(),
+                  
+                  gdalLinks=NULL ) {
   if (is.null(gdalLinks))  gdal<- link2GI::linkGDAL()
   else  gdal<- gdalLinks
   system(paste0(gdal$path,'gdalwarp -overwrite -q ',
@@ -945,6 +968,7 @@ saga2r<- function(fn,ext,path_run=tempdir(),gdalLinks=NULL ) {
 #' @param x raster object
 #' @param fn filname name without extension
 #' @param path_run character. path used for runtime operations
+
 #' @keywords internal
 #' @export
 r2saga <- function(x,fn,path_run=tempdir()) {
@@ -968,7 +992,7 @@ r2saga <- function(x,fn,path_run=tempdir()) {
 #' @param otbArgs character. full string of otbArgs
 #' @param gdalArgs character. full string of gdalArgs
 #' @param quiet supress all messages default is FALSE
-#'
+#' @return list of all link2GI bindings
 #'@examples
 #'\dontrun{
 #' # required packages

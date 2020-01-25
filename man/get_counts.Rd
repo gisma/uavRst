@@ -32,6 +32,9 @@ get_counts(
 
 \item{dropChars}{numeric. number of characters that should be dropped at the end of the filename}
 }
+\value{
+data frame containing the number of pixels per class
+}
 \description{
 counts pixel values according to their classes
 }

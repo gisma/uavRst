@@ -56,12 +56,15 @@ ffs_train(
 
 \item{noClu}{numeric. number of cluster to be used}
 }
+\value{
+model of a forward feature selection driven random forest classification
+}
 \description{
 ffs_train is a wrapper function for a simple use of the forward feature selection approach
 of training random forest classification models. This validation is particulary suitable for
 leave-location-out cross validations where variable selection
 MUST be based on the performance of the model on the hold out station.
-See \href{https://www.sciencedirect.com/science/article/pii/S1364815217310976}{Meyer et al. (2018)}
+See \href{https://doi.org/10.1016/j.envsoft.2017.12.001}{Meyer et al. (2018)}
 for further details.
 This is in fact the case while using time space variable vegetation patterns for classification purposes.
 For the UAV based RGB/NIR imagery, it provides an optimized preconfiguration for the classification goals.

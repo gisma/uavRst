@@ -6,7 +6,7 @@
 \usage{
 colorspace(
   input = NULL,
-  colorspace = c("CIELab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ", "YUV"),
+  colorspace = c("cielab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ", "YUV"),
   compress = "None",
   depth = 8,
   verbose = FALSE,
@@ -25,6 +25,9 @@ colorspace(
 \item{verbose}{be quiet}
 
 \item{retRaster}{logical if true a rasterstack is returned}
+}
+\value{
+raster* object
 }
 \description{
 Imagemagick is used for the calculation of the transformations. Please provide a tif file

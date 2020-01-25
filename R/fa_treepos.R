@@ -21,9 +21,9 @@ if (!isGeneric('treepos')) {
 #'@param split split polygons default is TRUE
 #'@param cores number of cores to be used
 #'@param giLinks        list. of GI tools cli paths
-
+#'@return raster* object
 #'
-#'
+#'return raster* object
 #'@export treepos_GWS
 #'@examples
 #'\dontrun{
@@ -185,6 +185,7 @@ treepos_GWS <- function(chm = NULL,
 #' @param movingWin Size (in pixels) of the moving window to detect local maxima.
 #' @param minTreeAlt Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
 #' @export treepos_RL
+#' @return  raster* object
 #' @examples
 #' \dontrun{
 #' ## required packages
@@ -225,7 +226,7 @@ treepos_RL <- function(chm =NULL,
 #' the input for \code{treepos}.
 #' @param movingWin Size (in pixels) of the moving window to detect local maxima.
 #' @param minTreeAlt Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.
-
+#' @return  raster* object
 #' @export treepos_lidR
 #' @examples
 #' \dontrun{
@@ -277,7 +278,7 @@ treepos_lidR <- function(chm =NULL,
 #' @param maxCrownArea numeric. A single value of the maximum individual tree crown radius expected.
 #' @param verbose quiet (1)
 #' height of \code{treepos}.
-
+#' @return  raster* object
 #' @export treepos_FT
 #' @examples
 

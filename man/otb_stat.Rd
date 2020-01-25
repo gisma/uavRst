@@ -35,6 +35,9 @@ otb_stat(
 
 \item{otbLinks}{list. of GI tools cli pathes}
 }
+\value{
+raster* object
+}
 \description{
 Calculates local statistics for a given kernel size
 }

@@ -11,6 +11,9 @@ get_traindata(rasterStack = NULL, trainPlots = NULL)
 
 \item{trainPlots}{an object of SpatialPolygonDataFrame*. providing the training areas}
 }
+\value{
+data frame with either the raster stack of all trainingn data and/or the data frame containing the training data vlaues of given training areas
+}
 \description{
 Extracts training data from a raster stack and returns a dataframe containing for each pixel all values.
 }

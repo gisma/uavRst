@@ -17,6 +17,9 @@ poly_metrics(
 available are ("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen",
 "calliper","rectangularity","circularityharalick","convexity")}
 }
+\value{
+sp* object
+}
 \description{
 calculate morphometric features of polygons. Calculate some crown related metrics, returns the metrics as a spatialpointdataframe/spatialpolygondataframe
 }

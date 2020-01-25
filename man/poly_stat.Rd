@@ -2,7 +2,7 @@
 % Please edit documentation in R/tb_bluedjinn.R
 \name{poly_stat}
 \alias{poly_stat}
-\title{Calculate descriptive statistics of raster as segemented by polygons}
+\title{Calculate descriptive statistics of raster as segmented by polygons}
 \usage{
 poly_stat(
   rasternames = NULL,
@@ -52,6 +52,9 @@ poly_stat(
 \item{path_run}{run time folder for all kind of calculations, by default tempdir()}
 
 \item{giLinks}{list of GI tools cli pathes, default is NULL}
+}
+\value{
+data frame containing the descriptive statistic of all corresponding raster* objects for each given polygon
 }
 \description{
 calculate statitiscs of polygon based raster extraction. Returns a spatialpolygon dataframe containing decriptive statistics

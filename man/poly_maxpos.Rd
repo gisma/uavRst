@@ -16,6 +16,9 @@ extract for all polygons the position of the maximum value}
 
 \item{cores}{number of cores used}
 }
+\value{
+returns a list of coordinates of the position of the maximum value and geometric centre of any corresponding raster object inside a given polygon
+}
 \description{
 extract for all polygons the position of the maximum value
 }

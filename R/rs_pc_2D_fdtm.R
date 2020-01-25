@@ -23,7 +23,7 @@
 #'@param cutExtent clip area
 #'@param grassVersion numeric. version of GRASS as derived by findGRASS() default is 1 (=oldest/only version) please note GRASS version later than 7.4 is not working with r.inlidar
 #'@param searchPath path to look for grass
-
+#'@return raster* object
 #'@export pc_2D_fdtm
 
 #'@examples

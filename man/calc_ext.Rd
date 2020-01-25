@@ -27,7 +27,7 @@ calc_ext(
   indices = c("VVI", "VARI", "NDTI", "RI", "SCI", "BI", "SI", "HI", "TGI", "GLI",
     "NGRDI", "GRVI", "GLAI", "HUE", "CI", "SAT", "SHP"),
   rgbTrans = TRUE,
-  colorSpaces = c("CIELab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ", "YUV"),
+  colorSpaces = c("cielab", "CMY", "Gray", "HCL", "HSB", "HSI", "Log", "XYZ", "YUV"),
   pardem = TRUE,
   demType = c("hillshade", "slope", "aspect", "TRI", "TPI", "Roughness", "SLOPE",
     "ASPECT", "C_GENE", "C_PROF", "C_PLAN", "C_TANG", "C_LONG", "C_CROS", "C_MINI",
@@ -88,7 +88,7 @@ calc_ext(
 
 \item{rgbTrans}{logical. switch for using color space transforming default = TRUE}
 
-\item{colorSpaces}{character.  RGB colorspace transforming to default c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")}
+\item{colorSpaces}{character.  RGB colorspace transforming to default c("cielab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")}
 
 \item{pardem}{logical. switch for calculating dem parameter, default = FALSE}
 
@@ -115,6 +115,9 @@ calc_ext(
 \item{gdalLinks}{list. GDAL tools cli paths}
 
 \item{otbLinks}{list. OTB tools cli paths}
+}
+\value{
+data frame containing for each drawn point the pixel values of the rasterstack data
 }
 \description{
 Convenient function to preprocess synthetic raster bands from a given RGB image and/or DTM/DSM data.

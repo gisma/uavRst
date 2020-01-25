@@ -31,6 +31,9 @@ the input for \code{treepos}.}
 \item{maxCrownArea}{numeric. A single value of the maximum projected tree crown area allowed. Default 100 sqm.
 height of \code{treepos}.}
 }
+\value{
+sp* object
+}
 \description{
 Segmentation of individual tree crowns as polygons based on a LiDAR derived canopy height model.
 Michele Dalponte: R package \href{https://CRAN.R-project.org/package=itcSegment}{itcSegment}.

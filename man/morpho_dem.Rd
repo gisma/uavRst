@@ -40,6 +40,9 @@ morpho_dem(
 
 \item{sagaLinks}{list. of SAGA tools cli pathes}
 }
+\value{
+raster* object
+}
 \description{
 calculates most important DEM parameters
 }

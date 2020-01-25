@@ -10,7 +10,7 @@
 #' @param retRaster logical if true a rasterstack is returned
 #' @param verbose be quiet
 #' @export colorspace
-
+#'@return raster* object
 #' @examples
 #' \dontrun{
 #'
@@ -40,20 +40,22 @@
 
 
 colorspace<- function(input=NULL,
-                      colorspace =c("CIELab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
+                      colorspace =c("cielab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV"),
                       compress="None",
                       depth = 8,
                       verbose=FALSE,
                       retRaster=TRUE){
 
   
-
+  catOk   <- getCrayon()[[3]]
   #convert 2017_05_20_RGB_DEFS17_16_OrthoMosaic.tif -colorspace cmyk -compress LZW to.tif
 
   #if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
+  if (!exists("path_run")) path_run = tempdir()
+  retStack<- list()
   for (colMod in colorspace) {
-    retStack<- list()
-    outName<-file.path(R.utils::getAbsolutePath(dirname(input)),paste0(colMod,"_",basename(input)))
+    outName<- file.path(R.utils::getAbsolutePath(path_run),paste0(colMod,"_",basename(input)))
+    #outName<-file.path(R.utils::getAbsolutePath(dirname(input)),paste0(colMod,"_",basename(input)))
 
     command<-paste0("convert")
     command<-paste(command, input)
@@ -61,9 +63,10 @@ colorspace<- function(input=NULL,
     command<-paste(command, " -compress ",compress)
     command<-paste(command, " -depth ", depth)
     command<-paste(command,  outName)
-
+     
     if (verbose) {
-      message("\nrunning cmd:  ", command,"\n")
+      
+      
       system(command)}
     else{
       ret<-system(command,intern = TRUE,ignore.stdout = TRUE,ignore.stderr = TRUE)}
@@ -78,8 +81,8 @@ colorspace<- function(input=NULL,
     else {
     r2<-raster::stack(outName)
     }
-    if (retRaster) retStack[[paste0(tools::file_path_sans_ext(basename(outName)))]]<-assign(paste0(tools::file_path_sans_ext(basename(outName))),r2)
+    if (retRaster) retStack[[colMod ]]<-assign(paste0(tools::file_path_sans_ext(basename(outName))),r2)
   }
-  return(retStack[[1]])
+  return(retStack)
 }
 

@@ -32,6 +32,9 @@ linkGI(
 
 \item{quiet}{supress all messages default is FALSE}
 }
+\value{
+list of all link2GI bindings
+}
 \description{
 brute force search, find and linkl of all link2GI link functions. This is helpfull if yor system is wellsetup and the standard linkage procedure will provide the correct linkages.
 }

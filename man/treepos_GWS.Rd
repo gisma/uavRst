@@ -38,6 +38,11 @@ treepos_GWS(
 
 \item{giLinks}{list. of GI tools cli paths}
 }
+\value{
+raster* object
+
+return raster* object
+}
 \description{
 Find potential tree positions using a canopy height model by using an iterative watershed algorithm. Basically returns a  vector data sets with the tree crown geometries and a bunch of corresponding indices.
 }

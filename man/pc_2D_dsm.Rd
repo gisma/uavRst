@@ -44,6 +44,9 @@ pc_2D_dsm(
 
 \item{verbose}{to be quiet (1)}
 }
+\value{
+raster* object
+}
 \description{
 Create a Digital Surface Model from a high density point cloud as typically derived by an
 optical UAV retrieval. It simply samples the maximum or whatever values of a given target

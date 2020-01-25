@@ -15,6 +15,9 @@ the input for \code{treepos}.}
 
 \item{minTreeAlt}{Height threshold (m) below a pixel cannot be a local maximum. Local maxima values are used to define tree tops.}
 }
+\value{
+raster* object
+}
 \description{
 Tree top detection based on local maxima filters. There are two types of filter. The first,
 called for gridded objects, works on images with a matrix-based algorithm. And the second one, called for

@@ -7,6 +7,8 @@
 #'@param funNames character. names of morphometrics to be calculated
 #'available are ("length","elongation","eccentricityboundingbox","solidity","eccentricityeigen",
 #'"calliper","rectangularity","circularityharalick","convexity")
+#'
+#'@return sp* object
 #'@export
 #'
 #'@examples

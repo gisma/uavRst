@@ -61,6 +61,9 @@ height of \code{treepos}.}
 
 \item{giLinks}{list. of GI tools cli paths}
 }
+\value{
+sp* object
+}
 \description{
 Tree segmentation based on a CHM, basically returns a vector data set with the tree crown geometries and a bunch of corresponding indices. After the segementation itself, the results are hole filled and optionally, it can be filtered by a majority filter.
 }

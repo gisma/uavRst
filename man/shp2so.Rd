@@ -13,6 +13,9 @@ shp2so(fn, type = "sp", path_run = tempdir())
 
 \item{path_run}{character. path used for runtime operations}
 }
+\value{
+a sf* or sf* object from a given shape file
+}
 \description{
 reads shapefiles as sf or sp objects
 }

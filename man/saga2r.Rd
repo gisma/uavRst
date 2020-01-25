@@ -15,6 +15,9 @@ saga2r(fn, ext, path_run = tempdir(), gdalLinks = NULL)
 
 \item{gdalLinks}{list of gdal installations}
 }
+\value{
+returned saga raster file as an raster* object
+}
 \description{
 converts SAGA raster to R raster object
 }
