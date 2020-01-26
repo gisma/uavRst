@@ -719,7 +719,8 @@ make_bandnames <- function(rgbi    = NA,
                            edge    = NA ,
                            rgbTrans = NA,
                            dem =    NA,
-                           l_raster = NA){
+                           l_raster = NA,
+                           pca="PCA"){
   if (!is.na(rgbi[1])) bandNames <- append(c("red","green","blue"),rgbi)
   if (!is.na(bandNames[1])) {
     if(bandNames[1] == "simple"){
@@ -784,6 +785,9 @@ make_bandnames <- function(rgbi    = NA,
   
   if (!is.na(edge))  {
     bandNames    =  edge
+  }
+  if (!is.na(pca))  {
+    bandNames    =  "PCA"
   }
   if (!is.na(rgbTrans))  {
     if (rgbTrans %in% c("Gray"))

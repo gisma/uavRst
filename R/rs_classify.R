@@ -717,19 +717,23 @@ calc_ext<- function ( calculateBands    = FALSE,
           if (filterBand=="green") bandNr <- 2
           if (filterBand=="blue") bandNr <- 3
           if (filterBand=="PCA") bandNr <- 4 
-          message(catNote(":::: write temporary channel...",paste0(filterBand,"_",basename(imageFiles[i])),"\n"))
+          
           if (bandNr == 4) {
+            message(catNote(":::: calculate PCA channel...",paste0(filterBand,"_",basename(imageFiles[i])),"\n"))
             rpc <- RStoolbox::rasterPCA(aerialRGB)
             raster::writeRaster(rpc$map[[1]],
                                 file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i]))),
                                 progress = "text",
                                 overwrite=TRUE)
             fbFN<-file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i])))
+            flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"PCA_*"))))
+            dellist <-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"PCA_*"))))
+            bandNames <-append(bandNames,paste0(make_bandnames(stat = TRUE),"_",filterBand))
           }
           else {
           # export single channel for synthetic band calculation
           # if (filterBand!="") {
-          
+            message(catNote(":::: write single channel...",paste0(filterBand,"_",basename(imageFiles[i])),"\n"))
           raster::writeRaster(rgb_rgbi[[bandNr]],
                               file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i]))),
                               progress = "text",
@@ -805,15 +809,16 @@ calc_ext<- function ( calculateBands    = FALSE,
       r<-raster::stack(paste0(flist))
       if (raster::nlayers(r)!=length(bandNames)) stop("\n Number of names and layers differ...\n most common case is a broken cleanup of the runtime directory!")
       names(r)<-bandNames
-      message(catNote(":::: writing data file... ",paste0(currentIdxFolder,"/", patternIdx,tmpFN),"\n"))
+      
       # write file to envi
-      if (nlayers(r) <= 256)
+      if (nlayers(r) <= 256){
+        message(catNote(":::: writing data file... ",paste0(currentIdxFolder,"/", patternIdx,tmpFN),".gri\n"))
       raster::writeRaster(r,
                           paste0(currentIdxFolder,"/", patternIdx,tmpFN),
                           progress ="text",
                           options="COMPRESS=LZW",
-                          overwrite=TRUE)
-      else {
+                          overwrite=TRUE)}
+            else {
         message(catError(":::: you have more than 256 Layers writing an envi file. \n You NUST reassign the bandnames when using the envi file! \n"))
         raster::writeRaster(r,
                             paste0(currentIdxFolder,"/", patternIdx,tmpFN),

@@ -13,7 +13,8 @@ make_bandnames(
   edge = NA,
   rgbTrans = NA,
   dem = NA,
-  l_raster = NA
+  l_raster = NA,
+  pca = "PCA"
 )
 }
 \arguments{
