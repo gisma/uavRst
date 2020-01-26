@@ -443,7 +443,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param suffixTrainImg    character. potential string of characters that is used in the beginning of a shape file prefixTrainImg_SHAPEFILENAME_suffixTrainImg
 #' @param prefixTrainGeom    character. potential string of characters that is used in the beginning of a shape file prefixTrainGeom_SHAPEFILENAME_suffixTrainGeom
 #' @param suffixTrainGeom   character. potential string of characters that is used in the beginning of a shape file prefixTrainGeom_SHAPEFILENAME_suffixTrainGeom
-#' @param channels          character. channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")
+#' @param channels          character. channels to be choosed options are c("PCA", red", "green", "blue")  default =  c("PCA") first principal component of the input image
 #' @param hara              logical. switch for using  HaralickTextureExtraction, default = TRUE. \cr
 #' @param haraType          character. hara options, default is c("simple"), other  options are "advanced"  "higher" "all". NOTE:  "higher" takes a LOT of time
 #' @param stat              logical. switch for using statistic default = TRUE the stas are mean,variance, curtosis, skewness
@@ -548,7 +548,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                       suffixTrainGeom   = "",
                       patternIdx        = "index",
                       patternImgFiles   = "",
-                      channels          = c("red", "green", "blue"),
+                      channels          = c("PCA"),
                       hara              = TRUE,
                       haraType          = c("simple","advanced","higher"),
                       stat              = TRUE,
@@ -716,14 +716,25 @@ calc_ext<- function ( calculateBands    = FALSE,
           if (filterBand=="red") bandNr <- 1
           if (filterBand=="green") bandNr <- 2
           if (filterBand=="blue") bandNr <- 3
+          if (filterBand=="PCA") bandNr <- 4 
+          message(catNote(":::: write temporary channel...",paste0(filterBand,"_",basename(imageFiles[i])),"\n"))
+          if (bandNr == 4) {
+            rpc <- RStoolbox::rasterPCA(aerialRGB)
+            raster::writeRaster(rpc$map[[1]],
+                                file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i]))),
+                                progress = "text",
+                                overwrite=TRUE)
+            fbFN<-file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i])))
+          }
+          else {
           # export single channel for synthetic band calculation
           # if (filterBand!="") {
-          message(catNote(":::: write temporary channel...",paste0(filterBand,"_",basename(imageFiles[i])),"\n"))
+          
           raster::writeRaster(rgb_rgbi[[bandNr]],
                               file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i]))),
                               progress = "text",
                               overwrite=TRUE)
-          fbFN<-file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i])))
+          fbFN<-file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i])))}
          # filterband
         if (stat){
           message(catNote(":::: processing stats...",fbFN,"\n"))
@@ -796,12 +807,21 @@ calc_ext<- function ( calculateBands    = FALSE,
       names(r)<-bandNames
       message(catNote(":::: writing data file... ",paste0(currentIdxFolder,"/", patternIdx,tmpFN),"\n"))
       # write file to envi
+      if (nlayers(r) <= 256)
       raster::writeRaster(r,
                           paste0(currentIdxFolder,"/", patternIdx,tmpFN),
-                          format="ENVI",
                           progress ="text",
-                          #options="COMPRESS=LZW",
+                          options="COMPRESS=LZW",
                           overwrite=TRUE)
+      else {
+        message(catError(":::: you have more than 256 Layers writing an envi file. \n You NUST reassign the bandnames when using the envi file! \n"))
+        raster::writeRaster(r,
+                            paste0(currentIdxFolder,"/", patternIdx,tmpFN),
+                            format="ENVI",
+                            progress ="text",
+                            #options="COMPRESS=LZW",
+                            overwrite=TRUE)
+        }
       #raster::hdr(r, filename = paste0(currentIdxFolder,"/", patternIdx,tmpFN), format = "ENVI") qgis cannot read heder
       
       rlist<-append(rlist, file.path(R.utils::getAbsolutePath(paste0(currentIdxFolder,"/", patternIdx,tmpFN))))

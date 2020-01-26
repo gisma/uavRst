@@ -15,7 +15,7 @@ calc_ext(
   suffixTrainGeom = "",
   patternIdx = "index",
   patternImgFiles = "",
-  channels = c("red", "green", "blue"),
+  channels = c("PCA"),
   hara = TRUE,
   haraType = c("simple", "advanced", "higher"),
   stat = TRUE,
@@ -66,7 +66,7 @@ calc_ext(
 
 \item{patternImgFiles}{character. mandantory string that exist in ech imagefile to be processes}
 
-\item{channels}{character. channels to be choosed options are c("red", "green", "blue")  default =  c("red", "green", "blue")}
+\item{channels}{character. channels to be choosed options are c("PCA", red", "green", "blue")  default =  c("PCA") first principal component of the input image}
 
 \item{hara}{logical. switch for using  HaralickTextureExtraction, default = TRUE. \cr}
 
