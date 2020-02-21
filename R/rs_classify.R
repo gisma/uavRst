@@ -726,8 +726,8 @@ calc_ext<- function ( calculateBands    = FALSE,
                                 progress = "text",
                                 overwrite=TRUE)
             fbFN<-file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i])))
-            flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"PCA_*"))))
-            dellist <-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"PCA_*"))))
+            flist<-append(flist,  fbFN)
+            dellist <-append(dellist,  fbFN)
             bandNames <-append(bandNames,make_bandnames(pca = paste0(channels,"_",filterBand)))
           }                                     
           else {
