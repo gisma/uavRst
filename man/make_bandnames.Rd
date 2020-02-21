@@ -14,7 +14,7 @@ make_bandnames(
   rgbTrans = NA,
   dem = NA,
   l_raster = NA,
-  pca = "PCA"
+  pca = NA
 )
 }
 \arguments{
