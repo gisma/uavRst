@@ -819,7 +819,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                           options="COMPRESS=LZW",
                           overwrite=TRUE)}
             else {
-        message(catError(":::: you have more than 256 Layers writing an envi file. \n You NUST reassign the bandnames when using the envi file! \n"))
+        message(catErr(":::: you have more than 256 Layers writing an envi file. \n You NUST reassign the bandnames when using the envi file! \n"))
         raster::writeRaster(r,
                             paste0(currentIdxFolder,"/", patternIdx,tmpFN),
                             format="ENVI",
