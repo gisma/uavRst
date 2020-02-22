@@ -720,7 +720,7 @@ calc_ext<- function ( calculateBands    = FALSE,
           
           if (bandNr == 4) {
             message(catNote(":::: calculate PCA channel...",paste0(filterBand,"_",basename(imageFiles[i])),"\n"))
-            rpc <- RStoolbox::rasterPCA(aerialRGB)
+            rpc <- RStoolbox::rasterPCA(r)
             raster::writeRaster(rpc$map[[1]],
                                 file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i]))),
                                 progress = "text",
