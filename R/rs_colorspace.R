@@ -50,7 +50,8 @@ colorspace<- function(input=NULL,
   catOk   <- getCrayon()[[3]]
   #convert 2017_05_20_RGB_DEFS17_16_OrthoMosaic.tif -colorspace cmyk -compress LZW to.tif
 
-  #if (is.null(channel)) channel<-seq(length(grep(gdalUtils::gdalinfo(input,nomd = TRUE),pattern = "Band ")))
+  #if (is.null(channel)) channel<-seq(length(grep(system(paste0(gdal$path,'gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
+
   if (!exists("path_run")) path_run = tempdir()
   retStack<- list()
   for (colMod in colorspace) {

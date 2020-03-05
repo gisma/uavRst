@@ -15,6 +15,7 @@
 #' @param verbose switch for system messages default is FALSE
 #' @param path_output path outut
 #' @param otbLinks        list. of OTB tools cli pathes
+#' @param gdalLinks     list. GDAL tools cli paths 
 #' @return raster* object
 #' @references Haralick, R.M., K. Shanmugam and I. Dinstein. 1973. Textural Features for Image Classification.
 #' IEEE Transactions on Systems, Man and Cybernetics. SMC-3(6):610-620.\cr
@@ -124,6 +125,7 @@ otbtex_hara<- function(x,
                    channel=NULL,
                    verbose=FALSE,
                    otbLinks = NULL,
+                   gdalLinks = NULL,
                    ram="8192"){
 
   input=x
@@ -139,12 +141,16 @@ otbtex_hara<- function(x,
   } else otb<- otbLinks$pathOTB
   path_OTB<- otbLinks$pathOTB
   
+  if (is.null(gdalLinks)){
+    gdal<-link2GI::linkGDAL()
+  } else gdal<- gdalLinks
+  path_gdal<- gdal$path
   
   if(texture == "all"){
     texture <- c("simple", "advanced", "higher")
   }
   
-  if (is.null(channel))    channel <-seq(length(grep(system(paste('gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
+  if (is.null(channel))    channel <-seq(length(grep(system(paste0(gdal$path,'gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
 
   
   ret_textures <- lapply(channel, function(band){
@@ -258,6 +264,7 @@ otbtex_hara<- function(x,
 #' @param verbose switch for system messages default is FALSE
 #' @param outDir output Directory
 #' @param otbLinks        list. of GI tools cli pathes
+#' @param gdalLinks     list. GDAL tools cli paths 
 #' @author Chris Reudenbach
 #' @return raster* object
 #' @export otb_stat
@@ -307,7 +314,8 @@ otb_stat<- function(input=NULL,
                     retRaster=FALSE,
                     outDir=NULL,
                     verbose=FALSE,
-                    otbLinks = NULL){
+                    otbLinks = NULL,
+                    gdalLinks = NULL){
   
   if (nchar(dirname(input))>0){
     input<basename(input)
@@ -320,8 +328,13 @@ otb_stat<- function(input=NULL,
   } else otb<- otbLinks
   path_OTB<- otb$pathOTB
   
+  if (is.null(gdalLinks)){
+    gdal<-link2GI::linkGDAL()
+  } else gdal<- gdalLinks
+  path_gdal<- gdal$path
+  
   retStack<-list()
-  if (is.null(channel)) channel <-seq(length(grep(system(paste('gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
+  if (is.null(channel)) channel <-seq(length(grep(system(paste0(gdal$path,'gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
   for (band in channel) {
     
     outName<-file.path(paste0(tools::file_path_sans_ext(out),
@@ -414,7 +427,8 @@ otbtex_edge<- function(input=NULL,
                        retRaster=FALSE,
                        outDir=NULL,
                        verbose=FALSE,
-                       otbLinks = NULL){
+                       otbLinks = NULL,
+                       gdalLinks = NULL){
   
   if (nchar(dirname(input))>0){
     input<basename(input)
@@ -427,8 +441,12 @@ otbtex_edge<- function(input=NULL,
   } else otb<- otbLinks
   path_OTB<- otb$pathOTB
   
+  if (is.null(gdalLinks)){
+    gdal<-link2GI::linkGDAL()
+  } else gdal<- gdalLinks
+  path_gdal<- gdal$path 
   retStack<-list()
-  if (is.null(channel)) channel <-seq(length(grep(system(paste('gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
+  if (is.null(channel)) channel <-seq(length(grep(system(paste0(gdal$path,'gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
   for (band in channel) {
     outName<-file.path(paste0(tools::file_path_sans_ext(out),
                     "_ch",
@@ -473,6 +491,7 @@ otbtex_edge<- function(input=NULL,
 #' @param verbose switch for system messages default is FALSE
 #' @param outDir output Directory
 #' @param otbLinks        list. of GI tools cli pathes
+#' @param gdalLinks     list. GDAL tools cli paths 
 #' @author Chris Reudenbach
 #' @export otbtex_gray
 #' @return raster* object
@@ -520,7 +539,8 @@ otbtex_gray<- function(input=NULL,
                          retRaster=FALSE,
                          outDir=NULL,
                          verbose=FALSE,
-                         otbLinks = NULL){
+                         otbLinks = NULL,
+                         gdalLinks = NULL){
   
   if (nchar(dirname(input))>0){
     input<basename(input)
@@ -536,9 +556,13 @@ otbtex_gray<- function(input=NULL,
   } else otb<- otbLinks
   path_OTB<- otb$pathOTB
   
-
   
-  if (is.null(channel)) channel <-seq(length(grep(system(paste('gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
+  if (is.null(gdalLinks)){
+    gdal<-link2GI::linkGDAL()
+  } else gdal<- gdalLinks
+  path_gdal<- gdal$path
+  
+  if (is.null(channel)) channel <-seq(length(grep(system(paste0(gdal$path,'gdalinfo  ',input), intern = TRUE),pattern = "Band ",value = TRUE)))
   for (band in channel) {
     outName<-file.path(paste0(
                     tools::file_path_sans_ext(out),
@@ -581,6 +605,7 @@ otbtex_gray<- function(input=NULL,
 #' @param retRaster boolean if TRUE a raster stack is returned
 #' @param gdalLinks    list. of GDAL tools cli pathes
 #' @param sagaLinks    list. of SAGA tools cli pathes
+#' @param gdalLinks     list. GDAL tools cli paths 
 #' @return raster* object
 #' @export morpho_dem
 #' @examples
@@ -630,8 +655,11 @@ morpho_dem<- function(dem,
   dem<-basename(dem)
   if (is.null(sagaLinks))   saga<- link2GI::linkSAGA()
   else saga<-sagaLinks
-  if (is.null(gdalLinks))  gdal<- link2GI::linkGDAL()
-  else  gdal<- gdalLinks
+  
+  if (is.null(gdalLinks)){
+    gdal<-link2GI::linkGDAL()
+  } else gdal<- gdalLinks
+  path_gdal<- gdal$path
   
   sagaCmd<-saga$sagaCmd
   

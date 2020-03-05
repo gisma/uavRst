@@ -773,7 +773,7 @@ make_bandnames <- function(rgbi    = NA,
     if (!is.na(l_raster)) bandNames<-bandNames[1:l_raster]
   }
   if (stat == TRUE)  {
-    bandNames    = c("Stat_Mean","Stat_Variance", "Skewness", "Kurtosis")
+    bandNames    = c("Stat_Mean","Stat_Variance", "Stat_Skewness", "Stat_Kurtosis")
   }
   if (!is.na(dem))  {
     bandNames    =  dem

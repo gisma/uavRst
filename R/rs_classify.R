@@ -584,7 +584,7 @@ calc_ext<- function ( calculateBands    = FALSE,
   retStack<-list()
   
   if (is.null(gdalLinks))   gdal<- link2GI::linkGDAL()
-  else gdal<-gdalLinks<-
+  else gdal<-gdalLinks
   if (is.null(sagaLinks))  saga<- link2GI::linkSAGA()
   else  saga<- sagaLinks
   if (is.null(otbLinks))  otb<- link2GI::linkOTB()
@@ -592,20 +592,11 @@ calc_ext<- function ( calculateBands    = FALSE,
   
   sagaCmd<-saga$sagaCmd
   path_OTB <- otb$pathOTB
-
+  catOK   <- getCrayon()[[3]]
   catHead <- getCrayon()[[4]]
   catErr  <- getCrayon()[[2]]
   catNote <- getCrayon()[[1]]
-  catOk   <- getCrayon()[[3]]
-  rlist <-list()
 
-  # if (nchar(prefixRun)>0)   prefixRun<-  paste0(prefixRun,"_")
-  # if (nchar(patterndemFiles)>0)   patterndemFiles <-  paste0(patterndemFiles,"_")
-  # if (nchar(patternImgFiles)>0)   patternImgFiles <-  paste0(patternImgFiles,"_")
-  # if (nchar(prefixTrainImg)>0)   prefixTrainImg <-  paste0(prefixTrainImg,"_")
-  # if (nchar(patternIdx)>0)   patternIdx <-  paste0(patternIdx,"_")
-  # if (nchar(suffixTrainGeom)>0)   suffixTrainGeom <-  paste0("_",suffixTrainGeom)
-  # if (nchar(suffixTrainImg)>0)   suffixTrainImg <-  paste0("_",suffixTrainImg)
   #
   currentDataFolder<- currentDataFolder #paste0(path_data_training)
   currentIdxFolder<- currentIdxFolder # paste0(path_data_training_idx)
@@ -620,8 +611,8 @@ calc_ext<- function ( calculateBands    = FALSE,
     # NOTE all subfolder below c("data/","output/","run/","fun","idx") have to created individually
 
     #imageFiles <- list.files(pattern=paste0("^",prefixRun,"*","tif"), path=currentDataFolder, full.names=TRUE)
-    imageFiles <-Sys.glob(paths = paste0(currentDataFolder,patternImgFiles,"*","tif"))
-    demFiles <- Sys.glob(paths = paste0(currentDataFolder,patterndemFiles,"*","tif"))
+    imageFiles <-Sys.glob(paths = file.path(currentDataFolder,paste0(patternImgFiles,"*","tif")))
+    demFiles <- Sys.glob(paths = file.path(currentDataFolder,paste0(patterndemFiles,"*","tif")))
 
     # create a counter for all input files to be processed
     counter<- max(length(demFiles),length(imageFiles))
@@ -667,7 +658,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         rgb_rgbi<-raster::stack(r[[1:3]],uavRst::rgb_indices(r[[1]],r[[2]],r[[3]],indices))
         bandNames <- append(bandNames,make_bandnames(rgbi = indices))
         names(rgb_rgbi)<-append(c("red","green","blue"),indices)
-        message(catOk("\n     save ...",paste0(path_run,"rgbi_",basename(imageFiles[i])),"\n"))
+        message(catOK("\n     save ...",paste0(path_run,"rgbi_",basename(imageFiles[i])),"\n"))
         raster::writeRaster(rgb_rgbi,
                             file.path(R.utils::getAbsolutePath(path_run),paste0("rgbi_",basename(imageFiles[i]))),
                             progress = "text",
@@ -690,7 +681,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         }
         rt<- lapply(rgbTranslist, FUN=raster::stack)
         for (jj in 1:length(rt)) {
-          message(catOk(":::: save... ",paste0(colorSpaces[jj],"_",basename(imageFiles[i])),"\n"))
+          message(catOK(":::: save... ",paste0(colorSpaces[jj],"_",basename(imageFiles[i])),"\n"))
           raster::extent(rt[[jj]])<-raster::extent(r)
           raster::projection(rt[[jj]]) <- raster::crs(raster::projection(r))
           raster::writeRaster(raster::stack(rt[[jj]][[1:(raster::nlayers(rt[[jj]]))]]),
@@ -746,7 +737,8 @@ calc_ext<- function ( calculateBands    = FALSE,
                    out = file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"stat_",basename(imageFiles[i]))),
                    ram = "4096",
                    radius =  kernel,
-                   otbLinks=  otb)
+                   otbLinks=  otb,
+                   gdalLinks = gdal)
           flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"stat_*"))))
           dellist <-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"stat_*"))))
           bandNames <-append(bandNames,paste0(make_bandnames(stat = TRUE),"_",filterBand))
@@ -758,7 +750,8 @@ calc_ext<- function ( calculateBands    = FALSE,
             uavRst::otbtex_edge(input = fbFN,
                                 out = file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,edges,basename(imageFiles[i]))),
                                 filter = edges,
-                                otbLinks=  otb)
+                                otbLinks=  otb,
+                                gdalLinks = gdal)
 
             flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,edges,"*"))))
             dellist<-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,edges,"*"))))
@@ -773,7 +766,8 @@ calc_ext<- function ( calculateBands    = FALSE,
             uavRst::otbtex_gray(input = fbFN,
                                 out = file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,morphos,basename(imageFiles[i]))),
                                 filter = morphos,
-                                otbLinks=  otb)
+                                otbLinks=  otb,
+                                gdalLinks = gdal)
             flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,morphos,"*"))))
             dellist<-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,morphos,"*"))))
             bandNames <-append(bandNames,make_bandnames(edge = paste0(morphos,"_",filterBand)))
@@ -786,7 +780,8 @@ calc_ext<- function ( calculateBands    = FALSE,
             otbtex_hara(x = fbFN,
                         output_name=file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_",basename(imageFiles[i]))),
                         texture = type,
-                        otbLinks=  otb)
+                        otbLinks=  otb,
+                        gdalLinks = gdal)
             flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*",type,"*"))))
             dellist<-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*",type,"*"))))
             nband<-raster::nbands(raster::raster(Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*",type,"*")))))
@@ -802,7 +797,7 @@ calc_ext<- function ( calculateBands    = FALSE,
       if (rgbi)  tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
       else if (length(demFiles)>= i)  tmpFN<-paste0(substr(basename(demFiles[i]),1,nchar(basename(demFiles[i]))-4))
       else return(message(catErr("\nhopefully done\n You are mixing RGB an DEM input files. You may do this but only if they are of the same extent etc. and if each image file has a corresponding dem file\n NOTE the dem filename MUST have a prefix default is 'dem_'.")))
-      message(catOk("     save ...",paste0(patternIdx, tmpFN),"\n"))
+      message(catOK("     save ...",paste0(patternIdx, tmpFN),"\n"))
       # r<-raster::brick(raster::stack(flist)) qgis cannot read heder
       if (length(demFiles) > 0)  for (k in 1:length(demFiles)) flist[-grepl(pattern = demFiles[k],flist)]
       for (k in 1:length(imageFiles)) flist[-grepl(pattern = imageFiles[k],flist)]
