@@ -578,13 +578,12 @@ otbtex_gray<- function(input=NULL,
     command<-paste(command, " -in ", input)
     command<-paste(command, " -channel ", channel)
     command<-paste(command, " -filter ", filter)
-    command<-paste(command, " -xradius ", xradius)
-    command<-paste(command, " -yradius ", yradius)
+
     command<-paste(command, " -out ", outName)
     command<-paste(command, " -ram ",ram)
     if (verbose) {
       message("\nrunning cmd:  ", command[band],"\n")
-      system(command[band])}
+      }
     else{
       system(command[band],intern = TRUE,ignore.stdout = TRUE)}
 

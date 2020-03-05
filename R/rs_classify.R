@@ -824,7 +824,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         }
       #raster::hdr(r, filename = paste0(currentIdxFolder,"/", patternIdx,tmpFN), format = "ENVI") qgis cannot read heder
       
-      rlist<-append(rlist, file.path(R.utils::getAbsolutePath(paste0(currentIdxFolder,"/", patternIdx,tmpFN))))
+      rlist<- file.path(R.utils::getAbsolutePath(paste0(currentIdxFolder,"/", patternIdx,tmpFN)))
       
       # cleanup runtime files lists...
       if (cleanRunDir) {
@@ -842,7 +842,7 @@ calc_ext<- function ( calculateBands    = FALSE,
     message(catErr(":::: resulting files...",rlist,"\n"))
     message(catErr(":::: corresponding band names... ",paste0(currentIdxFolder,prefixRun,"bandNames.RData"),"\n"))
     message(catHead("\n--- calculation of synthetic channels finished ---\n"))
-    if (!extractTrain) return(append(rlist,paste0(currentIdxFolder,prefixRun,"bandNames.RData")))
+    if (!extractTrain) return(r)
     
   }
   # ----- start extraction ---------------------------------------------------
