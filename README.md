@@ -31,10 +31,19 @@ You will find some tutorials and examples at the uavRst [Wiki](https://github.co
 
 ## Installation
 
-The master branch is a github mirror for the `CRAN` version. 
+**Note:** Currently (06/2020)  the `velox` package as well as the `spatial.tools` package are removed from CRAN and only available as an archived version. Up to now the functionality is not substituted. So you have to install both packages from source:
+
+```
+devtools::install_url('http://cran.r-project.org/src/contrib/Archive/spatial.tools/spatial.tools_1.6.2.tar.gz')
+
+devtools::install_url('http://cran.r-project.org/src/contrib/Archive/velox/velox_0.2.0.tar.gz')
+
+```
+
+
 
 To install the actual development version from ```github```  you need to have installed the ```devtools``` package.
 
 ```R
-devtools::install_github("gisma/uavRst", ref = "develop")
+devtools::install_github("gisma/uavRst", ref = "master")
 ```
