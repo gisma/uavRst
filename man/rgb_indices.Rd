@@ -24,8 +24,8 @@ rgb_indices(
 \item \code{BI}    sqrt((R**2+G**2+B*2)/3 Brightness Index\cr
 \item \code{SCI}   (R-G)/(R+G) Soil Colour Index\cr
 \item \code{GLI}   (2*g - r - b)/(2*g + r + b) Green leaf index Vis Louhaichi et al. (2001)\cr
-\item \code{HI}    (2*R-G-B)/(G-B) Primary colours Hue Index\cr
-\item \code{NDTI}  (R-G)/(R+G) Normalized difference turbidity index Water\cr
+\item \code{HI}    (2*R-G-B)/(G-B) Primary colours Hue Index MATHIEU et al. (1998)\cr
+\item \code{NDTI}  (R-G)/(R+G) Normalized difference turbidity index Water Lacaux et al. (2007)\cr
 \item \code{NGRDI} (G-R)/(G+R) Normalized green red difference index (sometimes GRVI) Tucker (1979)
 \item \code{RI}    R**2/(B*G**3) Redness Index\cr
 \item \code{SI}    (R-B)/(R+B) Spectral Slope Saturation Index\cr
@@ -70,8 +70,8 @@ raster::plot(rgbI)
 Planetary Habitability Laboratory (2015): Visible Vegetation Index (VVI). Available online via \href{http://phl.upr.edu/projects/visible-vegetation-index-vvi}{VVI}.\cr
 Lacaux, J. P., Tourre, Y. M., Vignolles, C., Ndione, J. A., and Lafaye, M.: Classification of ponds from high-spatial resolution remote sensing: Application to Rift Valley Fever epidemics in Senegal, Remote Sens. Environ., 106, 66-74, 2007.(NDTI) )\cr
 Gitelson, A., et al.: Vegetation and Soil Lines in Visible Spectral Space: A Concept and Technique for Remote Estimation of Vegetation Fraction.  International Journal of Remote Sensing 23 (2002): 2537-2562. (VARI)\cr
-MADEIRA, J., BEDIDI, A., CERVELLE, B., POUGET, M. and FLAY, N., 1997, Visible spectrometric indices of hematite (Hm) and goethite (Gt) content in lateritic soils: 5490 N. Levin et al. the application of a Thematic Mapper (TM) image for soil-mapping in Brasilia, Brazil. International Journal of Remote Sensing, 18, pp. 2835-2852.\cr
-MATHIEU, R., POUGET, M., CERVELLE, B. and ESCADAFAL, R., 1998, Relationships between satellite-based radiometric indices simulated using laboratory reflectance data and typic soil colour of an arid environment. Remote Sensing of Environment, 66, pp. 17-28. \cr
+MADEIRA, J., BEDIDI, A., CERVELLE, B., POUGET, M. and FLAY, N., 1997, Visible spectrometric indices of hematite (Hm) and goethite (Gt) content in lateritic soils: 5490 N. Levin et al. the application of a Thematic Mapper (TM) image for soil-mapping in Brasilia, Brazil. International Journal of Remote Sensing, 18, pp. 2835-2852.(RI)\cr
+MATHIEU, R., POUGET, M., CERVELLE, B. and ESCADAFAL, R., 1998, Relationships between satellite-based radiometric indices simulated using laboratory reflectance data and typic soil colour of an arid environment. Remote Sensing of Environment, 66, pp. 17-28.(BI, SI, HI) \cr
 Louhaichi, M., Borman, M.M., Johnson, D.E., 2001. Spatially located platform and aerial photography for documentation of grazing impacts on wheat. Geocarto International 16, 65-70.\cr
 Tucker, C.J., 1979. Red and photographic infrared linear combinations for monitoring vegetation. Remote Sensing of Environment 8, 127-150.\cr
 GRVI  Green-Red Vegetation Index  Remote Sensing 2010, 2, 2369-2387; doi:10.3390/rs2102369\cr

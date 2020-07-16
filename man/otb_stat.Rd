@@ -13,7 +13,8 @@ otb_stat(
   retRaster = FALSE,
   outDir = NULL,
   verbose = FALSE,
-  otbLinks = NULL
+  otbLinks = NULL,
+  gdalLinks = NULL
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ otb_stat(
 \item{verbose}{switch for system messages default is FALSE}
 
 \item{otbLinks}{list. of GI tools cli pathes}
+
+\item{gdalLinks}{list. GDAL tools cli paths}
 }
 \value{
 raster* object

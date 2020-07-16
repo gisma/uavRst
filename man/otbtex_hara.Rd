@@ -17,6 +17,7 @@ otbtex_hara(
   channel = NULL,
   verbose = FALSE,
   otbLinks = NULL,
+  gdalLinks = NULL,
   ram = "8192"
 )
 }
@@ -44,6 +45,8 @@ otbtex_hara(
 \item{verbose}{switch for system messages default is FALSE}
 
 \item{otbLinks}{list. of OTB tools cli pathes}
+
+\item{gdalLinks}{list. GDAL tools cli paths}
 
 \item{ram}{reserved memory in MB}
 }

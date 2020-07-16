@@ -59,7 +59,7 @@ Suggests: knitr,
     R.utils,
     RStoolbox
 LinkingTo: Rcpp
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 SystemRequirements: GNU make
 Collate: 
     'RcppExports.R'

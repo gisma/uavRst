@@ -15,7 +15,8 @@ otbtex_edge(
   retRaster = FALSE,
   outDir = NULL,
   verbose = FALSE,
-  otbLinks = NULL
+  otbLinks = NULL,
+  gdalLinks = NULL
 )
 }
 \arguments{
@@ -39,7 +40,9 @@ otbtex_edge(
 
 \item{verbose}{switch for system messages default is FALSE}
 
-\item{otbLinks}{list. of GI tools cli pathes}
+\item{otbLinks}{list of OTB tools cli pathes}
+
+\item{gdalLinks}{list of GDAL cli pathes}
 }
 \value{
 raster* object

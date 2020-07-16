@@ -4,7 +4,9 @@
 \name{mrbiko}
 \alias{mrbiko}
 \title{DEM data set of Marburg-Biedenkopf}
-\format{\code{"raster::raster"}}
+\format{
+\code{"raster::raster"}
+}
 \description{
 DEM data set resampled to 20 m resolution
 }

@@ -6,9 +6,9 @@
 \usage{
 morpho_dem(
   dem,
-  item = c("hillshade", "slope", "aspect", "TRI", "TPI", "Roughness", "SLOPE", "ASPECT",
-    "C_GENE", "C_PROF", "C_PLAN", " C_TANG", " C_LONG", "C_CROS", "C_MINI", "C_MAXI",
-    "C_TOTA", "C_ROTO", "MTPI"),
+  item = c("hillshade", "slope", "aspect", "TRI", "TPI", "Roughness", "SLOPE",
+    "ASPECT", "C_GENE", "C_PROF", "C_PLAN", " C_TANG", " C_LONG", "C_CROS", "C_MINI",
+    "C_MAXI", "C_TOTA", "C_ROTO", "MTPI"),
   verbose = FALSE,
   morphoMethod = 6,
   minScale = 1,
@@ -36,7 +36,7 @@ morpho_dem(
 
 \item{retRaster}{boolean if TRUE a raster stack is returned}
 
-\item{gdalLinks}{list. of GDAL tools cli pathes}
+\item{gdalLinks}{list. GDAL tools cli paths}
 
 \item{sagaLinks}{list. of SAGA tools cli pathes}
 }

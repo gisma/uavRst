@@ -4,7 +4,9 @@
 \name{pacman}
 \alias{pacman}
 \title{example raster data set for demonstration usage}
-\format{\code{"raster::raster"}}
+\format{
+\code{"raster::raster"}
+}
 \description{
 dump of the well know pac man game
 }

@@ -16,7 +16,8 @@ otbtex_gray(
   retRaster = FALSE,
   outDir = NULL,
   verbose = FALSE,
-  otbLinks = NULL
+  otbLinks = NULL,
+  gdalLinks = NULL
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ otbtex_gray(
 \item{verbose}{switch for system messages default is FALSE}
 
 \item{otbLinks}{list. of GI tools cli pathes}
+
+\item{gdalLinks}{list. GDAL tools cli paths}
 }
 \value{
 raster* object

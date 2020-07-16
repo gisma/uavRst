@@ -4,7 +4,9 @@
 \name{rgb}
 \alias{rgb}
 \title{RGB Orthoimagefrom an arbitray MOF plot}
-\format{\code{"raster::raster"}}
+\format{
+\code{"raster::raster"}
+}
 \description{
 Example data set containing a RGB Orthoimage of a small plot sampled in the Maburg University Forest (MOF). The resolution is 10 cm. ETRS89 UTM32
 }

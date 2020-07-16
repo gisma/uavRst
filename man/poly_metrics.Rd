@@ -7,7 +7,8 @@
 poly_metrics(
   crownarea,
   funNames = c("length", "elongation", "eccentricityboundingbox", "solidity",
-    "eccentricityeigen", "calliper", "rectangularity", "circularityharalick", "convexity")
+    "eccentricityeigen", "calliper", "rectangularity", "circularityharalick",
+    "convexity")
 )
 }
 \arguments{

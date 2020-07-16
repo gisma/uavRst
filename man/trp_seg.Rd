@@ -4,7 +4,9 @@
 \name{trp_seg}
 \alias{trp_seg}
 \title{Optional tree position raster map}
-\format{\code{"raster::raster"}}
+\format{
+\code{"raster::raster"}
+}
 \description{
 Example data set containing optional treepoint positions sampled in the Maburg University Forest (MOF). The resolution is 10 cm. ETRS89 UTM32
 }
