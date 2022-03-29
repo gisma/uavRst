@@ -57,9 +57,10 @@ Suggests: knitr,
     rmarkdown,
     mapview,
     R.utils,
-    RStoolbox
+    RStoolbox,
+    markdown
 LinkingTo: Rcpp
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 SystemRequirements: GNU make
 Collate: 
     'RcppExports.R'
