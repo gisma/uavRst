@@ -24,6 +24,7 @@ Imports:
     foreach
 Suggests: knitr,
     stringr,
+    terra,
     sp,
     sf,
     htmlwidgets,
@@ -50,6 +51,7 @@ Suggests: knitr,
     RSAGA,
     reshape2,
     rgrass7,
+    rgrass,
     randomForest,
     rLiDAR,
     rlas,
@@ -60,7 +62,7 @@ Suggests: knitr,
     RStoolbox,
     markdown
 LinkingTo: Rcpp
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 SystemRequirements: GNU make
 Collate: 
     'RcppExports.R'
