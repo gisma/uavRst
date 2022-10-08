@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // gsubC
 std::string gsubC(const std::string& pattern, const std::string& replacement, std::string x);
 RcppExport SEXP _uavRst_gsubC(SEXP patternSEXP, SEXP replacementSEXP, SEXP xSEXP) {

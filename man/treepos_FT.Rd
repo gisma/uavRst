@@ -6,7 +6,9 @@
 \usage{
 treepos_FT(
   chm = NULL,
-  winFun = function(x) {     0.5 * ((x^2) * 0.009 + 2.51) },
+  winFun = function(x) {
+     0.5 * ((x^2) * 0.009 + 2.51)
+ },
   minTreeAlt = 2,
   maxCrownArea = maxCrownArea,
   verbose = TRUE

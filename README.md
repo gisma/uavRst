@@ -31,12 +31,15 @@ You will find some tutorials and examples at the uavRst [Wiki](https://github.co
 
 ## Installation
 
-**Note:** Currently (06/2020)  the `velox` package as well as the `spatial.tools` package are removed from CRAN and only available as an archived version. Up to now the functionality is not substituted. So you have to install both packages from source:
+**Note:** Currently (10/2022)  the `velox`, `spatial.tools` and `gdalUtils` packages are archived on CRAN and only available as an archived/Github version. Up to now the functionality in the `uavRST` package is not substituted. So you have to install these packages from source:
 
 ```
 devtools::install_url('http://cran.r-project.org/src/contrib/Archive/spatial.tools/spatial.tools_1.6.2.tar.gz')
 
-devtools::install_url('http://cran.r-project.org/src/contrib/Archive/velox/velox_0.2.0.tar.gz')
+devtools::install_github("hunzikp/velox")
+
+devtools::install_url('http://cran.r-project.org/src/contrib/Archive/gdalUtils/gdalUtils_2.0.3.tar.gz')
+
 
 ```
 

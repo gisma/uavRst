@@ -74,7 +74,7 @@ crown_filter<- function(crownFn,
   
   if (!exists("path_run")) path_run = tempdir()
   # read crown vector data set
-  if (class(crownFn)=="character")
+  if (isString(crownFn))
     crownarea <- rgdal::readOGR(file.path(R.utils::getAbsolutePath(path_run)),
                                 tools::file_path_sans_ext(basename(crownFn)), 
                                 verbose = FALSE,

@@ -443,7 +443,7 @@ poly_stat <- function(rasternames = NULL,
       #                     verbose = FALSE)
     }
   
-if (class(spdf)=="SpatialPolygonsDataFrame")     {
+if (class(spdf) %in% c("SpatialPolygonsDataFrame")  )   {
   rgdal::writeOGR(obj    = spdf,
                   layer  = "spdf",
                   driver = "ESRI Shapefile",
@@ -1050,4 +1050,8 @@ linkGI <- function(links=NULL,
     
   }
   return(link)
+}
+
+isString <- function(input) {
+  is.character(input) & length(input) >= 1
 }
