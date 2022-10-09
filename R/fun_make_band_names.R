@@ -1,12 +1,11 @@
 #' create name vector corresponding to the training image stack
-#' create vector containing the names of the image stack claculated using \code{\link{calc_ext}}
+#' create vector containing the names of the image stack calculated using \code{\link{calc_ext}}
 #' @param rgbi character. codes of the RGB indices
 #' @param bandNames character.  band names
 #' @param stat character.  stat codes
 #' @param morpho character.  morpho codes
 #' @param edge character.  edge codes
-#' @param rgbTrans character.  rgbTrans codes
-#' @param dem charater. dem codes
+#' @param rgbTrans character.  RGB transformation model codes
 #' @param l_raster number of raster layer that exist
 #' @keywords internal
 #'

@@ -3,17 +3,17 @@
 #' @description  OTB wrapper for calculating Haralick's simple, advanced and higher order texture features on every pixel in each channel of the input image
 #'
 #' @param x A \code{Raster*} object or a \href{http://www.gdal.org/frmt_gtiff.html}{GeoTiff} containing one or more gray  value bands
-#' @param output_name string pattern vor individual naming of the output file(s)
+#' @param output_name string pattern for individual naming of the output file(s)
 #' @param parameters.xyrad list with the x and y radius in pixel indicating the kernel sizes for which the textures are calculated
-#' @param parameters.xyoff  vector containg the directional offsets. Valid combinations are: list(c(1,1),c(1,0),c(0,1),c(1,-1))
+#' @param parameters.xyoff  vector containing the directional offsets. Valid combinations are: list(c(1,1),c(1,0),c(0,1),c(1,-1))
 #' @param parameters.minmax   minimum/maximum gray value which can occur.
 #' @param parameters.nbbin number of gray level bins (classes)
 #' @param texture type of filter "all" for all, alternative one of "simple" "advanced" "higher"
 #' @param channel sequence of bands to be processed
 #' @param ram reserved memory in MB
-#' @param return_raster boolean if TRUE a raster stack is returned
+#' @param return_raster Boolean if TRUE a raster stack is returned
 #' @param verbose switch for system messages default is FALSE
-#' @param path_output path outut
+#' @param path_output path for output
 #' @param otbLinks        list. of OTB tools cli pathes
 #' @param gdalLinks     list. GDAL tools cli paths 
 #' @return raster* object

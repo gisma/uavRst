@@ -1,17 +1,17 @@
 #' calculates most important DEM parameters
 #'
 #' @note please provide a GeoTiff file
-#' @param dem  character filname to GeoTiff containing one channel DEM
+#' @param dem  character file name of GeoTiff containing one channel DEM
 #' @param item character list containing the keywords of the DEM parameter to be calculated. Default parameter are c("hillshade", "slope", "aspect", "TRI", "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", " C_TANG"," C_LONG", "C_CROS", "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI")
 #' @param verbose logical. be quiet
 #' @param morphoMethod  numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}. GDAL parameters see also: \href{https://www.gdal.org/gdaldem.html}{gdaldem}
 #' @param minScale  numeric. in scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param maxScale  numeric. max scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param numScale  numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
-#' @param retRaster boolean if TRUE a raster stack is returned
-#' @param gdalLinks    list. of GDAL tools cli pathes
-#' @param sagaLinks    list. of SAGA tools cli pathes
-#' @param gdalLinks     list. GDAL tools cli paths 
+#' @param retRaster Boolean if TRUE a raster stack is returned
+#' @param gdalLinks    list. of GDAL tools CLI pathes
+#' @param sagaLinks    list. of SAGA tools CLI pathes
+#' @param gdalLinks     list. GDAL tools CLI paths 
 #' @return raster* object
 #' @export morpho_dem
 #' @examples
