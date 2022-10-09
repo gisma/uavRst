@@ -1,3 +1,9 @@
+## uavRst 0.5-6
+
+bugfixes:
+  * fix CRAN issues
+  * fix some minor errors
+  
 ## uavRst 0.5-5
 
 bugfixes:

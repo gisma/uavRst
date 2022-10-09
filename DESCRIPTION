@@ -1,7 +1,7 @@
 Package: uavRst
 Type: Package
 Title: Unmanned Aerial Vehicle Remote Sensing Tools
-Version: 0.5-5
+Version: 0.5-6
 Date: 2020-02-22
 Authors@R: c(person("Chris", "Reudenbach", email = "reudenbach@uni-marburg.de", role = c("cre","aut")),
              person("Hanna", "Meyer", email = "hanna.meyer@uni-marburg.de", role = c("aut")),
@@ -63,7 +63,7 @@ Suggests: knitr,
     markdown
 LinkingTo: Rcpp
 RoxygenNote: 7.2.1
-SystemRequirements: GNU make
+SystemRequirement#s: GNU make
 Collate: 
     'RcppExports.R'
     'rs_textures.R'
@@ -80,4 +80,12 @@ Collate:
     'fa_crownmetrics.R'
     'fa_diversity.R'
     'rs_colorspace.R'
+    'rs_indices.R'
+    'rs_synband.R'
+     fun_dem_indices.R
+  'fun_extract_train_pixel_values.R'
+  'fun_getCrayon.R'
+  'fun_make_band_names.R'
+  'fun_merge_rgb.R'
+  'funs_otb_textures.R'
     'uavRst-package.R'
