@@ -10,7 +10,7 @@ morpho_dem(
     "C_GENE", "C_PROF", "C_PLAN", " C_TANG", " C_LONG", "C_CROS", "C_MINI", "C_MAXI",
     "C_TOTA", "C_ROTO", "MTPI"),
   verbose = FALSE,
-  morphoMethod = 6,
+  saga_morphoMethod = 6,
   minScale = 1,
   maxScale = 8,
   numScale = 2,
@@ -25,7 +25,7 @@ morpho_dem(
     "C_GENE", "C_PROF", "C_PLAN", " C_TANG", " C_LONG", "C_CROS", "C_MINI", "C_MAXI",
     "C_TOTA", "C_ROTO", "MTPI"),
   verbose = FALSE,
-  morphoMethod = 6,
+  saga_morphoMethod = 6,
   minScale = 1,
   maxScale = 8,
   numScale = 2,
@@ -41,7 +41,7 @@ morpho_dem(
 
 \item{verbose}{logical. be quiet}
 
-\item{morphoMethod}{numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}. GDAL parameters see also: \href{https://www.gdal.org/gdaldem.html}{gdaldem}}
+\item{saga_morphoMethod}{numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}. GDAL parameters see also: \href{https://www.gdal.org/gdaldem.html}{gdaldem}}
 
 \item{minScale}{numeric. in scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}}
 

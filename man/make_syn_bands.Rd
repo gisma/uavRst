@@ -112,8 +112,6 @@ make_syn_bands(
 \item{otbLinks}{list. OTB tools cli paths}
 
 \item{path_run}{list project pathes and more}
-
-\item{extractTrain}{logical. switch for set on extract training data according to training geometries default = TRUE}
 }
 \value{
 data frame containing for each drawn point the pixel values of the rasterstack data

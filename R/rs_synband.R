@@ -21,7 +21,6 @@
 
 
 #' @param calculateBands    logical. switch for set on calculation of syntheic bands and indices default = TRUE
-#' @param extractTrain      logical. switch for set on extract training data according to training geometries default = TRUE
 #' @param patternImgFiles   character. mandantory string that exist in ech imagefile to be processes
 #' @param prefixIdx         character. code string that will concatenated to the filename to identify the index file
 #' @param prefixRun      character. general prefix of all result files of the current run default = "tmp"

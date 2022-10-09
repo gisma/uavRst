@@ -4,10 +4,11 @@
 [![License](https://img.shields.io/badge/license-GPL%20%28%3E=%203%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
 
 # Unmanned Aerial Vehicle R  Tools
-The `uavR` tools consist of two packages:
 
-  * mission planning ```uavRmp``` ([CRAN](https://CRAN.R-project.org/package=uavRmp))
-  * remote sensing toolbox ```uavRst```   ([CRAN](https://CRAN.R-project.org/package=uavRst))
+The R-based UAV-tools consist of two packages:
+
+  * mission planning ```uavRmp``` ([GitHub](https://gisma.github.io/uavRmp/)/[CRAN](https://CRAN.R-project.org/package=uavRmp))
+  * remote sensing toolbox ```uavRst```   ([GitHub](https://gisma.github.io/uavRst/))
 
 
 ## Unmanned Aerial Vehicle Remote Sensing Toolbox - uavRst

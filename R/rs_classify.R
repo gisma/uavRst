@@ -458,7 +458,7 @@ ffs_train<-function(   trainingDF   = NULL,
 #' @param rgbTrans          logical. switch for using color space transforming default = TRUE
 #' @param colorSpaces       character.  RGB colorspace transforming to default c("cielab","CMY","Gray","HCL","HSB","HSI","Log","XYZ","YUV")
 #' @param kernel            numeric. size of kernel for filtering and statistics, default is  3
-#' @param morphoMethod  numeric. saga morphometric method
+#' @param saga_morphoMethod  numeric. saga morphometric method
 #' @param minScale  numeric. in scale for multi scale TPI
 #' @param maxScale  numeric. max scale for multi scale TPI
 #' @param numScale  numeric. number of scale for multi scale TPI
@@ -566,7 +566,7 @@ calc_ext<- function ( calculateBands    = FALSE,
                       demType           = c("hillshade","slope", "aspect","TRI","TPI","Roughness",
                                             "SLOPE","ASPECT", "C_GENE","C_PROF","C_PLAN","C_TANG",
                                             "C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI"),
-                      morphoMethod = 6,
+                      saga_morphoMethod = 6,
                       minScale = 1,
                       maxScale = 8,
                       numScale = 2,
@@ -632,7 +632,7 @@ calc_ext<- function ( calculateBands    = FALSE,
         bandNames <-append(bandNames,"dem")
         morpho_dem(dem = demFiles[i],
                    item = demType,
-                   morphoMethod = morphoMethod,
+                   saga_morphoMethod = saga_morphoMethod,
                    minScale = minScale,
                    maxScale = maxScale,
                    numScale = numScale,

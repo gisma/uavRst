@@ -32,7 +32,7 @@ calc_ext(
   demType = c("hillshade", "slope", "aspect", "TRI", "TPI", "Roughness", "SLOPE",
     "ASPECT", "C_GENE", "C_PROF", "C_PLAN", "C_TANG", "C_LONG", "C_CROS", "C_MINI",
     "C_MAXI", "C_TOTA", "C_ROTO", "MTPI"),
-  morphoMethod = 6,
+  saga_morphoMethod = 6,
   minScale = 1,
   maxScale = 8,
   numScale = 2,
@@ -94,7 +94,7 @@ calc_ext(
 
 \item{demType}{character. ("hillshade","slope", "aspect","TRI","TPI","Roughness")}
 
-\item{morphoMethod}{numeric. saga morphometric method}
+\item{saga_morphoMethod}{numeric. saga morphometric method}
 
 \item{minScale}{numeric. in scale for multi scale TPI}
 

@@ -1,3 +1,13 @@
+## uavRst 0.6-0
+new features:
+  * add RGB indices
+  * add OTB morphological and statistical texture bands
+  * add analytical DEM bands
+  * add extract train pixels convenient functions
+
+bugfixes:  
+  * fix some minor errors
+  
 ## uavRst 0.5-6
 
 bugfixes:

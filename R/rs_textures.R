@@ -598,7 +598,7 @@ otbtex_gray<- function(input=NULL,
 #' @param dem  character filname to GeoTiff containing one channel DEM
 #' @param item character list containing the keywords of the DEM parameter to be calculated. Default parameter are c("hillshade", "slope", "aspect", "TRI", "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", " C_TANG"," C_LONG", "C_CROS", "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI")
 #' @param verbose logical. be quiet
-#' @param morphoMethod  numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}. GDAL parameters see also: \href{https://www.gdal.org/gdaldem.html}{gdaldem}
+#' @param saga_morphoMethod  numeric. saga morphometric method  see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_0.html}{SAGA GIS Help}. GDAL parameters see also: \href{https://www.gdal.org/gdaldem.html}{gdaldem}
 #' @param minScale  numeric. in scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param maxScale  numeric. max scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
 #' @param numScale  numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}
@@ -636,7 +636,7 @@ otbtex_gray<- function(input=NULL,
 morpho_dem<- function(dem,
                     item=c("hillshade","slope", "aspect","TRI","TPI","Roughness","SLOPE","ASPECT", "C_GENE","C_PROF","C_PLAN"," C_TANG"," C_LONG","C_CROS","C_MINI","C_MAXI","C_TOTA","C_ROTO","MTPI"),
                     verbose=FALSE,
-                    morphoMethod = 6,
+                    saga_morphoMethod = 6,
                     minScale = 1,
                     maxScale = 8,
                     numScale = 2,
@@ -723,7 +723,7 @@ morpho_dem<- function(dem,
                                     C_MAXI = file.path(R.utils::getAbsolutePath(path_run),"C_MAXI.sgrd"),
                                     C_TOTA = file.path(R.utils::getAbsolutePath(path_run),"C_TOTA.sgrd"),
                                     C_ROTO = file.path(R.utils::getAbsolutePath(path_run),"C_ROTO.sgrd"),
-                                    METHOD = morphoMethod),
+                                    METHOD = saga_morphoMethod),
                        show.output.on.console = FALSE, invisible = TRUE,
                        env = env)}
     if ("MTPI" %in% saga_items){

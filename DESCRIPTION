@@ -1,19 +1,18 @@
 Package: uavRst
 Type: Package
 Title: Unmanned Aerial Vehicle Remote Sensing Tools
-Version: 0.6
+Version: 0.6-0
 Date: 2022-10-09
 Authors@R: c(person("Chris", "Reudenbach", email = "reudenbach@uni-marburg.de", role = c("cre","aut")),
-             person("Hanna", "Meyer", email = "hanna.meyer@uni-marburg.de", role = c("aut")),
+             person("Hanna", "Meyer", email = "hanna.meyer@uni-muenster.de", role = c("aut")),
              person("Florian", "Detsch", role = c("ctb")),
              person("Finn", "Möller", role = c("ctb")),
              person("Thomas", "Nauss", email = "nauss@uni-marburg.de", role = c("ctb")),
-             person("Lars", "Opgenoorth", email = "opgenoorth@uni-marburg.de", role = c("ctb")),
-             person("Environmental Informatics Marburg", role = c("ctb"))
+             person("Lars", "Opgenoorth", email = "opgenoorth@uni-marburg.de", role = c("ctb"))
              )
 Encoding: UTF-8
 Maintainer: Chris Reudenbach <reudenbach@uni-marburg.de>
-Description: Support the analysis of drone derived imagery and point clouds as a cheap and easy to use alternative/complement to light detection and ranging data. It provides functionality to analyze poor quality digital aerial images as taken by low budget ready to fly drones. This includes supported machine learning based classification functions, comprehensive texture analysis, segmentation algorithms as well as forest relevant analyzes of metrics and measures on the derived products.
+Description: Support the analysis of drone derived imagery and point clouds as a cheap and easy to use alternative/complement to light detection and ranging data data. Additionally it provides functionality to analyze poor quality digital aerial images as taken by low budget ready to fly drones. This includes supported machine learning based classification functions, comprehensive texture analysis, segmentation algorithms as well as forest relevant analyzes of metrics and measures on the derived products.
 License: GPL (>= 3) 
 URL: https://github.com/gisma/uavRst/, https://gisma.github.io/uavRst/
 BugReports: https://github.com/gisma/uavRst/issues/
@@ -82,10 +81,8 @@ Collate:
     'rs_colorspace.R'
     'rs_indices.R'
     'rs_synband.R'
-     fun_dem_indices.R
-  'fun_extract_train_pixel_values.R'
-  'fun_getCrayon.R'
-  'fun_make_band_names.R'
-  'fun_merge_rgb.R'
-  'funs_otb_textures.R'
+    'fun_dem_indices.R'
+    'fun_make_band_names.R'
+    'funs_otb_textures.R'
+    'fun_extract_train_pixel_values.R'
     'uavRst-package.R'
