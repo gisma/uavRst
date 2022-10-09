@@ -35,7 +35,7 @@ morpho_dem(
 )
 }
 \arguments{
-\item{dem}{character filname to GeoTiff containing one channel DEM}
+\item{dem}{character file name of GeoTiff containing one channel DEM}
 
 \item{item}{character list containing the keywords of the DEM parameter to be calculated. Default parameter are c("hillshade", "slope", "aspect", "TRI", "TPI", "Roughness", "SLOPE", "ASPECT", "C_GENE", "C_PROF", "C_PLAN", " C_TANG"," C_LONG", "C_CROS", "C_MINI", "C_MAXI", "C_TOTA", "C_ROTO", "MTPI")}
 
@@ -49,11 +49,11 @@ morpho_dem(
 
 \item{numScale}{numeric. number of scale for multi scale TPI see also: \href{http://www.saga-gis.org/saga_tool_doc/6.2.0/ta_morphometry_28.html}{SAGA GIS Help}}
 
-\item{retRaster}{boolean if TRUE a raster stack is returned}
+\item{retRaster}{Boolean if TRUE a raster stack is returned}
 
-\item{gdalLinks}{list. GDAL tools cli paths}
+\item{gdalLinks}{list. GDAL tools CLI paths}
 
-\item{sagaLinks}{list. of SAGA tools cli pathes}
+\item{sagaLinks}{list. of SAGA tools CLI pathes}
 }
 \value{
 raster* object

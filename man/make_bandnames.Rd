@@ -40,7 +40,7 @@ make_bandnames(
 
 \item{edge}{character.  edge codes}
 
-\item{rgbTrans}{character.  rgbTrans codes}
+\item{rgbTrans}{character.  RGB transformation model codes}
 
 \item{dem}{charater. dem codes}
 
@@ -51,6 +51,6 @@ create name vector corresponding to the training image stack
 create vector containing the names of the image stack claculated using \code{\link{calc_ext}}
 
 create name vector corresponding to the training image stack
-create vector containing the names of the image stack claculated using \code{\link{calc_ext}}
+create vector containing the names of the image stack calculated using \code{\link{calc_ext}}
 }
 \keyword{internal}

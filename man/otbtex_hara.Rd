@@ -43,15 +43,15 @@ otbtex_hara(
 
 \item{texture}{type of filter "all" for all, alternative one of "simple" "advanced" "higher"}
 
-\item{output_name}{string pattern vor individual naming of the output file(s)}
+\item{output_name}{string pattern for individual naming of the output file(s)}
 
-\item{path_output}{path outut}
+\item{path_output}{path for output}
 
-\item{return_raster}{boolean if TRUE a raster stack is returned}
+\item{return_raster}{Boolean if TRUE a raster stack is returned}
 
 \item{parameters.xyrad}{list with the x and y radius in pixel indicating the kernel sizes for which the textures are calculated}
 
-\item{parameters.xyoff}{vector containg the directional offsets. Valid combinations are: list(c(1,1),c(1,0),c(0,1),c(1,-1))}
+\item{parameters.xyoff}{vector containing the directional offsets. Valid combinations are: list(c(1,1),c(1,0),c(0,1),c(1,-1))}
 
 \item{parameters.minmax}{minimum/maximum gray value which can occur.}
 

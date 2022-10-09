@@ -120,10 +120,10 @@ data frame containing for each drawn point the pixel values of the rasterstack d
 }
 \description{
 Convenient function to preprocess synthetic raster bands from a given RGB image and/or DTM/DSM data.
-Currently for all chanels of the input images the following textures and indices can be calculated:\cr
-rgb indices (17), color transformation (9), haralick (3 = 25 layers), statitics (4),edge (3),morpho (4), DEM Parameter (20).
+Currently for all channels of the input images the following textures and indices can be calculated:\cr
+RGB indices (17), color transformation (9), haralick (3 = 25 layers), statistics (4), edge (3), morphological (4), DEM Parameter (20).
 All layers will be stacked (as an ENVI file). 
-If wanted the raster values can be extracted to a data frames by overlaying corresponding vector data. NOTE: The vector data has to be named identically to the rasterfiles.  This is useful
+If wanted the raster values can be extracted to a data frames by overlaying corresponding vector data. NOTE: The vector data has to be named identically to the raster files.  This is useful
 for for classification training purposes and covers usually step 1 of the random forest based
 classification of UAV derived visible imagery and point clouds.
 }
@@ -133,10 +133,10 @@ classification of UAV derived visible imagery and point clouds.
 (03) 50_RS_LLO_rf_classification.R training and prediction using random forest and the forward feature selection method
 }
 \note{
-If the function is used for stand alone extraction of the training data please provide both, the imagestack containing the raster data plus the corresponding band names (usually saved as an Rdata file) and the corresponding shape file.
+If the function is used for stand alone extraction of the training data please provide both, the image stack containing the raster data plus the corresponding band names (usually saved as an Rdata file) and the corresponding shape file.
 
-The workflow is intended to use the forward feature selection as decribed by \href{https://www.sciencedirect.com/science/article/pii/S1364815217310976}{Meyer et al. (2018)}.
-This approach needs at least a pair of images that differ in time and/or space for a leave one location out validation mode. You may overcome this situation if you tile your image and provide for each tile seperate training data.
+The workflow is intended to use the forward feature selection as described by \href{https://www.sciencedirect.com/science/article/pii/S1364815217310976}{Meyer et al. (2018)}.
+This approach needs at least a pair of images that differ in time and/or space for a leave one location out validation mode. You may overcome this situation if you tile your image and provide for each tile separate training data.
 If you just want to classify a single image by a single training file use the normal procedure as provided by the \code{\link[caret]{trainControl}} function.
 }
 \examples{

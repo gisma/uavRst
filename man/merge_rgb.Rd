@@ -24,7 +24,7 @@ merge_rgb(
 \value{
 The merged image as a raster object 
 # example
-# tif_files is a list of valid filenames
+# tif_files is a list of valid file names
 merged_r = merge_rgb(files = tif_files,
                      out = file.path(tempdir(),"out.tif"))
 }
@@ -36,5 +36,5 @@ https://stackoverflow.com/questions/15876591/merging-multiple-rasters-in-r
     with regards to Flo Detsch who asked it the right way
 }
 \note{
-if proj4 is NULL no reprojection is performed otherwise the merged raster is projected by using the proj4 string.
+if proj4 is NULL no re-projection is performed otherwise the merged raster is projected by using the proj4 string.
 }
