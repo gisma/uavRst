@@ -61,7 +61,7 @@ Suggests: knitr,
     RStoolbox,
     markdown
 LinkingTo: Rcpp
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 SystemRequirement#s: GNU make
 Collate: 
     'RcppExports.R'

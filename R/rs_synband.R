@@ -236,7 +236,7 @@ make_syn_bands<- function ( calculateBands    = TRUE,
       terra::writeRaster(rgb_rgbi,
                          file.path(R.utils::getAbsolutePath(path_run),paste0("rgbi_",basename(imageFiles[i]))),
                          #progress = "text",
-                         overwrite=TRUE)
+                         overwrite=TRUE,gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
       
       flist<-append(flist, file.path(R.utils::getAbsolutePath(path_run),paste0("rgbi_",basename(imageFiles[i]))))
       dellist <- append(dellist, file.path(R.utils::getAbsolutePath(path_run),paste0("rgbi_",basename(imageFiles[i]))))
@@ -382,7 +382,7 @@ make_syn_bands<- function ( calculateBands    = TRUE,
       terra::writeRaster(r,
                          paste0(currentIdxFolder,"/", prefixIdx,tmpFN),
                          #progress ="text",
-                         overwrite=TRUE)}
+                         overwrite=TRUE,gdal=c("COMPRESS=DEFLATE", "TFW=YES"))}
     else {
       message(catErr(":::: you have more than 256 Layers writing an envi file. \n You NUST reassign the bandnames when using the envi file! \n"))
       terra::writeRaster(r,

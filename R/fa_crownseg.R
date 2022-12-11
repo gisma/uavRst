@@ -103,7 +103,7 @@ chmseg_GWS <- function(treepos = NULL,
   # create correct param lists
   #segmentationBands<-c("HI","GLI")
   if (is.null(giLinks)){
-    giLinks <- linkGI()
+    giLinks <- linkGI(linkItems = c("saga","gdal"))
   }
 
   gdal <- giLinks$gdal
@@ -140,9 +140,9 @@ chmseg_GWS <- function(treepos = NULL,
   if (majorityRadius > 0 ){
     outname<- "crowns1.sdat"
     
-    if (!is.null(gdal$version$py[[1]])){
-      if (grepl(gdal$version$py[[1]][2,1],pattern = "gdal"))
-        ret <- system(paste0(gdal$version$py[[1]][17,]," -8 ",
+    if (!is.null(gdal$py[[1]])){
+      if (grepl(gdal$py[[1]][2,1],pattern = "gdal"))
+        ret <- system(paste0(gdal$py[[1]][17,]," -8 ",
                              file.path(R.utils::getAbsolutePath(path_run)),"/","crowns.sdat ",
                              file.path(R.utils::getAbsolutePath(path_run)),"/",outname,
                              " -of SAGA"), 
