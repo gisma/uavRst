@@ -384,16 +384,17 @@ make_syn_bands<- function ( calculateBands    = TRUE,
                          paste0(currentIdxFolder,"/", prefixIdx,tmpFN,".tif"),
                          #progress ="text",
                          overwrite=TRUE,gdal=c("COMPRESS=DEFLATE", "TFW=YES"))}
-    else {
-      message(catErr(":::: you have more than 256 Layers writing an envi file. \n You NUST reassign the bandnames when using the envi file! \n"))
-      terra::writeRaster(r,
-                         paste0(currentIdxFolder,"/", prefixIdx,tmpFN),
-                         format="ENVI",
-                         #progress ="text",
-                         #options="COMPRESS=LZW",
-                         overwrite=TRUE)
-      
-    }
+    else {stop("You have more than 256 synthetic channels - IMHO this is nosens . Think twice and recuce.")}
+    # else {
+    #   message(catErr(":::: you have more than 256 Layers writing an envi file. \n You NUST reassign the bandnames when using the envi file! \n"))
+    #   terra::writeRaster(r,
+    #                      paste0(currentIdxFolder,"/", prefixIdx,tmpFN),
+    #                      format="ENVI",
+    #                      #progress ="text",
+    #                      #options="COMPRESS=LZW",
+    #                      overwrite=TRUE)
+    #   
+    # }
     
     rlist<- file.path(R.utils::getAbsolutePath(paste0(currentIdxFolder,"/", prefixIdx,tmpFN)))
     
