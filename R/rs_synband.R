@@ -368,7 +368,7 @@ make_syn_bands<- function ( calculateBands    = TRUE,
     if (rgbi)  tmpFN<-paste0(substr(basename(imageFiles[i]),1,nchar(basename(imageFiles[i]))-4))
     else if (length(demFiles)>= i)  tmpFN<-paste0(substr(basename(demFiles[i]),1,nchar(basename(demFiles[i]))-4))
     else return(message(catErr("\nhopefully done\n You are mixing RGB an DEM input files. You may do this but only if they are of the same extent etc. and if each image file has a corresponding dem file\n NOTE the dem filename MUST have a prefix default is 'dem_'.")))
-    message(catOK("     save ...",paste0(prefixIdx, tmpFN),"\n"))
+    message(catOK("     saving results...\n"))
     # r<-raster::brick(raster::stack(flist)) qgis cannot read heder
     if (length(demFiles) > 0)  for (k in 1:length(demFiles)) flist[-grepl(pattern = demFiles[k],flist)]
     for (k in 1:length(imageFiles)) flist[-grepl(pattern = imageFiles[k],flist)]
@@ -378,7 +378,7 @@ make_syn_bands<- function ( calculateBands    = TRUE,
     
     # write file to envi
     if (nlayers(r) <= 256){
-      message(catNote(":::: writing data file... ",paste0(currentIdxFolder,"/", prefixIdx,tmpFN),"\n"))
+      message(catNote(":::: writing data files... ",paste0(currentIdxFolder,"/", prefixIdx,tmpFN),"\n"))
       saveRDS(r,paste0(currentIdxFolder,"/", prefixIdx,tmpFN,".rds"))
       
       terra::writeRaster(r,
