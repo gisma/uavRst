@@ -355,7 +355,7 @@ make_syn_bands<- function ( calculateBands    = TRUE,
                           gdalLinks = gdal)
               flist<-append(flist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*",type,"*"))))
               dellist<-append(dellist,Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*",type,"*"))))
-              nband<-raster::nbands(raster::raster(Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*",type,"*")))))
+              nband<- terra::nlyr(terra::rast(Sys.glob(file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"hara_*",type,"*")))))
               bandNames <-append(bandNames,paste0(make_bandnames(bandNames = type,l_raster=nband),"_",filterBand))
             }
           }
@@ -380,11 +380,12 @@ make_syn_bands<- function ( calculateBands    = TRUE,
     if (nlayers(r) <= 256){
       message(catNote(":::: writing data file... ",paste0(currentIdxFolder,"/", prefixIdx,tmpFN),"\n"))
       saveRDS(r,paste0(currentIdxFolder,"/", prefixIdx,tmpFN,".rds"))
+      
       terra::writeRaster(r,
-                         paste0(currentIdxFolder,"/", prefixIdx,tmpFN,".tif"),
-                         #progress ="text",
-                         overwrite=TRUE,gdal=c("COMPRESS=DEFLATE", "TFW=YES"))}
-    else {stop("You have more than 256 synthetic channels - IMHO this is nosens . Think twice and recuce.")}
+                         paste0(currentIdxFolder, prefixIdx,tmpFN,".tif"),
+                         overwrite=TRUE)
+      }
+    else {stop("You have more than 256 synthetic channels - IMHO this makes no sense. Think twice and recuce.")}
     # else {
     #   message(catErr(":::: you have more than 256 Layers writing an envi file. \n You NUST reassign the bandnames when using the envi file! \n"))
     #   terra::writeRaster(r,
