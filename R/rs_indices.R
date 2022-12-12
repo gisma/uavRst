@@ -238,6 +238,6 @@ rgb_indices <- function(red,green,blue,rgbi=c("VVI","VARI","NDTI","RI","SCI","BI
       
     }
   })
-  return(raster::stack(indices))
+  return(c(indices))
 }
 

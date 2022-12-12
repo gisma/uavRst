@@ -226,9 +226,10 @@ make_syn_bands<- function ( calculateBands    = TRUE,
     # for all images do
     if (rgbi){
       message(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
-      r<-raster::stack(imageFiles[i])
+      r<-terra::rast(imageFiles[i])
       # calculate and stack r,g,b and requested indices
-      rgb_rgbi<-raster::stack(r[[1:3]],rgb_indices(r[[1]],r[[2]],r[[3]],indices))
+      idx_stack=rgb_indices(r[[1]],r[[2]],r[[3]],indices)
+      rgb_rgbi<-c(r[[1]],r[[2]],r[[3]],terra::rast(idx_stack))
       bandNames <- append(bandNames,make_bandnames(rgbi = indices))
       names(rgb_rgbi)<-append(c("red","green","blue"),indices)
       message(catOK("\n     save ...",paste0(path_run,"rgbi_",basename(imageFiles[i])),"\n"))
@@ -270,7 +271,7 @@ make_syn_bands<- function ( calculateBands    = TRUE,
           terra::writeRaster(rpc[[1]],
                              fbFN,
                              # progress = "text",
-                             overwrite=TRUE)
+                             overwrite=TRUE,gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
           
           
           # flist<-append(flist,  fbFN)
@@ -289,7 +290,7 @@ make_syn_bands<- function ( calculateBands    = TRUE,
           terra::writeRaster(rgb_rgbi[[bandNr]],
                              file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i]))),
                              #progress = "text",
-                             overwrite=TRUE)
+                             overwrite=TRUE,gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
           fbFN<-file.path(R.utils::getAbsolutePath(path_run),paste0(filterBand,"_",basename(imageFiles[i])))}
         rm(rgb_rgbi) 
         rm(rpc) 
@@ -377,10 +378,10 @@ make_syn_bands<- function ( calculateBands    = TRUE,
     
     # write file to envi
     if (nlayers(r) <= 256){
-      message(catNote(":::: writing data file... ",paste0(currentIdxFolder,"/", prefixIdx,tmpFN,".gri"),"\n"))
+      message(catNote(":::: writing data file... ",paste0(currentIdxFolder,"/", prefixIdx,tmpFN),"\n"))
       saveRDS(r,paste0(currentIdxFolder,"/", prefixIdx,tmpFN,".rds"))
       terra::writeRaster(r,
-                         paste0(currentIdxFolder,"/", prefixIdx,tmpFN),
+                         paste0(currentIdxFolder,"/", prefixIdx,tmpFN,".tif"),
                          #progress ="text",
                          overwrite=TRUE,gdal=c("COMPRESS=DEFLATE", "TFW=YES"))}
     else {
