@@ -223,7 +223,7 @@ make_syn_bands<- function ( calculateBands    = TRUE,
     }
     
     # for all images do
-    if (rgbi){command, " -out ", outName
+    if (rgbi){
       message(catNote(":::: processing indices of...",basename(imageFiles[i]),"\n"))
       r<-terra::rast(imageFiles[i])
       # calculate and stack r,g,b and requested indices
