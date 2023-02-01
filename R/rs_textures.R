@@ -347,7 +347,7 @@ otb_stat<- function(input=NULL,
     command<-paste0(path_OTB,"otbcli_LocalStatisticExtraction")
     command<-paste(command, " -in ", input)
     command<-paste(command, " -channel ", channel)
-    command<-paste(command, " -out ", outName)
+    command<-paste(command, " -out ", outName, " float")
     command<-paste(command, " -ram ",ram)
     command<-paste(command, " -radius ",radius)
     if (verbose) {
@@ -464,7 +464,7 @@ otbtex_edge<- function(input=NULL,
       command<-paste(command, " -filter.touzi.xradius ", touzi_xradius)
       command<-paste(command, " -filter.touzi.yradius ", touzi_yradius)
     }
-    command<-paste(command, " -out ", outName)
+    command<-paste(command, " -out ", outName, " float")
     command<-paste(command, " -ram ",ram)
     if (verbose) {
       message("\nrunning cmd:  ", command[band],"\n")
@@ -580,7 +580,7 @@ otbtex_gray<- function(input=NULL,
     command<-paste(command, " -channel ", channel)
     command<-paste(command, " -filter ", filter)
 
-    command<-paste(command, " -out ", outName)
+    command<-paste(command, " -out ", outName, " float")
     command<-paste(command, " -ram ",ram)
     if (verbose) {
       message("\nrunning cmd:  ", command[band],"\n")

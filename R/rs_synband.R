@@ -164,7 +164,8 @@ make_syn_bands<- function ( calculateBands    = TRUE,
   if (!rgbi) hara <- stat <- edge <- morpho <- FALSE
   
   retStack<-list()
-  
+  ing corresponding vector data. NOTE: The vector data has to be named identically to the raster files.  This is useful
+#' for for classification training purposes and covers usually step 1 of the ran
   if (is.null(gdalLinks))   gdal<- link2GI::linkGDAL()
   else gdal<-gdalLinks
   if (is.null(sagaLinks))   saga<- link2GI::linkSAGA()
